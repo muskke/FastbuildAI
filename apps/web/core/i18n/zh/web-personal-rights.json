@@ -1,0 +1,55 @@
+{
+    "rechargeCenter": {
+        "detail": {
+            "title": "算力记录",
+            "remainingPower": "剩余算力",
+            "rechargePower": "充值算力",
+            "giftPower": "充值赠送",
+            "dailyGiftPower": {
+                "title": "每日赠送",
+                "giftPower": "赠送算力",
+                "powerValidity": "算力有效期"
+            },
+            "changeDetail": "变动类型",
+            "aiName": "智能体/应用名",
+            "changeAmount": "变动数量",
+            "changeTime": "日期",
+            "tab": {
+                "all": "全部",
+                "consume": "消耗",
+                "get": "获取"
+            }
+        },
+        "powerBalance": "算力余额",
+        "selectRechargePackage": "选择充值套餐",
+        "paymentMethod": "支付方式",
+        "alipay": "支付宝支付",
+        "wechatPay": "微信支付",
+        "add": "加赠",
+        "power": "算力",
+        "rechargeInstructions": {
+            "title": "充值说明",
+            "content": [
+                "充值成功后不支持退款或反向兑换为人民币；",
+                "充值后的算力不会过期，但无法提现、转赠；",
+                "支付完成可能需要等待一会儿才能到账，如一直未到账，请提供你的手机账号，联系我们；",
+                "用户不得通过未经得到许可的第三方渠道进行充值，不得通过恶意退费等不正当手段获取账户余额，否则由此造成的损失由用户自行承担；"
+            ]
+        },
+        "agreement": "支付即代表你同意",
+        "serviceTerms": "服务条款",
+        "payment": "支付协议",
+        "immediatelyPurchase": "立即购买",
+        "wxPay": "微信支付",
+        "alipayPay": "支付宝支付",
+        "qrCodeFailed": "二维码生成失败",
+        "rechargeSuccess": "充值成功",
+        "rechargeSuccessTip": "充值成功，电力值已到账",
+        "paySuccess": "支付成功",
+        "payFailed": "支付失败",
+        "cancelPay": "取消支付",
+        "notOpen": "暂未开放",
+        "notOpenTip": "该功能网站管理员暂未开放，敬请期待。",
+        "back": "返回上一页"
+    }
+}

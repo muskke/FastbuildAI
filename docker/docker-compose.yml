@@ -1,0 +1,90 @@
+services:
+  # Redis 缓存服务
+  redis:
+    image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/redis:8.0.2
+    container_name: fastbuildai-redis
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "16379:6379"
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - fastbuildai-network
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL 数据库服务 (with pgvector)
+  postgres:
+    image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/postgres:17.5-amd64
+    container_name: fastbuildai-postgres
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - "15432:5432"
+    volumes:
+      - ./data/postgres/postgres_data:/var/lib/postgresql/data
+      - ../apps/server/src/plugins/article-plugin/install/install.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - fastbuildai-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Node.js 开发环境
+  nodejs:
+    image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/node:22.14.0-alpine
+    container_name: fastbuildai-nodejs
+    restart: always
+    working_dir: /fastbuildai
+    volumes:
+      - ../:/fastbuildai
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      TZ: Asia/Shanghai
+      SERVER_PORT: ${SERVER_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    command: >
+      sh -c "
+      npm install -g pnpm &&
+      pnpm i &&
+      pnpm --filter ./apps/web run generate &&
+      pnpm --filter ./apps/server run build &&
+      pnpm --filter ./apps/server run start:prod
+      "
+    networks:
+      - fastbuildai-network
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "PORT=$${SERVER_PORT} && netstat -ln | grep \":$$PORT \" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 15
+      start_period: 180s
+
+networks:
+  fastbuildai-network:
+    driver: bridge

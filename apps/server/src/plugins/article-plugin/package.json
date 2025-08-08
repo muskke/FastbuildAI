@@ -1,0 +1,13 @@
+{
+    "name": "@server/article-plugin",
+    "version": "1.0.0",
+    "enabled": true,
+    "title": "文章管理插件",
+    "description": "功能完整的文章管理系统，支持文章发布、栏目管理、SEO优化等功能",
+    "author": "FastbuildAI团队",
+    "homepage": "https://www.mddai.cn",
+    "dependencies": {
+        "clsx": "^2.1.1"
+    },
+    "devDependencies": {}
+}

@@ -1,0 +1,100 @@
+{
+    "website": {
+        "title": "ウェブサイト設定",
+        "description": "ウェブサイトの基本設定情報を管理",
+        "tabs": {
+            "information": "基本情報",
+            "agreement": "利用規約",
+            "copyright": "著作権表記",
+            "statistics": "アクセス解析"
+        },
+        "information": {
+            "title": "ウェブサイト基本情報設定",
+            "description1": "ウェブサイトの基本情報を管理",
+            "name": {
+                "label": "サイト名",
+                "placeholder": "サイト名を入力してください",
+                "description": "サイト名はブラウザのタブやシステム内に表示されます",
+                "required": "サイト名を入力してください"
+            },
+            "description": {
+                "label": "サイト説明",
+                "placeholder": "サイト説明を入力してください",
+                "description": "サイトの簡単な説明文。検索結果やSNSシェア時に表示されます"
+            },
+            "icon": {
+                "label": "ファビコン",
+                "description": "推奨サイズ: 100x100px, 対応フォーマット: PNG, ICO, JPG",
+                "upload": "アイコンをアップロード",
+                "required": "ファビコンをアップロードしてください"
+            },
+            "logo": {
+                "label": "サイトロゴ",
+                "description": "推奨サイズ: 100x100px, 対応フォーマット: PNG, JPG, JPEG",
+                "upload": "ロゴをアップロード",
+                "required": "サイトロゴをアップロードしてください"
+            }
+        },
+        "agreement": {
+            "title": "利用規約設定",
+            "description": "プライバシーポリシー、利用規約、支払い規約を管理",
+            "privacy": "プライバシーポリシー",
+            "service": "利用規約",
+            "payment": "支払い規約",
+            "titleLabel": "タイトル",
+            "contentLabel": "内容",
+            "titleRequired": "タイトルを入力してください",
+            "contentRequired": "内容を入力してください"
+        },
+        "copyright": {
+            "title": "著作権・免責事項設定",
+            "description": "著作権表示と免責事項を管理",
+            "displayName": {
+                "label": "表示名",
+                "placeholder": "表示名を入力（例：京ICP証030173号）",
+                "required": "表示名を入力してください"
+            },
+            "icon": {
+                "label": "アイコン",
+                "upload": "アイコンをアップロード",
+                "required": "アイコンをアップロードしてください"
+            },
+            "url": {
+                "label": "リンクURL",
+                "placeholder": "リンク先URLを入力（例：https://beian.miit.gov.cn/）",
+                "required": "リンクURLを入力してください"
+            }
+        },
+        "statistics": {
+            "title": "アクセス解析設定",
+            "description": "アクセス解析ツールを設定",
+            "appid": {
+                "label": "アプリケーションID",
+                "placeholder": "アプリケーションIDを入力",
+                "required": "アプリケーションIDを入力してください",
+                "minLength": "5文字以上で入力してください",
+                "maxLength": "50文字以内で入力してください"
+            },
+            "info": {
+                "title": "主要な解析ツールに対応",
+                "description": "Google Analytics、百度統計、Clarityなどの解析ツールのアプリケーションIDを入力してください"
+            }
+        },
+        "actions": {
+            "save": "設定を保存",
+            "saveChanges": "変更を保存",
+            "saveConfig": "設定を保存",
+            "reset": "リセット",
+            "saving": "保存中...",
+            "resetting": "リセット中..."
+        },
+        "messages": {
+            "loadFailed": "設定の取得に失敗しました。ネットワーク接続を確認してください",
+            "saveFailed": "保存に失敗しました。ネットワーク接続を確認してください",
+            "saveSuccess": "保存が完了しました！",
+            "resetSuccess": "フォームをリセットしました",
+            "resetEmpty": "フォームをクリアしました",
+            "configNotLoaded": "設定データが読み込まれていません。ページを更新してください"
+        }
+    }
+}

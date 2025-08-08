@@ -1,0 +1,259 @@
+{
+    "addTitle": "自定义",
+    "editTitle": "编辑AI供应商",
+    "detailTitle": "管理AI服务供应商配置",
+
+    "form": {
+        "basicInfo": "基本信息",
+        "name": "供应商名称",
+        "namePlaceholder": "请输入供应商名称",
+        "nameHelp": "用于显示的供应商名称，建议简洁明了",
+        "provider": "供应商标识",
+        "providerPlaceholder": "例如：openai、anthropic",
+        "providerRequired": "请输入供应商标识",
+        "apiKey": "API密钥",
+        "apiKeyPlaceholder": "sk-xxxxxxxx",
+        "apiKeyRequired": "请输入API密钥",
+        "proxyUrl": "代理地址",
+        "proxyUrlDescription": "不填写则使用默认API地址",
+        "baseUrl": "API地址",
+        "baseUrlPlaceholder": "https://api.openai.com",
+        "baseUrlRequired": "请输入API地址",
+        "websiteUrl": "官网地址",
+        "websiteUrlPlaceholder": "https://openai.com",
+        "iconUrl": "图标地址",
+        "description": "供应商描述",
+        "descriptionPlaceholder": "描述供应商的特点和服务...",
+        "sortOrder": "排序",
+        "sortOrderPlaceholder": "0",
+        "isActive": "启用状态",
+        "isActiveEnabled": "供应商已启用",
+        "isActiveDisabled": "供应商已禁用",
+        "supportedFeatures": "支持功能",
+        "addDescription": "配置新的AI服务供应商",
+        "editDescription": "修改AI服务供应商信息",
+        "modelType": "支持模型类型",
+        "modelTypePlaceholder": "请输入模型类型"
+    },
+
+    "search": {
+        "placeholder": "搜索供应商名称、标识符或描述",
+        "status": "选择状态",
+        "all": "全部",
+        "enabled": "启用",
+        "disabled": "禁用",
+        "connected": "已连接",
+        "failed": "连接失败",
+        "unknown": "未知状态"
+    },
+
+    "actions": {
+        "edit": "编辑",
+        "delete": "删除",
+        "viewModels": "查看模型",
+        "viewDetail": "查看详情",
+        "add": "新增供应商",
+        "batchDelete": "批量删除"
+    },
+
+    "modelConfig": {
+        "title": "高级参数",
+        "temperature": {
+            "title": "温度 (temperature)",
+            "description": "控制输出的随机性，值越高结果越发散，常用范围0~2，默认1"
+        },
+        "top_p": {
+            "title": "采样率 (top_p)",
+            "description": "控制核采样的阈值，通常与temperature互斥，默认1"
+        },
+        "max_tokens": {
+            "title": "最大Token数 (max_tokens)",
+            "description": "限制生成文本的最大长度，默认16"
+        },
+        "top_k": {
+            "title": "采样数量 (top_k)",
+            "description": "从前k个概率最高的词汇中采样，部分模型支持，默认50"
+        },
+        "frequency_penalty": {
+            "title": "重复惩罚 (frequency_penalty)",
+            "description": "控制重复使用词汇的惩罚系数，值越大越少重复，默认0"
+        },
+        "presence_penalty": {
+            "title": "出现惩罚 (presence_penalty)",
+            "description": "控制话题引入新词汇的倾向，值越大越容易引入新话题，默认0"
+        },
+        "stop": {
+            "title": "停止词 (stop)",
+            "description": "遇到这些词就停止生成，通常是字符串数组，默认禁用",
+            "placeholder": "输入停止词，多个用逗号分隔"
+        },
+        "validation": {
+            "outOfRange": "参数值超出有效范围",
+            "duplicateField": "参数字段名不能重复"
+        },
+        "addParameter": "添加参数",
+        "custom": {
+            "fieldPlaceholder": "参数字段名 (如: my_parameter)",
+            "titlePlaceholder": "参数显示名称",
+            "descriptionPlaceholder": "参数描述信息",
+            "valuePlaceholder": "参数值"
+        }
+    },
+
+    "messages": {
+        "createSuccess": "供应商创建成功",
+        "createFailed": "供应商创建失败",
+        "updateSuccess": "供应商更新成功",
+        "updateFailed": "供应商更新失败",
+        "deleteSuccess": "供应商删除成功",
+        "deleteFailed": "供应商删除失败",
+        "getDetailFailed": "获取供应商详情失败"
+    },
+
+    "confirm": {
+        "deleteTitle": "删除供应商",
+        "deleteMessage": "确定要删除选中的供应商吗？此操作不可恢复。",
+        "batchDeleteTitle": "批量删除确认",
+        "batchDeleteMessage": "确定要删除选中的 {count} 个供应商吗？此操作不可撤销。"
+    },
+
+    "model": {
+        "title": "AI模型管理",
+        "list": "模型列表",
+        "addTitle": "新增AI模型",
+        "editTitle": "编辑AI模型",
+        "detailTitle": "模型详情",
+        "add": "新增模型",
+        "keywordInput": "搜索模型名称或描述...",
+        "capabilityFilter": "筛选能力",
+        "statusFilter": "状态筛选",
+        "noModels": "暂无模型数据",
+        "setDefault": "设为默认",
+        "modelTypeFilter": "模型类型筛选",
+
+        "form": {
+            "name": "模型名称",
+            "namePlaceholder": "请输入模型名称",
+            "nameHelp": "用于显示的模型名称，建议简洁明了",
+            "model": "模型标识符",
+            "modelPlaceholder": "请输入模型标识符",
+            "description": "模型描述",
+            "descriptionPlaceholder": "请输入模型描述",
+            "maxTokens": "最大Token数",
+            "maxTokensPlaceholder": "请输入最大Token数",
+            "maxContext": "对话上下文",
+            "maxContextPlaceholder": "请输入对话上下文轮数",
+            "maxContextHelp": "模型记忆的对话轮数",
+            "maxContextUnit": "轮",
+            "inputPrice": "输入Token价格",
+            "outputPrice": "输出Token价格",
+            "currency": "货币单位",
+            "isActive": "启用状态",
+            "isActiveEnabled": "模型已启用",
+            "isActiveDisabled": "模型已禁用",
+            "isDefault": "默认模型",
+            "setAsDefault": "设置为系统默认模型",
+            "sortOrder": "排序权重",
+            "sortOrderPlaceholder": "输入排序权重（数值越大排序越靠前）",
+            "sortOrderHelp": "数值越大，在列表中的排序越靠前",
+            "basicInfoTitle": "模型基本信息",
+            "basicInfoDescription": "配置模型的基本信息和识别参数",
+            "modelType": "模型类型"
+        },
+
+        "currency": {
+            "USD": "美元",
+            "CNY": "人民币",
+            "EUR": "欧元"
+        },
+
+        "validation": {
+            "nameRequired": "请输入模型名称",
+            "nameMaxLength": "模型名称长度不能超过100个字符",
+            "providerRequired": "请选择供应商",
+            "modelRequired": "请输入模型标识符",
+            "modelMaxLength": "模型标识符长度不能超过100个字符",
+            "maxTokensMin": "最大Token数不能小于1",
+            "maxContextMin": "对话上下文轮数不能小于1",
+            "descriptionMaxLength": "模型描述长度不能超过500个字符"
+        },
+
+        "config": {
+            "title": "模型参数配置",
+            "description": "配置模型的高级参数，这些参数将影响模型的输出行为",
+            "enable": "启用",
+            "disable": "禁用",
+            "parameters": {
+                "temperature": {
+                    "name": "温度 (Temperature)",
+                    "description": "控制输出的随机性。低温度适合生成稳定、确定的回答，高温度适合生成创意丰富的文本。",
+                    "placeholder": "0.7"
+                },
+                "top_p": {
+                    "name": "核采样 (Top-p)",
+                    "description": "控制采样范围，基于概率累积选择词汇。低值生成更连贯的文本，高值生成更有创意的文本。",
+                    "placeholder": "0.9"
+                },
+                "max_tokens": {
+                    "name": "最大Token数 (Max Tokens)",
+                    "description": "限制生成的最大token数量。控制响应长度，避免过长输出导致token消耗过多。",
+                    "placeholder": "2048"
+                },
+                "top_k": {
+                    "name": "Top-K采样",
+                    "description": "限制每次选择的候选词汇数目。适合控制输出的确定性，较大的值提供更多样性。",
+                    "placeholder": "50"
+                },
+                "frequency_penalty": {
+                    "name": "频率惩罚 (Frequency Penalty)",
+                    "description": "控制生成中重复内容的惩罚。高值惩罚重复的词汇，适合文章生成；低值允许更多重复。",
+                    "placeholder": "0.0"
+                },
+                "presence_penalty": {
+                    "name": "存在惩罚 (Presence Penalty)",
+                    "description": "控制生成中是否惩罚新内容的出现。高值促使模型生成新的内容，避免重复。",
+                    "placeholder": "0.0"
+                },
+                "stop": {
+                    "name": "停止序列 (Stop)",
+                    "description": "定义停止生成的条件。用于定义何时停止生成，常用于对话模型结束标识。",
+                    "placeholder": "输入停止序列，多个用逗号分隔"
+                }
+            },
+            "validation": {
+                "temperatureRange": "温度值必须在0到2之间",
+                "topPRange": "Top-p值必须在0到1之间",
+                "maxTokensMin": "最大Token数必须大于0",
+                "topKMin": "Top-K值必须大于0",
+                "frequencyPenaltyRange": "频率惩罚值必须在0到2之间",
+                "presencePenaltyRange": "存在惩罚值必须在0到2之间"
+            }
+        },
+
+        "messages": {
+            "createSuccess": "AI模型创建成功",
+            "createFailed": "AI模型创建失败",
+            "updateSuccess": "AI模型更新成功",
+            "updateFailed": "AI模型更新失败",
+            "deleteSuccess": "AI模型删除成功",
+            "deleteFailed": "AI模型删除失败",
+            "deleteTitle": "删除模型",
+            "deleteMsg": "确定要删除选中的模型吗？此操作不可恢复。",
+            "success": "操作成功",
+            "error": "操作失败",
+            "setDefaultSuccess": "默认模型设置成功",
+            "setDefaultFailed": "默认模型设置失败",
+            "setDefaultError": "默认模型设置失败",
+            "testSuccess": "模型连接测试成功",
+            "testFailed": "模型连接测试失败",
+            "testError": "模型连接测试错误",
+            "testing": "正在测试模型连接...",
+            "loadProvidersFailed": "获取供应商列表失败",
+            "getProvidersFailed": "获取供应商列表失败",
+            "missingModelId": "缺少模型ID",
+            "getModelDetailFailed": "获取模型详情失败"
+        }
+    },
+    "viewWebsite": "前往官网",
+    "modelManagement": "模型管理"
+}

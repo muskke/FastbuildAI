@@ -1,0 +1,15 @@
+{
+    "extends": ["@tsconfig/node22/tsconfig.json"],
+    "include": ["./src/**/*", "../../apps/web/.nuxt/types/imports.d.ts"],
+    "compilerOptions": {
+        "lib": ["es2022", "DOM", "DOM.Iterable"],
+        "paths": {
+            "@fastbuildai/ui/*": ["../ui/src/*"],
+            "@/*": ["../../apps/web/*"]
+        },
+        
+        "module": "preserve",
+        "moduleResolution": "Bundler",
+    },
+    "exclude": ["node_modules"],
+}

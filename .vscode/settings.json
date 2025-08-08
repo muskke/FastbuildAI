@@ -1,0 +1,31 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "editor.formatOnSave": true,
+    "eslint.validate": ["javascript", "typescript", "vue"],
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[vue]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+
+    "eslint.workingDirectories": [
+        {
+            "mode": "auto"
+        }
+    ],
+
+    // Enable file nesting
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "nuxt.config.*": "tailwind.config.*, volar.config.*, *.env, .env.*, postcss.config.*, auto-imports.*, components.*",
+        "vite.config.*": "tailwind.config.*, volar.config.*, *.env, .env.*, postcss.config.*, auto-imports.*, components.*",
+        "package.json": "pnpm-*.yaml, yarn.*, package-*.json"
+    },
+    "[plaintext]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}

@@ -1,0 +1,36 @@
+import { DictModule } from "@common/modules/dict/dict.module";
+import { AiConsoleModule } from "@modules/console/ai/ai.module";
+import { AiMcpServer } from "@modules/console/ai/entities/ai-mcp-server.entity";
+import { AiUserMcpServer } from "@modules/console/ai/entities/ai-user-mcp-server.entity";
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+
+import { AiChatMessageController } from "./controllers/ai-chat-message.controller";
+import { AiChatRecordController } from "./controllers/ai-chat-record.controller";
+import { WebAiMcpServerController } from "./controllers/ai-mcp-server.controller";
+import { AiModelController } from "./controllers/ai-model.controller";
+import { AiProviderController } from "./controllers/ai-provider.controller";
+import { WebAiMcpServerService } from "./services/ai-mcp-server.service";
+import { UserMcpServerService } from "./services/user-mcp-server.service";
+
+/**
+ * AI功能模块（前台）
+ *
+ * 提供AI聊天、模型查询、多模态生成等功能
+ */
+@Module({
+    imports: [
+        AiConsoleModule,
+        DictModule,
+        TypeOrmModule.forFeature([AiMcpServer, AiUserMcpServer]),
+    ],
+    controllers: [
+        AiChatMessageController,
+        AiChatRecordController,
+        AiModelController,
+        AiProviderController,
+        WebAiMcpServerController,
+    ],
+    providers: [WebAiMcpServerService, UserMcpServerService],
+})
+export class AiModule {}

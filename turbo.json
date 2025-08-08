@@ -1,0 +1,57 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "ui": "tui",
+    "globalEnv": [
+        "NODE_ENV",
+        "APP_NAME",
+        "APP_VERSION",
+        "SERVER_PORT",
+        "SERVER_CORS_ENABLED",
+        "SERVER_CORS_ORIGIN",
+        "JWT_SECRET",
+        "JWT_EXPIRES_IN",
+        "DB_TYPE",
+        "DB_HOST",
+        "DB_PORT",
+        "DB_USERNAME",
+        "DB_PASSWORD",
+        "DB_DATABASE",
+        "DB_SYNCHRONIZE",
+        "DB_LOGGING",
+        "REDIS_HOST",
+        "REDIS_PORT",
+        "REDIS_USERNAME",
+        "REDIS_PASSWORD",
+        "REDIS_DB",
+        "REDIS_TTL",
+        "LOG_LEVELS",
+        "LOG_TO_FILE",
+        "VITE_APP_BASE_URL",
+        "DB_TABLE_PREFIX",
+        "VITE_APP_WEB_API_PREFIX",
+        "VITE_APP_CONSOLE_API_PREFIX",
+        "PM2_HOME",
+        "PM2_JSON_PROCESSING",
+        "PM2_CLI",
+        "PM2_APP_NAME",
+        "SERVER_SHOW_DETAILED_ERRORS",
+        "LOG_DATABASE_SCHEMA"
+    ],
+    "tasks": {
+        "build": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", ".env*"],
+            "outputs": [".next/**", "!.next/cache/**"]
+        },
+        "lint": {
+            "dependsOn": ["^lint"]
+        },
+        "check-types": {
+            "dependsOn": ["^check-types"]
+        },
+        "dev": {
+            "cache": false,
+            "persistent": true
+        }
+    }
+}

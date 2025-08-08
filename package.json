@@ -1,0 +1,55 @@
+{
+    "name": "fastbuildai",
+    "private": true,
+    "version": "1.0.0-alpha",
+    "description": "A fast build ai framework.",
+    "keywords": [
+        "fastbuild",
+        "ai",
+        "fastbuildai",
+        "ai framework"
+    ],
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev",
+        "lint": "turbo run lint",
+        "lint:fix": "turbo run lint -- --fix",
+        "format": "prettier --write \"**/*.{ts,tsx,js,vue,md,mdx}\"",
+        "check-types": "turbo run check-types",
+        "docker:up": "docker compose -p fastbuildai --env-file ./.env.production.local -f ./docker/docker-compose.yml up -d",
+        "docker:down": "docker compose -p fastbuildai --env-file ./.env.production.local -f ./docker/docker-compose.yml down",
+        "i18n:translate": "node apps/web/libs/translate-i18n.mjs"
+    },
+    "devDependencies": {
+        "@swc/core": "^1.11.24",
+        "bing-translate-api": "^4.0.2",
+        "chalk": "^5.4.1",
+        "prettier": "^3.5.3",
+        "prettier-plugin-tailwindcss": "^0.6.11",
+        "ts-node": "^10.9.2",
+        "turbo": "^2.5.0",
+        "typescript": "5.8.2"
+    },
+    "packageManager": "pnpm@10.0.0",
+    "engines": {
+        "node": ">=22",
+        "pnpm": ">=10"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "@swc/core",
+            "@parcel/watcher",
+            "@tailwindcss/oxide",
+            "core-js",
+            "esbuild",
+            "sharp",
+            "vue-demi"
+        ],
+        "overrides": {
+            "vue-i18n": "^11.1.3",
+            "@intlify/message-compiler": "^11.1.3",
+            "@intlify/core-base": "^11.1.3",
+            "jotai": "^2.12.5"
+        }
+    }
+}

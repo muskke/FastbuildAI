@@ -1,0 +1,5 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "apps/server/src/plugins/*"
+  - "apps/web/plugins/*"

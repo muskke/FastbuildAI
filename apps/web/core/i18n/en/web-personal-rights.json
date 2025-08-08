@@ -1,0 +1,55 @@
+{
+    "rechargeCenter": {
+        "detail": {
+            "title": "Power Records",
+            "remainingPower": "Remaining",
+            "rechargePower": "Purchased",
+            "giftPower": "Bonus",
+            "dailyGiftPower": {
+                "title": "Daily Bonus",
+                "giftPower": "Bonus Power",
+                "powerValidity": "Expiry Date"
+            },
+            "changeDetail": "Type",
+            "aiName": "AI/App",
+            "changeAmount": "Amount",
+            "changeTime": "Date",
+            "tab": {
+                "all": "All",
+                "consume": "Usage",
+                "get": "Earned"
+            }
+        },
+        "powerBalance": "Balance",
+        "selectRechargePackage": "Select Plan",
+        "paymentMethod": "Payment",
+        "alipay": "Alipay",
+        "wechatPay": "WeChat Pay",
+        "add": "Bonus",
+        "power": "Power",
+        "rechargeInstructions": {
+            "title": "Terms",
+            "content": [
+                "No refunds after successful recharge",
+                "Purchased power never expires but can't be withdrawn/transferred",
+                "Processing may take time - contact us if not received",
+                "Unauthorized recharge methods may result in account penalties"
+            ]
+        },
+        "agreement": "Payment indicates agreement to",
+        "serviceTerms": "Terms",
+        "payment": "Payment Policy",
+        "immediatelyPurchase": "Buy Now",
+        "wxPay": "WeChat Pay",
+        "alipayPay": "Alipay",
+        "qrCodeFailed": "QR Code Failed",
+        "rechargeSuccess": "Success",
+        "rechargeSuccessTip": "Power added to your account",
+        "paySuccess": "Payment Success",
+        "payFailed": "Payment Failed",
+        "cancelPay": "Cancel",
+        "notOpen": "Coming Soon",
+        "notOpenTip": "This feature is not yet available",
+        "back": "Go Back"
+    }
+}

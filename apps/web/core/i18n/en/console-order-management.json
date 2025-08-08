@@ -1,0 +1,49 @@
+{
+    "recharge": {
+        "pageTitle": "Top-up Orders",
+        "pageDescription": "Order Details",
+        "rechargeCount": "Orders",
+        "refundCount": "Refunds",
+        "netIncome": "Net Income",
+        "totalRechargeAmount": "Total Recharge Amount",
+        "totalRefundAmount": "Total Refund Amount",
+        "list": {
+            "pageTitle": "Top-up Orders",
+            "orderNo": "Order ID",
+            "user": "User",
+            "rechargeQuantity": "Amount",
+            "freeQuantity": "Bonus",
+            "quantityReceived": "Total",
+            "paidInAmount": "Paid",
+            "paymentMethod": "Method",
+            "paymentStatus": "Status",
+            "createdAt": "Date",
+            "actions": "Actions",
+            "refund": "Refund",
+            "viewDetails": "Details",
+            "searchOrderNo": "Search Order ID",
+            "searchUser": "Search User ID/Nickname/Phone",
+            "wechatPay": "WeChat Pay",
+            "alipayPay": "Alipay",
+            "paid": "Paid",
+            "unpaid": "Unpaid",
+            "refunded": "Refunded",
+            "notRefunded": "Not Refunded",
+            "refundStatus": "Refund Status"
+        },
+        "detail": {
+            "pageTitle": "Order Details",
+            "orderSource": "Source",
+            "userInfo": "User Info",
+            "orderType": "Type",
+            "paymentStatus": "Status",
+            "paymentMethod": "Method",
+            "createdAt": "Order Date",
+            "paidAt": "Paid At",
+            "refundStatus": "Refund Status",
+            "serialNumber": "Transaction ID",
+            "close": "Close",
+            "refund": "Request Refund"
+        }
+    }
+}

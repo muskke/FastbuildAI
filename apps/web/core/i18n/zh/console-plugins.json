@@ -1,0 +1,170 @@
+{
+    "market": {
+        "title": "插件市场",
+        "description": "发现和安装各种功能强大的插件来扩展您的应用",
+        "d": "插件描述",
+        "search": "搜索插件名称...",
+        "category": "选择分类",
+        "type": "选择类型",
+        "price": "价格筛选",
+        "detail": "查看详情",
+        "changelog": "更新日志",
+        "set": "暂无插件",
+        "sed": "没有找到符合条件的插件，请尝试调整搜索条件",
+        "free": "免费",
+        "update_time": "最近更新日期",
+        "version_info": "版本信息",
+        "preview_image": "预览图片",
+        "author": "作者",
+        "official_team": "官方团队",
+        "install": "安装插件",
+        "allCategories": "全部分类",
+        "allTypes": "全部类型",
+        "allPrices": "全部价格",
+        "paid": "付费",
+        "messages": {
+            "fetchError": "获取插件市场数据失败",
+            "installStart": "开始安装插件：{name}"
+        }
+    },
+    "auth": {
+        "secretKey": "开发者密钥",
+        "help": "开发者密钥绑定的是 开发平台 的密钥，请勿泄露防止被盗用"
+    },
+    "develop": {
+        "title": "插件开发",
+        "description": "创建和管理您的插件项目",
+        "addTips": "新增插件",
+        "editTips": "编辑插件",
+        "keywordInput": "搜索插件名称或关键词...",
+        "statusInput": "选择状态",
+        "pluginInfo": "插件信息",
+        "pluginKey": "插件Key",
+        "pluginPackName": "插件包名",
+        "author": "作者",
+        "version": "版本",
+        "workflow": {
+            "title": "插件开发流程",
+            "description": "按照以下步骤完成插件的完整开发流程",
+            "step1": {
+                "title": "新建插件",
+                "description": "创建插件基础信息，设置插件名称、描述等",
+                "action": "开始创建"
+            },
+            "step2": {
+                "title": "开发插件",
+                "description": "编写插件代码，实现核心功能逻辑",
+                "action": "查看文档"
+            },
+            "step3": {
+                "title": "打包插件",
+                "description": "构建和打包插件，生成发布包",
+                "action": "开始打包"
+            },
+            "step4": {
+                "title": "上传到市场",
+                "description": "发布插件到市场，供其他用户使用",
+                "action": "前往市场"
+            }
+        },
+        "status": {
+            "label": "状态",
+            "all": "全部状态",
+            "development": "开发中",
+            "testing": "测试中",
+            "published": "已发布",
+            "disabled": "已禁用"
+        },
+        "needRestart": "重启后生效",
+        "noNeedRestart": "无需重启",
+        "buttons": {
+            "add": "新增插件"
+        },
+        "form": {
+            "name": "插件名称",
+            "nameInput": "请输入插件名称",
+            "nameRequired": "插件名称不能为空",
+            "icon": "插件图标",
+            "addIcon": "添加",
+            "iconRecommendation": "建议图片尺寸：200*200像素；图片格式：jpg、png、jpeg",
+            "key": "插件Key",
+            "packName": "插件包名",
+            "packNameInput": "请输入插件包名",
+            "packNameRequired": "插件包名不能为空",
+            "packNameFormat": "插件包名只能包括字母、数字和下划线，且只能以字母开头",
+            "packNameHelp": "插件包名作为插件唯一的标识，申请之后不能修改，格式只能以小写字母+数字以横杠进行拼接，必须以字母开头并且不能出现空格",
+            "keyInput": "请输入插件key",
+            "keyRequired": "插件Key不能为空",
+            "keyFormat": "插件Key只能包括字母、数字和下划线，且只能以字母开头",
+            "keyHelp": "插件标识指开发插件的文件夹名称，申请之后不能修改(只能包括字母、数字和下划线，且只能以字母开头，格式如：f1111、f11_22)",
+            "description": "插件描述",
+            "descriptionInput": "请输入插件描述",
+            "descriptionRequired": "插件描述不能为空",
+            "author": "插件作者",
+            "authorInput": "请输入作者",
+            "authorRequired": "插件作者不能为空",
+            "version": "插件版本",
+            "versionRequired": "插件版本不能为空",
+            "versionFormat": "版本号格式不正确，请使用 x.x.x 格式",
+            "versionHelp": "请输入版本号，例如: 1.0.0",
+            "cover": "封面图",
+            "addCover": "添加",
+            "coverRecommendation": "建议图片尺寸：500*500像素；图片格式：jpg、png、jpeg"
+        },
+        "messages": {
+            "fetchError": "获取插件列表失败",
+            "deleteTitle": "确认删除",
+            "deleteMsg": "确定要删除这个插件吗？此操作不可撤销。",
+            "deleteSuccess": "删除成功",
+            "deleteError": "删除失败",
+            "batchDeleteSuccess": "批量删除成功",
+            "formReset": "表单已重置",
+            "formValidationFailed": "表单验证失败"
+        },
+        "pluginHome": "插件首页"
+    },
+    "manage": {
+        "title": "我的插件",
+        "description": "管理已安装的插件，支持启用、禁用和卸载操作",
+        "search": "搜索插件名称...",
+        "tabs": {
+            "all": "全部插件",
+            "enabled": "已启用",
+            "disabled": "已禁用",
+            "official": "官方插件"
+        },
+        "status": {
+            "label": "插件状态",
+            "all": "全部状态",
+            "enabled": "已启用",
+            "disabled": "已禁用",
+            "unknown": "未知状态"
+        },
+        "filters": {
+            "allCategories": "全部分类",
+            "allTypes": "全部类型"
+        },
+        "enable": "启用",
+        "disable": "禁用",
+        "uninstall": "卸载",
+        "official": "官方",
+        "version": "版本",
+        "size": "大小",
+        "installTime": "安装时间",
+        "updateTime": "更新时间",
+        "messages": {
+            "fetchError": "获取插件列表失败",
+            "enableSuccess": "插件 \"{name}\" 已启用",
+            "enableError": "启用插件失败",
+            "disableSuccess": "插件 \"{name}\" 已禁用",
+            "disableError": "禁用插件失败",
+            "uninstallSuccess": "插件 \"{name}\" 已卸载",
+            "uninstallError": "卸载插件失败"
+        },
+        "empty": {
+            "title": "暂无已安装插件",
+            "description": "您还没有安装任何插件，去插件市场看看吧",
+            "action": "前往插件市场"
+        }
+    }
+}

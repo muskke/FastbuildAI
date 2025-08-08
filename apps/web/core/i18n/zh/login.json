@@ -1,0 +1,53 @@
+{
+    "welcomeBack": "欢迎回来！ 👋",
+    "waitingForYou": "嘿，等你很久啦～快登录看看有什么新变化吧！",
+    "account": "账号",
+    "usernamePlaceholder": "请输入用户名/邮箱",
+    "password": "密码",
+    "passwordPlaceholder": "请输入密码",
+    "forgotPassword": "忘记密码？",
+    "passwordRule": "密码建议为6-25位数字+字母或符号组合",
+
+    "agreement": "已阅读并同意 ",
+    "userAgreement": "用户协议",
+    "and": "和",
+    "privacyPolicy": "隐私政策",
+
+    "register": "注册账号",
+    "loginNow": "立即登录",
+    "orLoginTo": "或登录到...",
+
+    "registerTitle": "账号注册",
+    "registerWelcome": "欢迎成为我们的新成员，探索更多强大功能即刻开始。🚀",
+    "confirmPassword": "确认密码",
+    "confirmPasswordPlaceholder": "请再次输入密码",
+    "backToLogin": "返回登录",
+    "registerNow": "立即注册",
+
+    "validation": {
+        "accountRequired": "请输入账号",
+        "accountMinLength": "账号长度不能少于3个字符",
+        "accountMaxLength": "账号长度不能超过20个字符",
+        "emailRequired": "请输入邮箱",
+        "emailInvalid": "请输入有效的邮箱地址",
+        "passwordRequired": "请输入密码",
+        "passwordMinLength": "密码长度不能少于6个字符",
+        "passwordMaxLength": "密码长度不能超过25个字符",
+        "passwordFormat": "密码必须为数字，字母或符号组合",
+        "confirmPasswordRequired": "请确认密码",
+        "passwordMismatch": "两次输入的密码不一致"
+    },
+
+    "messages": {
+        "agreementRequired": "请先同意隐私协议和服务条款",
+        "agreementTitle": "温馨提示",
+        "registerFailed": "注册失败",
+        "loginFailed": "登录失败"
+    },
+
+    "placeholders": {
+        "enterAccount": "请输入账号",
+        "enterPassword": "请输入密码",
+        "enterPasswordAgain": "请再次输入密码"
+    }
+}

@@ -1,0 +1,259 @@
+{
+    "addTitle": "Custom",
+    "editTitle": "Edit AI Provider",
+    "detailTitle": "Manage AI Providers",
+
+    "form": {
+        "basicInfo": "Basic Info",
+        "name": "Provider Name",
+        "namePlaceholder": "Enter provider name",
+        "nameHelp": "Display name (keep it concise)",
+        "provider": "Provider ID",
+        "providerPlaceholder": "E.g. openai, anthropic",
+        "providerRequired": "Provider ID required",
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "sk-xxxxxxxx",
+        "apiKeyRequired": "API key required",
+        "proxyUrl": "Proxy URL",
+        "proxyUrlDescription": "Leave blank for default API URL",
+        "baseUrl": "API URL",
+        "baseUrlPlaceholder": "https://api.openai.com",
+        "baseUrlRequired": "API URL required",
+        "websiteUrl": "Website",
+        "websiteUrlPlaceholder": "https://openai.com",
+        "iconUrl": "Icon URL",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe features/services...",
+        "sortOrder": "Order",
+        "sortOrderPlaceholder": "0",
+        "isActive": "Status",
+        "isActiveEnabled": "Enabled",
+        "isActiveDisabled": "Disabled",
+        "supportedFeatures": "Features",
+        "addDescription": "Configure new AI provider",
+        "editDescription": "Edit AI provider",
+        "modelType": "Model Types",
+        "modelTypePlaceholder": "Enter model types"
+    },
+
+    "search": {
+        "placeholder": "Search providers by name/ID/description",
+        "status": "Status",
+        "all": "All",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "connected": "Connected",
+        "failed": "Failed",
+        "unknown": "Unknown"
+    },
+
+    "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "viewModels": "View Models",
+        "viewDetail": "Details",
+        "add": "Add Provider",
+        "batchDelete": "Batch Delete"
+    },
+
+    "modelConfig": {
+        "title": "Advanced",
+        "temperature": {
+            "title": "Temperature",
+            "description": "Controls randomness (0-2, default 1)"
+        },
+        "top_p": {
+            "title": "Top-p",
+            "description": "Nucleus sampling threshold (default 1)"
+        },
+        "max_tokens": {
+            "title": "Max Tokens",
+            "description": "Output length limit (default 16)"
+        },
+        "top_k": {
+            "title": "Top-k",
+            "description": "Sample from top k tokens (default 50)"
+        },
+        "frequency_penalty": {
+            "title": "Frequency Penalty",
+            "description": "Reduce repetition (default 0)"
+        },
+        "presence_penalty": {
+            "title": "Presence Penalty",
+            "description": "Encourage new topics (default 0)"
+        },
+        "stop": {
+            "title": "Stop Sequences",
+            "description": "Stop generation when encountered",
+            "placeholder": "Comma-separated stop words"
+        },
+        "validation": {
+            "outOfRange": "Value out of range",
+            "duplicateField": "Duplicate field"
+        },
+        "addParameter": "Add Parameter",
+        "custom": {
+            "fieldPlaceholder": "Parameter name",
+            "titlePlaceholder": "Display name",
+            "descriptionPlaceholder": "Description",
+            "valuePlaceholder": "Value"
+        }
+    },
+
+    "messages": {
+        "createSuccess": "Provider created",
+        "createFailed": "Create failed",
+        "updateSuccess": "Provider updated",
+        "updateFailed": "Update failed",
+        "deleteSuccess": "Provider deleted",
+        "deleteFailed": "Delete failed",
+        "getDetailFailed": "Failed to load details"
+    },
+
+    "confirm": {
+        "deleteTitle": "Delete Provider",
+        "deleteMessage": "Permanently delete selected provider(s)?",
+        "batchDeleteTitle": "Batch Delete",
+        "batchDeleteMessage": "Delete {count} selected provider(s)?"
+    },
+
+    "model": {
+        "title": "Model Management",
+        "list": "Model List",
+        "addTitle": "Add Model",
+        "editTitle": "Edit Model",
+        "detailTitle": "Model Details",
+        "add": "Add Model",
+        "keywordInput": "Search models...",
+        "capabilityFilter": "Filter by capability",
+        "statusFilter": "Filter by status",
+        "noModels": "No models",
+        "setDefault": "Set Default",
+        "modelTypeFilter": "Filter by type",
+
+        "form": {
+            "name": "Model Name",
+            "namePlaceholder": "Enter model name",
+            "nameHelp": "Display name (keep it concise)",
+            "model": "Model ID",
+            "modelPlaceholder": "Enter model ID",
+            "description": "Description",
+            "descriptionPlaceholder": "Enter description",
+            "maxTokens": "Max Tokens",
+            "maxTokensPlaceholder": "Enter max tokens",
+            "maxContext": "Context Length",
+            "maxContextPlaceholder": "Enter context turns",
+            "maxContextHelp": "Conversation memory turns",
+            "maxContextUnit": "turns",
+            "inputPrice": "Input Price",
+            "outputPrice": "Output Price",
+            "currency": "Currency",
+            "isActive": "Status",
+            "isActiveEnabled": "Enabled",
+            "isActiveDisabled": "Disabled",
+            "isDefault": "Default Model",
+            "setAsDefault": "Set as default",
+            "sortOrder": "Priority",
+            "sortOrderPlaceholder": "Higher numbers appear first",
+            "sortOrderHelp": "Higher priority appears first",
+            "basicInfoTitle": "Basic Info",
+            "basicInfoDescription": "Configure model identification",
+            "modelType": "Model Type"
+        },
+
+        "currency": {
+            "USD": "USD",
+            "CNY": "CNY",
+            "EUR": "EUR"
+        },
+
+        "validation": {
+            "nameRequired": "Name required",
+            "nameMaxLength": "Max 100 chars",
+            "providerRequired": "Provider required",
+            "modelRequired": "Model ID required",
+            "modelMaxLength": "Max 100 chars",
+            "maxTokensMin": "Min 1 token",
+            "maxContextMin": "Min 1 turn",
+            "descriptionMaxLength": "Max 500 chars"
+        },
+
+        "config": {
+            "title": "Parameters",
+            "description": "Configure model behavior",
+            "enable": "Enable",
+            "disable": "Disable",
+            "parameters": {
+                "temperature": {
+                    "name": "Temperature",
+                    "description": "Lower for predictable, higher for creative",
+                    "placeholder": "0.7"
+                },
+                "top_p": {
+                    "name": "Top-p",
+                    "description": "Lower for coherent, higher for diverse",
+                    "placeholder": "0.9"
+                },
+                "max_tokens": {
+                    "name": "Max Tokens",
+                    "description": "Limit response length",
+                    "placeholder": "2048"
+                },
+                "top_k": {
+                    "name": "Top-k",
+                    "description": "Larger values increase diversity",
+                    "placeholder": "50"
+                },
+                "frequency_penalty": {
+                    "name": "Frequency Penalty",
+                    "description": "Reduce repetition (0-2)",
+                    "placeholder": "0.0"
+                },
+                "presence_penalty": {
+                    "name": "Presence Penalty",
+                    "description": "Encourage new topics (0-2)",
+                    "placeholder": "0.0"
+                },
+                "stop": {
+                    "name": "Stop Sequences",
+                    "description": "Stop generation triggers",
+                    "placeholder": "Comma-separated"
+                }
+            },
+            "validation": {
+                "temperatureRange": "0-2",
+                "topPRange": "0-1",
+                "maxTokensMin": ">0",
+                "topKMin": ">0",
+                "frequencyPenaltyRange": "0-2",
+                "presencePenaltyRange": "0-2"
+            }
+        },
+
+        "messages": {
+            "createSuccess": "Model created",
+            "createFailed": "Create failed",
+            "updateSuccess": "Model updated",
+            "updateFailed": "Update failed",
+            "deleteSuccess": "Model deleted",
+            "deleteFailed": "Delete failed",
+            "deleteTitle": "Delete Model",
+            "deleteMsg": "Permanently delete selected model(s)?",
+            "success": "Success",
+            "error": "Error",
+            "setDefaultSuccess": "Default set",
+            "setDefaultFailed": "Set default failed",
+            "setDefaultError": "Error setting default",
+            "testSuccess": "Connection success",
+            "testFailed": "Connection failed",
+            "testError": "Connection error",
+            "testing": "Testing connection...",
+            "loadProvidersFailed": "Failed to load providers",
+            "getProvidersFailed": "Failed to get providers",
+            "missingModelId": "Missing model ID",
+            "getModelDetailFailed": "Failed to load details"
+        }
+    },
+    "viewWebsite": "Visit Website",
+    "modelManagement": "Model Management"
+}

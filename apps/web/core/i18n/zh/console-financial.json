@@ -1,0 +1,44 @@
+{
+    "accountBalance": {
+        "searchPlaceholder": "请输入用户ID/昵称/手机号",
+        "selectPlaceholder": "变动类型",
+        "rechargeIncreasePower": "充值增加算力",
+        "rechargeGiftPower": "充值赠送增加算力",
+        "rechargeRefundPower": "充值退款退回算力",
+        "table": {
+            "userNo": "用户编号",
+            "nickname": "用户昵称",
+            "changeAmount": "变动数量",
+            "leftAmount": "剩余数量",
+            "accountTypeDesc": "变动类型",
+            "associationUser": "管理员",
+            "createdAt": "记录时间"
+        }
+    },
+    "financialCenter": {
+        "finance": {
+            "title": "经营概况",
+            "totalIncomeAmount": "累计收入金额",
+            "totalIncomeNum": "累计订单数（笔）",
+            "totalRefundAmount": "累计退款金额",
+            "totalRefundNum": "累计退款订单",
+            "totalNetIncome": "累计净收入"
+        },
+        "recharge": {
+            "title": "订单概况",
+            "rechargeAmount": "累计充值金额",
+            "rechargeNum": "充值订单数",
+            "rechargeRefundAmount": "累计退款金额",
+            "rechargeNetIncome": "充值净收入",
+            "rechargeRefundNum": "退款订单"
+        },
+        "user": {
+            "title": "用户概况",
+            "totalUserNum": "用户总人数",
+            "totalRechargeNum": "累计充值人数",
+            "totalChatNum": "用户累计提问次数",
+            "totalRechargeAmount": "用户累计消费金额",
+            "totalPowerSum": "用户剩余算力"
+        }
+    }
+}

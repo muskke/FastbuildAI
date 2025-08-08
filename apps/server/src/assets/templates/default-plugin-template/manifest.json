@@ -1,0 +1,10 @@
+{
+    "name": "default-plugin-template",
+    "version": "1.0.0",
+    "title": "默认插件模板",
+    "description": "默认插件模板，用于创建新的插件",
+    "author": "FastbuildAI团队",
+    "homepage": "https://www.mddai.cn",
+    "dependencies": {},
+    "devDependencies": {}
+}

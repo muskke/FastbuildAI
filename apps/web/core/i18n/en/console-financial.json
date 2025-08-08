@@ -1,0 +1,44 @@
+{
+    "accountBalance": {
+        "searchPlaceholder": "Search by User ID/Nickname/Phone",
+        "selectPlaceholder": "Change Type",
+        "rechargeIncreasePower": "Recharge Power",
+        "rechargeGiftPower": "Bonus Power",
+        "rechargeRefundPower": "Refunded Power",
+        "table": {
+            "userNo": "User ID",
+            "nickname": "Nickname",
+            "changeAmount": "Change",
+            "leftAmount": "Balance",
+            "accountTypeDesc": "Type",
+            "associationUser": "Admin",
+            "createdAt": "Time"
+        }
+    },
+    "financialCenter": {
+        "finance": {
+            "title": "Overview",
+            "totalIncomeAmount": "Total Revenue",
+            "totalIncomeNum": "Total Orders",
+            "totalRefundAmount": "Total Refunds",
+            "totalRefundNum": "Refund Orders",
+            "totalNetIncome": "Net Revenue"
+        },
+        "recharge": {
+            "title": "Orders",
+            "rechargeAmount": "Total Recharge",
+            "rechargeNum": "Recharge Orders",
+            "rechargeRefundAmount": "Refund Amount",
+            "rechargeNetIncome": "Net Recharge",
+            "rechargeRefundNum": "Refund Orders"
+        },
+        "user": {
+            "title": "Users",
+            "totalUserNum": "Total Users",
+            "totalRechargeNum": "Paying Users",
+            "totalChatNum": "Total Queries",
+            "totalRechargeAmount": "Total Spending",
+            "totalPowerSum": "Remaining Power"
+        }
+    }
+}

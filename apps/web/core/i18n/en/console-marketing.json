@@ -1,0 +1,30 @@
+{
+    "packageManagement": {
+        "rechargeInstructions": [
+            "1. Recharges are non-refundable and cannot be converted back to CNY;",
+            "2. Recharged power never expires but cannot be withdrawn or transferred;",
+            "3. Allow processing time after payment. Contact us with your mobile account if not received;",
+            "4. Unauthorized third-party recharges or fraudulent refunds will result in user liability."
+        ],
+        "rechargeInstructionsTitle": "Recharge Policy",
+        "saveSuccess": "Saved",
+        "saveFailed": "Save failed",
+        "statusTitle": "Feature Status",
+        "statusDescription": "Enable for user access to recharge",
+        "rechargeRulesTitle": "Recharge Rules",
+        "rechargeInstructionsDescription": "Configure recharge rules",
+        "tab": {
+            "rechargeValue": "Amount",
+            "freeQuantity": "Bonus",
+            "price": "Price",
+            "label": "Label",
+            "status": "Status",
+            "action": "Actions",
+            "priceUnit": "¥"
+        },
+        "button": {
+            "save": "Save",
+            "new": "New Package"
+        }
+    }
+}

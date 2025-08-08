@@ -1,0 +1,44 @@
+{
+    "accountBalance": {
+        "searchPlaceholder": "ユーザーID／ニックネーム／携帯番号を入力してください",
+        "selectPlaceholder": "変動タイプ",
+        "rechargeIncreasePower": "チャージで算力を増加",
+        "rechargeGiftPower": "チャージ特典で算力を増加",
+        "rechargeRefundPower": "チャージ返金で算力を返還",
+        "table": {
+            "userNo": "ユーザー番号",
+            "nickname": "ユーザー名",
+            "changeAmount": "変動数量",
+            "leftAmount": "残数量",
+            "accountTypeDesc": "変動タイプ",
+            "associationUser": "管理者",
+            "createdAt": "記録時間"
+        }
+    },
+    "financialCenter": {
+        "finance": {
+            "title": "経営概要",
+            "totalIncomeAmount": "累計収入金額",
+            "totalIncomeNum": "累計注文数（件）",
+            "totalRefundAmount": "累計返金金額",
+            "totalRefundNum": "累計返金注文数",
+            "totalNetIncome": "累計純収入"
+        },
+        "recharge": {
+            "title": "注文概要",
+            "rechargeAmount": "累計チャージ金額",
+            "rechargeNum": "チャージ注文数",
+            "rechargeRefundAmount": "累計返金金額",
+            "rechargeNetIncome": "チャージ純収入",
+            "rechargeRefundNum": "返金注文数"
+        },
+        "user": {
+            "title": "ユーザー概要",
+            "totalUserNum": "ユーザー総数",
+            "totalRechargeNum": "累計チャージ人数",
+            "totalChatNum": "ユーザー累計質問回数",
+            "totalRechargeAmount": "ユーザー累計消費金額",
+            "totalPowerSum": "ユーザー残算力"
+        }
+    }
+}

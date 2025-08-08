@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+
+*.log
+*.md
+.git
+.gitignore
+.vscode
+.editorconfig
+LICENSE
+.next
+.nuxt

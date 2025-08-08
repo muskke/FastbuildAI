@@ -1,0 +1,52 @@
+{
+    "name": "@fastbuildai/designer",
+    "version": "1.0.0",
+    "description": "网页设计器核心包 - 提供可视化设计器的核心功能",
+    "type": "module",
+    "module": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "files": [
+        "src"
+    ],
+    "dependencies": {
+        "@fastbuildai/assets": "workspace:*",
+        "@fastbuildai/config": "workspace:*",
+        "@fastbuildai/ui": "workspace:*",
+        "@tsconfig/node22": "^22.0.1",
+        "@types/node": "^22.14.0",
+        "@vitejs/plugin-vue": "^5.2.3",
+        "@vue/eslint-config-prettier": "^10.2.0",
+        "@vue/eslint-config-typescript": "^14.5.0",
+        "@vue/tsconfig": "^0.7.0",
+        "autoprefixer": "^10.4.21",
+        "panzoom": "^9.4.3",
+        "postcss": "^8.5.3",
+        "prettier": "3.5.3",
+        "qrcode.vue": "^3.6.0",
+        "reka-ui": "^2.2.0",
+        "tailwindcss": "^4.1.4",
+        "typescript": "~5.8.0",
+        "vite": "^6.2.4",
+        "vue": "^3.5.13",
+        "vue-drag-resize": "^2.0.3",
+        "vuedraggable": "^4.1.0"
+    },
+    "devDependencies": {
+        "@nuxt/ui": "^3.1.2",
+        "@typescript-eslint/eslint-plugin": "^8.30.1",
+        "@typescript-eslint/parser": "^8.30.1",
+        "@vueuse/core": "^13.1.0",
+        "eslint": "^9.28.0",
+        "eslint-plugin-format": "^1.0.1",
+        "eslint-plugin-vue": "^10.0.0",
+        "vue-eslint-parser": "^10.1.3",
+        "vue-tsc": "^2.2.8"
+    },
+    "peerDependencies": {
+        "pinia": "^3.0.1",
+        "vue-router": "^4.5.1"
+    }
+}

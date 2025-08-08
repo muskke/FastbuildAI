@@ -1,0 +1,30 @@
+{
+    "packageManagement": {
+        "rechargeInstructions": [
+            "1. チャージ完了後の返金や人民元への逆換算はできません",
+            "2. チャージ後の計算力には有効期限がありませんが、現金化や他人への譲渡はできません",
+            "3. 支払い完了後、反映まで少し時間がかかる場合があります。長時間反映されない場合は、電話番号を添えてお問い合わせください",
+            "4. 許可されていないサードパーティ経由でのチャージや、不正な返金操作による残高取得は禁止されており、これによる損害はユーザー自身の責任となります"
+        ],
+        "rechargeInstructionsTitle": "チャージに関する注意事項",
+        "saveSuccess": "保存に成功しました",
+        "saveFailed": "保存に失敗しました",
+        "statusTitle": "機能状態",
+        "statusDescription": "有効にするとユーザーがチャージ機能を利用できます",
+        "rechargeRulesTitle": "チャージルール",
+        "rechargeInstructionsDescription": "チャージルールを設定",
+        "tab": {
+            "rechargeValue": "チャージ数量",
+            "freeQuantity": "ボーナス数量",
+            "price": "価格",
+            "label": "ラベル",
+            "status": "状態",
+            "action": "操作",
+            "priceUnit": "円"
+        },
+        "button": {
+            "save": "保存",
+            "new": "新規プラン作成"
+        }
+    }
+}

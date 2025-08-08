@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+@source "../../../../apps/web/src/**/*.{ts,tsx,vue}";
+@source "../../../../apps/web/plugins/**/*.{ts,tsx}";
+@source "../**/**/*.{ts,tsx,vue}";
+@source "../../../designer/src/**/**/*.{ts,tsx,vue}";
+
+
+@custom-variant dark (&:is(.dark *));

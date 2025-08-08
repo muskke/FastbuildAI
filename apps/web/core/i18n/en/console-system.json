@@ -1,0 +1,100 @@
+{
+    "website": {
+        "title": "Site Settings",
+        "description": "Manage website configurations",
+        "tabs": {
+            "information": "Info",
+            "agreement": "Policies",
+            "copyright": "Copyright",
+            "statistics": "Analytics"
+        },
+        "information": {
+            "title": "Basic Info",
+            "description1": "Manage site information",
+            "name": {
+                "label": "Site Name",
+                "placeholder": "Enter site name",
+                "description": "Appears in browser tabs and system",
+                "required": "Site name required"
+            },
+            "description": {
+                "label": "Description",
+                "placeholder": "Enter description",
+                "description": "Appears in search results and social shares"
+            },
+            "icon": {
+                "label": "Favicon",
+                "description": "Recommended: 100x100px PNG/ICO/JPG",
+                "upload": "Upload",
+                "required": "Favicon required"
+            },
+            "logo": {
+                "label": "Logo",
+                "description": "Recommended: 100x100px PNG/JPG",
+                "upload": "Upload",
+                "required": "Logo required"
+            }
+        },
+        "agreement": {
+            "title": "Policies",
+            "description": "Manage privacy, terms and payment policies",
+            "privacy": "Privacy Policy",
+            "service": "Terms of Service",
+            "payment": "Payment Terms",
+            "titleLabel": "Title",
+            "contentLabel": "Content",
+            "titleRequired": "Title required",
+            "contentRequired": "Content required"
+        },
+        "copyright": {
+            "title": "Copyright",
+            "description": "Manage copyright and filing info",
+            "displayName": {
+                "label": "Record Number",
+                "placeholder": "e.g. ICP No.12345678",
+                "required": "Record number required"
+            },
+            "icon": {
+                "label": "Record Icon",
+                "upload": "Upload",
+                "required": "Icon required"
+            },
+            "url": {
+                "label": "Record URL",
+                "placeholder": "e.g. https://beian.miit.gov.cn/",
+                "required": "URL required"
+            }
+        },
+        "statistics": {
+            "title": "Analytics",
+            "description": "Configure tracking tools",
+            "appid": {
+                "label": "App ID",
+                "placeholder": "Enter analytics ID",
+                "required": "App ID required",
+                "minLength": "Minimum 5 characters",
+                "maxLength": "Maximum 50 characters"
+            },
+            "info": {
+                "title": "Supports Google Analytics, Baidu Stats, Clarity etc.",
+                "description": "Enter App ID from your analytics platform"
+            }
+        },
+        "actions": {
+            "save": "Save",
+            "saveChanges": "Save Changes",
+            "saveConfig": "Save Config",
+            "reset": "Reset",
+            "saving": "Saving...",
+            "resetting": "Resetting..."
+        },
+        "messages": {
+            "loadFailed": "Failed to load config",
+            "saveFailed": "Save failed",
+            "saveSuccess": "Saved!",
+            "resetSuccess": "Reset",
+            "resetEmpty": "Cleared",
+            "configNotLoaded": "Config not loaded"
+        }
+    }
+}

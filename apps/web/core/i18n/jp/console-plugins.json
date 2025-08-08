@@ -1,0 +1,170 @@
+{
+    "market": {
+        "title": "プラグイン市場",
+        "description": "強力な機能を提供する様々なプラグインを発見してインストール",
+        "d": "プラグイン説明",
+        "search": "プラグイン名で検索...",
+        "category": "カテゴリ選択",
+        "type": "タイプ選択",
+        "price": "価格フィルター",
+        "detail": "詳細を見る",
+        "changelog": "更新履歴",
+        "set": "プラグインがありません",
+        "sed": "条件に合うプラグインが見つかりませんでした。検索条件を調整してください",
+        "free": "無料",
+        "update_time": "最終更新日",
+        "version_info": "バージョン情報",
+        "preview_image": "プレビュー画像",
+        "author": "作者",
+        "official_team": "公式チーム",
+        "install": "プラグインをインストール",
+        "allCategories": "すべてのカテゴリ",
+        "allTypes": "すべてのタイプ",
+        "allPrices": "すべての価格",
+        "paid": "有料",
+        "messages": {
+            "fetchError": "プラグイン市場データの取得に失敗しました",
+            "installStart": "プラグインのインストールを開始: {name}"
+        }
+    },
+    "auth": {
+        "secretKey": "開発者キー",
+        "help": "開発者キーは開発プラットフォームのキーと紐づいています。盗難防止のため絶対に漏洩しないでください"
+    },
+    "develop": {
+        "title": "プラグイン開発",
+        "description": "プラグインプロジェクトの作成と管理",
+        "addTips": "新規プラグイン",
+        "editTips": "プラグイン編集",
+        "keywordInput": "プラグイン名またはキーワードで検索...",
+        "statusInput": "状態を選択",
+        "pluginInfo": "プラグイン情報",
+        "pluginKey": "プラグインキー",
+        "pluginPackName": "プラグインパッケージ名",
+        "author": "作者",
+        "version": "バージョン",
+        "workflow": {
+            "title": "プラグイン開発フロー",
+            "description": "以下の手順でプラグインの開発プロセスを完了させます",
+            "step1": {
+                "title": "新規プラグイン作成",
+                "description": "プラグインの基本情報を作成し、名称や説明などを設定します",
+                "action": "作成開始"
+            },
+            "step2": {
+                "title": "プラグイン開発",
+                "description": "プラグインコードを記述し、コア機能ロジックを実装します",
+                "action": "ドキュメントを確認"
+            },
+            "step3": {
+                "title": "プラグインのパッケージング",
+                "description": "プラグインをビルド・パッケージ化し、リリースパッケージを生成します",
+                "action": "パッケージング開始"
+            },
+            "step4": {
+                "title": "マーケットへのアップロード",
+                "description": "プラグインをマーケットに公開し、他のユーザーが利用できるようにします",
+                "action": "マーケットへ移動"
+            }
+        },
+        "status": {
+            "label": "状態",
+            "all": "すべての状態",
+            "development": "開発中",
+            "testing": "テスト中",
+            "published": "公開済み",
+            "disabled": "無効化済み"
+        },
+        "needRestart": "再起動後に有効",
+        "noNeedRestart": "再起動不要",
+        "buttons": {
+            "add": "新規プラグイン"
+        },
+        "form": {
+            "name": "プラグイン名",
+            "nameInput": "プラグイン名を入力してください",
+            "nameRequired": "プラグイン名は必須です",
+            "icon": "プラグインアイコン",
+            "addIcon": "追加",
+            "iconRecommendation": "推奨画像サイズ: 200 * 200ピクセル; 対応フォーマット: jpg/png/jpeg",
+            "key": "プラグインキー",
+            "packName": "プラグインパッケージ名",
+            "packNameInput": "プラグインパッケージ名を入力してください",
+            "packNameRequired": "プラグインパッケージ名は必須です",
+            "packNameFormat": "プラグインパッケージ名は英数字とアンダースコアのみ使用可能で、英字で始まる必要があります",
+            "packNameHelp": "プラグインの一意の識別子として使用されます。設定後は変更できません。小文字英字と数字をハイフンで連結した形式で、英字で始まりスペースを含まない形式です",
+            "keyInput": "プラグインキーを入力してください",
+            "keyRequired": "プラグインキーは必須です",
+            "keyFormat": "プラグインキーは英数字とアンダースコアのみ使用可能で、英字で始まる必要があります",
+            "keyHelp": "開発用フォルダ名として使用されます。設定後は変更できません(英数字とアンダースコアのみ使用可能、例: f1111、f11_22)",
+            "description": "プラグイン説明",
+            "descriptionInput": "プラグイン説明を入力してください",
+            "descriptionRequired": "プラグイン説明は必須です",
+            "author": "プラグイン作者",
+            "authorInput": "作者名を入力してください",
+            "authorRequired": "作者名は必須です",
+            "version": "プラグインバージョン",
+            "versionRequired": "バージョン番号は必須です",
+            "versionFormat": "バージョン番号の形式が不正です (x.x.x 形式で入力)",
+            "versionHelp": "バージョン番号を入力 (例: 1.0.0)",
+            "cover": "カバー画像",
+            "addCover": "追加",
+            "coverRecommendation": "推奨画像サイズ: 500 * 500ピクセル; 対応フォーマット: jpg/png/jpeg"
+        },
+        "messages": {
+            "fetchError": "プラグインリストの取得に失敗しました",
+            "deleteTitle": "削除確認",
+            "deleteMsg": "このプラグインを削除しますか？この操作は取り消せません",
+            "deleteSuccess": "削除に成功しました",
+            "deleteError": "削除に失敗しました",
+            "batchDeleteSuccess": "一括削除に成功しました",
+            "formReset": "フォームがリセットされました",
+            "formValidationFailed": "フォーム検証に失敗しました"
+        },
+        "pluginHome": "プラグインホーム"
+    },
+    "manage": {
+        "title": "マイプラグイン",
+        "description": "インストール済みプラグインの管理（有効化/無効化/アンインストール）",
+        "search": "プラグイン名で検索...",
+        "tabs": {
+            "all": "すべてのプラグイン",
+            "enabled": "有効中",
+            "disabled": "無効中",
+            "official": "公式プラグイン"
+        },
+        "status": {
+            "label": "プラグイン状態",
+            "all": "すべての状態",
+            "enabled": "有効中",
+            "disabled": "無効中",
+            "unknown": "不明な状態"
+        },
+        "filters": {
+            "allCategories": "すべてのカテゴリ",
+            "allTypes": "すべてのタイプ"
+        },
+        "enable": "有効化",
+        "disable": "無効化",
+        "uninstall": "アンインストール",
+        "official": "公式",
+        "version": "バージョン",
+        "size": "サイズ",
+        "installTime": "インストール日時",
+        "updateTime": "更新日時",
+        "messages": {
+            "fetchError": "プラグインリストの取得に失敗しました",
+            "enableSuccess": "プラグイン \"{name}\" を有効化しました",
+            "enableError": "有効化に失敗しました",
+            "disableSuccess": "プラグイン \"{name}\" を無効化しました",
+            "disableError": "無効化に失敗しました",
+            "uninstallSuccess": "プラグイン \"{name}\" をアンインストールしました",
+            "uninstallError": "アンインストールに失敗しました"
+        },
+        "empty": {
+            "title": "インストール済みプラグインがありません",
+            "description": "まだプラグインをインストールしていません。プラグイン市場をチェックしてみましょう",
+            "action": "プラグイン市場へ移動"
+        }
+    }
+}

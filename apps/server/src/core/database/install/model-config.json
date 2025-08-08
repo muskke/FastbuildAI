@@ -1,0 +1,2201 @@
+{
+    "total": 6,
+    "updated_at": "2025-08-07T06:57:47.238Z",
+    "configs": [
+        {
+            "provider": "deepseek",
+            "label": "深度求索",
+            "icon_url": "/static/ai/providers/deepseek.png",
+            "supported_model_types": ["llm"],
+            "models": [
+                {
+                    "model": "deepseek-chat",
+                    "label": "deepseek-chat",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/deepseek.png"
+                },
+                {
+                    "model": "deepseek-coder",
+                    "label": "deepseek-coder",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/deepseek.png"
+                },
+                {
+                    "model": "deepseek-reasoner",
+                    "label": "deepseek-reasoner",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/deepseek.png"
+                }
+            ]
+        },
+        {
+            "provider": "moonshot",
+            "label": "月之暗面",
+            "icon_url": "/static/ai/providers/moonshot.png",
+            "supported_model_types": ["llm"],
+            "models": [
+                {
+                    "model": "moonshot-v1-8k",
+                    "label": "moonshot-v1-8k",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 8192,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/moonshot.png"
+                },
+                {
+                    "model": "moonshot-v1-32k",
+                    "label": "moonshot-v1-32k",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 32000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/moonshot.png"
+                },
+                {
+                    "model": "moonshot-v1-128k",
+                    "label": "moonshot-v1-128k",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/moonshot.png"
+                },
+                {
+                    "model": "kimi-k2-0711-preview",
+                    "label": "kimi-k2-0711-preview",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/moonshot.png"
+                }
+            ]
+        },
+        {
+            "provider": "openai",
+            "label": "OpenAI",
+            "icon_url": "/static/ai/providers/openai.png",
+            "supported_model_types": ["llm", "text-embedding", "speech2text", "moderation", "tts"],
+            "models": [
+                {
+                    "model": "o1",
+                    "label": "o1",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call", "vision"],
+                    "model_properties": {
+                        "context_size": 200000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "o1-mini",
+                    "label": "o1-mini",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "o1-mini-2024-09-12",
+                    "label": "o1-mini-2024-09-12",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "o3-mini",
+                    "label": "o3-mini",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 200000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "o3-mini-2025-01-31",
+                    "label": "o3-mini-2025-01-31",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 200000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4",
+                    "label": "gpt-4",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 8192,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4o",
+                    "label": "gpt-4o",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call", "vision"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4o-2024-05-13",
+                    "label": "gpt-4o-2024-05-13",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call", "vision"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4-turbo",
+                    "label": "gpt-4-turbo",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call", "vision"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4-turbo-2024-04-09",
+                    "label": "gpt-4-turbo-2024-04-09",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call", "vision"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4-turbo-preview",
+                    "label": "gpt-4-turbo-preview",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4-32k",
+                    "label": "gpt-4-32k",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4-1106-preview",
+                    "label": "gpt-4-1106-preview",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4-0125-preview",
+                    "label": "gpt-4-0125-preview",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4-vision-preview",
+                    "label": "gpt-4-vision-preview",
+                    "model_type": "llm",
+                    "features": ["vision"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-3.5-turbo",
+                    "label": "gpt-3.5-turbo",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 16385,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-3.5-turbo-16k",
+                    "label": "gpt-3.5-turbo-16k",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 16385,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-3.5-turbo-0125",
+                    "label": "gpt-3.5-turbo-0125",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 16385,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-3.5-turbo-1106",
+                    "label": "gpt-3.5-turbo-1106",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 16385,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-3.5-turbo-instruct",
+                    "label": "gpt-3.5-turbo-instruct",
+                    "model_type": "llm",
+                    "features": [],
+                    "model_properties": {
+                        "context_size": 4096,
+                        "mode": "completion"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "chatgpt-4o-latest",
+                    "label": "chatgpt-4o-latest",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call", "vision"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4o-2024-08-06",
+                    "label": "gpt-4o-2024-08-06",
+                    "model_type": "llm",
+                    "features": [
+                        "multi-tool-call",
+                        "agent-thought",
+                        "stream-tool-call",
+                        "vision",
+                        "structured-output"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4o-2024-11-20",
+                    "label": "gpt-4o-2024-11-20",
+                    "model_type": "llm",
+                    "features": [
+                        "multi-tool-call",
+                        "agent-thought",
+                        "stream-tool-call",
+                        "vision",
+                        "structured-output"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4o-audio-preview",
+                    "label": "gpt-4o-audio-preview",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call", "audio"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4o-mini-2024-07-18",
+                    "label": "gpt-4o-mini-2024-07-18",
+                    "model_type": "llm",
+                    "features": [
+                        "multi-tool-call",
+                        "agent-thought",
+                        "stream-tool-call",
+                        "vision",
+                        "structured-output"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "gpt-4o-mini",
+                    "label": "gpt-4o-mini",
+                    "model_type": "llm",
+                    "features": [
+                        "multi-tool-call",
+                        "agent-thought",
+                        "stream-tool-call",
+                        "vision",
+                        "structured-output"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "o1-preview-2024-09-12",
+                    "label": "o1-preview-2024-09-12",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "o1-preview",
+                    "label": "o1-preview",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "text-moderation-stable",
+                    "label": "text-moderation-stable",
+                    "model_type": "moderation",
+                    "features": null,
+                    "model_properties": {
+                        "max_characters_per_chunk": 2000,
+                        "max_chunks": 32
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "text-embedding-3-large",
+                    "label": "text-embedding-3-large",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 8191,
+                        "max_chunks": 32
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "text-embedding-3-small",
+                    "label": "text-embedding-3-small",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 8191,
+                        "max_chunks": 32
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                },
+                {
+                    "model": "text-embedding-ada-002",
+                    "label": "text-embedding-ada-002",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 8097,
+                        "max_chunks": 32
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/openai.png"
+                }
+            ]
+        },
+        {
+            "provider": "siliconflow",
+            "label": "硅基流动",
+            "icon_url": "/static/ai/providers/siliconflow.png",
+            "supported_model_types": ["llm", "text-embedding", "rerank", "speech2text", "tts"],
+            "models": [
+                {
+                    "model": "Pro/moonshotai/Kimi-K2-Instruct",
+                    "label": "Pro/moonshotai/Kimi-K2-Instruct",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "moonshotai/Kimi-K2-Instruct",
+                    "label": "moonshotai/Kimi-K2-Instruct",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Pro/deepseek-ai/DeepSeek-R1",
+                    "label": "Pro/deepseek-ai/DeepSeek-R1",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 64000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Pro/deepseek-ai/DeepSeek-V3",
+                    "label": "Pro/deepseek-ai/DeepSeek-V3",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 64000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "deepseek-ai/DeepSeek-R1",
+                    "label": "deepseek-ai/DeepSeek-R1",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 64000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "deepseek-ai/DeepSeek-V3",
+                    "label": "deepseek-ai/DeepSeek-V3",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 64000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+                    "label": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+                    "label": "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+                    "label": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen3-235B-A22B",
+                    "label": "Qwen/Qwen3-235B-A22B",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+                    "label": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 256000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen3-235B-A22B-Thinking-2507",
+                    "label": "Qwen/Qwen3-235B-A22B-Thinking-2507",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 256000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+                    "label": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 256000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen3-32B",
+                    "label": "Qwen/Qwen3-32B",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen3-30B-A3B",
+                    "label": "Qwen/Qwen3-30B-A3B",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen3-14B",
+                    "label": "Qwen/Qwen3-14B",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen3-8B",
+                    "label": "Qwen/Qwen3-8B",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen2.5-72B-Instruct",
+                    "label": "Qwen/Qwen2.5-72B-Instruct",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen2.5-72B-Instruct-128K",
+                    "label": "Qwen/Qwen2.5-72B-Instruct-128K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen2.5-32B-Instruct",
+                    "label": "Qwen/Qwen2.5-32B-Instruct",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen2.5-14B-Instruct",
+                    "label": "Qwen/Qwen2.5-14B-Instruct",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen2.5-7B-Instruct",
+                    "label": "Qwen/Qwen2.5-7B-Instruct",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+                    "label": "Qwen/Qwen2.5-Coder-32B-Instruct",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+                    "label": "Qwen/Qwen2.5-Coder-7B-Instruct",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen2.5-VL-72B-Instruct",
+                    "label": "Qwen/Qwen2.5-VL-72B-Instruct",
+                    "model_type": "llm",
+                    "features": ["vision"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Qwen/Qwen2.5-VL-32B-Instruct",
+                    "label": "Qwen/Qwen2.5-VL-32B-Instruct",
+                    "model_type": "llm",
+                    "features": ["vision"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "Pro/Qwen/Qwen2.5-VL-7B-Instruct",
+                    "label": "Pro/Qwen/Qwen2.5-VL-7B-Instruct",
+                    "model_type": "llm",
+                    "features": ["vision"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "THUDM/GLM-4.1V-9B-Thinking",
+                    "label": "THUDM/glm-41v-9b-thinking",
+                    "model_type": "llm",
+                    "features": ["vision"],
+                    "model_properties": {
+                        "context_size": 16384,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "THUDM/glm-4-9b-chat",
+                    "label": "THUDM/glm-4-9b-chat",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "zai-org/GLM-4.5",
+                    "label": "zai-org/GLM-4.5",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "zai-org/GLM-4.5-Air",
+                    "label": "zai-org/GLM-4.5-Air",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "multi-tool-call", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "netease-youdao/bce-reranker-base_v1",
+                    "label": "netease-youdao/bce-reranker-base_v1",
+                    "model_type": "rerank",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 512
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "BAAI/bge-reranker-v2-m3",
+                    "label": "BAAI/bge-reranker-v2-m3",
+                    "model_type": "rerank",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 8192
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "netease-youdao/bce-embedding-base_v1",
+                    "label": "netease-youdao/bce-embedding-base_v1",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 512,
+                        "max_chunks": 1
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "BAAI/bge-large-en-v1.5",
+                    "label": "BAAI/bge-large-en-v1.5",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 512,
+                        "max_chunks": 1
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "BAAI/bge-large-zh-v1.5",
+                    "label": "BAAI/bge-large-zh-v1.5",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 512,
+                        "max_chunks": 1
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                },
+                {
+                    "model": "BAAI/bge-m3",
+                    "label": "BAAI/bge-m3",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 8192,
+                        "max_chunks": 1
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/siliconflow.png"
+                }
+            ]
+        },
+        {
+            "provider": "tongyi",
+            "label": "通义千问",
+            "icon_url": "/static/ai/providers/tongyi.png",
+            "supported_model_types": ["llm", "text-embedding", "rerank", "speech2text", "tts"],
+            "models": [
+                {
+                    "model": "qvq-max-latest",
+                    "label": "qvq-max-latest",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qvq-max",
+                    "label": "qvq-max",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwq-plus-0305",
+                    "label": "qwq-plus-0305",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwq-plus",
+                    "label": "qwq-plus",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwq-32b",
+                    "label": "qwq-32b",
+                    "model_type": "llm",
+                    "features": ["agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "deepseek-r1",
+                    "label": "DeepSeek-R1",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 64000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "deepseek-r1-distill-qwen-14b",
+                    "label": "DeepSeek-R1-Distill-Qwen-14B",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "deepseek-r1-distill-qwen-32b",
+                    "label": "DeepSeek-R1-Distill-Qwen-32B",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "deepseek-v3",
+                    "label": "DeepSeek-V3",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 64000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-vl-72b-instruct",
+                    "label": "qwen2.5-vl-72b-instruct",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-vl-7b-instruct",
+                    "label": "qwen2.5-vl-7b-instruct",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-vl-3b-instruct",
+                    "label": "qwen2.5-vl-3b-instruct",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-vl-max-latest",
+                    "label": "qwen-vl-max-latest",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-vl-max-2025-01-25",
+                    "label": "qwen-vl-max-2025-01-25",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-vl-max-0809",
+                    "label": "qwen-vl-max-0809",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 32000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-vl-max",
+                    "label": "qwen-vl-max",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 32000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-max-latest",
+                    "label": "qwen-max-latest",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-max-0125",
+                    "label": "qwen-max-0125",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-max-0919",
+                    "label": "qwen-max-0919",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-max-0428",
+                    "label": "qwen-max-0428",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 8000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-max-0403",
+                    "label": "qwen-max-0403",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 8000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-max",
+                    "label": "qwen-max",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-latest",
+                    "label": "qwen-plus-latest(Qwen3)",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-2025-04-28",
+                    "label": "qwen-plus-2025-04-28(Qwen3)",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-0125",
+                    "label": "qwen-plus-0125",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-0112",
+                    "label": "qwen-plus-0112",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-1220",
+                    "label": "qwen-plus-1220",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-1127",
+                    "label": "qwen-plus-1127",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-1125",
+                    "label": "qwen-plus-1125",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-0919",
+                    "label": "qwen-plus-0919",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-0806",
+                    "label": "qwen-plus-0806",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus-0723",
+                    "label": "qwen-plus-0723",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 32000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-plus",
+                    "label": "qwen-plus",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-vl-plus-latest",
+                    "label": "qwen-vl-plus-latest",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-vl-plus-2025-01-25",
+                    "label": "qwen-vl-plus-2025-01-25",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-vl-plus-2025-01-02",
+                    "label": "qwen-vl-plus-2025-01-02",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-vl-plus-0809",
+                    "label": "qwen-vl-plus-0809",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-vl-plus",
+                    "label": "qwen-vl-plus",
+                    "model_type": "llm",
+                    "features": ["vision", "agent-thought", "video"],
+                    "model_properties": {
+                        "context_size": 8000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-turbo-latest",
+                    "label": "qwen-turbo-latest(Qwen3)",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 1000000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-turbo-2025-04-28",
+                    "label": "qwen-turbo-2025-04-28(Qwen3)",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-turbo-0919",
+                    "label": "qwen-turbo-0919",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-turbo-0624",
+                    "label": "qwen-turbo-0624",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 8000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-turbo",
+                    "label": "qwen-turbo",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen3-235b-a22b",
+                    "label": "qwen3-235b-a22b",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen3-30b-a3b",
+                    "label": "qwen3-30b-a3b",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen3-32b",
+                    "label": "qwen3-32b",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen3-14b",
+                    "label": "qwen3-14b",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen3-8b",
+                    "label": "qwen3-8b",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen3-4b",
+                    "label": "qwen3-4b",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen3-1.7b",
+                    "label": "qwen3-1.7b",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen3-0.6b",
+                    "label": "qwen3-0.6b",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen3-coder-plus",
+                    "label": "qwen3-coder-plus",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 1048576,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-72b-instruct",
+                    "label": "qwen2.5-72b-instruct",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-32b-instruct",
+                    "label": "qwen2.5-32b-instruct",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-14b-instruct-1m",
+                    "label": "qwen2.5-14b-instruct-1m",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 1000000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-14b-instruct",
+                    "label": "qwen2.5-14b-instruct",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-7b-instruct-1m",
+                    "label": "qwen2.5-7b-instruct-1m",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 1000000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-7b-instruct",
+                    "label": "qwen2.5-7b-instruct",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-3b-instruct",
+                    "label": "qwen2.5-3b-instruct",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-1.5b-instruct",
+                    "label": "qwen2.5-1.5b-instruct",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-0.5b-instruct",
+                    "label": "qwen2.5-0.5b-instruct",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen2.5-coder-7b-instruct",
+                    "label": "qwen2.5-coder-7b-instruct",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-long",
+                    "label": "qwen-long",
+                    "model_type": "llm",
+                    "features": [
+                        "multi-tool-call",
+                        "agent-thought",
+                        "stream-tool-call",
+                        "document"
+                    ],
+                    "model_properties": {
+                        "context_size": 10000000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-math-plus-latest",
+                    "label": "qwen-math-plus-latest",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 4096,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-math-plus-0919",
+                    "label": "qwen-math-plus-0919",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 4096,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-math-plus-0816",
+                    "label": "qwen-math-plus-0816",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 4096,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-math-plus",
+                    "label": "qwen-math-plus",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 4096,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-math-turbo-latest",
+                    "label": "qwen-math-turbo-latest",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 4096,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-math-turbo-0919",
+                    "label": "qwen-math-turbo-0919",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 4096,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-math-turbo",
+                    "label": "qwen-math-turbo",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 4096,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-coder-turbo-latest",
+                    "label": "qwen-coder-turbo-latest",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-coder-turbo-0919",
+                    "label": "qwen-coder-turbo-0919",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "qwen-coder-turbo",
+                    "label": "qwen-coder-turbo",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "farui-plus",
+                    "label": "farui-plus",
+                    "model_type": "llm",
+                    "features": ["multi-tool-call", "agent-thought", "stream-tool-call"],
+                    "model_properties": {
+                        "context_size": 12288,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "gte-rerank",
+                    "label": "gte-rerank",
+                    "model_type": "rerank",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 4000
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "gte-rerank-v2",
+                    "label": "gte-rerank-v2",
+                    "model_type": "rerank",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 4000
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "text-embedding-v1",
+                    "label": "text-embedding-v1",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 2048,
+                        "max_chunks": 25
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "text-embedding-v2",
+                    "label": "text-embedding-v2",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 2048,
+                        "max_chunks": 25
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "text-embedding-v3",
+                    "label": "text-embedding-v3",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 8192,
+                        "max_chunks": 10
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                },
+                {
+                    "model": "text-embedding-v4",
+                    "label": "text-embedding-v4",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 8192,
+                        "max_chunks": 10
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/tongyi.png"
+                }
+            ]
+        },
+        {
+            "provider": "wenxin",
+            "label": "文心一言",
+            "icon_url": "/static/ai/providers/wenxin.png",
+            "supported_model_types": ["llm", "text-embedding", "rerank"],
+            "models": [
+                {
+                    "model": "ernie-3.5-128k",
+                    "label": "Ernie-3.5-128K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-3.5-8k",
+                    "label": "Ernie-3.5-8K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 8192,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-4.0-8k-latest",
+                    "label": "Ernie-4.0-8K-Latest",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 8192,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-4.0-8k",
+                    "label": "Ernie-4.0-8K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 8192,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-4.0-turbo-128k",
+                    "label": "Ernie-4.0-turbo-128K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-4.0-turbo-8k-preview",
+                    "label": "Ernie-4.0-turbo-8k-preview",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 8192,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-4.0-turbo-8k",
+                    "label": "Ernie-4.0-turbo-8K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 8192,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-4.5-turbo-128k",
+                    "label": "Ernie-4.5-turbo-128K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 131072,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-lite-pro-128k",
+                    "label": "Ernie-Lite-Pro-128K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-speed-128k",
+                    "label": "ERNIE-Speed-128K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-speed-8k",
+                    "label": "ERNIE-Speed-8K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 8192,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-speed-pro-128k",
+                    "label": "Ernie-speed-pro-128k",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "ernie-x1-turbo-32k",
+                    "label": "Ernie-X1-Turbo-32K",
+                    "model_type": "llm",
+                    "features": ["agent-thought"],
+                    "model_properties": {
+                        "context_size": 32768,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "bce-reranker-base",
+                    "label": "bce-reranker-base",
+                    "model_type": "rerank",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 4096
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "bge-large-en",
+                    "label": "bge-large-en",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 512,
+                        "max_chunks": 16
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "bge-large-zh",
+                    "label": "bge-large-zh",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 512,
+                        "max_chunks": 16
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "embedding-v1",
+                    "label": "embedding-v1",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 384,
+                        "max_chunks": 16
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                },
+                {
+                    "model": "tao-8k",
+                    "label": "tao-8k",
+                    "model_type": "text-embedding",
+                    "features": null,
+                    "model_properties": {
+                        "context_size": 8192,
+                        "max_chunks": 1
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/wenxin.png"
+                }
+            ]
+        }
+    ]
+}

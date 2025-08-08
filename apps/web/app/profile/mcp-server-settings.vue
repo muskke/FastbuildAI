@@ -1,0 +1,416 @@
+<script setup lang="ts">
+import { ProPaginaction, useMessage, useModal, usePaging } from "@fastbuildai/ui";
+import { onMounted, reactive, ref } from "vue";
+
+import type { McpServerInfo } from "@/models/web-mcp-server";
+import {
+    apiAddSystemMcpServer,
+    apiDeleteMcpServer,
+    apiGetMcpServerList,
+    apiGetSystemMcpServerList,
+    apiRemoveSystemMcpServer,
+    apiUpdateMcpServerVisible,
+} from "@/services/web/mcp-server";
+
+const McpServerEdit = defineAsyncComponent(() => import("./mcp-server-edit.vue"));
+const McpServerCard = defineAsyncComponent(() => import("./components/web-mcp-card.vue"));
+const McpDetail = defineAsyncComponent(() => import("./components/mcp-server-detail.vue"));
+
+// 路由实例
+const toast = useMessage();
+const { t } = useI18n();
+
+// 列表查询参数（匹配后端支持的参数）
+const searchForm = reactive({
+    name: "",
+    type: "system",
+});
+
+const systemSearchForm = reactive({
+    name: "",
+});
+
+const isJsonImport = ref(false);
+
+// 选中的供应商
+const selectMcpServer = ref<Set<string>>(new Set());
+
+// 弹窗状态
+const showMcpServerModal = ref(false);
+const editingMcpServerId = ref("");
+const isView = ref(false);
+const isSystemMcp = ref(false);
+
+// 下拉加载
+const loading = ref(false);
+const hasMore = ref(true);
+const systemList = ref<McpServerInfo[]>([]);
+const page = ref(1);
+
+const tab = ref("all");
+
+// 加载更多 MCP 服务数据
+async function loadMore() {
+    if (loading.value) return;
+
+    loading.value = true;
+    try {
+        if (tab.value === "all") {
+            const newData = await apiGetSystemMcpServerList({
+                page: page.value,
+                name: systemSearchForm.name,
+            });
+            if (newData.items.length === 0) {
+                hasMore.value = false;
+            } else {
+                systemList.value.push(...newData.items);
+                page.value++;
+            }
+        } else if (tab.value === "not-added") {
+            const newData = await apiGetSystemMcpServerList({
+                page: page.value,
+                isAssociated: false,
+                name: systemSearchForm.name,
+            });
+            if (newData.items.length === 0) {
+                hasMore.value = false;
+            } else {
+                systemList.value.push(...newData.items);
+                page.value++;
+            }
+        } else if (tab.value === "added") {
+            const newData = await apiGetSystemMcpServerList({
+                page: page.value,
+                isAssociated: true,
+                name: systemSearchForm.name,
+            });
+            if (newData.items.length === 0) {
+                hasMore.value = false;
+            } else {
+                systemList.value.push(...newData.items);
+                page.value++;
+            }
+        }
+    } catch (error) {
+        console.error("加载数据失败", error);
+    } finally {
+        loading.value = false;
+    }
+}
+
+const { paging, getLists } = usePaging({
+    fetchFun: apiGetMcpServerList,
+    params: searchForm,
+});
+
+/**
+ * 处理 MCP 服务选择
+ */
+const handleMcpServerSelect = (provider: McpServerInfo, selected: boolean | "indeterminate") => {
+    if (typeof selected === "boolean") {
+        const providerId = provider.id as string;
+        if (selected) {
+            selectMcpServer.value.add(providerId);
+        } else {
+            selectMcpServer.value.delete(providerId);
+        }
+    }
+};
+
+/** 删除数据 */
+const handleDelete = async (id: string) => {
+    try {
+        await useModal({
+            title: "删除MCP服务",
+            description: "确定要删除选中的MCP服务吗？此操作不可恢复。",
+            color: "error",
+        });
+
+        await apiDeleteMcpServer(id);
+        toast.success("删除成功");
+
+        // 清空选中状态
+        selectMcpServer.value.clear();
+
+        // 刷新列表
+        getLists();
+    } catch (error) {
+        console.error("Delete failed:", error);
+        toast.error("删除失败");
+    }
+};
+
+/**
+ * 处理删除 MCP 服务
+ */
+const handleDeleteProvider = (provider: McpServerInfo) => {
+    if (provider.id) {
+        handleDelete(provider.id);
+    }
+};
+
+// 移除系统 MCP 服务
+const handleRemoveSystem = async (id: string) => {
+    try {
+        await useModal({
+            title: "移除MCP服务",
+            description: "确定要移除选中的MCP服务吗？",
+            color: "error",
+        });
+        await apiRemoveSystemMcpServer(id);
+        toast.success("移除成功");
+
+        // 清空选中状态
+        selectMcpServer.value.clear();
+
+        // 刷新列表
+        getLists();
+        reload();
+    } catch (error) {
+        console.error("Remove failed:", error);
+        toast.error("移除失败");
+    }
+};
+
+/**
+ * 查看模型
+ */
+const handleViewModels = (mcpServerId: string) => {
+    editingMcpServerId.value = mcpServerId;
+    isView.value = true;
+};
+
+/**
+ * 新增 MCP 服务
+ */
+const handleAddMcpServer = () => {
+    editingMcpServerId.value = "";
+    showMcpServerModal.value = true;
+};
+
+/**
+ * JSON 导入
+ */
+const handleImportMcpServer = () => {
+    showMcpServerModal.value = true;
+    editingMcpServerId.value = "";
+    isJsonImport.value = true;
+};
+
+/**
+ * 编辑供应商
+ */
+const handleEditProvider = (provider: McpServerInfo) => {
+    editingMcpServerId.value = provider.id;
+    showMcpServerModal.value = true;
+};
+
+/**
+ * 弹窗操作成功回调
+ */
+const handleModalSuccess = () => {
+    getLists();
+};
+
+/**
+ * 处理显示/隐藏MCP服务
+ */
+const handleToggleVisible = async (providerId: string, isVisible: boolean) => {
+    try {
+        await apiUpdateMcpServerVisible(providerId, { status: isVisible });
+        toast.success(
+            isVisible
+                ? t("console-ai-mcp-server.form.isActiveDisabled")
+                : t("console-ai-mcp-server.form.isActiveEnabled"),
+        );
+
+        // 刷新列表
+        getLists();
+    } catch (error) {
+        console.error("Toggle provider active failed:", error);
+        toast.error("操作失败，请稍后重试");
+    }
+};
+
+const handleSearchChange = useDebounceFn(() => {
+    page.value = 1;
+    systemList.value = [];
+    getLists();
+}, 500);
+
+const handleTabChange = (value: string) => {
+    tab.value = value;
+    page.value = 1;
+    systemList.value = [];
+    loadMore();
+};
+
+const reload = () => {
+    page.value = 1;
+    systemList.value = [];
+    loadMore();
+};
+definePageMeta({
+    layout: "setting",
+    title: "menu.mcpServerSetting",
+    inSystem: true,
+    inLinkSelector: true,
+});
+
+// 初始化
+onMounted(() => getLists());
+</script>
+
+<template>
+    <div class="provider-list-container px-8">
+        <div
+            class="bg-background sticky top-0 z-50 flex flex-wrap items-center justify-between gap-4 pb-4"
+        >
+            <UTabs
+                v-model="searchForm.type"
+                color="primary"
+                :content="false"
+                :items="[
+                    {
+                        label: t('console-ai-mcp-server.search.system'),
+                        value: 'system',
+                    },
+                    {
+                        label: t('console-ai-mcp-server.userMcp'),
+                        value: 'user',
+                    },
+                ]"
+                @update:modelValue="getLists"
+            />
+            <!-- 搜索区域 -->
+            <div>
+                <UInput
+                    v-model="searchForm.name"
+                    class="w-50"
+                    :placeholder="t('console-ai-mcp-server.search.placeholder')"
+                    @change="getLists"
+                    @update:model-value="handleSearchChange"
+                />
+            </div>
+        </div>
+
+        <!-- 卡片网格 -->
+        <template v-if="!paging.loading && paging.items.length > 0">
+            <div class="grid grid-cols-1 gap-6 py-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+                <div v-if="searchForm.type === 'user'" class="rounded-lg border border-dashed p-4">
+                    <div class="flex flex-col">
+                        <h3 class="text-muted-foreground pb-2 pl-2 text-xs font-bold">
+                            {{ t("console-ai-mcp-server.addTitle") }}
+                        </h3>
+                        <div
+                            class="text-primary hover:bg-primary-50 flex cursor-pointer items-center rounded-lg px-2 py-2 text-sm"
+                            @click="handleAddMcpServer"
+                        >
+                            <UIcon name="lucide:file-plus-2" class="mr-2 size-4" />
+                            <span>{{ t("console-ai-mcp-server.quickCreateTitle") }}</span>
+                        </div>
+                        <div
+                            class="text-primary hover:bg-primary-50 flex cursor-pointer items-center rounded-lg px-2 py-2 text-sm"
+                            @click="handleImportMcpServer"
+                        >
+                            <UIcon name="lucide:file-json-2" class="mr-2 size-4" />
+                            <span>{{ t("console-ai-mcp-server.importTitle") }}</span>
+                        </div>
+                    </div>
+                </div>
+                <McpServerCard
+                    v-for="mcpServer in paging.items"
+                    :key="mcpServer.id"
+                    :mcpServer="mcpServer"
+                    :selected="selectMcpServer.has(mcpServer.id as string)"
+                    @select="handleMcpServerSelect"
+                    @delete="handleDeleteProvider"
+                    @edit="handleEditProvider"
+                    @view-models="handleViewModels"
+                    @remove-system="handleRemoveSystem"
+                    @toggle-visible="handleToggleVisible"
+                />
+            </div>
+        </template>
+
+        <!-- 加载状态 -->
+        <div v-else-if="paging.loading" class="flex h-[50vh] items-center justify-center">
+            <div class="flex items-center gap-3">
+                <UIcon name="i-lucide-loader-2" class="text-primary-500 h-6 w-6 animate-spin" />
+                <span class="text-accent-foreground">{{ $t("console-common.loading") }}</span>
+            </div>
+        </div>
+
+        <!-- 空状态 -->
+        <div v-else class="flex h-[50vh] flex-col items-center justify-center">
+            <UIcon name="i-lucide-building" class="mb-4 h-16 w-16 text-gray-400" />
+            <h3 class="text-secondary-foreground mb-2 text-lg font-medium">
+                {{ $t("console-ai-mcp-server.emptyState") }}
+            </h3>
+            <p class="text-accent-foreground">
+                {{ $t("console-ai-mcp-server.emptyStateDescription") }}
+            </p>
+            <UButtonGroup orientation="horizontal" class="mt-4">
+                <UButton
+                    v-if="searchForm.type !== 'system'"
+                    icon="i-heroicons-plus"
+                    color="primary"
+                    @click="handleAddMcpServer"
+                >
+                    {{ $t("console-ai-mcp-server.quickCreateTitle") }}
+                </UButton>
+                <UButton
+                    v-if="searchForm.type !== 'system'"
+                    icon="lucide:file-json-2"
+                    color="primary"
+                    variant="subtle"
+                    @click="handleImportMcpServer"
+                >
+                    {{ $t("console-ai-mcp-server.importTitle") }}
+                </UButton>
+            </UButtonGroup>
+        </div>
+
+        <!-- 分页 -->
+        <div
+            v-if="paging.total > 0"
+            class="bg-background sticky bottom-0 z-50 flex items-center justify-between gap-3 py-4"
+        >
+            <div class="text-muted text-sm">
+                {{ selectMcpServer.size }} {{ $t("console-common.selected") }}
+            </div>
+
+            <div class="flex items-center gap-1.5">
+                <ProPaginaction
+                    v-model:page="paging.page"
+                    v-model:size="paging.pageSize"
+                    :total="paging.total"
+                    @change="getLists"
+                />
+            </div>
+        </div>
+
+        <!-- MCP服务器弹窗 -->
+        <McpServerEdit
+            v-if="showMcpServerModal"
+            :id="editingMcpServerId"
+            :is-view="isView"
+            :is-json-import="isJsonImport"
+            :is-system-mcp="isSystemMcp"
+            @close="
+                (refresh) => {
+                    showMcpServerModal = false;
+                    isJsonImport = false;
+                    if (refresh) handleModalSuccess();
+                }
+            "
+        />
+        <McpDetail
+            v-if="isView"
+            :id="editingMcpServerId"
+            :is-view="isView"
+            :is-system-mcp="isSystemMcp"
+            @close="isView = false"
+        />
+    </div>
+</template>

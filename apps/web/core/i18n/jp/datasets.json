@@ -1,0 +1,332 @@
+{
+    "common": {
+        "name": "名称",
+        "description": "説明",
+        "retrievalMode": "検索モード",
+        "documentCount": "ドキュメント数",
+        "chunkCount": "セグメント数",
+        "enabled": "有効",
+        "disabled": "無効"
+    },
+    "menu": {
+        "documents": "ドキュメント",
+        "retrieval": "検索テスト",
+        "members": "チームメンバー",
+        "settings": "設定",
+        "segments": "セグメント",
+        "relatedApplications": "関連アプリケーション"
+    },
+    "permission": {
+        "title": "アクセス権限がありません",
+        "description": "このページを表示する権限がありません。ナレッジベースの所有者に連絡するか、ホームページに戻ってください。",
+        "back": "ホームに戻る"
+    },
+    "dataset": {
+        "title": "ナレッジベース",
+        "description": "ナレッジベースは、ドキュメントを保存・管理するためのコアコンポーネントです。",
+        "searchPlaceholder": "ナレッジベース名または説明を検索",
+        "table": {
+            "progress": "処理進捗",
+            "storageSize": "ストレージサイズ"
+        },
+        "create": {
+            "title": "ナレッジベース作成",
+            "desc": "テキストデータをインポートするか、ファイルをアップロードしてナレッジベースを作成"
+        },
+        "allDatasets": "すべてのナレッジベース",
+        "retry": {
+            "title": "ベクトル化を再試行",
+            "desc": "このナレッジベース内のすべての失敗したドキュメントのベクトル化を再試行しますか？",
+            "success": "再試行タスクが送信されました。進捗を確認するには後で更新してください",
+            "failed": "再試行に失敗しました"
+        },
+        "retrievalMode": "ナレッジベースコンテンツ検索モード",
+        "retrievalModeDesc": "テキストベクトルの進捗と状態表示"
+    },
+    "list": {
+        "title": "ナレッジベース一覧",
+        "searchPlaceholder": "ナレッジベース名または説明を検索",
+        "table": {
+            "progress": "処理進捗"
+        },
+        "delete": {
+            "title": "ナレッジベース削除",
+            "desc": "選択したナレッジベースを削除しますか？削除すると、すべてのドキュメントとセグメントデータは復元できません。",
+            "success": "削除に成功しました",
+            "failed": "削除に失敗しました"
+        },
+        "viewDocuments": "ドキュメントを表示"
+    },
+    "documents": {
+        "title": "ナレッジベースドキュメント",
+        "description": "ナレッジベースドキュメントは、ナレッジベースのコアコンポーネントです。",
+        "searchPlaceholder": "ドキュメントを検索...",
+        "addFile": "ファイルを追加",
+        "error": "一部のセグメント処理に失敗",
+        "table": {
+            "fileName": "ファイル名",
+            "fileSize": "ファイルサイズ",
+            "fileType": "ファイルタイプ",
+            "status": "処理ステータス",
+            "progress": "処理進捗",
+            "characterCount": "文字数",
+            "chunkCount": "セグメント数",
+            "createdAt": "アップロード日時"
+        },
+        "delete": {
+            "title": "ドキュメント削除",
+            "desc": "このドキュメントを削除しますか？",
+            "success": "削除に成功しました",
+            "failed": "削除に失敗しました"
+        },
+        "renameModal": {
+            "title": "ドキュメント名変更",
+            "desc": "新しいファイル名を入力してください",
+            "placeholder": "ファイル名を入力",
+            "success": "名前変更に成功しました",
+            "failed": "名前変更に失敗しました"
+        },
+        "viewSegments": "セグメントを表示",
+        "enable": {
+            "title": "ドキュメントを有効化",
+            "desc": "このドキュメントを有効にしますか？",
+            "success": "ドキュメントが有効になりました",
+            "failed": "有効化に失敗しました"
+        },
+        "disable": {
+            "title": "ドキュメントを無効化",
+            "desc": "このドキュメントを無効にしますか？",
+            "success": "ドキュメントが無効になりました",
+            "failed": "無効化に失敗しました"
+        },
+        "retry": {
+            "title": "ドキュメントベクトル化を再試行",
+            "desc": "このドキュメント内のすべての失敗したセグメントのベクトル化を再試行しますか？",
+            "success": "再試行タスクが送信されました。進捗を確認するには後で更新してください",
+            "failed": "再試行に失敗しました"
+        },
+        "retryDocumentDescription": "このドキュメント内のすべての失敗したセグメントのベクトル化を再試行しますか？",
+        "retryDocumentSuccess": "再試行タスクが送信されました。進捗を確認するには後で更新してください",
+        "retryDocumentFailed": "再試行に失敗しました"
+    },
+    "segments": {
+        "title": "ナレッジベースドキュメントセグメント",
+        "searchPlaceholder": "セグメント内容を検索...",
+        "table": {
+            "chunkIndex": "セグメント番号",
+            "contentLength": "内容の長さ"
+        },
+        "delete": {
+            "title": "セグメント削除",
+            "desc": "このセグメントを削除しますか？"
+        },
+        "batchDelete": {
+            "title": "セグメント一括削除",
+            "desc": "これらのセグメントを削除しますか？",
+            "confirmText": "一括削除",
+            "confirmDesc": "これらのセグメントを削除しますか？この操作は取り消せません。",
+            "confirmDesc2": "このセグメントを削除しますか？削除後は復元できません。",
+            "success": "一括削除に成功しました",
+            "failed": "一括削除に失敗しました"
+        },
+        "createSegmentModal": {
+            "tip": "まずドキュメントを選択してください",
+            "title": "セグメント作成",
+            "desc": "セグメント内容を入力",
+            "placeholder": "セグメント内容を入力",
+            "success": "セグメント作成に成功しました",
+            "failed": "セグメント作成に失敗しました"
+        },
+        "editSegmentModal": {
+            "title": "セグメント編集",
+            "desc": "セグメント内容を入力",
+            "placeholder": "セグメント内容を入力",
+            "success": "セグメント編集に成功しました",
+            "failed": "セグメント編集に失敗しました"
+        },
+        "chunkDetail": "段落詳細",
+        "sourceFile": "ソースファイル",
+        "createSegment": "セグメントを追加",
+        "rename": "名前変更",
+        "segment": "セグメント",
+        "expandAll": "すべて展開",
+        "collapseAll": "すべて折りたたむ",
+        "noData": "セグメントデータがありません"
+    },
+    "dataRecord": {
+        "title": "データレコード",
+        "desc": "すべてのナレッジベースのデータレコード",
+        "searchPlaceholder": "データレコードを検索"
+    },
+    "retrieval": {
+        "retrievalConfig": "検索設定",
+        "fullText": "全文検索",
+        "fullTextDesc": "ドキュメント内のすべての単語をインデックス化し、ユーザーが任意の単語をクエリできるようにし、それらの単語を含むテキストスニペットを返します",
+        "vector": "ベクトル検索",
+        "vectorDesc": "クエリとドキュメントコンテンツのベクトル表現を生成し、類似度を計算して関連ドキュメントスニペットを検索",
+        "hybrid": "ハイブリッド検索",
+        "hybridDesc": "全文検索とベクトル検索を同時に実行し、再ランキング戦略を使用して両方の利点を兼ね備えます",
+        "rerank": "Rerankモデル",
+        "rerankDesc": "再ランキングモデルは、セマンティック類似度に基づいて検索結果の順序を最適化します",
+        "topKPlaceholder": "Top Kを入力",
+        "scoreThreshold": "スコア閾値",
+        "scoreThresholdPlaceholder": "類似度閾値を入力",
+        "weightSetting": "重み設定",
+        "weightSettingDesc": "セマンティックとキーワードの重みを調整して、ランキングの傾向を制御",
+        "semantic": "セマンティック",
+        "keyword": "キーワード",
+        "semanticWeight": "セマンティック重み",
+        "keywordWeight": "キーワード重み"
+    },
+    "members": {
+        "title": "チームメンバー管理",
+        "description": "ナレッジベースのチームメンバーを管理し、ロール権限を割り当て、アクセス範囲を制御します。",
+        "searchPlaceholder": "ユーザー名を検索...",
+        "table": {
+            "user": "メンバー",
+            "role": "ロール",
+            "joinedAt": "参加日",
+            "lastActiveAt": "最終アクティブ"
+        },
+        "role": {
+            "owner": "所有者",
+            "manager": "管理者",
+            "editor": "編集者",
+            "viewer": "閲覧者"
+        },
+        "self": "自分",
+        "note": "備考",
+        "transferOwnership": "所有権を移転",
+        "updateRole": "ロールを更新",
+        "removeMember": "メンバーを削除",
+        "exit": "退出",
+        "roleTip": "のロール",
+        "newRole": "新しいロール",
+        "updateRoleModal": "メンバーロールを更新",
+        "updateRoleSuccess": "ロール更新に成功しました",
+        "updateRoleFailed": "ロール更新に失敗しました",
+        "confirmExit": "退出を確認",
+        "confirmRemove": "削除を確認",
+        "exitSuccess": "退出に成功しました",
+        "removeSuccess": "削除に成功しました",
+        "removeFailed": "削除に失敗しました",
+        "confirmExitContent": "このナレッジベースから退出しますか？退出後はこのナレッジベースにアクセスできなくなります。",
+        "confirmRemoveContent": "このチームメンバーを削除しますか？削除後、このユーザーはこのナレッジベースにアクセスできなくなります。",
+        "confirmTransferContent": "ナレッジベースの所有権を ",
+        "confirmTransferSuccess": "所有権移転に成功しました",
+        "confirmTransferFailed": "所有権移転に失敗しました",
+        "confirmTransferContent2": "移転後、所有者権限を失います。",
+        "addMember": "メンバーを追加",
+        "confirmTransfer": "所有権を移転"
+    },
+    "test": {
+        "title": "検索テスト",
+        "description": "指定されたクエリテキストに基づいてナレッジの検索効果をテストします。",
+        "retrievalConfig": "検索設定",
+        "placeholder": "クエリ内容を入力",
+        "success": "検索テストが完了しました",
+        "failed": "検索テストに失敗しました",
+        "test": "テスト",
+        "record": "記録",
+        "recallParagraph": "個の検索段落",
+        "recallResult": "検索結果",
+        "tip": "クエリ内容を入力して検索テストを実行してください"
+    },
+    "settings": {
+        "name": "ナレッジベース設定",
+        "description": "ナレッジベース名、説明、ベクトルモデル、検索設定などを設定できます。",
+        "nameInput": "ナレッジベース名を入力",
+        "descriptionInput": "ナレッジベースの説明を入力",
+        "retrievalMethod": "検索設定"
+    },
+    "create": {
+        "step": {
+            "one": "データソースを選択",
+            "two": "テキストセグメンテーションとクリーニング",
+            "three": "処理して完了"
+        },
+        "file": {
+            "unsupportedFileType": "サポートされていないファイルタイプ: {ext}",
+            "fileTooLarge": "ファイルが大きすぎます。最大 {maxSize}MB までサポート",
+            "uploadFailed": "アップロードに失敗しました",
+            "dragOrSelectFiles": "ファイルまたはフォルダをここにドラッグするか、",
+            "chooseFile": "ファイルを選択",
+            "supportedTypes": "{types} をサポート",
+            "fileSizeLimit": "各ファイルは {maxSize}MB まで"
+        },
+        "segmentPreview": {
+            "title": "プレビュー",
+            "clickLeftPreviewBlock": "左側の「プレビューブロック」ボタンをクリックしてプレビュー効果を確認"
+        },
+        "createEmpty": "空のナレッジベースを作成",
+        "nextStep": "次へ",
+        "previousStep": "前へ",
+        "saveAndCreate": "保存して作成",
+        "goToDetail": "詳細に移動",
+        "fileList": "ファイルリスト",
+        "uploadTextFile": "テキストファイルをアップロード",
+        "comingSoon": "近日公開",
+        "selectDataSource": "データソースを選択",
+        "selectDataSourceDesc": "さまざまなデータソースを選択してナレッジベースを作成できます。既存のテキストのインポート、Q&Aペアのインポート、ウェブページの解析がサポートされています。",
+        "name": "ナレッジベース名",
+        "description": "ナレッジベースの説明",
+        "basicInfo": "基本情報",
+        "basicInfoDesc": "ナレッジベース名と説明を設定できます。これにより、ナレッジベースを効果的に管理できます。",
+        "dataSource": "データソース",
+        "dataSources": {
+            "text": {
+                "title": "既存テキストをインポート",
+                "description": "ローカルコンピュータからファイルをアップロードしてテキストをトレーニング"
+            },
+            "chat": {
+                "title": "Q&Aペアをインポート",
+                "description": "Q&Aペアのインポートをサポートし、Q&Aペアをトレーニング"
+            },
+            "web": {
+                "title": "ウェブページ解析",
+                "description": "ウェブページコンテンツの解析をサポートし、ウェブページコンテンツをトレーニング"
+            }
+        },
+        "segment": {
+            "general": "一般",
+            "generalDesc": "システムは特定のセグメント識別子に基づいてテキストをセグメント化します",
+            "hierarchical": "親子セグメント",
+            "hierarchicalDesc": "親子モードを使用する場合、子ブロックは検索に使用され、親ブロックはコンテキストとして使用されます",
+            "segmentIdentifier": "セグメント識別子",
+            "segmentIdentifierDesc": "\\n\\n を入力すると2つの改行を表し、プレビュー時に実際の改行に自動変換されます",
+            "maxSegmentLength": "セグメントの最大長",
+            "maxSegmentLengthDesc": "セグメントの最大長",
+            "segmentOverlap": "セグメントの重複長",
+            "segmentOverlapDesc": "セグメントの重複長",
+            "preprocessingRules": "テキスト前処理ルール",
+            "replaceConsecutiveWhitespace": "連続する空白、改行、タブを置換",
+            "removeUrlsAndEmails": "URLとメールアドレスを削除",
+            "removeUrlsAndEmailsDesc": "URLとメールアドレスを削除",
+            "parentContext": "親ブロックをコンテキストとして使用",
+            "paragraph": "段落",
+            "parentContextDesc": "このモードは、区切り文字と最大長に基づいてテキストをセグメント化し、分割テキストを検索の親ブロックセグメント識別子として使用します",
+            "preview": "プレビューブロック",
+            "fullText": "全文",
+            "fullTextDesc": "ドキュメント全体を親ブロックテキストとして直接検索。パフォーマンス上の理由から、10,000トークンを超えるテキストは自動的に切り捨てられます。",
+            "subSegmentation": "子ブロックを検索に使用"
+        },
+        "stepThree": {
+            "dataTitle": "🎉ドキュメントの追加に成功",
+            "dataDesc": "ドキュメントがナレッジベースに正常に追加されました。ナレッジベースのドキュメント管理ページで確認できます",
+            "createTitle": "🎉作成に成功",
+            "createDesc": "ナレッジベースが正常に作成されました。ナレッジベースのドキュメント管理ページで確認できます",
+            "documentEmbedding": "ドキュメントの埋め込み中",
+            "documentEmbeddingSuccess": "ドキュメントの埋め込みが完了",
+            "no": "なし",
+            "default": "デフォルト設定",
+            "returnCount": "返却数",
+            "segmentMode": "セグメントモード",
+            "goToDetail": "詳細に移動"
+        },
+        "stepTwo": {
+            "segmentation": "セグメント設定",
+            "embeddingModel": "埋め込みモデル",
+            "retrievalSettings": "検索設定"
+        }
+    }
+}

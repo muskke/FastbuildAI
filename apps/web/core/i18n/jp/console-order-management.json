@@ -1,0 +1,49 @@
+{
+    "recharge": {
+        "pageTitle": "チャージ注文",
+        "pageDescription": "チャージ注文詳細",
+        "rechargeCount": "チャージ注文件数",
+        "refundCount": "返金注文件数",
+        "netIncome": "純利益",
+        "totalRechargeAmount": "累計チャージ金額",
+        "totalRefundAmount": "累計返金金額",
+        "list": {
+            "pageTitle": "チャージ注文リスト",
+            "orderNo": "注文番号",
+            "user": "ユーザー",
+            "rechargeQuantity": "チャージ数量",
+            "freeQuantity": "ボーナス数量",
+            "quantityReceived": "到着数量",
+            "paidInAmount": "実支払額",
+            "paymentMethod": "支払方法",
+            "paymentStatus": "支払状況",
+            "createdAt": "注文日時",
+            "actions": "操作",
+            "refund": "返金",
+            "viewDetails": "詳細を表示",
+            "searchOrderNo": "注文番号を検索",
+            "searchUser": "ユーザーID/ニックネーム/電話番号を検索",
+            "wechatPay": "WeChat Pay",
+            "alipayPay": "Alipay",
+            "paid": "支払済み",
+            "unpaid": "未支払い",
+            "refunded": "返金済み",
+            "notRefunded": "未返金",
+            "refundStatus": "返金状況"
+        },
+        "detail": {
+            "pageTitle": "注文詳細",
+            "orderSource": "注文元",
+            "userInfo": "ユーザー情報",
+            "orderType": "注文タイプ",
+            "paymentStatus": "支払状況",
+            "paymentMethod": "支払方法",
+            "createdAt": "注文日時",
+            "paidAt": "支払日時",
+            "refundStatus": "返金状況",
+            "serialNumber": "取引番号",
+            "close": "閉じる",
+            "refund": "返金申請"
+        }
+    }
+}
