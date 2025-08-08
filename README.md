@@ -26,6 +26,7 @@
 based on TypeScript. Helps developers quickly build and deploy practical AI applications.
 
 
-## License
-
-FastbuildAI is [MIT licensed](https://github.com/FastbuildAI/FastbuildAI/blob/main/LICENSE).
+## Get Started Quickly
+```
+cp .env.production.local.example .env.production.local && cd docker &&  docker-compose -p fastbuildai  --env-file ../.env.production.local up -d
+```
