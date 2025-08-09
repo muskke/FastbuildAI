@@ -1,9 +1,9 @@
 import { useRouter } from "vue-router";
 
 import { ROUTES } from "@/common/constants/routes.constant";
-import { buildRoutes } from "@/common/utils/menu-helper";
 import { usePermissionStore } from "@/common/stores/permission";
 import { useUserStore } from "@/common/stores/user";
+import { buildRoutes } from "@/common/utils/menu-helper";
 
 const modules = import.meta.glob(["@/app/console/**/*.vue", "@plugins/**/app/console/**/*.vue"]);
 
@@ -22,7 +22,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         to.meta.auth = true;
     }
 
-    if (!userStore.isLogin && to.meta.auth !== false) {
+    if (userStore.isLogin && !userStore.userInfo) {
+        await userStore.getUser();
+    } else if (!userStore.isLogin && to.meta.auth !== false) {
         setPageLayout("full-screen");
         return `${ROUTES.LOGIN}?redirect=${to.fullPath}`;
     }
