@@ -153,3 +153,19 @@ export function apiPostResetPassword(params: {
 }): Promise<{ data: string }> {
     return useWebPost("/user/resetPassword", params);
 }
+
+/**
+ * 修改用户密码
+ * @param params 修改密码参数
+ * @returns 修改结果
+ */
+export function apiChangePassword(params: {
+    /** 旧密码 */
+    oldPassword: string;
+    /** 新密码 */
+    newPassword: string;
+    /** 确认密码 */
+    confirmPassword: string;
+}): Promise<{ message?: string } | null> {
+    return useWebPost("/auth/change-password", params);
+}

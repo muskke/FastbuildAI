@@ -35,7 +35,7 @@ const isChanged = computed(() => {
 
 watch(
     () => isOpen.value,
-    (isOpen) => {
+    (isOpen: boolean) => {
         if (isOpen) {
             nickname.value = props.currentValue || "";
         }

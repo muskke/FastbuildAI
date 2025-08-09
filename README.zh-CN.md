@@ -5,7 +5,7 @@
 <h1 align="center">FastbuildAI</h1>
 
 <p align="center">
-  Fast build your AI application
+  快速构建您的 AI 应用
 </p>
 
 <p align="center">
@@ -21,51 +21,49 @@
 </p>
 
 <p align="center">
-<a href="http://ai.fastbuildai.com/" target="_blank">Demo Online</a>｜
-<a href="https://www.fastbuildai.com/">Website</a>｜
-<a href="./README.zh-CN.md">中文文档</a>
+<a href="http://ai.fastbuildai.com/" target="_blank">在线演示</a>｜
+<a href="https://www.fastbuildai.com/">官方网站</a>｜
+<a href="./README.md">English</a>
 </p>
 
 
-## Get Started
+## 快速开始
 
-From the project root directory, run:
+在项目根目录下运行：
 
 ```bash
-# Copy the example configuration file
+# 复制示例配置文件
 cp .env.production.local.example .env.production.local
 
-# Start the application using Docker
+# 使用 Docker 启动应用
 docker compose -p fastbuildai --env-file ./.env.production.local -f ./docker/docker-compose.yml up -d
 ```
 
-Wait for **2–3 minutes** until all services are up and running.
+等待 **2-3 分钟**，直到所有服务启动完成。
 
-Once started, you can access the application at:
+启动后，您可以通过以下地址访问应用：
 
 ```
 http://localhost:4090
 ```
 
-**Default Super Admin Account**  
-- **Username:** `admin`  
-- **Password:** `FastbuildAI&123456`  
+**默认超级管理员账号**  
+- **用户名：** `admin`  
+- **密码：** `FastbuildAI&123456`  
 
-## Features
+## 功能特性
 
-- ✅ **AI Chat** – Multi-model AI conversation.
-- ✅ **MCP Invocation** – Supports Model Context Protocol (MCP).
-- ✅ **User Recharge** – User balance and payment system.
-- ✅ **Model Management** – Manage and deploy AI models.
-- ⬜ **Knowledge Base** – Centralized AI knowledge.
-- ⬜ **Intelligent Agents** – Autonomous agents for tasks.
-- ⬜ **Workflow** – AI task automation.
-- ⬜ **Plugin System** – Extend functionality with plugins.
-
-
+- ✅ **AI 聊天** – 多模型 AI 对话。
+- ✅ **MCP 调用** – 支持模型上下文协议（Model Context Protocol）。
+- ✅ **用户充值** – 用户余额和支付系统。
+- ✅ **模型管理** – 管理和部署 AI 模型。
+- ⬜ **知识库** – 集中式 AI 知识管理。
+- ⬜ **智能代理** – 用于任务的自主代理。
+- ⬜ **工作流** – AI 任务自动化。
+- ⬜ **插件系统** – 通过插件扩展功能。
 
 
-## Screenshots
+## 截图展示
 
 ![image](./docs/screenshots/1.png)
 ![image](./docs/screenshots/2.png)
@@ -77,7 +75,6 @@ http://localhost:4090
 ![image](./docs/screenshots/8.png)
 ![image](./docs/screenshots/9.png)
 
-## License
+## 许可证
 
 [Apache License 2.0](./LICENSE)
-

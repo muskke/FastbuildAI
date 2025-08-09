@@ -29,11 +29,12 @@ coverage
 .next/
 /public/.output
 /public/package.json
-/public
+/public/*
 out/
 build
 dist
 !/public/**/build/
+!/public/readme/
 
 
 # Debug
