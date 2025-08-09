@@ -395,7 +395,9 @@ definePageMeta({ activePath: "/" });
                             capability="chat"
                             placeholder="选择MCP..."
                         />
+
                         <UButton
+                            v-if="quickMenu"
                             color="primary"
                             variant="ghost"
                             :icon="quickMenu?.icon ? '' : 'tabler:tool'"
