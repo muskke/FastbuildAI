@@ -229,6 +229,7 @@ export default defineNuxtConfig({
                           "panzoom",
                           "@shikijs/langs",
                           "libphonenumber-js",
+                          "@nuxt/ui/runtime/locale/index.js",
                       ]
                     : [],
             exclude: [],

@@ -8,7 +8,6 @@ const { locale } = useI18n();
 const appConfig = useAppConfig();
 const colorMode = useColorMode();
 const appStore = useAppStore();
-const userStore = useUserStore();
 
 const color = computed(() =>
     colorMode.value === "dark" ? (colors as any)[appConfig.ui.colors.neutral][900] : "white",
@@ -22,11 +21,6 @@ const blackAsPrimary = computed(() =>
 
 /** 获取全局配置 */
 await useAsyncData("config", () => appStore.getConfig(), {
-    lazy: import.meta.server,
-});
-
-/** 获取用户信息 */
-await useAsyncData("users", () => userStore.getUser(), {
     lazy: import.meta.server,
 });
 
