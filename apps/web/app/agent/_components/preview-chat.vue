@@ -273,7 +273,7 @@ onUnmounted(() => {
 <template>
     <div class="flex h-full w-full flex-col">
         <ProScrollArea
-            class="table h-full min-h-0 w-full"
+            class="h-full min-h-0 w-full"
             type="auto"
             ref="scrollAreaRef"
             @in-view="scrollToBottom(false)"

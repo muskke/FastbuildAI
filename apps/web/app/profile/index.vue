@@ -7,6 +7,7 @@ import type { UpdateUserFieldRequest } from "@/models/user";
 import { apiUpdateUserField } from "@/services/web/user";
 
 import NicknameModal from "./_components/nickname-modal.vue";
+import PasswordModal from "./_components/password-modal.vue";
 
 // 组合式函数
 const { t } = useI18n();
@@ -239,7 +240,7 @@ definePageMeta({
                             :model-value="
                                 userStore.userInfo!.password
                                     ? t('common.profile.passwordSet')
-                                    : t('common.profile.passwordNotSet')
+                                    : t('common.profile.passwordSet')
                             "
                             variant="soft"
                             color="neutral"
@@ -247,9 +248,11 @@ definePageMeta({
                             disabled
                             :ui="{ root: 'w-full' }"
                         />
-                        <UButton size="lg" class="flex-none" variant="soft" @click="unrealized">
-                            {{ t("console-common.update") }}
-                        </UButton>
+                        <PasswordModal :loading="isLoading" class="flex-none" size="lg">
+                            <UButton size="lg" variant="soft">
+                                {{ t("console-common.update") }}
+                            </UButton>
+                        </PasswordModal>
                     </div>
                 </UFormField>
 
