@@ -8,7 +8,7 @@ services:
       TZ: Asia/Shanghai
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     ports:
-      - "16379:6379"
+      - "${REDIS_EXTERNAL_PORT}:6379"
     volumes:
       - ./data/redis:/data
     networks:
@@ -30,7 +30,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
     ports:
-      - "15432:5432"
+      - "${DB_EXTERNAL_PORT}:5432"
     volumes:
       - ./data/postgres/postgres_data:/var/lib/postgresql/data
       - ../apps/server/src/plugins/article-plugin/install/install.sql:/docker-entrypoint-initdb.d/init.sql
@@ -63,9 +63,11 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      DOCKER_CLEAN_NODE_MODULES: ${DOCKER_CLEAN_NODE_MODULES}
     command: >
       sh -c "
       npm install -g pnpm &&
+      if [ \"$$DOCKER_CLEAN_NODE_MODULES\" = \"true\" ]; then rm -rf ./node_modules; fi &&
       pnpm i &&
       pnpm --filter ./apps/web run generate &&
       pnpm --filter ./apps/server run build &&
