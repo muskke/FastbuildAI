@@ -90,7 +90,22 @@
         "userNoCopied": "ユーザー番号をクリップボードにコピーしました",
         "featureNotAvailable": "機能は現在利用できません",
         "purchaseRecord": "購入履歴",
-        "powerDetail": "計算力明細"
+        "powerDetail": "計算力明細",
+        "changePassword": "パスワード変更",
+        "oldPassword": "現在のパスワード",
+        "newPassword": "新しいパスワード",
+        "confirmPassword": "パスワード確認",
+        "oldPasswordRequired": "現在のパスワードを入力してください",
+        "newPasswordRequired": "新しいパスワードを入力してください",
+        "confirmPasswordRequired": "パスワードを確認してください",
+        "passwordMinLength": "パスワードは6文字以上で入力してください",
+        "passwordMismatch": "パスワードが一致しません",
+        "oldPasswordPlaceholder": "現在のパスワードを入力",
+        "newPasswordPlaceholder": "新しいパスワードを入力",
+        "confirmPasswordPlaceholder": "新しいパスワードを再入力",
+        "passwordRequirement": "パスワードは6文字以上",
+        "passwordChangeSuccess": "パスワードの変更に成功しました",
+        "passwordChangeFailed": "パスワードの変更に失敗しました。再試行してください"
     },
     "mcp-server": {
         "detail": {

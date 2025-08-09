@@ -90,7 +90,22 @@
         "userNoCopied": "Copied",
         "featureNotAvailable": "Coming soon",
         "purchaseRecord": "Orders",
-        "powerDetail": "Usage"
+        "powerDetail": "Usage",
+        "changePassword": "Change Password",
+        "oldPassword": "Old Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "oldPasswordRequired": "Old password is required",
+        "newPasswordRequired": "New password is required",
+        "confirmPasswordRequired": "Please confirm your password",
+        "passwordMinLength": "Password must be at least 6 characters",
+        "passwordMismatch": "Passwords do not match",
+        "oldPasswordPlaceholder": "Enter old password",
+        "newPasswordPlaceholder": "Enter new password",
+        "confirmPasswordPlaceholder": "Confirm new password",
+        "passwordRequirement": "Minimum 6 characters",
+        "passwordChangeSuccess": "Password changed successfully",
+        "passwordChangeFailed": "Password change failed, please try again"
     },
     "mcp-server": {
         "detail": {
