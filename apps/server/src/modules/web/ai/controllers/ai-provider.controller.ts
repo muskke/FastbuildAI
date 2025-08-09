@@ -55,9 +55,11 @@ export class AiProviderController extends BaseController {
                 // 对每个供应商进行处理
                 return providers.map((provider) => {
                     // 筛选模型，只保留modelType在supportedModelTypes中的模型
-                    const filteredModels = provider.models.filter((model) =>
-                        queryDto.supportedModelTypes.includes(model.modelType),
-                    );
+                    const filteredModels = provider.models.filter((model) => {
+                        return (
+                            queryDto.supportedModelTypes.includes(model.modelType) && model.isActive
+                        );
+                    });
 
                     // 返回处理后的供应商数据，替换原有的models
                     return {
