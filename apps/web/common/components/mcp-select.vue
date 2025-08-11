@@ -428,7 +428,9 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
 
                                             <!-- mcp 详情 -->
                                             <div class="bg-muted w-full rounded-lg p-2">
-                                                <p class="text-muted-foreground wrap-break-word">
+                                                <p
+                                                    class="text-muted-foreground text-xs wrap-break-word"
+                                                >
                                                     {{
                                                         mcp.description ||
                                                         t("common.mcp-server.detail.noDescription")
