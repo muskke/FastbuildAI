@@ -110,6 +110,7 @@ onMounted(loadModels);
             :color="selected?.name ? 'primary' : 'neutral'"
             variant="ghost"
             class="flex items-center justify-between"
+            :class="{ 'bg-primary/10': selected?.id }"
             :loading="loading"
             :disabled="props.disabled"
             v-bind="props.buttonUi"

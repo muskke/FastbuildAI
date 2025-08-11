@@ -196,6 +196,7 @@ definePageMeta({
                     <ChatPrompt
                         class="[view-transition-name:chat-prompt]"
                         v-model="inputValue"
+                        :rows="2"
                         @submit="createChat"
                     >
                         <template #panel-left>
@@ -216,7 +217,7 @@ definePageMeta({
                                 variant="ghost"
                                 :icon="quickMenu?.icon ? '' : 'tabler:tool'"
                                 :ui="{ leadingIcon: 'size-4' }"
-                                :class="{ 'bg-primary/15': isQuickMenu }"
+                                :class="{ 'bg-primary/10': isQuickMenu }"
                                 @click="handleQuickMenu"
                             >
                                 <UAvatar
@@ -238,7 +239,7 @@ definePageMeta({
                     <UButton
                         v-for="(suggestion, index) in suggestions"
                         :key="index"
-                        variant="soft"
+                        variant="outline"
                         color="neutral"
                         size="md"
                         @click="createChat(suggestion.text)"

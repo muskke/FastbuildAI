@@ -29,7 +29,6 @@ export interface McpServerInfo {
     description: string;
     icon: string;
     type: "user" | "system";
-    args: Record<string, any>;
     timeout: number;
     providerName: string;
     url: string;
@@ -44,6 +43,7 @@ export interface McpServerInfo {
     connectError: string;
     connectable: boolean;
     alias?: string;
+    tools?: ToolsItem[];
 }
 
 export interface SystemMcpServerInfo extends McpServerInfo {
@@ -93,6 +93,16 @@ export interface ToolInfo {
     total: number;
     updated: number;
 }
+
+type ToolsItem = {
+    id: string;
+    name: string;
+    description: string;
+    inputSchema: Record<string, any>;
+    mcpServerId: string;
+    createdAt: string;
+    updatedAt: string;
+};
 
 /**
  * MCP服务器连接检查返回信息
