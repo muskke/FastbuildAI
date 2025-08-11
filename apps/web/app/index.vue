@@ -78,8 +78,9 @@ function writeMcpIdsToStorage(ids: string[]): void {
 
 const getQuickMenu = async () => {
     const res = await apiGetQuickMenu();
+    if (!res) return;
     quickMenu.value = res;
-    QUICK_MENU_MCP_ID.value = res.id;
+    QUICK_MENU_MCP_ID.value = res?.id;
     // 初始化按钮激活态（不改写 localStorage，仅读取）
     isQuickMenu.value = readMcpIdsFromStorage().includes(QUICK_MENU_MCP_ID.value!);
 };
