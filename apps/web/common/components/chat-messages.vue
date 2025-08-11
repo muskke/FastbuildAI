@@ -189,6 +189,7 @@ const getMessageName = (message: AiMessage) => {
                                 typeof error === "object"
                                     ? error?.message ||
                                       (error as any)?.content ||
+                                      message.content ||
                                       t("common.chat.messages.sendFailed")
                                     : typeof error === "string"
                                       ? error || t("common.chat.messages.sendFailed")
