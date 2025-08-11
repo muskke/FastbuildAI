@@ -1,6 +1,6 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
-import type { ChatCompletionTool } from "openai/resources/index";
+import type { ChatCompletionFunctionTool } from "openai/resources/index";
 
 export interface MCPTool {
     name: string;
@@ -14,7 +14,7 @@ export interface MCPTool {
  * @param mcpTool MCP工具对象
  * @returns OpenAI ChatCompletionTool格式的工具对象
  */
-export function convertMCPToolToOpenAI(mcpTool: MCPTool): ChatCompletionTool {
+export function convertMCPToolToOpenAI(mcpTool: MCPTool): ChatCompletionFunctionTool {
     return {
         type: "function",
         function: {
@@ -31,7 +31,7 @@ export function convertMCPToolToOpenAI(mcpTool: MCPTool): ChatCompletionTool {
  * @param mcpTools MCP工具数组
  * @returns OpenAI ChatCompletionTool格式的工具数组
  */
-export function convertMCPToolsToOpenAI(mcpTools: MCPTool[]): ChatCompletionTool[] {
+export function convertMCPToolsToOpenAI(mcpTools: MCPTool[]): ChatCompletionFunctionTool[] {
     return mcpTools.map(convertMCPToolToOpenAI);
 }
 

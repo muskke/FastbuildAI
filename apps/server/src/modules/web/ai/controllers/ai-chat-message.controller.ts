@@ -15,7 +15,7 @@ import { Body, Post, Res } from "@nestjs/common";
 import { getProvider, TextGenerator } from "@sdk/ai";
 import { convertMCPToolsToOpenAI, McpServer, MCPTool } from "@sdk/ai/utils/mcp/sse";
 import { Response } from "express";
-import { ChatCompletionMessageParam, ChatCompletionTool } from "openai/resources/index";
+import { ChatCompletionFunctionTool, ChatCompletionMessageParam } from "openai/resources/index";
 
 /**
  * AI聊天控制器（前台）
@@ -79,7 +79,7 @@ export class AiChatMessageController extends BaseController {
 
             // 初始化MCP服务器和工具（静默处理）
             const mcpServers: McpServer[] = [];
-            const tools: ChatCompletionTool[] = [];
+            const tools: ChatCompletionFunctionTool[] = [];
             const toolToServerMap = new Map<
                 string,
                 { server: AiMcpServer; tool: MCPTool; mcpServer: McpServer }
@@ -207,6 +207,9 @@ export class AiChatMessageController extends BaseController {
                     // 处理每个工具调用
                     for (const toolCall of assistantMessage.tool_calls) {
                         try {
+                            // 检查工具调用类型
+                            if (toolCall.type !== "function") continue;
+
                             // 使用映射表快速查找对应的MCP服务器
                             const mcpServerUsed = toolToServerMap.get(toolCall.function.name);
                             let toolResult = null;
@@ -252,6 +255,9 @@ export class AiChatMessageController extends BaseController {
                             });
                         } catch (error) {
                             console.error(`工具调用失败:`, error);
+
+                            // 检查工具调用类型
+                            if (toolCall.type !== "function") return;
 
                             // 记录MCP工具调用错误
                             const mcpServerUsed = toolToServerMap.get(toolCall.function.name);
@@ -384,7 +390,7 @@ export class AiChatMessageController extends BaseController {
 
         let conversationId = dto.conversationId;
         let fullResponse = "";
-        const tools: ChatCompletionTool[] = [];
+        const tools: ChatCompletionFunctionTool[] = [];
         const mcpServers: McpServer[] = [];
         const toolToServerMap = new Map<
             string,
@@ -584,6 +590,9 @@ export class AiChatMessageController extends BaseController {
                         // 获取工具调用信息
                         const toolCalls = chunk.choices[0].delta.tool_calls;
                         for (const toolCall of toolCalls) {
+                            // 检查工具调用类型
+                            if (toolCall.type !== "function") continue;
+
                             if (toolCall.function?.name) {
                                 const mcpServerUsed = toolToServerMap.get(toolCall.function.name);
 
@@ -621,6 +630,9 @@ export class AiChatMessageController extends BaseController {
                     // 处理每个工具调用
                     for (const toolCall of assistantMessage.tool_calls) {
                         try {
+                            // 检查工具调用类型
+                            if (toolCall.type !== "function") continue;
+
                             const mcpServerUsed = toolToServerMap.get(toolCall.function.name);
                             const toolArgs = JSON.parse(toolCall.function.arguments || "{}");
 
