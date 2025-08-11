@@ -187,7 +187,6 @@ const handleToggleProviderActive = async (providerId: string, isDisabled: boolea
         getLists();
     } catch (error) {
         console.error("Toggle provider active failed:", error);
-        toast.error("操作失败，请稍后重试");
     }
 };
 

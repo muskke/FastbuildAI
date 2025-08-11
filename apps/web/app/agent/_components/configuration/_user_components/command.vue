@@ -60,7 +60,6 @@ const submitForm = async () => {
         modalClose();
     } catch (error) {
         console.error("操作失败:", error);
-        useMessage().error("操作失败");
     }
 };
 
