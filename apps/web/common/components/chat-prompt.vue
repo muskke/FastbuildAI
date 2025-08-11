@@ -24,7 +24,7 @@ const props = withDefaults(
         modelValue: "",
         placeholder: "",
         isLoading: false,
-        rows: 2,
+        rows: 1,
     },
 );
 
@@ -74,8 +74,8 @@ onMounted(() => nextTick(() => handleFocus()));
 
 <template>
     <div
-        class="chat-action-bar bg-background flex w-full rounded-md p-2 transition-shadow duration-200 sm:block sm:rounded-2xl"
-        :class="isFocused ? 'shadow-primary' : 'shadow-default'"
+        class="chat-action-bar bg-muted flex w-full rounded-md border p-2 transition-[border-color_box-shadow] duration-200 sm:block sm:rounded-2xl"
+        :class="isFocused ? 'ring-primary/15 border-primary ring-3' : 'border-border'"
         @click.stop="handleFocus"
     >
         <div class="flex items-center gap-2">
@@ -93,12 +93,14 @@ onMounted(() => nextTick(() => handleFocus()));
             :maxrows="8"
             :highlight="false"
             :autoresize="true"
-            :ui="{ base: 'resize-none custom-textarea text-base min-h-[40px]' }"
+            :ui="{
+                base: 'resize-none custom-textarea text-base min-h-[40px] hover:bg-muted focus:bg-muted',
+            }"
             :placeholder="placeholder || t('common.chat.messages.inputPlaceholder')"
             @keydown="handleKeydown"
         />
         <!-- 操作模块 -->
-        <div class="flex items-center justify-between p-0 sm:p-2">
+        <div class="flex items-end justify-between p-0 sm:p-2">
             <!-- 功能模块 -->
             <div class="flex items-center gap-2">
                 <slot name="panel-left">

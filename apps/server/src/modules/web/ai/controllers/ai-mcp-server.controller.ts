@@ -100,7 +100,7 @@ export class WebAiMcpServerController {
 
         const result = await this.webAiMcpServerService.findAll({
             where,
-            relations: ["userMcpServer"],
+            relations: ["userMcpServer", "tools"],
         });
         const isQuickMenuId = await this.dictService.get(AI_MCP_IS_QUICK_MENU);
 

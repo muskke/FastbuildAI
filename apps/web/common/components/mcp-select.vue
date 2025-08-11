@@ -176,7 +176,7 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
             color="primary"
             variant="ghost"
             :ui="{ leadingIcon: 'size-4' }"
-            :class="{ 'bg-primary/15': selectedValidIds.length }"
+            :class="{ 'bg-primary/10': selectedValidIds.length }"
             :loading="loading"
             :disabled="props.disabled"
             @click.stop
@@ -436,6 +436,23 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
                                                         t("common.mcp-server.detail.noDescription")
                                                     }}
                                                 </p>
+                                            </div>
+
+                                            <div class="space-y-2">
+                                                <h2 class="text-xs font-bold">
+                                                    {{ t("common.mcp-server.detail.tools") }}
+                                                </h2>
+
+                                                <div class="flex flex-wrap gap-1">
+                                                    <UBadge
+                                                        v-for="tool in mcp.tools"
+                                                        :key="tool.id"
+                                                        color="neutral"
+                                                        variant="outline"
+                                                    >
+                                                        {{ tool.name }}
+                                                    </UBadge>
+                                                </div>
                                             </div>
                                         </div>
                                     </template>
