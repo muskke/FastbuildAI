@@ -883,8 +883,8 @@ export class AiChatMessageController extends BaseController {
         model,
         messages: ChatCompletionMessageParam[],
     ): Promise<string> {
+        const content = messages.find((item) => item.role === "user")?.content as string;
         try {
-            const content = messages.find((item) => item.role === "user")?.content;
             if (!content) {
                 return "new Chat";
             }
@@ -917,7 +917,7 @@ export class AiChatMessageController extends BaseController {
             return "";
         } catch (error) {
             this.logger.error(`生成对话标题失败: ${error.message}`, error.stack);
-            return "new Chat";
+            return content ? content.slice(0, 20) : "new Chat";
         }
     }
 
