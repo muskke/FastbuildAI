@@ -250,8 +250,10 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                             name="url"
                             required
                         >
-                            <UInput
+                            <UTextarea
                                 v-model="formData.url"
+                                :rows="1"
+                                autoresize
                                 :disabled="isSystem"
                                 :placeholder="t('console-ai-mcp-server.form.url')"
                                 :ui="{ root: 'w-full' }"
