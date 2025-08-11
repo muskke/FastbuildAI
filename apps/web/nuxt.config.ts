@@ -227,6 +227,8 @@ export default defineNuxtConfig({
                           "@shikijs/langs",
                           "libphonenumber-js",
                           "@nuxt/ui/runtime/locale/index.js",
+                          "clsx",
+                          "tailwind-merge",
                       ]
                     : [],
             exclude: [],
