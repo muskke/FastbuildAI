@@ -40,7 +40,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="bg-muted flex h-full w-full flex-col">
+    <div class="bg-muted/50 flex h-full w-full flex-col">
         <!-- 顶部导航栏 -->
         <header class="relative w-full">
             <div class="flex w-full items-center justify-between p-4">
