@@ -46,7 +46,7 @@ const navigationItems = computed((): NavigationMenuItem[] => {
 </script>
 
 <template>
-    <div class="bg-muted flex h-full w-full flex-col">
+    <div class="bg-muted/50 flex h-full w-full flex-col">
         <!-- 使用 Nuxt UI NavigationMenu 的现代导航 -->
         <header class="px-4 py-2">
             <div class="flex items-center justify-between">
