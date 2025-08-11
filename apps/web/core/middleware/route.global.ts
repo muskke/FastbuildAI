@@ -1,5 +1,3 @@
-import { useRouter } from "vue-router";
-
 import { ROUTES } from "@/common/constants/routes.constant";
 import { usePermissionStore } from "@/common/stores/permission";
 import { useUserStore } from "@/common/stores/user";
@@ -24,7 +22,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     if (userStore.isLogin && !userStore.userInfo) {
         await userStore.getUser();
-    } else if (!userStore.isLogin && to.meta.auth !== false) {
+    } else if (!userStore.isLogin && to.meta.auth !== false && to.path !== ROUTES.LOGIN) {
         setPageLayout("full-screen");
         return `${ROUTES.LOGIN}?redirect=${to.fullPath}`;
     }
@@ -64,10 +62,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             } catch (error) {
                 console.error(`添加路由 ${route.path} 失败:`, error);
             }
-        }
-
-        if (process.env.NODE_ENV === "development") {
-            console.log("当前所有路由:", router.getRoutes());
         }
 
         if (
