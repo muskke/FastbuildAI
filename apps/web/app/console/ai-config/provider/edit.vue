@@ -53,13 +53,17 @@ const providerSchema = object({
     supportedModelTypes: array().min(1, t("console-ai-provider.form.supportedModelTypesRequired")),
 });
 
+//获取所有模型类型
+const { data: modelTypesData } = await useAsyncData("model-types", () =>
+    apiGetAiProviderModelTypes(),
+);
+allModelTypes.value = modelTypesData.value?.map((item) => item.value) || [];
+
 // 获取供应商详情
 const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
     try {
         const data: AiProviderInfo = await apiGetAiProviderDetail(providerId.value as string);
         detail.value = data;
-        const res = await apiGetAiProviderModelTypes();
-        allModelTypes.value = res.map((item) => item.value);
 
         modelTypes.value = data.supportedModelTypes;
         Object.keys(formData).forEach((key) => {
