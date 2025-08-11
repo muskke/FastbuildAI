@@ -63,8 +63,8 @@ const initialMessages = messagesData.value.items.map((item: AiMessage) => {
     return {
         id: item.id || uuid(),
         role: item.role,
-        content: item.content,
-        status: "completed" as const,
+        content: item.errorMessage || item.content,
+        status: item.errorMessage ? ("failed" as const) : ("completed" as const),
         mcpToolCalls: item.mcpToolCalls,
     };
 });
@@ -129,8 +129,8 @@ async function loadMoreMessages() {
             (item: AiMessage): AiMessage => ({
                 id: item.id || uuid(),
                 role: item.role,
-                content: item.content,
-                status: "completed" as const,
+                content: item.errorMessage || item.content,
+                status: item.errorMessage ? ("failed" as const) : ("completed" as const),
                 mcpToolCalls: item.mcpToolCalls,
             }),
         );
