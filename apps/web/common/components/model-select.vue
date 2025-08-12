@@ -168,7 +168,13 @@ onMounted(loadModels);
                     >
                         <div class="flex flex-row items-center justify-between px-2">
                             <div class="flex flex-row items-center gap-2">
-                                <UAvatar :src="getProviderIcon(provider)" size="2xs" />
+                                <UAvatar
+                                    :src="provider.iconUrl"
+                                    :alt="provider.name"
+                                    :ui="{ fallback: 'text-inverted' }"
+                                    :class="provider.iconUrl ? '' : 'bg-primary'"
+                                    size="2xs"
+                                />
                                 <h3 class="text-secondary-foreground text-sm font-semibold">
                                     {{ provider.name }}
                                 </h3>

@@ -26,18 +26,6 @@ const router = useRouter();
 const { hasAccessByCodes } = useAccessControl();
 
 /**
- * 获取供应商图标
- */
-function getProviderIcon(provider: AiProviderInfo): string {
-    if (provider.iconUrl) {
-        return provider.iconUrl;
-    }
-    // 使用供应商名称首字母作为默认图标
-    const firstLetter = provider.name?.charAt(0).toUpperCase() || "P";
-    return `https://ui-avatars.com/api/?name=${firstLetter}&background=6366f1&color=fff&size=80`;
-}
-
-/**
  * 获取供应商状态信息
  */
 function getProviderStatusInfo(isActive: boolean) {
@@ -145,11 +133,11 @@ function openWebsite() {
                 :color="statusInfo.color"
             >
                 <UAvatar
-                    :src="getProviderIcon(provider)"
+                    :src="provider.iconUrl"
                     :alt="provider.name"
                     size="3xl"
-                    :ui="{ root: 'rounded-lg' }"
-                    :class="[groupHoverClass, selectedClass]"
+                    :ui="{ root: 'rounded-lg', fallback: 'text-inverted' }"
+                    :class="[groupHoverClass, selectedClass, provider.iconUrl ? '' : 'bg-primary']"
                 />
             </UChip>
         </template>
