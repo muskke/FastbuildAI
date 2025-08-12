@@ -169,7 +169,7 @@ function getEntityModule(entity: EntityMetadata): string {
                         "dist/common/**/*.entity.js",
                         "dist/modules/**/*.entity.js",
                         "dist/core/**/*.entity.js",
-                        "dist/plugins/**/*.entity.js",
+                        // "dist/plugins/**/*.entity.js",
                     ],
                 };
             },
