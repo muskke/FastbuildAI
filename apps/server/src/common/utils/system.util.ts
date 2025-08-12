@@ -45,11 +45,11 @@ export const startLog = (currentPort?: number, startTime?: number) => {
     // 根据启动时间设置不同的日志级别
     const duration = startTime ? Date.now() - startTime : 0;
 
-    if (duration < 500) {
+    if (duration < 1000) {
         TerminalLogger.success("Startup Time", `${duration} ms`);
-    } else if (duration < 1000) {
-        TerminalLogger.info("Startup Time", `${duration} ms`);
     } else if (duration < 2000) {
+        TerminalLogger.info("Startup Time", `${duration} ms`);
+    } else if (duration < 3000) {
         TerminalLogger.warn("Startup Time", `${duration} ms`);
     } else {
         TerminalLogger.error("Startup Time", `${duration} ms`);
