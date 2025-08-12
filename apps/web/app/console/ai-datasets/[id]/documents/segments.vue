@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ProPaginaction, ProScrollArea, usePaging, usePollingTask } from "@fastbuildai/ui";
+import type { DropdownMenuItem } from "@nuxt/ui";
 import { useDebounceFn } from "@vueuse/core";
 import { useAsyncData } from "nuxt/app";
 import { computed, onMounted, reactive, ref, watch } from "vue";
@@ -18,6 +19,7 @@ import { useDocumentActions, useSegmentActions, useSelection } from "../useDatas
 
 const router = useRouter();
 const { t } = useI18n();
+const { hasAccessByCodes } = useAccessControl();
 const { params: URLQueryParams, query: URLQuery } = useRoute();
 
 const datasetId = computed(() => (URLQueryParams as Record<string, string>).id);
@@ -217,23 +219,29 @@ onMounted(() => getLists());
                 />
 
                 <UDropdownMenu
-                    :items="[
-                        {
-                            label: t('datasets.segments.rename'),
-                            icon: 'i-lucide-pen-line',
-                            onClick: () => {
-                                handleRename();
-                            },
-                        },
-                        {
-                            label: t('console-common.delete'),
-                            icon: 'i-lucide-trash',
-                            color: 'error',
-                            onSelect: () => {
-                                handleDocumentDelete();
-                            },
-                        },
-                    ]"
+                    :items="
+                        [
+                            hasAccessByCodes(['ai-datasets-documents:rename'])
+                                ? {
+                                      label: t('datasets.segments.rename'),
+                                      icon: 'i-lucide-pen-line',
+                                      onClick: () => {
+                                          handleRename();
+                                      },
+                                  }
+                                : null,
+                            hasAccessByCodes(['ai-datasets-documents:delete'])
+                                ? {
+                                      label: t('console-common.delete'),
+                                      icon: 'i-lucide-trash',
+                                      color: 'error',
+                                      onSelect: () => {
+                                          handleDocumentDelete();
+                                      },
+                                  }
+                                : null,
+                        ].filter(Boolean) as DropdownMenuItem[]
+                    "
                 >
                     <UButton icon="i-lucide-ellipsis-vertical" color="primary" variant="outline" />
                 </UDropdownMenu>

@@ -19,14 +19,7 @@ const emit = defineEmits<Emits>();
 
 const router = useRouter();
 const { t } = useI18n();
-
-// 状态颜色映射
-const statusColors = {
-    processing: "warning",
-    completed: "success",
-    failed: "error",
-    pending: "neutral",
-} as const;
+const { hasAccessByCodes } = useAccessControl();
 
 // 检索模式标签
 const retrievalModeLabels = {
@@ -43,22 +36,28 @@ const handleViewDetail = () => {
 
 // 下拉菜单选项
 const menuItems: DropdownMenuItem[] = [
-    {
-        label: t("datasets.menu.settings"),
-        color: "primary",
-        onSelect: () => emit("settings", props.dataset),
-    },
-    {
-        label: t("console-common.delete"),
-        color: "error",
-        onSelect: () => emit("delete", props.dataset),
-    },
-    {
-        label: t("datasets.dataset.retry.title"),
-        color: "warning",
-        onSelect: () => emit("retry", props.dataset),
-    },
-];
+    hasAccessByCodes(["ai-datasets:update"])
+        ? {
+              label: t("datasets.menu.settings"),
+              color: "primary",
+              onSelect: () => emit("settings", props.dataset),
+          }
+        : null,
+    hasAccessByCodes(["ai-datasets:delete"])
+        ? {
+              label: t("console-common.delete"),
+              color: "error",
+              onSelect: () => emit("delete", props.dataset),
+          }
+        : null,
+    hasAccessByCodes(["ai-datasets:retry"])
+        ? {
+              label: t("datasets.dataset.retry.title"),
+              color: "warning",
+              onSelect: () => emit("retry", props.dataset),
+          }
+        : null,
+].filter(Boolean) as DropdownMenuItem[];
 </script>
 
 <template>
