@@ -5,11 +5,11 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AiConsoleModule } from "@/modules/console/ai/ai.module";
-import { DatasetsModule } from "@/modules/web/datasets/datasets.module";
-import { Datasets } from "@/modules/web/datasets/entities/datasets.entity";
-import { DatasetsDocument } from "@/modules/web/datasets/entities/datasets-document.entity";
-import { DatasetsSegments } from "@/modules/web/datasets/entities/datasets-segments.entity";
-import { VectorizationQueueService } from "@/modules/web/datasets/services/vectorization-queue.service";
+import { AiDatasetsModule } from "@/modules/console/ai-datasets/datasets.module";
+import { Datasets } from "@/modules/console/ai-datasets/entities/datasets.entity";
+import { DatasetsDocument } from "@/modules/console/ai-datasets/entities/datasets-document.entity";
+import { DatasetsSegments } from "@/modules/console/ai-datasets/entities/datasets-segments.entity";
+import { VectorizationQueueService } from "@/modules/console/ai-datasets/services/vectorization-queue.service";
 
 import { DefaultProcessor } from "./processors/default.processor";
 import { EmailProcessor } from "./processors/email.processor";
@@ -58,8 +58,8 @@ import { QueueService } from "./queue.service";
         AiConsoleModule,
         // 导入数据库实体
         TypeOrmModule.forFeature([User, Datasets, DatasetsDocument, DatasetsSegments]),
-        // 导入 DatasetsModule 以便注入 DatasetStatusService
-        forwardRef(() => DatasetsModule),
+        // 导入 AiDatasetsModule 以便注入 DatasetStatusService
+        forwardRef(() => AiDatasetsModule),
     ],
     controllers: [QueueController],
     providers: [
