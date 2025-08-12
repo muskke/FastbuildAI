@@ -144,7 +144,7 @@ onMounted(loadModels);
                 </div>
 
                 <div
-                    class="flex max-h-[calc((100vh-15rem)/2)] flex-col gap-3 overflow-y-auto p-2"
+                    class="flex max-h-[calc((100vh-15rem)/3)] flex-col gap-3 overflow-y-auto p-2"
                     :class="{ 'md:grid-cols-2': filteredProviders.length > 1 }"
                 >
                     <div

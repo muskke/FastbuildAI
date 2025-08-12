@@ -15,7 +15,7 @@ import {
     apiGetPublicAgentInfo,
     apiGetPublicAgentMessages,
     apiPublicAgentChatByAccessToken,
-} from "@/services/web/agent-publish";
+} from "@/services/web/ai-agent-publish";
 
 import AgentAnnotationModal from "../../agent/_components/logs/annotation-modal.vue";
 import PublicAgentChatsList from "./_components/public-agent-chats-list.vue";
