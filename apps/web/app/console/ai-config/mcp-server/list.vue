@@ -77,17 +77,17 @@ const handleSelectAll = (value: boolean | "indeterminate") => {
 const handleDelete = async (id: string | string[]) => {
     try {
         await useModal({
-            title: "删除MCP",
-            description: "确定要删除选中的MCP吗？此操作不可恢复。",
+            title: t("console-ai-mcp-server.deleteTitle"),
+            description: t("console-ai-mcp-server.deleteMessage"),
             color: "error",
         });
 
         if (Array.isArray(id)) {
             await apiBatchDeleteMcpServers(id);
-            toast.success("批量删除成功");
+            toast.success(t("console-ai-mcp-server.deleteSuccess"));
         } else {
             await apiDeleteMcpServer(id);
-            toast.success("删除成功");
+            toast.success(t("console-ai-mcp-server.deleteSuccess"));
         }
 
         // 清空选中状态
@@ -97,7 +97,6 @@ const handleDelete = async (id: string | string[]) => {
         getLists();
     } catch (error) {
         console.error("Delete failed:", error);
-        toast.error("删除失败");
     }
 };
 
