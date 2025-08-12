@@ -1,3 +1,13 @@
+# 定义通用资源配置
+x-resource-config: &resource-config
+  deploy:
+    resources:
+      limits:
+        memory: ${DOCKER_MEMORY_LIMIT:-3584M}
+        cpus: '${DOCKER_CPU_LIMIT:-1.0}'
+      reservations:
+        memory: ${DOCKER_MEMORY_RESERVATION:-512M}
+
 services:
   # Redis 缓存服务
   redis:
@@ -7,12 +17,14 @@ services:
     environment:
       TZ: Asia/Shanghai
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      QUICK_START_MODE: ${QUICK_START_MODE:-false}
     ports:
       - "${REDIS_EXTERNAL_PORT}:6379"
     volumes:
       - ./data/redis:/data
     networks:
       - fastbuildai-network
+    <<: *resource-config
     healthcheck:
       test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping"]
       interval: 10s
@@ -33,9 +45,9 @@ services:
       - "${DB_EXTERNAL_PORT}:5432"
     volumes:
       - ./data/postgres/postgres_data:/var/lib/postgresql/data
-      - ../apps/server/src/plugins/article-plugin/install/install.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - fastbuildai-network
+    <<: *resource-config
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
       interval: 10s
@@ -46,7 +58,7 @@ services:
   nodejs:
     image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/node:22.14.0-alpine
     container_name: fastbuildai-nodejs${DOCKER_CONTAINER_SUFFIX}
-    restart: always
+    restart: unless-stopped
     working_dir: /fastbuildai
     volumes:
       - ../:/fastbuildai
@@ -63,18 +75,36 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-      DOCKER_CLEAN_NODE_MODULES: ${DOCKER_CLEAN_NODE_MODULES}
-    command: >
-      sh -c "
-      npm install -g pnpm &&
-      if [ \"$$DOCKER_CLEAN_NODE_MODULES\" = \"true\" ]; then rm -rf ./node_modules; fi &&
-      pnpm i &&
-      pnpm --filter ./apps/web run generate &&
-      pnpm --filter ./apps/server run build &&
-      pnpm --filter ./apps/server run start:prod
-      "
+    command: |
+      sh -c '
+      set -e
+      echo "🚀 Starting FastbuildAI container..."
+      echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
+      npm install -g pnpm
+      
+      if [ ! -d "./node_modules" ] || [ "$QUICK_START_MODE" = "false" ]; then
+        rm -rf ./node_modules
+        echo "🧹 Cleaning node_modules (QUICK_START_MODE=false)..."
+        pnpm i
+        echo "📦 Installing dependencies..."
+      fi
+      
+      if [ ! -d "./public" ] || [ "$QUICK_START_MODE" = "false" ]; then
+        pnpm --filter ./apps/web run generate
+        echo "🌐 Building web application..."
+      fi
+      
+      if [ ! -d "./apps/server/dist" ] || [ "$QUICK_START_MODE" = "false" ]; then
+        pnpm --filter ./apps/server run build
+        echo "🔧 Building server application..."
+      fi
+      
+      echo "🎯 Starting production server..."
+      exec pnpm --filter ./apps/server run start:prod
+      '
     networks:
       - fastbuildai-network
+    <<: *resource-config
     depends_on:
       redis:
         condition: service_healthy

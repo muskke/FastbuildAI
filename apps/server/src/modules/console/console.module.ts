@@ -1,7 +1,8 @@
 import { Module } from "@nestjs/common";
 
 import { AiConsoleModule } from "./ai/ai.module";
-import { DatasetsConsoleModule } from "./datasets/datasets.module";
+import { AiAgentModule } from "./ai-agent/agent.module";
+import { AiDatasetsModule } from "./ai-datasets/datasets.module";
 import { DecorateModule } from "./decorate/decorate.module";
 import { FinanceModule } from "./finance/finance.module";
 import { HealthModule } from "./health/health.module";
@@ -25,7 +26,8 @@ import { UserModule } from "./user/user.module";
         SystemModule,
         AiConsoleModule,
         RechargeModule,
-        DatasetsConsoleModule,
+        AiAgentModule,
+        AiDatasetsModule,
         FinanceModule,
     ],
     exports: [
@@ -38,7 +40,8 @@ import { UserModule } from "./user/user.module";
         SystemModule,
         AiConsoleModule,
         RechargeModule,
-        DatasetsConsoleModule,
+        AiAgentModule,
+        AiDatasetsModule,
         FinanceModule,
     ],
 })
