@@ -4,6 +4,7 @@ import { apiGetDatasetDetail } from "@/services/console/ai-datasets";
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
+const { hasAccessByCodes } = useAccessControl();
 const datasetId = computed(() => (route.params as Record<string, string>).id);
 const collapsed = ref<boolean>(false);
 
@@ -94,39 +95,53 @@ definePageMeta({ activePath: "/datasets" });
                 <UNavigationMenu
                     orientation="vertical"
                     :collapsed="collapsed"
-                    :items="[
-                        {
-                            label: $t('datasets.menu.documents'),
-                            icon: 'i-lucide-files',
-                            to: useRoutePath('ai-datasets-documents:list', {
-                                id: datasetId as string,
-                            }),
-                            active:
-                                route.path.includes(`/console/ai-datasets/${datasetId}/segments`) ||
-                                route.path.includes(`/console/ai-datasets/${datasetId}/documents`),
-                        },
-                        {
-                            label: $t('datasets.menu.retrieval'),
-                            icon: 'i-lucide-radar',
-                            to: useRoutePath('ai-datasets:retrieval-test', {
-                                id: datasetId as string,
-                            }),
-                        },
-                        {
-                            label: $t('datasets.menu.members'),
-                            icon: 'i-lucide-users',
-                            to: useRoutePath('ai-datasets-team-members:list', {
-                                id: datasetId as string,
-                            }),
-                        },
-                        {
-                            label: $t('datasets.menu.settings'),
-                            icon: 'i-lucide-settings-2',
-                            to: useRoutePath('ai-datasets:update', {
-                                id: datasetId as string,
-                            }),
-                        },
-                    ]"
+                    :items="
+                        [
+                            hasAccessByCodes(['ai-datasets-documents:list'])
+                                ? {
+                                      label: $t('datasets.menu.documents'),
+                                      icon: 'i-lucide-files',
+                                      to: useRoutePath('ai-datasets-documents:list', {
+                                          id: datasetId as string,
+                                      }),
+                                      active:
+                                          route.path.includes(
+                                              `/console/ai-datasets/${datasetId}/segments`,
+                                          ) ||
+                                          route.path.includes(
+                                              `/console/ai-datasets/${datasetId}/documents`,
+                                          ),
+                                  }
+                                : null,
+                            hasAccessByCodes(['ai-datasets:retrieval-test'])
+                                ? {
+                                      label: $t('datasets.menu.retrieval'),
+                                      icon: 'i-lucide-radar',
+                                      to: useRoutePath('ai-datasets:retrieval-test', {
+                                          id: datasetId as string,
+                                      }),
+                                  }
+                                : null,
+                            hasAccessByCodes(['ai-datasets-team-members:list'])
+                                ? {
+                                      label: $t('datasets.menu.members'),
+                                      icon: 'i-lucide-users',
+                                      to: useRoutePath('ai-datasets-team-members:list', {
+                                          id: datasetId as string,
+                                      }),
+                                  }
+                                : null,
+                            hasAccessByCodes(['ai-datasets:update'])
+                                ? {
+                                      label: $t('datasets.menu.settings'),
+                                      icon: 'i-lucide-settings-2',
+                                      to: useRoutePath('ai-datasets:update', {
+                                          id: datasetId as string,
+                                      }),
+                                  }
+                                : null,
+                        ].filter(Boolean) as NavigationMenuItem[]
+                    "
                     class="data-[orientation=vertical]:w-full"
                     :ui="{
                         list: 'space-y-1',

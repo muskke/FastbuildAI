@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ProPaginaction, useMessage, useModal, usePaging, usePollingTask } from "@fastbuildai/ui";
-import type { TableColumn, TableRow } from "@nuxt/ui";
+import type { DropdownMenuItem, TableColumn, TableRow } from "@nuxt/ui";
 import { type Row } from "@tanstack/table-core";
 import { useDebounceFn } from "@vueuse/core";
 import { h, onMounted, reactive, resolveComponent, watch } from "vue";
@@ -21,6 +21,7 @@ const TimeDisplay = resolveComponent("TimeDisplay");
 // 路由实例
 const router = useRouter();
 const { t } = useI18n();
+const { hasAccessByCodes } = useAccessControl();
 
 const { deleteDocument, renameDocument, retryDocument, toggleDocumentEnabled } =
     useDocumentActions();
@@ -273,45 +274,55 @@ function getRowItems(row: Row<DatasetDocument>) {
     const isEnabled = document.enabled;
 
     return [
-        {
-            label: t("datasets.documents.viewSegments"),
-            icon: "i-lucide-list",
-            onClick: () => {
-                router.push(
-                    useRoutePath(
-                        "ai-datasets-segments:list",
-                        { id: datasetIdSafe.value },
-                        { documentId: document.id },
-                    ),
-                );
-            },
-        },
-        {
-            label: t("datasets.documents.renameModal.title"),
-            icon: "i-lucide-pen-line",
-            onClick: () => handleRename(document),
-        },
-        {
-            label: isEnabled
-                ? t("datasets.documents.disable.title")
-                : t("datasets.documents.enable.title"),
-            icon: isEnabled ? "i-lucide-eye-off" : "i-lucide-eye",
-            color: isEnabled ? "warning" : "primary",
-            onClick: () => toggleDocumentEnabled(document.id, !isEnabled, getLists),
-        },
-        {
-            label: t("datasets.documents.retry.title"),
-            icon: "i-lucide-rotate-ccw",
-            color: "warning",
-            onClick: () => retryDocument(document.id, getLists),
-        },
-        {
-            label: t("console-common.delete"),
-            icon: "i-lucide-trash",
-            color: "error",
-            onSelect: () => handleDelete(document.id),
-        },
-    ];
+        hasAccessByCodes(["ai-datasets-segments:list"])
+            ? {
+                  label: t("datasets.documents.viewSegments"),
+                  icon: "i-lucide-list",
+                  onClick: () => {
+                      router.push(
+                          useRoutePath(
+                              "ai-datasets-segments:list",
+                              { id: datasetIdSafe.value },
+                              { documentId: document.id },
+                          ),
+                      );
+                  },
+              }
+            : null,
+        hasAccessByCodes(["ai-datasets-documents:rename"])
+            ? {
+                  label: t("datasets.documents.renameModal.title"),
+                  icon: "i-lucide-pen-line",
+                  onClick: () => handleRename(document),
+              }
+            : null,
+        hasAccessByCodes(["ai-datasets-documents:set-enabled"])
+            ? {
+                  label: isEnabled
+                      ? t("datasets.documents.disable.title")
+                      : t("datasets.documents.enable.title"),
+                  icon: isEnabled ? "i-lucide-eye-off" : "i-lucide-eye",
+                  color: isEnabled ? "warning" : "primary",
+                  onClick: () => toggleDocumentEnabled(document.id, !isEnabled, getLists),
+              }
+            : null,
+        hasAccessByCodes(["ai-datasets-documents:retry"])
+            ? {
+                  label: t("datasets.documents.retry.title"),
+                  icon: "i-lucide-rotate-ccw",
+                  color: "warning",
+                  onClick: () => retryDocument(document.id, getLists),
+              }
+            : null,
+        hasAccessByCodes(["ai-datasets-documents:delete"])
+            ? {
+                  label: t("console-common.delete"),
+                  icon: "i-lucide-trash",
+                  color: "error",
+                  onSelect: () => handleDelete(document.id),
+              }
+            : null,
+    ].filter(Boolean) as DropdownMenuItem[];
 }
 
 // 监听搜索条件变化，自动重新获取数据
@@ -338,6 +349,7 @@ const handleRename = async (document: DatasetDocument) => {
 
 // 点击表格行跳转分段
 const handleRowClick = (row: TableRow<DatasetDocument>) => {
+    if (hasAccessByCodes(["ai-datasets-segments:list"])) return;
     router.push(
         useRoutePath(
             "ai-datasets-segments:list",
@@ -401,13 +413,17 @@ onMounted(() => getLists());
                     />
                 </UDropdownMenu>
 
-                <NuxtLink :to="useRoutePath('ai-datasets-documents:create', { id: datasetIdSafe })">
-                    <UButton
-                        :label="t('datasets.documents.addFile')"
-                        leading-icon="i-lucide-plus"
-                        color="primary"
-                    />
-                </NuxtLink>
+                <AccessControl :codes="['ai-datasets-documents:create']">
+                    <NuxtLink
+                        :to="useRoutePath('ai-datasets-documents:create', { id: datasetIdSafe })"
+                    >
+                        <UButton
+                            :label="t('datasets.documents.addFile')"
+                            leading-icon="i-lucide-plus"
+                            color="primary"
+                        />
+                    </NuxtLink>
+                </AccessControl>
             </div>
         </div>
 

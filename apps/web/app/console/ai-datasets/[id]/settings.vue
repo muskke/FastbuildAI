@@ -2,7 +2,7 @@
 import { useLockFn, useMessage } from "@fastbuildai/ui";
 import { refreshNuxtData } from "nuxt/app";
 
-import type { Dataset, RetrievalMode, UpdateDatasetParams } from "@/models/ai-datasets";
+import type { Dataset, RetrievalConfig, UpdateDatasetParams } from "@/models/ai-datasets";
 import { apiUpdateDataset } from "@/services/console/ai-datasets";
 
 import RetrievalMethodConfig from "../_components/create/retrieval-method-config/index.vue";
@@ -56,7 +56,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="data-source-selector inline-block p-6">
+    <div class="datasets-settings-container inline-block p-6">
         <div class="mb-8">
             <h5 class="text-foreground mb-1 text-lg font-medium">
                 {{ $t("datasets.settings.name") }}
@@ -115,17 +115,13 @@ onMounted(() => {
                 :label="$t('datasets.create.stepTwo.embeddingModel')"
                 required
             >
-                <!-- <UInput
-                    v-model="formData.embeddingModelId"
-                    placeholder="请输入向量模型ID"
-                    :ui="{ root: 'w-full' }"
-                /> -->
                 <ModelSelect
                     :modelValue="formData.embeddingModelId"
                     :button-ui="{
                         variant: 'outline',
                         color: 'neutral',
                         ui: { base: 'w-full' },
+                        class: 'bg-background',
                     }"
                     :supportedModelTypes="['text-embedding']"
                     :defaultSelected="false"
@@ -148,7 +144,9 @@ onMounted(() => {
                 :label="$t('datasets.settings.retrievalMethod')"
                 required
             >
-                <RetrievalMethodConfig v-model="formData.retrievalConfig" />
+                <RetrievalMethodConfig
+                    v-model="formData.retrievalConfig as unknown as RetrievalConfig"
+                />
             </UFormField>
 
             <USeparator />

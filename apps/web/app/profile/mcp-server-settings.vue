@@ -4,11 +4,8 @@ import { onMounted, reactive, ref } from "vue";
 
 import type { McpServerInfo } from "@/models/web-mcp-server";
 import {
-    apiAddSystemMcpServer,
     apiDeleteMcpServer,
     apiGetMcpServerList,
-    apiGetSystemMcpServerList,
-    apiRemoveSystemMcpServer,
     apiUpdateMcpServerVisible,
 } from "@/services/web/mcp-server";
 
@@ -26,10 +23,6 @@ const searchForm = reactive({
     type: "system",
 });
 
-const systemSearchForm = reactive({
-    name: "",
-});
-
 const isJsonImport = ref(false);
 
 // 选中的供应商
@@ -41,93 +34,25 @@ const editingMcpServerId = ref("");
 const isView = ref(false);
 const isSystemMcp = ref(false);
 
-// 下拉加载
-const loading = ref(false);
-const hasMore = ref(true);
 const systemList = ref<McpServerInfo[]>([]);
 const page = ref(1);
-
-const tab = ref("all");
-
-// 加载更多 MCP 服务数据
-async function loadMore() {
-    if (loading.value) return;
-
-    loading.value = true;
-    try {
-        if (tab.value === "all") {
-            const newData = await apiGetSystemMcpServerList({
-                page: page.value,
-                name: systemSearchForm.name,
-            });
-            if (newData.items.length === 0) {
-                hasMore.value = false;
-            } else {
-                systemList.value.push(...newData.items);
-                page.value++;
-            }
-        } else if (tab.value === "not-added") {
-            const newData = await apiGetSystemMcpServerList({
-                page: page.value,
-                isAssociated: false,
-                name: systemSearchForm.name,
-            });
-            if (newData.items.length === 0) {
-                hasMore.value = false;
-            } else {
-                systemList.value.push(...newData.items);
-                page.value++;
-            }
-        } else if (tab.value === "added") {
-            const newData = await apiGetSystemMcpServerList({
-                page: page.value,
-                isAssociated: true,
-                name: systemSearchForm.name,
-            });
-            if (newData.items.length === 0) {
-                hasMore.value = false;
-            } else {
-                systemList.value.push(...newData.items);
-                page.value++;
-            }
-        }
-    } catch (error) {
-        console.error("加载数据失败", error);
-    } finally {
-        loading.value = false;
-    }
-}
 
 const { paging, getLists } = usePaging({
     fetchFun: apiGetMcpServerList,
     params: searchForm,
 });
 
-/**
- * 处理 MCP 服务选择
- */
-const handleMcpServerSelect = (provider: McpServerInfo, selected: boolean | "indeterminate") => {
-    if (typeof selected === "boolean") {
-        const providerId = provider.id as string;
-        if (selected) {
-            selectMcpServer.value.add(providerId);
-        } else {
-            selectMcpServer.value.delete(providerId);
-        }
-    }
-};
-
 /** 删除数据 */
 const handleDelete = async (id: string) => {
     try {
         await useModal({
-            title: "删除MCP服务",
-            description: "确定要删除选中的MCP服务吗？此操作不可恢复。",
+            title: t("console-ai-mcp-server.deleteTitle"),
+            description: t("console-ai-mcp-server.deleteMessage"),
             color: "error",
         });
 
         await apiDeleteMcpServer(id);
-        toast.success("删除成功");
+        toast.success(t("console-ai-mcp-server.deleteSuccess"));
 
         // 清空选中状态
         selectMcpServer.value.clear();
@@ -136,39 +61,15 @@ const handleDelete = async (id: string) => {
         getLists();
     } catch (error) {
         console.error("Delete failed:", error);
-        toast.error("删除失败");
     }
 };
 
 /**
  * 处理删除 MCP 服务
  */
-const handleDeleteProvider = (provider: McpServerInfo) => {
-    if (provider.id) {
-        handleDelete(provider.id);
-    }
-};
-
-// 移除系统 MCP 服务
-const handleRemoveSystem = async (id: string) => {
-    try {
-        await useModal({
-            title: "移除MCP服务",
-            description: "确定要移除选中的MCP服务吗？",
-            color: "error",
-        });
-        await apiRemoveSystemMcpServer(id);
-        toast.success("移除成功");
-
-        // 清空选中状态
-        selectMcpServer.value.clear();
-
-        // 刷新列表
-        getLists();
-        reload();
-    } catch (error) {
-        console.error("Remove failed:", error);
-        toast.error("移除失败");
+const handleDeleteProvider = (mcpServer: McpServerInfo) => {
+    if (mcpServer.id) {
+        handleDelete(mcpServer.id);
     }
 };
 
@@ -237,18 +138,6 @@ const handleSearchChange = useDebounceFn(() => {
     getLists();
 }, 500);
 
-const handleTabChange = (value: string) => {
-    tab.value = value;
-    page.value = 1;
-    systemList.value = [];
-    loadMore();
-};
-
-const reload = () => {
-    page.value = 1;
-    systemList.value = [];
-    loadMore();
-};
 definePageMeta({
     layout: "setting",
     title: "menu.mcpServerSetting",
@@ -322,11 +211,9 @@ onMounted(() => getLists());
                     :key="mcpServer.id"
                     :mcpServer="mcpServer"
                     :selected="selectMcpServer.has(mcpServer.id as string)"
-                    @select="handleMcpServerSelect"
                     @delete="handleDeleteProvider"
                     @edit="handleEditProvider"
                     @view-models="handleViewModels"
-                    @remove-system="handleRemoveSystem"
                     @toggle-visible="handleToggleVisible"
                 />
             </div>

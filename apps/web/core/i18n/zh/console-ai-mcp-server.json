@@ -22,6 +22,12 @@
     "setQuickMenu": "快捷菜单",
     "quickMenuSuccess": "设置成功",
     "quickMenuFailed": "设置失败",
+    "jsonImportSuccess": "导入成功",
+    "updateSuccess": "MCP服务器更新成功",
+    "createSuccess": "MCP服务器创建成功",
+    "deleteSuccess": "删除成功",
+    "deleteTitle": "删除MCP服务",
+    "deleteMessage": "确定要删除选中的MCP服务吗？此操作不可恢复。",
     "search": {
         "placeholder": "搜索MCP名称",
         "status": "选择状态",
