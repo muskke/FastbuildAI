@@ -24,18 +24,6 @@ const { t } = useI18n();
 const router = useRouter();
 
 /**
- * 获取MCP服务器图标
- */
-function getMcpServerIcon(mcpServer: McpServerInfo): string {
-    if (mcpServer.icon) {
-        return mcpServer.icon;
-    }
-    // 使用MCP服务器名称首字母作为默认图标
-    const firstLetter = mcpServer.name?.charAt(0).toUpperCase() || "P";
-    return `https://ui-avatars.com/api/?name=${firstLetter}&background=6366f1&color=fff&size=80`;
-}
-
-/**
  * mcpServer状态信息
  */
 function getMcpServerStatusInfo(isActive: boolean) {
@@ -89,11 +77,15 @@ function getFormattedUrl(url: string): string {
             <div class="flex items-center gap-4">
                 <UChip :color="mcpServer.connectable ? 'success' : 'error'" position="top-left">
                     <UAvatar
-                        :src="getMcpServerIcon(mcpServer)"
+                        :src="mcpServer.icon"
                         :alt="mcpServer.name"
                         size="3xl"
-                        :ui="{ root: 'rounded-lg' }"
-                        :class="[groupHoverClass, selectedClass]"
+                        :ui="{ root: 'rounded-lg', fallback: 'text-inverted' }"
+                        :class="[
+                            groupHoverClass,
+                            selectedClass,
+                            mcpServer.icon ? '' : 'bg-primary',
+                        ]"
                     />
                 </UChip>
                 <div>

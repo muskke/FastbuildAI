@@ -154,20 +154,6 @@ async function handlePopoverUpdate(value: boolean) {
         }
     }
 }
-
-/**
- * 获取MCP服务器图标
- */
-function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): string {
-    if (mcpServer.icon) {
-        return mcpServer.icon;
-    }
-    // 使用MCP服务器名称首字母作为默认图标
-    const firstLetter = mcpServer.name?.charAt(0).toUpperCase() || "P";
-    return `https://ui-avatars.com/api/?name=${firstLetter}&background=6366f1&color=fff&size=80`;
-}
-
-// onMounted(getSystemList);
 </script>
 
 <template>
@@ -217,12 +203,8 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
                         v-for="(id, index) in selectedValidIds"
                         :style="`z-index: ${index + 1}`"
                         :key="id"
-                        :src="
-                            (() => {
-                                const server = allMcpList.find((m) => m.id === id);
-                                return server ? getMcpServerIcon(server) : '';
-                            })()
-                        "
+                        class="bg-primary"
+                        :ui="{ fallback: 'text-inverted' }"
                         :alt="
                             (() => {
                                 const server = allMcpList.find((m) => m.id === id);
@@ -313,7 +295,7 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
                                 @click="mcp.connectable && select(mcp)"
                             >
                                 <UPopover
-                                    mode="hover"
+                                    mode="click"
                                     :open-delay="500"
                                     :content="{
                                         align: 'start',
@@ -396,10 +378,13 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
                                             <!-- 头部信息 -->
                                             <div class="flex flex-row justify-center gap-2">
                                                 <UAvatar
-                                                    :src="getMcpServerIcon(mcp)"
+                                                    class="bg-primary"
+                                                    :ui="{
+                                                        fallback: 'text-inverted',
+                                                        root: 'rounded-md',
+                                                    }"
                                                     :alt="mcp.name"
                                                     size="2xl"
-                                                    :ui="{ image: 'rounded-md' }"
                                                 />
                                                 <div class="flex flex-col gap-1">
                                                     <p

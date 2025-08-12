@@ -303,7 +303,7 @@ definePageMeta({ activePath: "/" });
 <template>
     <!-- 不同 layout 风格展示不同的样式 -->
     <div
-        class="ai-chat bg-muted dark:bg-muted/50 flex h-full min-h-0 items-center justify-center p-2"
+        class="ai-chat bg-muted dark:bg-muted/50 flex h-full min-h-0 items-center justify-center p-2 pl-0"
         :class="{
             'border-l': !controlsStore.chatSidebarVisible,
             '!bg-background !border-none !p-0':

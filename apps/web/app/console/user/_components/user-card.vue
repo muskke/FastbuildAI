@@ -34,16 +34,6 @@ function handleSelect(selected: boolean | "indeterminate") {
     }
 }
 
-/** 获取用户头像 */
-function getUserAvatar(user: UserInfo): string {
-    if (user.avatar) {
-        return user.avatar;
-    }
-    // 使用用户名首字母作为默认头像
-    const firstLetter = user.username?.charAt(0).toUpperCase() || "U";
-    return `https://ui-avatars.com/api/?name=${firstLetter}&background=random&color=fff&size=80`;
-}
-
 /** 获取用户状态信息 */
 function getUserStatusInfo(status: number | undefined) {
     switch (status) {
@@ -147,11 +137,11 @@ const sourceInfo = computed(() => getUserSourceInfo(props.user.source));
         <template #icon="{ groupHoverClass, selectedClass }">
             <UChip position="top-right" color="success">
                 <UAvatar
-                    :src="getUserAvatar(user)"
+                    :src="user.avatar"
                     :alt="user.nickname || user.username"
                     size="3xl"
-                    :ui="{ root: 'rounded-lg' }"
-                    :class="[groupHoverClass, selectedClass]"
+                    :ui="{ root: 'rounded-lg', fallback: 'text-inverted' }"
+                    :class="[groupHoverClass, selectedClass, user.avatar ? '' : 'bg-primary']"
                 />
             </UChip>
         </template>

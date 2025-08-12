@@ -69,7 +69,7 @@ export class AiProviderController extends BaseController {
                 });
             }
 
-            return providers;
+            return providers.filter((item) => item.models.length > 0);
         } catch (error) {
             this.logger.error(`获取供应商列表失败: ${error.message}`, error.stack);
             throw error;
