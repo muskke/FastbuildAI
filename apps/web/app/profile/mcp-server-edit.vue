@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { ProModal, ProSlider, ProUploader, useLockFn, useMessage } from "@fastbuildai/ui";
-import { tr } from "@nuxt/ui/runtime/locale/index.js";
+import { ProModal, ProUploader, useLockFn, useMessage } from "@fastbuildai/ui";
 import { computed, onMounted, reactive, ref } from "vue";
 import { object, string } from "yup";
 
 import type { McpServerCreateParams, McpServerInfo } from "@/models/web-mcp-server";
 import {
-    apiBatchCheckMcpServerConnect,
-    apiCheckMcpServerConnect,
     apiCreateMcpServer,
     apiGetMcpServerDetail,
     apiGetSystemMcpServerDetail,
@@ -138,16 +135,11 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         if (mcpServerId.value) {
             const res = await apiUpdateMcpServer(mcpServerId.value, newFormData);
             id = res.id;
-            toast.success("MCP服务器更新成功");
+            toast.success(t("console-ai-mcp-server.updateSuccess"));
         } else {
             const res = await apiCreateMcpServer(newFormData);
             id = res.id;
-            toast.success("MCP服务器创建成功");
-        }
-        try {
-            await apiCheckMcpServerConnect(id);
-        } catch (error) {
-            console.error("连接测试失败:", error);
+            toast.success(t("console-ai-mcp-server.createSuccess"));
         }
         emits("close", true);
     } catch (error) {
@@ -158,20 +150,12 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
 // JSON导入提交表单
 const { lockFn: jsonSubmitForm, isLock: jsonIsLock } = useLockFn(async () => {
     try {
-        const response = await apiJsonImportMcpServers(jsonFormData.jsonImport || "");
-        toast.success("MCP服务器导入成功");
+        await apiJsonImportMcpServers(jsonFormData.jsonImport || "");
+        toast.success(t("console-ai-mcp-server.jsonImportSuccess"));
 
-        try {
-            await apiBatchCheckMcpServerConnect(
-                response.results.map((association) => association.id),
-            );
-        } catch (error) {
-            console.error("连接测试失败:", error);
-        }
         emits("close", true);
     } catch (error) {
         console.error("JSON导入失败:", error);
-        toast.error("MCP服务器导入失败");
     }
 });
 

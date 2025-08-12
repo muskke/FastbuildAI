@@ -2,6 +2,7 @@
 import { ProCard } from "@fastbuildai/ui";
 
 import type { McpServerInfo } from "@/models/web-mcp-server";
+import { apiCheckMcpServerConnect } from "@/services/web/mcp-server";
 
 interface ProviderCardProps {
     mcpServer: McpServerInfo;
@@ -26,6 +27,9 @@ const { t } = useI18n();
 const router = useRouter();
 const { hasAccessByCodes } = useAccessControl();
 
+const connectable = ref(false);
+const connectableError = ref<string | undefined>("");
+
 /**
  * 获取MCP服务器图标
  */
@@ -38,6 +42,22 @@ function getMcpServerIcon(mcpServer: McpServerInfo): string {
     return `https://ui-avatars.com/api/?name=${firstLetter}&background=6366f1&color=fff&size=80`;
 }
 
+/**
+ * mcp 连通性测试
+ */
+const handleCheckConnect = async () => {
+    const res = await apiCheckMcpServerConnect(props.mcpServer.id);
+    connectable.value = res.connectable;
+    connectableError.value = res.error;
+};
+
+const connectableType = computed(() => {
+    return props.mcpServer.connectable || connectable.value;
+});
+
+const connectableErrorInfo = computed(() => {
+    return props.mcpServer.connectError || connectableError.value;
+});
 /**
  * mcpServer状态信息
  */
@@ -123,6 +143,12 @@ function getFormattedUrl(url: string): string {
 
     return url;
 }
+
+onMounted(() => {
+    if (!props.mcpServer.connectable && !props.mcpServer.connectError) {
+        handleCheckConnect();
+    }
+});
 </script>
 
 <template>
@@ -135,7 +161,7 @@ function getFormattedUrl(url: string): string {
     >
         <template #icon="{ groupHoverClass, selectedClass }">
             <div class="flex items-center gap-4">
-                <UChip :color="mcpServer.connectable ? 'success' : 'error'" position="top-right">
+                <UChip :color="connectableType ? 'success' : 'error'" position="top-right">
                     <UAvatar
                         :src="getMcpServerIcon(mcpServer)"
                         :alt="mcpServer.name"
@@ -180,11 +206,11 @@ function getFormattedUrl(url: string): string {
                     {{ t("console-ai-mcp-server.noDescription") }}
                 </h4>
             </UTooltip>
-            <UTooltip :text="mcpServer.connectError" :delay-duration="0">
-                <div v-if="mcpServer.connectError" class="flex flex-row items-center gap-1.5">
+            <UTooltip :text="connectableErrorInfo" :delay-duration="0">
+                <div v-if="connectableErrorInfo" class="flex flex-row items-center gap-1.5">
                     <UIcon name="tabler:plug-connected-x" size="16" class="text-red-500" />
                     <h4 class="line-clamp-2 text-xs text-red-500">
-                        {{ mcpServer.connectError }}
+                        {{ connectableErrorInfo }}
                     </h4>
                 </div>
             </UTooltip>
