@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useSlots } from "vue";
+
 /**
  * 通用卡片组件
  * 支持选择、操作菜单、图标展示等功能
@@ -66,11 +68,13 @@ const emit = defineEmits<ProCardEmits>();
 
 /**
  * 获取卡片尺寸类名
+ * 当存在底部插槽时，调整 md 尺寸的底部内边距
  */
 const sizeClasses = computed(() => {
+    const hasFooter = !!useSlots().footer;
     const sizeMap = {
         sm: "p-3",
-        md: "px-6 pt-6 pb-4",
+        md: hasFooter ? "px-6 pt-6 pb-4" : "p-6",
         lg: "p-6",
         xl: "p-8",
     };
@@ -83,7 +87,7 @@ const sizeClasses = computed(() => {
 const variantClasses = computed(() => {
     const variantMap = {
         default: "bg-background shadow-default border border-transparent",
-        outlined: "bg-background border border-border",
+        outlined: "bg-background border border-border/70 hover:border-border hover:bg-muted/70",
         elevated: "bg-background shadow-lg",
         flat: "bg-background",
     };
@@ -138,13 +142,14 @@ const showCheckbox = computed(() => {
 
 <template>
     <div
-        class="group relative flex flex-col rounded-lg transition-all duration-200"
+        class="group relative flex flex-col overflow-hidden rounded-lg transition-all duration-200"
         :class="[
             variantClasses,
             {
                 'ring-primary-500 ring-2 ring-offset-2 dark:ring-offset-gray-800': selected,
-                'cursor-pointer hover:shadow-lg': clickable && !disabled && !loading,
-                'hover:shadow-md': !clickable && !disabled && !loading,
+                'cursor-pointer hover:shadow-lg':
+                    clickable && !disabled && !loading && variant !== 'outlined',
+                'hover:shadow-md': !clickable && !disabled && !loading && variant !== 'outlined',
                 'cursor-not-allowed opacity-60': disabled,
                 'pointer-events-none': loading,
             },
