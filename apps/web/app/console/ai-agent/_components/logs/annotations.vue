@@ -29,7 +29,7 @@ const props = defineProps<{
 }>();
 
 const toast = useMessage();
-
+const { hasAccessByCodes } = useAccessControl();
 // 表格实例 Refs
 const table = useTemplateRef("table");
 
@@ -264,18 +264,24 @@ const columns: TableColumn<AgentAnnotation>[] = [
         accessorKey: "actions",
         header: () => h("p", { class: "text-center" }, `${columnLabels.value.actions}`),
         cell: ({ row }) => {
-            const actions = [
-                h(UButton, {
-                    color: "neutral",
-                    variant: "ghost",
-                    size: "xs",
-                    icon: "i-lucide-edit",
-                    onClick: () => handleEdit(row.original.id),
-                }),
-            ];
+            const actions = [];
 
-            // 如果是待审核状态，显示审核按钮
-            if (row.original.reviewStatus === "pending") {
+            if (hasAccessByCodes(["ai-agent-annotations:update"])) {
+                actions.push(
+                    h(UButton, {
+                        color: "neutral",
+                        variant: "ghost",
+                        size: "xs",
+                        icon: "i-lucide-edit",
+                        onClick: () => handleEdit(row.original.id),
+                    }),
+                );
+            }
+
+            if (
+                row.original.reviewStatus === "pending" &&
+                hasAccessByCodes(["ai-agent-annotations:review"])
+            ) {
                 actions.push(
                     h(UButton, {
                         color: "green",
@@ -294,15 +300,17 @@ const columns: TableColumn<AgentAnnotation>[] = [
                 );
             }
 
-            actions.push(
-                h(UButton, {
-                    color: "red",
-                    variant: "ghost",
-                    size: "xs",
-                    icon: "i-lucide-trash-2",
-                    onClick: () => handleDelete(row.original.id),
-                }),
-            );
+            if (hasAccessByCodes(["ai-agent-annotations:delete"])) {
+                actions.push(
+                    h(UButton, {
+                        color: "red",
+                        variant: "ghost",
+                        size: "xs",
+                        icon: "i-lucide-trash-2",
+                        onClick: () => handleDelete(row.original.id),
+                    }),
+                );
+            }
 
             return h("div", { class: "flex items-center justify-center gap-1" }, actions);
         },
@@ -358,9 +366,7 @@ watch(
 );
 
 // 初始化
-onMounted(() => {
-    getLists();
-});
+onMounted(() => getLists());
 </script>
 
 <template>
@@ -438,13 +444,15 @@ onMounted(() => {
                 </div>
 
                 <div class="flex items-center gap-2 md:ml-auto">
-                    <UButton
-                        label="新增标注"
-                        color="primary"
-                        variant="solid"
-                        leading-icon="i-lucide-plus"
-                        @click="handleCreate"
-                    />
+                    <AccessControl :codes="['ai-agent-annotations:create']">
+                        <UButton
+                            label="新增标注"
+                            color="primary"
+                            variant="solid"
+                            leading-icon="i-lucide-plus"
+                            @click="handleCreate"
+                        />
+                    </AccessControl>
 
                     <UDropdownMenu
                         :items="
