@@ -150,7 +150,10 @@ defineExpose({ close, open });
             <template #header />
             <!-- 弹窗内容 -->
             <template #content>
-                <div :id="contentId" class="relative flex flex-col gap-4 p-4 sm:p-6">
+                <div
+                    :id="contentId"
+                    class="relative flex flex-col gap-4 overflow-hidden p-4 sm:p-6"
+                >
                     <!-- 弹窗头部 -->
                     <div class="pr- flex items-center justify-between">
                         <slot name="title">
@@ -174,7 +177,7 @@ defineExpose({ close, open });
                             @click="close"
                         />
                     </div>
-                    <div>
+                    <div class="flex-1 overflow-hidden overflow-y-auto">
                         <slot />
                     </div>
                     <!-- 弹窗页脚 -->
