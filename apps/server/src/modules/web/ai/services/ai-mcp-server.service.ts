@@ -140,6 +140,8 @@ export class WebAiMcpServerService extends BaseService<AiMcpServer> {
         const { mcpServers, creatorId } = importDto;
         const results = [];
         const errors = [];
+        let createdCount = 0;
+        let updatedCount = 0;
 
         // 遍历所有MCP服务配置
         for (const [name, config] of Object.entries(mcpServers)) {
@@ -160,10 +162,10 @@ export class WebAiMcpServerService extends BaseService<AiMcpServer> {
                         creatorId,
                     });
                     results.push({
-                        name,
-                        id: mcpServer.id,
+                        ...mcpServer,
                         status: "updated",
                     });
+                    updatedCount++;
                 } else {
                     // 如果不存在，则创建
                     mcpServer = await this.create({
@@ -177,10 +179,10 @@ export class WebAiMcpServerService extends BaseService<AiMcpServer> {
                         isDisabled: false,
                     });
                     results.push({
-                        name,
-                        id: mcpServer.id,
+                        ...mcpServer,
                         status: "created",
                     });
+                    createdCount++;
                 }
             } catch (error) {
                 errors.push({
@@ -193,8 +195,8 @@ export class WebAiMcpServerService extends BaseService<AiMcpServer> {
         return {
             success: errors.length === 0,
             total: Object.keys(mcpServers).length,
-            created: results.filter((r) => r.status === "created").length,
-            updated: results.filter((r) => r.status === "updated").length,
+            created: createdCount,
+            updated: updatedCount,
             results,
             errors,
         };

@@ -294,10 +294,7 @@ export class WebAiMcpServerController {
 
             const result = await this.webAiMcpServerService.importMcpServers(importDto);
 
-            return {
-                message: `成功导入 ${result.created + result.updated} 个MCP服务，新建 ${result.created} 个，更新 ${result.updated} 个`,
-                ...result,
-            };
+            return result;
         } catch (error) {
             // 如果是已经处理过的 HTTP 异常，直接抛出
             if (error.status) {
