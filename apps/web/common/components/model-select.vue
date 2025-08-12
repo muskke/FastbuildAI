@@ -58,18 +58,6 @@ function select(model: AiModel | null) {
     search.value = "";
 }
 
-/**
- * 获取供应商图标
- */
-function getProviderIcon(provider: AiProvider): string {
-    if (provider.iconUrl) {
-        return provider.iconUrl;
-    }
-    // 使用供应商名称首字母作为默认图标
-    const firstLetter = provider.name?.charAt(0).toUpperCase() || "P";
-    return `https://ui-avatars.com/api/?name=${firstLetter}&background=6366f1&color=fff&size=80`;
-}
-
 async function loadModels() {
     if (loading.value) return;
     loading.value = true;
