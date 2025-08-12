@@ -2,7 +2,7 @@ import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job } from "bull";
 
-import { VectorizationQueueService } from "@/modules/web/datasets/services/vectorization-queue.service";
+import { VectorizationQueueService } from "@/modules/console/ai-datasets/services/vectorization-queue.service";
 
 /**
  * 向量化队列处理器
