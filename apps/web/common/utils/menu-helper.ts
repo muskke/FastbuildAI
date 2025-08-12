@@ -1,4 +1,17 @@
-import type { BreadcrumbItem, NavigationMenuItem } from "@nuxt/ui";
+export interface BreadcrumbItem {
+    label: string;
+    to?: string;
+    active?: boolean;
+}
+
+export interface NavigationMenuItem {
+    label: string;
+    icon?: string;
+    to?: string;
+    active?: boolean;
+    defaultOpen?: boolean;
+    children?: NavigationMenuItem[];
+}
 import type { Component } from "vue";
 import type { Composer } from "vue-i18n";
 import type { RouteRecordRaw } from "vue-router";
@@ -111,7 +124,9 @@ export function buildRoutes(
 ): RouteRecordRaw[] {
     const { $i18n } = useNuxtApp();
     const { t } = $i18n as Composer;
-    return walkFlat(usePermissionStore().menus, (menu, path) => {
+
+    // 收集所有路由
+    const allRoutes = walkFlat(usePermissionStore().menus, (menu, path) => {
         const allowed =
             isRoot ||
             !menu.permissionCode ||
@@ -138,6 +153,9 @@ export function buildRoutes(
 
         return [];
     });
+
+    // 处理三层嵌套结构：console -> [id] -> 页面
+    return processNestedStructure(allRoutes, componentLoader, t);
 }
 
 export function buildTopNavItems(): TransformedMenuItem[] {
@@ -198,6 +216,90 @@ export function buildBreadcrumbs(
             active: i === arr.length - 1,
         })),
     ];
+}
+
+/**
+ * 处理三层嵌套路由结构：console -> [id] -> 页面
+ * 将 /console/ai-datasets/:id/documents 转换为嵌套路由
+ */
+function processNestedStructure(
+    routes: RouteRecordRaw[],
+    componentLoader: Record<string, any>,
+    t: (key: string) => string,
+): RouteRecordRaw[] {
+    // 仅匹配严格的三段路径：/console/{module}/:{param}/{subpage}
+    const NESTED_MATCH_RE = /^\/console\/([^/]+)\/(::?[^/]+)\/(.+)$/; // 兼容可能重复":"的脏数据
+
+    const groupedByLayout = new Map<string, RouteRecordRaw[]>();
+    const flatRoutes: RouteRecordRaw[] = [];
+
+    for (const route of routes) {
+        const path = route.path as string;
+        const match = path.match(NESTED_MATCH_RE);
+
+        if (!match) {
+            flatRoutes.push(route);
+            continue;
+        }
+
+        const moduleName = match[1] || "";
+        let idParam = match[2] || "";
+        const subpageRaw = match[3] || "";
+
+        // 规范化 idParam，确保以":"开头且无重复"::"
+        if (!idParam.startsWith(":")) idParam = ":" + idParam.replace(/^:+/, "");
+        else idParam = ":" + idParam.replace(/^:+/, "");
+
+        // 规范化子路径，移除开头斜杠
+        const subpage = subpageRaw.replace(/^\/+/, "");
+
+        const layoutPath = `/console/${moduleName}/${idParam}`;
+        const group = groupedByLayout.get(layoutPath) || [];
+
+        // 子路由：保留原始 name/meta/component，仅更改 path 为相对路径
+        group.push({
+            ...route,
+            path: subpage,
+        });
+
+        groupedByLayout.set(layoutPath, group);
+    }
+
+    // 若无任何嵌套，直接返回原 routes
+    if (groupedByLayout.size === 0) return routes;
+
+    // 构建父布局 + 子路由
+    const nestedRoutes: RouteRecordRaw[] = [];
+
+    for (const [layoutPath, children] of groupedByLayout.entries()) {
+        const moduleName = (layoutPath.match(/^\/console\/([^/]+)\//)?.[1] || "").trim();
+        const layoutComponent = moduleName
+            ? loadComponent(`${moduleName}/[id]`, componentLoader)
+            : undefined;
+
+        if (layoutComponent) {
+            nestedRoutes.push({
+                name: `layout-${moduleName}-detail`,
+                path: layoutPath,
+                component: layoutComponent,
+                meta: {
+                    // 父布局仅负责布局，不绑定权限码
+                    layout: "console",
+                },
+                children: children,
+            });
+        } else {
+            // 找不到父布局组件，则回退为扁平路由
+            for (const child of children) {
+                nestedRoutes.push({
+                    ...child,
+                    path: `${layoutPath}/${(child.path as string).replace(/^\/+/, "")}`,
+                });
+            }
+        }
+    }
+
+    return flatRoutes.concat(nestedRoutes);
 }
 
 // -------------------- 辅助函数 --------------------
