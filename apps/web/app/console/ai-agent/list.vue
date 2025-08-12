@@ -60,8 +60,7 @@ const loadMore = async () => {
 
         if (res.items && res.items.length > 0) {
             agents.value.push(...res.items);
-            searchForm.page = searchForm.page! + 1;
-            hasMore.value = res.totalPages > searchForm.page;
+            hasMore.value = res.totalPages > searchForm.page!;
         } else {
             hasMore.value = false;
         }
@@ -149,7 +148,7 @@ onMounted(() => getLists());
                     :has-more="hasMore"
                     :threshold="200"
                     :loading-text="$t('common.loading')"
-                    :no-more-text="$t('common.noMoreData')"
+                    :no-more-text="searchForm.page !== 1 ? $t('common.noMoreData') : ' '"
                     @load-more="loadMore"
                 >
                     <div

@@ -6,6 +6,7 @@ const AgentModal = defineAsyncComponent(() => import("./_components/agent-modal.
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
+const { hasAccessByCodes } = useAccessControl();
 const isMobile = useMediaQuery("(max-width: 1280px)");
 const agentId = computed(() => (route.params as Record<string, string>).id);
 const collapsed = ref<boolean>(false);
@@ -94,32 +95,46 @@ watch(isMobile, (newVal) => {
                 <UNavigationMenu
                     orientation="vertical"
                     :collapsed="collapsed"
-                    :items="[
-                        {
-                            label: '编排',
-                            icon: 'i-lucide-radar',
-                            to: useRoutePath('ai-agent:detail', {
-                                id: agentId as string,
-                            }),
-                        },
-                        {
-                            label: '发布更新',
-                            icon: 'i-lucide-radio-tower',
-                            to: useRoutePath('ai-agent:publish', { id: agentId as string }),
-                        },
-                        {
-                            label: '记录与标注',
-                            icon: 'i-lucide-file-text',
-                            to: useRoutePath('ai-agent-chat-record:list', {
-                                id: agentId as string,
-                            }),
-                        },
-                        {
-                            label: '数据看板',
-                            icon: 'i-lucide-pie-chart',
-                            to: useRoutePath('ai-agent:statistics', { id: agentId as string }),
-                        },
-                    ]"
+                    :items="
+                        [
+                            hasAccessByCodes(['ai-agent:detail'])
+                                ? {
+                                      label: '编排',
+                                      icon: 'i-lucide-radar',
+                                      to: useRoutePath('ai-agent:detail', {
+                                          id: agentId as string,
+                                      }),
+                                  }
+                                : null,
+                            hasAccessByCodes(['ai-agent:publish'])
+                                ? {
+                                      label: '发布更新',
+                                      icon: 'i-lucide-radio-tower',
+                                      to: useRoutePath('ai-agent:publish', {
+                                          id: agentId as string,
+                                      }),
+                                  }
+                                : null,
+                            hasAccessByCodes(['ai-agent-chat-record:list'])
+                                ? {
+                                      label: '记录与标注',
+                                      icon: 'i-lucide-file-text',
+                                      to: useRoutePath('ai-agent-chat-record:list', {
+                                          id: agentId as string,
+                                      }),
+                                  }
+                                : null,
+                            hasAccessByCodes(['ai-agent:statistics'])
+                                ? {
+                                      label: '数据看板',
+                                      icon: 'i-lucide-pie-chart',
+                                      to: useRoutePath('ai-agent:statistics', {
+                                          id: agentId as string,
+                                      }),
+                                  }
+                                : null,
+                        ].filter(Boolean) as NavigationMenuItem[]
+                    "
                     class="data-[orientation=vertical]:w-full"
                     :ui="{
                         list: 'space-y-1',

@@ -98,16 +98,18 @@ onMounted(() => {
                 <div class="mb-4 flex justify-end gap-3 p-0.5">
                     <ModelConfig v-model="state.modelConfig!" />
 
-                    <UButton
-                        trailingIcon="i-lucide-arrow-big-up"
-                        color="primary"
-                        size="lg"
-                        class="flex-none gap-1 px-4"
-                        :loading="isLock"
-                        @click="handleUpdate"
-                    >
-                        更新
-                    </UButton>
+                    <AccessControl :codes="['ai-agent:update']">
+                        <UButton
+                            trailingIcon="i-lucide-arrow-big-up"
+                            color="primary"
+                            size="lg"
+                            class="flex-none gap-1 px-4"
+                            :loading="isLock"
+                            @click="handleUpdate"
+                        >
+                            更新
+                        </UButton>
+                    </AccessControl>
                 </div>
 
                 <div
