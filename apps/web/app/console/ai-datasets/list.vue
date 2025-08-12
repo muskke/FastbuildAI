@@ -44,7 +44,6 @@ const getLists = async () => {
 
         datasets.value = res.items || [];
         hasMore.value = res.totalPages > searchForm.page;
-        searchForm.page = searchForm.page! + 1;
     } catch (error) {
         console.error("获取数据失败:", error);
         hasMore.value = false;
@@ -164,7 +163,7 @@ onMounted(() => getLists());
                     :has-more="hasMore"
                     :threshold="200"
                     :loading-text="$t('common.loading')"
-                    :no-more-text="$t('common.noMoreData')"
+                    :no-more-text="searchForm.page !== 1 ? $t('common.noMoreData') : ' '"
                     @load-more="loadMore"
                 >
                     <div
