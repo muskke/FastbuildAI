@@ -133,8 +133,6 @@ export default defineNuxtConfig({
     routeRules: {
         "/console/**": { prerender: false, ssr: false, swr: true },
         "/profile/**": { prerender: false, ssr: false, swr: true },
-        "/agent/**": { prerender: false, ssr: false, swr: true },
-        "/datasets/**": { prerender: false, ssr: false, swr: true },
     },
 
     devServer: {
@@ -269,6 +267,10 @@ export default defineNuxtConfig({
         bundle: {
             optimizeTranslationDirective: false,
         },
+    },
+
+    icon: {
+        serverBundle: "remote",
     },
 
     // // pwa,
