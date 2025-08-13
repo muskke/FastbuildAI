@@ -157,6 +157,9 @@ export interface JsonImportMcpServerResponse {
     results: results[];
     message: string;
     success: boolean;
+    created: number;
+    updated: number;
+    total: number;
 }
 
 export interface UpdateMcpServerRequest extends Partial<CreateMcpServerRequest> {}
