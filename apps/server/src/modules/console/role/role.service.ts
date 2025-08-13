@@ -196,8 +196,13 @@ export class RoleService extends BaseService<Role> {
         // 检查是否有用户关联了该角色
         const usersWithRole = await this.getUsersByRoleId(id);
         if (usersWithRole.length > 0) {
-            throw HttpExceptionFactory.badRequest(
-                `无法删除角色：该角色已分配给 ${usersWithRole.length} 个用户，请先解除用户与角色的关联`,
+            // 自动解除用户与角色的关联
+            for (const user of usersWithRole) {
+                user.role = null;
+            }
+            await this.userRepository.save(usersWithRole);
+            this.logger.log(
+                `已自动解除 ${usersWithRole.length} 个用户与角色 ${role.name} (ID: ${id}) 的关联`,
             );
         }
 
@@ -218,7 +223,7 @@ export class RoleService extends BaseService<Role> {
     private async getUsersByRoleId(roleId: string): Promise<User[]> {
         return this.userRepository
             .createQueryBuilder("user")
-            .innerJoin("user.roles", "role", "role.id = :roleId", { roleId })
+            .innerJoin("user.role", "role", "role.id = :roleId", { roleId })
             .getMany();
     }
 

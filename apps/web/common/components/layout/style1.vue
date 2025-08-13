@@ -40,7 +40,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="bg-muted flex h-full w-full flex-col">
+    <div class="bg-muted/50 flex h-full w-full flex-col">
         <!-- 顶部导航栏 -->
         <header class="sticky top-0 z-50 p-4">
             <div

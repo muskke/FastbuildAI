@@ -47,6 +47,7 @@ export const useUserStore = defineStore("auth", () => {
 
         if (!redirectUrl || redirectUrl === ROUTES.HOME || redirectUrl === ROUTES.LOGIN) {
             return reloadNuxtApp({
+                ttl: 100,
                 path: ROUTES.HOME,
             });
         }
@@ -57,6 +58,7 @@ export const useUserStore = defineStore("auth", () => {
 
         if (route.path === redirectPath) {
             return reloadNuxtApp({
+                ttl: 100,
                 path: redirectUrl,
             });
         } else {
@@ -82,7 +84,9 @@ export const useUserStore = defineStore("auth", () => {
 
         clearToken();
         userInfo.value = null;
-        reloadNuxtApp();
+        reloadNuxtApp({
+            ttl: 100,
+        });
         localStorage.removeItem("modelId");
         localStorage.removeItem("mcpIds");
 
@@ -104,7 +108,6 @@ export const useUserStore = defineStore("auth", () => {
     /** 获取用户信息 */
     const getUser = async () => {
         userInfo.value = await apiGetCurrentUserInfo();
-        console.log("userInfo.value", userInfo.value);
         return userInfo.value;
     };
 

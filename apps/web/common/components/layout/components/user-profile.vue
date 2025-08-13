@@ -177,7 +177,7 @@ const handleMenuClick = (item: MenuItem) => {
                 <USeparator class="py-4" />
 
                 <!-- 底部操作区 -->
-                <div class="flex justify-between px-3">
+                <div class="flex justify-between">
                     <!-- 退出登录 -->
                     <div
                         class="flex cursor-pointer items-center gap-1 rounded-md px-2 text-sm text-red-500 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10"

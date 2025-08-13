@@ -14,6 +14,10 @@ export interface RoleFormData {
     description: string;
     /** 角色关联的权限ID列表 */
     permissions: Permission[];
+    /** 创建时间 */
+    createdAt?: string;
+    /** 更新时间 */
+    updatedAt?: string;
 }
 
 /**

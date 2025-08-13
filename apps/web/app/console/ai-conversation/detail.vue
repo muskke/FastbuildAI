@@ -104,9 +104,6 @@ onMounted(async () => await Promise.all([fetchDetail(), fetchMessages()]));
         <div v-else-if="conversation" class="space-y-6">
             <!-- 对话基本信息 -->
             <div class="bg-muted rounded-lg p-4">
-                <h3 class="mb-3 text-lg font-semibold">
-                    {{ $t("console-ai-conversation.detail.info") }}
-                </h3>
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                         <label class="text-accent-foreground text-sm font-medium">{{
@@ -161,7 +158,7 @@ onMounted(async () => await Promise.all([fetchDetail(), fetchMessages()]));
                     {{ $t("console-ai-conversation.detail.messages") }} ({{ messages.length }})
                 </h3>
 
-                <div class="max-h-96 space-y-4 overflow-y-auto">
+                <div class="space-y-4">
                     <ProScrollArea class="h-full min-h-0 w-full">
                         <ProInfiniteScroll
                             :threshold="300"

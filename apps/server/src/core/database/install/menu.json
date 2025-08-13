@@ -13,7 +13,7 @@
         "code": "dashboard"
     },
     {
-        "name": "console-menu.providers",
+        "name": "console-menu.providers.title",
         "path": "ai_config/provide",
         "icon": "i-lucide-brain-circuit",
         "component": "/console/ai-config/provider/list",
@@ -25,7 +25,7 @@
         "pluginPackName": "",
         "children": [
             {
-                "name": "console-menu.model",
+                "name": "console-menu.providers.model.title",
                 "path": "model",
                 "icon": "",
                 "component": "/console/ai-config/provider/model/list",
@@ -175,20 +175,20 @@
         "code": "ai-config-mcp-server"
     },
     {
-        "name": "console-menu.aiConversation",
+        "name": "console-menu.aiConversation.title",
         "code": null,
         "path": "conversation",
         "icon": "i-lucide-message-square-diff",
         "component": "",
         "permissionCode": null,
-        "sort": 300,
+        "sort": 500,
         "isHidden": 0,
         "type": 1,
         "sourceType": 1,
         "pluginPackName": "",
         "children": [
             {
-                "name": "console-menu.aiChat",
+                "name": "console-menu.aiConversation.aiChat",
                 "code": "ai-chat",
                 "path": "ai-conversation",
                 "icon": "",
@@ -211,9 +211,7 @@
                         "isHidden": 0,
                         "type": 3,
                         "sourceType": 1,
-                        "pluginPackName": null,
-                        "createdAt": "2025-06-17T07:16:46.459Z",
-                        "updatedAt": "2025-06-17T07:16:46.459Z"
+                        "pluginPackName": null
                     },
                     {
                         "name": "console-common.delete",
@@ -231,7 +229,7 @@
                 ]
             },
             {
-                "name": "console-menu.chatConfig",
+                "name": "console-menu.aiConversation.chatConfig",
                 "code": null,
                 "path": "config",
                 "icon": "",
@@ -261,20 +259,20 @@
         ]
     },
     {
-        "name": "console-menu.userManagement",
+        "name": "console-menu.userManagement.title",
         "code": null,
         "path": "user",
         "icon": "i-lucide-users",
         "component": "",
         "permissionCode": null,
-        "sort": 400,
+        "sort": 600,
         "isHidden": 0,
         "type": 1,
         "sourceType": 1,
         "pluginPackName": "",
         "children": [
             {
-                "name": "console-menu.userManagement",
+                "name": "console-menu.userManagement.userList",
                 "path": "list",
                 "icon": "",
                 "component": "/console/user/list",
@@ -356,19 +354,19 @@
         ]
     },
     {
-        "name": "console-menu.orderManagement",
+        "name": "console-menu.financial.orderManagement",
         "path": "order-management",
         "icon": "i-lucide-clipboard-list",
         "component": "",
         "permissionCode": null,
-        "sort": 500,
+        "sort": 700,
         "isHidden": 0,
         "type": 1,
         "sourceType": 1,
         "pluginPackName": "",
         "children": [
             {
-                "name": "console-menu.orderList",
+                "name": "console-menu.financial.orderList",
                 "path": "order-recharge",
                 "icon": "",
                 "component": "/console/order-management/order-recharge",
@@ -383,12 +381,12 @@
         ]
     },
     {
-        "name": "console-menu.diyCenter",
+        "name": "console-menu.diyCenter.title",
         "path": "decorate",
         "icon": "i-lucide-paint-roller",
         "component": "",
         "permissionCode": null,
-        "sort": 600,
+        "sort": 800,
         "isHidden": 0,
         "type": 1,
         "sourceType": 1,
@@ -396,7 +394,7 @@
         "code": "diy-center",
         "children": [
             {
-                "name": "console-menu.microPage",
+                "name": "console-menu.diyCenter.microPage",
                 "path": "micropage",
                 "icon": "",
                 "component": "/console/decorate/micropage/list",
@@ -491,19 +489,19 @@
         ]
     },
     {
-        "name": "console-menu.financial",
+        "name": "console-menu.financial.title",
         "path": "financial",
         "icon": "i-lucide-circle-dollar-sign",
         "component": "",
         "permissionCode": null,
-        "sort": 700,
+        "sort": 900,
         "isHidden": 0,
         "type": 1,
         "sourceType": 1,
         "pluginPackName": null,
         "children": [
             {
-                "name": "console-menu.financialCenter",
+                "name": "console-menu.financial.financialCenter",
                 "path": "financial-center",
                 "icon": "",
                 "component": "/console/financial/financial-center",
@@ -516,7 +514,7 @@
                 "code": "financial-center"
             },
             {
-                "name": "console-menu.accountBalance",
+                "name": "console-menu.financial.accountBalance",
                 "path": "account-balance",
                 "icon": "",
                 "component": "/console/financial/account-balance",
@@ -531,19 +529,19 @@
         ]
     },
     {
-        "name": "console-menu.permission",
+        "name": "console-menu.permission.title",
         "path": "system-perms",
         "icon": "i-lucide-user-lock",
         "component": "",
         "permissionCode": null,
-        "sort": 800,
+        "sort": 1000,
         "isHidden": 0,
         "type": 1,
         "sourceType": 1,
         "pluginPackName": null,
         "children": [
             {
-                "name": "console-menu.permissionList",
+                "name": "console-menu.permission.permissionList",
                 "path": "permission/list",
                 "icon": "",
                 "component": "/console/permission/list",
@@ -597,7 +595,7 @@
                 "code": "system-permission-list"
             },
             {
-                "name": "console-menu.roleList",
+                "name": "console-menu.permission.roleList",
                 "path": "role/list",
                 "icon": "",
                 "component": "/console/role/list",
@@ -664,7 +662,7 @@
                 "code": "system-role"
             },
             {
-                "name": "console-menu.menuList",
+                "name": "console-menu.permission.menuList",
                 "path": "menu/list",
                 "icon": "",
                 "component": "/console/menu/list",
@@ -734,19 +732,19 @@
         "code": "system-permission"
     },
     {
-        "name": "console-menu.systemSettings",
+        "name": "console-menu.systemSettings.title",
         "path": "system",
         "icon": "i-lucide-settings-2",
         "component": "",
         "permissionCode": null,
-        "sort": 900,
+        "sort": 1100,
         "isHidden": 0,
         "type": 1,
         "sourceType": 1,
         "pluginPackName": null,
         "children": [
             {
-                "name": "console-menu.siteInfo",
+                "name": "console-menu.systemSettings.siteInfo",
                 "path": "website",
                 "icon": "",
                 "component": "/console/system-setting/website/index",
@@ -774,7 +772,7 @@
                 "code": "system-website"
             },
             {
-                "name": "console-menu.PayConfig",
+                "name": "console-menu.systemSettings.PayConfig",
                 "path": "getPayConfig",
                 "icon": "",
                 "component": "/console/system-setting/payConfig/index",
@@ -787,7 +785,7 @@
                 "code": "system-payConfig-list"
             },
             {
-                "name": "console-menu.PayConfig",
+                "name": "console-menu.systemSettings.PayConfig",
                 "path": "setPayConfig",
                 "icon": "",
                 "component": "/console/system-setting/payConfig/edit",
@@ -803,19 +801,19 @@
         "code": "system-settings"
     },
     {
-        "name": "console-menu.channelManagement",
+        "name": "console-menu.systemSettings.channelManagement",
         "path": "channel",
         "icon": "i-lucide-network",
         "component": "",
         "permissionCode": null,
-        "sort": 1000,
+        "sort": 1200,
         "isHidden": 0,
         "type": 1,
         "sourceType": 1,
         "pluginPackName": null,
         "children": [
             {
-                "name": "console-menu.wechatOaConfig",
+                "name": "console-menu.systemSettings.wechatOaConfig",
                 "path": "wechat-oa",
                 "icon": "",
                 "component": "/console/channel/wechatoa/index",

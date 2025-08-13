@@ -79,6 +79,8 @@ const dropdownActions = computed(() => {
         selectable
         clickable
         show-actions
+        variant="outlined"
+        class="cursor-pointer"
         :selected="selected"
         :actions="dropdownActions"
         @select="handleSelect"
@@ -89,7 +91,8 @@ const dropdownActions = computed(() => {
                 :src="conversation?.user?.avatar"
                 :alt="conversation.title"
                 size="3xl"
-                :ui="{ root: 'rounded-lg' }"
+                class="bg-primary"
+                :ui="{ root: 'rounded-lg', fallback: 'text-inverted' }"
                 :class="[groupHoverClass, selectedClass]"
             />
         </template>

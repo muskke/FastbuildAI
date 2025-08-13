@@ -154,29 +154,15 @@ async function handlePopoverUpdate(value: boolean) {
         }
     }
 }
-
-/**
- * 获取MCP服务器图标
- */
-function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): string {
-    if (mcpServer.icon) {
-        return mcpServer.icon;
-    }
-    // 使用MCP服务器名称首字母作为默认图标
-    const firstLetter = mcpServer.name?.charAt(0).toUpperCase() || "P";
-    return `https://ui-avatars.com/api/?name=${firstLetter}&background=6366f1&color=fff&size=80`;
-}
-
-// onMounted(getSystemList);
 </script>
 
 <template>
     <UPopover v-model:open="isOpen" :disabled="props.disabled" @update:open="handlePopoverUpdate">
         <UButton
-            color="primary"
+            :color="selectedIds.length > 0 ? 'primary' : 'neutral'"
             variant="ghost"
             :ui="{ leadingIcon: 'size-4' }"
-            :class="{ 'bg-primary/15': selectedValidIds.length }"
+            :class="{ 'bg-primary/10': selectedValidIds.length }"
             :loading="loading"
             :disabled="props.disabled"
             @click.stop
@@ -217,12 +203,8 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
                         v-for="(id, index) in selectedValidIds"
                         :style="`z-index: ${index + 1}`"
                         :key="id"
-                        :src="
-                            (() => {
-                                const server = allMcpList.find((m) => m.id === id);
-                                return server ? getMcpServerIcon(server) : '';
-                            })()
-                        "
+                        class="bg-primary"
+                        :ui="{ fallback: 'text-inverted' }"
                         :alt="
                             (() => {
                                 const server = allMcpList.find((m) => m.id === id);
@@ -313,7 +295,7 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
                                 @click="mcp.connectable && select(mcp)"
                             >
                                 <UPopover
-                                    mode="hover"
+                                    mode="click"
                                     :open-delay="500"
                                     :content="{
                                         align: 'start',
@@ -323,7 +305,7 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
                                 >
                                     <div class="flex w-full flex-row items-center justify-between">
                                         <div
-                                            class="flex flex-row items-start gap-2 space-y-0.5 overflow-hidden"
+                                            class="flex flex-row items-center gap-2 space-y-0.5 overflow-hidden"
                                         >
                                             <UAvatar
                                                 v-if="mcp.icon"
@@ -396,10 +378,13 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
                                             <!-- 头部信息 -->
                                             <div class="flex flex-row justify-center gap-2">
                                                 <UAvatar
-                                                    :src="getMcpServerIcon(mcp)"
+                                                    class="bg-primary"
+                                                    :ui="{
+                                                        fallback: 'text-inverted',
+                                                        root: 'rounded-md',
+                                                    }"
                                                     :alt="mcp.name"
                                                     size="2xl"
-                                                    :ui="{ image: 'rounded-md' }"
                                                 />
                                                 <div class="flex flex-col gap-1">
                                                     <p
@@ -428,12 +413,31 @@ function getMcpServerIcon(mcpServer: McpServerInfo | SystemMcpServerInfo): strin
 
                                             <!-- mcp 详情 -->
                                             <div class="bg-muted w-full rounded-lg p-2">
-                                                <p class="text-muted-foreground wrap-break-word">
+                                                <p
+                                                    class="text-muted-foreground text-xs wrap-break-word"
+                                                >
                                                     {{
                                                         mcp.description ||
                                                         t("common.mcp-server.detail.noDescription")
                                                     }}
                                                 </p>
+                                            </div>
+
+                                            <div class="space-y-2">
+                                                <h2 class="text-xs font-bold">
+                                                    {{ t("common.mcp-server.detail.tools") }}
+                                                </h2>
+
+                                                <div class="flex flex-wrap gap-1">
+                                                    <UBadge
+                                                        v-for="tool in mcp.tools"
+                                                        :key="tool.id"
+                                                        color="neutral"
+                                                        variant="outline"
+                                                    >
+                                                        {{ tool.name }}
+                                                    </UBadge>
+                                                </div>
                                             </div>
                                         </div>
                                     </template>

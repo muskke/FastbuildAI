@@ -46,31 +46,55 @@ const retrievalModeMap = {
             :key="index"
             :unmountOnHide="false"
         >
-            <div class="flex cursor-pointer flex-row items-center gap-2 text-xs select-none">
+            <div
+                class="flex w-full cursor-pointer flex-wrap items-center gap-2 text-xs select-none"
+            >
                 <UIcon name="i-lucide-hammer" class="text-primary size-4" />
-                <div>
-                    {{ t("common.chat.knowledgeCall.start") }}
-                    {{ t("common.chat.knowledgeCall.from") }}
+
+                <div class="flex min-w-0 flex-1 items-center gap-2">
+                    <div class="shrink-0">
+                        {{ t("common.chat.knowledgeCall.start") }}
+                        {{ t("common.chat.knowledgeCall.from") }}
+                    </div>
+
+                    <div
+                        name="knowledge"
+                        class="bg-primary/15 text-primary max-w-[50vw] truncate rounded px-2 py-1 text-xs sm:max-w-[20rem]"
+                        :title="ref.datasetName"
+                    >
+                        {{ ref.datasetName }}
+                    </div>
+
+                    <div class="text-md shrink-0">
+                        {{ t("common.chat.knowledgeCall.call") }}
+                    </div>
+
+                    <div
+                        name="knowledge"
+                        class="bg-primary/15 text-primary max-w-[40vw] truncate rounded px-2 py-1 text-xs sm:max-w-[16rem]"
+                        :title="
+                            retrievalModeMap[ref.retrievalMode as keyof typeof retrievalModeMap]
+                        "
+                    >
+                        {{ retrievalModeMap[ref.retrievalMode as keyof typeof retrievalModeMap] }}
+                    </div>
+
+                    <div class="shrink-0">
+                        {{ t("common.chat.knowledgeCall.finished") }}
+                    </div>
+
+                    <div
+                        v-if="ref.duration"
+                        class="bg-secondary shrink-0 rounded px-2 py-1 text-xs"
+                    >
+                        {{ t("common.chat.toolCall.duration") }}
+                        {{ formatDuration(ref.duration) }}
+                    </div>
                 </div>
-                <div name="knowledge" class="bg-primary/15 text-primary rounded px-2 py-1 text-xs">
-                    {{ ref.datasetName }}
-                </div>
-                <div class="text-md">
-                    {{ t("common.chat.knowledgeCall.call") }}
-                </div>
-                <div name="knowledge" class="bg-primary/15 text-primary rounded px-2 py-1 text-xs">
-                    {{ retrievalModeMap[ref.retrievalMode as keyof typeof retrievalModeMap] }}
-                </div>
-                <div>
-                    {{ t("common.chat.knowledgeCall.finished") }}
-                </div>
-                <div v-if="ref.duration" class="bg-secondary rounded px-2 py-1 text-xs">
-                    {{ t("common.chat.toolCall.duration") }}
-                    {{ formatDuration(ref.duration) }}
-                </div>
+
                 <UIcon
                     name="i-lucide-chevron-down"
-                    class="rotate-270 transition-transform duration-200 group-data-[state=open]:rotate-360"
+                    class="ml-auto rotate-270 transition-transform duration-200 group-data-[state=open]:rotate-360"
                 />
             </div>
 

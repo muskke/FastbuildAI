@@ -208,10 +208,8 @@ const handleDelete = async (id: string | string[]) => {
         }
         // 刷新列表
         getLists();
-        toast.success(t("console-system-perms.role.success"));
     } catch (error) {
         console.error("删除失败:", error);
-        toast.error(t("console-system-perms.role.error"));
     }
 };
 

@@ -299,7 +299,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
                             userStore.userInfo?.nickname
                         }}</span>
                         <span class="text-muted-foreground text-xs">
-                            {{ userStore.userInfo?.email || userStore.userInfo?.phone }}
+                            {{ userStore.userInfo?.username }}
                         </span>
                     </div>
                 </RouterLink>
@@ -343,7 +343,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
                             {{ userStore.userInfo?.nickname }}
                         </span>
                         <span class="text-secondary-foreground truncate text-xs">
-                            {{ userStore.userInfo?.email || userStore.userInfo?.phone }}
+                            {{ userStore.userInfo?.username }}
                         </span>
                     </div>
                 </div>

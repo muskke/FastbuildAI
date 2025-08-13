@@ -3,9 +3,7 @@
  * 段落组件
  * @description 富文本段落组件，支持HTML标签和样式混排，提供完整的文本格式化功能
  */
-import "md-editor-v3/lib/style.css";
-
-import { MdPreview } from "md-editor-v3";
+import { ProMarkdown } from "@fastbuildai/ui";
 import { computed, type CSSProperties } from "vue";
 
 import WidgetsBaseContent from "../../base/widgets-base-content.vue";
@@ -48,26 +46,6 @@ const paragraphStyle = computed<CSSProperties>(() => ({
             whiteSpace: "nowrap",
         }),
 }));
-
-/**
- * 清理和安全化HTML内容
- */
-const safeContent = computed(() => {
-    if (!props.enableRichText) {
-        // 如果不启用富文本，则将HTML标签转义
-        return props.content
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;")
-            .replace(/\n/g, "<br>");
-    }
-
-    // 启用富文本时，保留安全的HTML标签
-    // 这里可以根据需要添加更多的安全过滤逻辑
-    return props.content || "";
-});
 </script>
 
 <template>
@@ -77,12 +55,9 @@ const safeContent = computed(() => {
         custom-class="paragraph-content"
     >
         <template #default="{ style }">
-            <!-- <div
-                class="paragraph-wrapper prose dark:prose-invert prose-sm max-w-none"
-                :style="paragraphStyle"
-                v-dompurify-html="safeContent"
-            /> -->
-            <MdPreview id="preview-only" :modelValue="safeContent" />
+            <div :style="paragraphStyle" class="paragraph-wrapper">
+                <ProMarkdown :content="props.content" />
+            </div>
         </template>
     </WidgetsBaseContent>
 </template>

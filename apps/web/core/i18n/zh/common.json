@@ -194,5 +194,33 @@
             "goBack": "返回上一页",
             "goHome": "返回首页"
         }
+    },
+    "unit": {
+        "general": {
+            "item": "个",
+            "thing": "件",
+            "entry": "项",
+            "row": "行",
+            "column": "列",
+            "piece": "块",
+            "set": "套",
+            "part": "部分",
+            "list": "条",
+            "number": "号"
+        },
+        "time": {
+            "second": "秒",
+            "minute": "分钟",
+            "hour": "小时",
+            "day": "天",
+            "week": "周",
+            "month": "月",
+            "quarter": "季度",
+            "year": "年"
+        }
+    },
+    "ai": {
+        "provider": "供应商",
+        "model": "模型"
     }
 }

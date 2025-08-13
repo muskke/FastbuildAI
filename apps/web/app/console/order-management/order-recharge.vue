@@ -311,91 +311,77 @@ onMounted(() => {
         <!-- 订单列表 -->
         <div class="flex flex-1 flex-col overflow-hidden">
             <div class="h-fit py-5">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg font-medium">
-                            {{ t("console-order-management.recharge.list.pageTitle") }}
-                        </h3>
-                        <div class="text-muted-foreground mb-1 flex items-center gap-1">
-                            <UIcon name="i-lucide-info" class="size-3" />
-                            <TimeDisplay
-                                :datetime="new Date().toISOString()"
-                                mode="datetime"
-                                class="text-xs"
-                            />
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <UInput
-                            :placeholder="t('console-order-management.recharge.list.searchOrderNo')"
-                            icon="i-heroicons-magnifying-glass"
-                            v-model="orderNo"
-                            @update:modelValue="getOrderList"
-                        />
-                        <UInput
-                            :placeholder="t('console-order-management.recharge.list.searchUser')"
-                            icon="i-heroicons-magnifying-glass"
-                            v-model="keyword"
-                            @update:modelValue="getOrderList"
-                        />
-                        <USelect
-                            :placeholder="t('console-order-management.recharge.list.paymentMethod')"
-                            :items="[
-                                {
-                                    label: t('console-common.all'),
-                                    value: null,
-                                },
-                                {
-                                    label: t('console-order-management.recharge.list.wechatPay'),
-                                    value: '1',
-                                },
-                                {
-                                    label: t('console-order-management.recharge.list.alipayPay'),
-                                    value: '2',
-                                },
-                            ]"
-                            v-model="payType"
-                            @update:modelValue="getOrderList"
-                        />
-                        <USelect
-                            :placeholder="t('console-order-management.recharge.list.paymentStatus')"
-                            :items="[
-                                {
-                                    label: t('console-common.all'),
-                                    value: null,
-                                },
-                                {
-                                    label: t('console-order-management.recharge.list.paid'),
-                                    value: '1',
-                                },
-                                {
-                                    label: t('console-order-management.recharge.list.unpaid'),
-                                    value: '0',
-                                },
-                            ]"
-                            v-model="payStatus"
-                            @update:modelValue="getOrderList"
-                        />
-                        <USelect
-                            :placeholder="t('console-order-management.recharge.list.refundStatus')"
-                            :items="[
-                                {
-                                    label: t('console-common.all'),
-                                    value: null,
-                                },
-                                {
-                                    label: t('console-order-management.recharge.list.refunded'),
-                                    value: '1',
-                                },
-                                {
-                                    label: t('console-order-management.recharge.list.notRefunded'),
-                                    value: '0',
-                                },
-                            ]"
-                            v-model="refundStatus"
-                            @update:modelValue="getOrderList"
-                        />
-                    </div>
+                <div class="flex items-center space-x-2">
+                    <UInput
+                        :placeholder="t('console-order-management.recharge.list.searchOrderNo')"
+                        icon="i-heroicons-magnifying-glass"
+                        v-model="orderNo"
+                        @update:modelValue="getOrderList"
+                    />
+                    <UInput
+                        :placeholder="t('console-order-management.recharge.list.searchUser')"
+                        icon="i-heroicons-magnifying-glass"
+                        v-model="keyword"
+                        @update:modelValue="getOrderList"
+                    />
+                    <USelect
+                        class="ml-auto"
+                        :placeholder="t('console-order-management.recharge.list.paymentMethod')"
+                        :items="[
+                            {
+                                label: t('console-common.all'),
+                                value: null,
+                            },
+                            {
+                                label: t('console-order-management.recharge.list.wechatPay'),
+                                value: '1',
+                            },
+                            {
+                                label: t('console-order-management.recharge.list.alipayPay'),
+                                value: '2',
+                            },
+                        ]"
+                        v-model="payType"
+                        @update:modelValue="getOrderList"
+                    />
+                    <USelect
+                        :placeholder="t('console-order-management.recharge.list.paymentStatus')"
+                        :items="[
+                            {
+                                label: t('console-common.all'),
+                                value: null,
+                            },
+                            {
+                                label: t('console-order-management.recharge.list.paid'),
+                                value: '1',
+                            },
+                            {
+                                label: t('console-order-management.recharge.list.unpaid'),
+                                value: '0',
+                            },
+                        ]"
+                        v-model="payStatus"
+                        @update:modelValue="getOrderList"
+                    />
+                    <USelect
+                        :placeholder="t('console-order-management.recharge.list.refundStatus')"
+                        :items="[
+                            {
+                                label: t('console-common.all'),
+                                value: null,
+                            },
+                            {
+                                label: t('console-order-management.recharge.list.refunded'),
+                                value: '1',
+                            },
+                            {
+                                label: t('console-order-management.recharge.list.notRefunded'),
+                                value: '0',
+                            },
+                        ]"
+                        v-model="refundStatus"
+                        @update:modelValue="getOrderList"
+                    />
                 </div>
             </div>
 

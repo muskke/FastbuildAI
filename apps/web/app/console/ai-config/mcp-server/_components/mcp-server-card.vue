@@ -2,10 +2,12 @@
 import { ProCard } from "@fastbuildai/ui";
 
 import type { McpServerDetail } from "@/models/mcp-server";
+import { apiCheckMcpServerConnect } from "@/services/console/mcp-server";
 
 interface ProviderCardProps {
     mcpServer: McpServerDetail;
     selected?: boolean;
+    isUpdate?: string[];
 }
 
 interface ProviderCardEmits {
@@ -25,18 +27,25 @@ const emit = defineEmits<ProviderCardEmits>();
 const { t } = useI18n();
 const router = useRouter();
 const { hasAccessByCodes } = useAccessControl();
+const connectable = ref<boolean | "">("");
+const connectableError = ref<string | undefined>("");
 
 /**
- * 获取MCP服务器图标
+ * mcp 连通性测试
  */
-function getMcpServerIcon(mcpServer: McpServerDetail): string {
-    if (mcpServer.icon) {
-        return mcpServer.icon;
-    }
-    // 使用MCP服务器名称首字母作为默认图标
-    const firstLetter = mcpServer.name?.charAt(0).toUpperCase() || "P";
-    return `https://ui-avatars.com/api/?name=${firstLetter}&background=6366f1&color=fff&size=80`;
-}
+const handleCheckConnect = async () => {
+    const res = await apiCheckMcpServerConnect(props.mcpServer.id);
+    connectable.value = res.connectable;
+    connectableError.value = res.error;
+};
+
+const connectableType = computed(() => {
+    return connectable.value === "" ? props.mcpServer.connectable : connectable.value;
+});
+
+const connectableErrorInfo = computed(() => {
+    return connectable.value === "" ? props.mcpServer.connectError : connectableError.value;
+});
 
 /**
  * mcpServer状态信息
@@ -131,6 +140,12 @@ function getFormattedUrl(url: string): string {
 
     return url;
 }
+
+onMounted(() => {
+    if (props.isUpdate?.includes(props.mcpServer.id)) {
+        handleCheckConnect();
+    }
+});
 </script>
 
 <template>
@@ -139,6 +154,7 @@ function getFormattedUrl(url: string): string {
         selectable
         clickable
         show-actions
+        variant="outlined"
         :selected="selected"
         :actions="dropdownActions"
         @select="handleSelect"
@@ -151,13 +167,17 @@ function getFormattedUrl(url: string): string {
         </div>
         <template #icon="{ groupHoverClass, selectedClass }">
             <div class="flex items-center gap-4">
-                <UChip :color="mcpServer.connectable ? 'success' : 'error'" position="top-right">
+                <UChip :color="connectableType ? 'success' : 'error'" position="top-right">
                     <UAvatar
-                        :src="getMcpServerIcon(mcpServer)"
+                        :src="mcpServer.icon"
                         :alt="mcpServer.name"
                         size="3xl"
-                        :ui="{ root: 'rounded-lg' }"
-                        :class="[groupHoverClass, selectedClass]"
+                        :ui="{ root: 'rounded-lg', fallback: 'text-inverted' }"
+                        :class="[
+                            groupHoverClass,
+                            selectedClass,
+                            mcpServer.icon ? '' : 'bg-primary',
+                        ]"
                     />
                 </UChip>
                 <div>
@@ -194,11 +214,11 @@ function getFormattedUrl(url: string): string {
                     {{ t("console-ai-mcp-server.noDescription") }}
                 </h4>
             </UTooltip>
-            <UTooltip :text="mcpServer.connectError" :delay-duration="0">
-                <div v-if="mcpServer.connectError" class="flex flex-row items-center gap-1.5">
+            <UTooltip :text="connectableErrorInfo" :delay-duration="0">
+                <div v-if="connectableErrorInfo" class="flex flex-row items-center gap-1.5">
                     <UIcon name="tabler:plug-connected-x" size="16" class="text-red-500" />
                     <h4 class="line-clamp-2 text-xs text-red-500">
-                        {{ mcpServer.connectError }}
+                        {{ connectableErrorInfo }}
                     </h4>
                 </div>
             </UTooltip>

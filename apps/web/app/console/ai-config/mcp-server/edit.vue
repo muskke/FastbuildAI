@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ProModal, ProSlider, ProUploader, useLockFn, useMessage } from "@fastbuildai/ui";
-import { computed, onMounted, reactive, ref } from "vue";
+import { ProModal, ProUploader, useLockFn, useMessage } from "@fastbuildai/ui";
+import { computed, onMounted, reactive } from "vue";
 import { object, string } from "yup";
 
 import type { CreateMcpServerRequest, McpServerDetail } from "@/models/mcp-server";
 import {
-    apiBatchCheckMcpServerConnect,
     apiCheckMcpServerConnect,
     apiCreateMcpServer,
     apiGetMcpServerDetail,
@@ -22,6 +21,7 @@ const props = defineProps<{
 }>();
 const emits = defineEmits<{
     (e: "close", refresh?: boolean): void;
+    (e: "change-update", ids: string[]): void;
 }>();
 
 // 获取ID从query参数或props
@@ -125,16 +125,13 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         if (mcpServerId.value) {
             const res = await apiUpdateMcpServer(mcpServerId.value, newFormData);
             id = res.id;
-            toast.success("MCP服务器更新成功");
+            emits("change-update", [id]);
+            toast.success(t("console-ai-mcp-server.updateSuccess"));
         } else {
             const res = await apiCreateMcpServer(newFormData);
             id = res.id;
-            toast.success("MCP服务器创建成功");
-        }
-        try {
-            await apiCheckMcpServerConnect(id);
-        } catch (error) {
-            console.error("连接测试失败:", error);
+            emits("change-update", [id]);
+            toast.success(t("console-ai-mcp-server.createSuccess"));
         }
         emits("close", true);
     } catch (error) {
@@ -145,19 +142,23 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
 // JSON导入提交表单
 const { lockFn: jsonSubmitForm, isLock: jsonIsLock } = useLockFn(async () => {
     try {
-        const response = await apiJsonImportMcpServers(jsonFormData.jsonImport || "");
-        toast.success("MCP服务器导入成功");
-        try {
-            await apiBatchCheckMcpServerConnect(
-                response.results.map((association) => association.id),
-            );
-        } catch (error) {
-            console.error("连接测试失败:", error);
-        }
+        const res = await apiJsonImportMcpServers(jsonFormData.jsonImport || "");
+        toast.success(
+            `${t("console-ai-mcp-server.jsonImportTotal")} ${res.total} ${t(
+                "console-ai-mcp-server.jsonImportUnit",
+            )}，
+            ${t("console-ai-mcp-server.jsonImportCreated")} ${res.created} ${t(
+                "console-ai-mcp-server.jsonImportUnit",
+            )}，
+            ${t("console-ai-mcp-server.jsonImportUpdated")} ${res.updated} ${t(
+                "console-ai-mcp-server.jsonImportUnit",
+            )}`,
+        );
+        const ids = res.results.map((item) => item.id);
+        emits("change-update", ids);
         emits("close", true);
     } catch (error) {
         console.error("JSON导入失败:", error);
-        toast.error("MCP服务器导入失败");
     }
 });
 

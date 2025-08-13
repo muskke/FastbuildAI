@@ -5,7 +5,7 @@ defineProps<{ layout: "mixture" | "sidebar" }>();
 <template>
     <!-- 主要内容区域 -->
     <main
-        class="w-full overflow-auto px-4 lg:px-6"
+        class="w-full flex-1 overflow-auto px-4 lg:px-6"
         :class="layout === 'sidebar' ? 'pt-0' : 'my-4 lg:my-6'"
     >
         <NuxtPage />

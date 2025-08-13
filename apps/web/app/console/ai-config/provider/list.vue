@@ -23,7 +23,6 @@ const { t } = useI18n();
 const searchForm = reactive({
     keyword: "",
     isActive: null,
-    includeModels: "",
 });
 
 // 选中的供应商
@@ -156,7 +155,6 @@ const handleToggleProviderActive = async (providerId: string, isActive: boolean)
         getLists();
     } catch (error) {
         console.error("Toggle provider active failed:", error);
-        toast.error("操作失败，请稍后重试");
     }
 };
 
@@ -251,7 +249,7 @@ onMounted(() => getLists());
         <template v-if="!paging.loading && paging.items.length > 0">
             <ProScrollArea class="h-[calc(100vh-13rem)]" :shadow="false">
                 <div
-                    class="mt-2 grid grid-cols-1 gap-6 px-1 py-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                    class="mt-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
                 >
                     <ProviderCard
                         v-for="provider in paging.items"

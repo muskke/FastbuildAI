@@ -89,7 +89,6 @@ export class AiProviderService extends BaseService<AiProvider> {
         queryOptions: {
             keyword?: string;
             isActive?: boolean;
-            includeModels?: boolean;
         } = {},
         excludeFields: string[] = ["apiKey"],
     ) {
@@ -118,7 +117,7 @@ export class AiProviderService extends BaseService<AiProvider> {
         try {
             return this.paginate(paginationDto, {
                 where: whereConditions.length > 1 ? whereConditions : where,
-                relations: queryOptions.includeModels ? ["models"] : [],
+                relations: ["models"],
                 order: {
                     sortOrder: "ASC",
                     createdAt: "DESC",

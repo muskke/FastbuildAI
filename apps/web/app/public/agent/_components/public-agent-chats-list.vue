@@ -4,13 +4,13 @@ import type { DropdownMenuItem } from "@nuxt/ui";
 import { h, markRaw, nextTick, onMounted, ref } from "vue";
 
 import { groupConversationsByDate, type GroupedConversations } from "@/common/utils";
-import type { Agent } from "@/models/agent";
+import type { Agent } from "@/models/ai-agent";
 import type { AiConversation } from "@/models/ai-conversation";
 import {
     apiDeletePublicAgentConversation,
     apiGetPublicAgentConversations,
     apiUpdatePublicAgentConversation,
-} from "@/services/web/agent-publish";
+} from "@/services/web/ai-agent-publish";
 
 const { t } = useI18n();
 

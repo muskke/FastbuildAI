@@ -70,9 +70,7 @@ export class PayconfigService extends BaseService<Payconfig> {
         Object.assign(payconfig, dto);
         const result = await this.repository.save(payconfig);
 
-        this.eventEmitter.emit(PAY_EVENTS.REFRESH, {
-            payType: payconfig.payType,
-        });
+        this.eventEmitter.emit(PAY_EVENTS.REFRESH, payconfig.payType);
 
         return result;
     }

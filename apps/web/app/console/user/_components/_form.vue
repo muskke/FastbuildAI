@@ -344,18 +344,18 @@ onMounted(() => getRoleList());
                         <UButton
                             color="neutral"
                             variant="outline"
-                            size="xl"
+                            size="lg"
                             @click="emit('cancel')"
                             class="px-8"
                         >
                             {{ t("console-common.cancel") }}
                         </UButton>
-                        <UButton color="neutral" size="xl" @click="resetForm" class="px-8">
+                        <UButton color="neutral" size="lg" @click="resetForm" class="px-8">
                             {{ t("console-common.reset") }}
                         </UButton>
                         <UButton
                             color="primary"
-                            size="xl"
+                            size="lg"
                             :loading="isLock"
                             type="submit"
                             class="px-8"
