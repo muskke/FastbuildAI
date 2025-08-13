@@ -159,7 +159,7 @@ async function handlePopoverUpdate(value: boolean) {
 <template>
     <UPopover v-model:open="isOpen" :disabled="props.disabled" @update:open="handlePopoverUpdate">
         <UButton
-            color="primary"
+            :color="selectedIds.length > 0 ? 'primary' : 'neutral'"
             variant="ghost"
             :ui="{ leadingIcon: 'size-4' }"
             :class="{ 'bg-primary/10': selectedValidIds.length }"
