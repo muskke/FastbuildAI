@@ -83,7 +83,9 @@ services:
       echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
       if ! command -v pnpm >/dev/null 2>&1; then
         echo "📦 Installing pnpm..."
+        npm config set registry https://registry.npmmirror.com
         npm install -g pnpm
+        pnpm config set registry https://registry.npmmirror.com
       fi
       
       if [ ! -d "/fastbuildai/node_modules" ] || [ "$QUICK_START_MODE" = "false" ]; then
