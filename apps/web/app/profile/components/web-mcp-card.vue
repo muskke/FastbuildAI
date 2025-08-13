@@ -156,6 +156,7 @@ onMounted(() => {
     <ProCard
         class="flex flex-col overflow-hidden"
         show-actions
+        variant="outlined"
         :selected="selected"
         :actions="dropdownActions"
         @select="handleSelect"
