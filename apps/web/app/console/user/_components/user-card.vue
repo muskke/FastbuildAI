@@ -130,6 +130,7 @@ const sourceInfo = computed(() => getUserSourceInfo(props.user.source));
     <ProCard
         selectable
         show-actions
+        variant="outlined"
         :selected="selected"
         :actions="dropdownActions"
         @select="handleSelect"

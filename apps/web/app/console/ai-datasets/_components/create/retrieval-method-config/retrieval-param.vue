@@ -4,6 +4,8 @@ import { useVModel } from "@vueuse/core";
 
 import type { RetrievalConfig } from "@/models/ai-datasets";
 
+const ModelSelect = defineAsyncComponent(() => import("@/common/components/model-select.vue"));
+
 const props = defineProps<{
     modelValue: RetrievalConfig;
 }>();
@@ -44,6 +46,23 @@ function handleKeywordChange(val: number) {
                 v-model="retrievalConfig.rerankConfig!.enabled"
                 :label="$t('datasets.retrieval.rerank')"
             />
+
+            <!-- 重排模型选择（向量检索） -->
+            <ModelSelect
+                :modelValue="retrievalConfig.rerankConfig!.modelId"
+                :button-ui="{
+                    variant: 'outline',
+                    color: 'neutral',
+                    ui: { base: 'w-full' },
+                    class: 'bg-background',
+                }"
+                :supportedModelTypes="['rerank']"
+                :defaultSelected="false"
+                capability="chat"
+                placeholder="选择重排模型"
+                @change="(e) => (retrievalConfig.rerankConfig!.modelId = e.id)"
+            />
+
             <div class="grid grid-cols-2 gap-4">
                 <UFormField label="Top K">
                     <ProSlider
@@ -88,6 +107,23 @@ function handleKeywordChange(val: number) {
                 v-model="retrievalConfig.rerankConfig!.enabled"
                 :label="$t('datasets.retrieval.rerank')"
             />
+
+            <!-- 重排模型选择（全文检索） -->
+            <ModelSelect
+                :modelValue="retrievalConfig.rerankConfig!.modelId"
+                :button-ui="{
+                    variant: 'outline',
+                    color: 'neutral',
+                    ui: { base: 'w-full' },
+                    class: 'bg-background',
+                }"
+                :supportedModelTypes="['rerank']"
+                :defaultSelected="false"
+                capability="chat"
+                placeholder="选择重排模型"
+                @change="(e) => (retrievalConfig.rerankConfig!.modelId = e.id)"
+            />
+
             <div class="grid grid-cols-2 gap-4">
                 <UFormField label="Top K">
                     <ProSlider
@@ -219,6 +255,23 @@ function handleKeywordChange(val: number) {
                 <p class="text-muted-foreground text-sm">
                     {{ $t("datasets.retrieval.rerankDesc") }}
                 </p>
+
+                <!-- 重排模型选择（混合检索 - Rerank 策略） -->
+                <ModelSelect
+                    :modelValue="retrievalConfig.rerankConfig!.modelId"
+                    :button-ui="{
+                        variant: 'outline',
+                        color: 'neutral',
+                        ui: { base: 'w-full' },
+                        class: 'bg-background',
+                    }"
+                    :supportedModelTypes="['rerank']"
+                    :defaultSelected="false"
+                    capability="chat"
+                    placeholder="选择重排模型"
+                    @change="(e) => (retrievalConfig.rerankConfig!.modelId = e.id)"
+                />
+
                 <div class="grid grid-cols-2 gap-4">
                     <UFormField label="Top K">
                         <ProSlider

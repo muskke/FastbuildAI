@@ -122,6 +122,8 @@ function openWebsite() {
         selectable
         clickable
         show-actions
+        variant="outlined"
+        class="cursor-pointer"
         :selected="selected"
         :actions="dropdownActions"
         @select="handleSelect"
@@ -152,10 +154,6 @@ function openWebsite() {
                 <span class="text-muted-foreground mr-2 ml-1 text-sm">
                     ({{ provider.provider }})
                 </span>
-                <!-- 状态标识 -->
-                <UTooltip :text="statusInfo.label" :delay="0">
-                    <UBadge :color="statusInfo.color" :icon="statusInfo.icon" size="xs" />
-                </UTooltip>
             </h3>
         </template>
 
@@ -178,28 +176,14 @@ function openWebsite() {
             </p>
         </template>
 
-        <template #footer>
+        <!-- <template #footer>
             <div class="flex justify-end gap-2">
-                <!-- 官网链接 -->
-                <!-- <div class="flex cursor-pointer items-center gap-2">
-                    <UBadge
-                        v-if="provider.websiteUrl"
-                        icon="i-lucide-external-link"
-                        color="primary"
-                        size="md"
-                        variant="subtle"
-                        @click.stop="openWebsite"
-                    >
-                        {{ t("console-ai-provider.viewWebsite") }}
-                    </UBadge>
-                </div> -->
-
                 <div class="flex items-center gap-1">
                     <UButton trailing-icon="i-lucide-chevron-right" variant="ghost" size="sm">
                         {{ t("console-ai-provider.modelManagement") }}
                     </UButton>
                 </div>
             </div>
-        </template>
+        </template> -->
     </ProCard>
 </template>

@@ -154,6 +154,7 @@ onMounted(() => {
         selectable
         clickable
         show-actions
+        variant="outlined"
         :selected="selected"
         :actions="dropdownActions"
         @select="handleSelect"
