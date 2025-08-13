@@ -193,6 +193,7 @@ definePageMeta({
                         {{ t("web-personal-rights.rechargeCenter.selectRechargePackage") }}
                     </h2>
                     <div
+                        v-if="rechargeOptions.length > 0"
                         class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                     >
                         <div
@@ -201,6 +202,7 @@ definePageMeta({
                             class="border-muted relative cursor-pointer rounded-lg border p-4 transition-all duration-200"
                             :class="{
                                 'border-primary-500 bg-muted': selectedOptionIndex === index,
+                                'bg-primary/5': selectedOptionIndex === index,
                                 'hover:border-primary-300 border-gray-200':
                                     selectedOptionIndex !== index,
                             }"
@@ -240,6 +242,9 @@ definePageMeta({
                             </ul>
                         </div>
                     </div>
+                    <div v-else class="text-muted-foreground">
+                        {{ t("web-personal-rights.rechargeCenter.noRechargeOptions") }}
+                    </div>
                 </div>
 
                 <!-- 支付方式 -->
@@ -271,9 +276,13 @@ definePageMeta({
                         {{ t("web-personal-rights.rechargeCenter.rechargeInstructions.title") }}
                     </h2>
                     <div
+                        v-if="rechargeInstructions"
                         v-html="rechargeInstructions"
                         class="text-muted-foreground space-y-2 text-sm whitespace-pre-wrap"
                     ></div>
+                    <div v-else class="text-muted-foreground text-sm">
+                        {{ t("web-personal-rights.rechargeCenter.rechargeInstructions.content") }}
+                    </div>
                 </div>
             </div>
 
