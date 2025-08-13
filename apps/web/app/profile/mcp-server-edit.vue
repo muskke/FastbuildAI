@@ -23,6 +23,7 @@ const props = defineProps<{
 }>();
 const emits = defineEmits<{
     (e: "close", refresh?: boolean): void;
+    (e: "change-update", ids: string[]): void;
 }>();
 
 // 获取ID从query参数或props
@@ -135,10 +136,12 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         if (mcpServerId.value) {
             const res = await apiUpdateMcpServer(mcpServerId.value, newFormData);
             id = res.id;
+            emits("change-update", [id]);
             toast.success(t("console-ai-mcp-server.updateSuccess"));
         } else {
             const res = await apiCreateMcpServer(newFormData);
             id = res.id;
+            emits("change-update", [id]);
             toast.success(t("console-ai-mcp-server.createSuccess"));
         }
         emits("close", true);
@@ -150,9 +153,20 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
 // JSON导入提交表单
 const { lockFn: jsonSubmitForm, isLock: jsonIsLock } = useLockFn(async () => {
     try {
-        await apiJsonImportMcpServers(jsonFormData.jsonImport || "");
-        toast.success(t("console-ai-mcp-server.jsonImportSuccess"));
-
+        const res = await apiJsonImportMcpServers(jsonFormData.jsonImport || "");
+        toast.success(
+            `${t("console-ai-mcp-server.jsonImportTotal")} ${res.total} ${t(
+                "console-ai-mcp-server.jsonImportUnit",
+            )}，
+            ${t("console-ai-mcp-server.jsonImportCreated")} ${res.created} ${t(
+                "console-ai-mcp-server.jsonImportUnit",
+            )}，
+            ${t("console-ai-mcp-server.jsonImportUpdated")} ${res.updated} ${t(
+                "console-ai-mcp-server.jsonImportUnit",
+            )}`,
+        );
+        const ids = res.results.map((item) => item.id);
+        emits("change-update", ids);
         emits("close", true);
     } catch (error) {
         console.error("JSON导入失败:", error);

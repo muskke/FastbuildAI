@@ -130,4 +130,7 @@ export interface JsonImportMcpServerResponse {
     results: Association[];
     message: string;
     success: boolean;
+    created: number;
+    updated: number;
+    total: number;
 }

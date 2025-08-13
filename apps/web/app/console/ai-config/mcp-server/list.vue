@@ -38,6 +38,9 @@ const showMcpServerModal = ref(false);
 const editingMcpServerId = ref("");
 const isView = ref(false);
 
+// 更新mcp服务器ID
+const updateIds = ref<string[]>([]);
+
 const { paging, getLists } = usePaging({
     fetchFun: apiGetMcpServerList,
     params: searchForm,
@@ -157,6 +160,10 @@ const handleSetQuickMenu = async (mcpServer: McpServerDetail) => {
         console.error("Set quick menu failed:", error);
         toast.error(t("console-ai-mcp-server.quickMenuFailed"));
     }
+};
+
+const changeUpdate = (ids?: string[]) => {
+    updateIds.value = ids || [];
 };
 
 /**
@@ -314,6 +321,7 @@ onMounted(() => getLists());
                         :key="mcpServer.id"
                         :mcpServer="mcpServer"
                         :selected="selectMcpServer.has(mcpServer.id as string)"
+                        :isUpdate="updateIds"
                         @select="handleMcpServerSelect"
                         @delete="handleDeleteProvider"
                         @edit="handleEditProvider"
@@ -379,6 +387,7 @@ onMounted(() => getLists());
             v-if="showMcpServerModal"
             :id="editingMcpServerId"
             :is-json-import="isJsonImport"
+            @change-update="changeUpdate"
             @close="
                 (refresh) => {
                     showMcpServerModal = false;
