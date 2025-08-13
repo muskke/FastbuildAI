@@ -211,15 +211,4 @@ export class QueryAiProviderDto extends PaginationDto {
     @Type(() => String)
     @IsString({ each: true, message: "支持的模型类型必须是字符串数组" })
     supportedModelTypes?: ModelType[];
-
-    /**
-     * 是否包含模型信息
-     */
-    @IsOptional()
-    @IsBoolean({ message: "包含模型信息必须是布尔值" })
-    @Transform(({ value }) => {
-        if (value === undefined || value === null) return value;
-        return isEnabled(value);
-    })
-    includeModels?: boolean;
 }
