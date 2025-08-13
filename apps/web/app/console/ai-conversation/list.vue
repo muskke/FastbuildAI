@@ -213,7 +213,7 @@ onMounted(() => getLists());
         <template v-if="!paging.loading && paging.items.length > 0">
             <ProScrollArea class="h-[calc(100vh-13rem)]" :shadow="false">
                 <div
-                    class="grid grid-cols-1 gap-4 px-1 py-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                    class="mt-2 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                 >
                     <ConversationCard
                         v-for="conversation in paging.items"

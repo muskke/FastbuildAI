@@ -175,7 +175,7 @@
         "code": "ai-config-mcp-server"
     },
     {
-        "name": "智能体",
+        "name": "console-menu.agent",
         "code": null,
         "path": "ai-agent",
         "icon": "i-lucide-bot",
@@ -313,13 +313,13 @@
         ]
     },
     {
-        "name": "知识库",
+        "name": "console-menu.datasets",
         "code": null,
         "path": "ai-datasets",
         "icon": "i-lucide-cpu",
         "component": "/console/ai-datasets/list",
         "permissionCode": "ai-datasets:list",
-        "sort": 40,
+        "sort": 400,
         "isHidden": 0,
         "type": 2,
         "sourceType": 1,

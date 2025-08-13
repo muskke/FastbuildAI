@@ -134,9 +134,9 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
         <UTooltip :text="t('console-ai-provider.model.form.isDefault')" :delay="0">
             <div
                 v-if="model.isDefault"
-                class="bg-warning absolute top-0 left-0 flex h-5 w-5 items-center justify-center rounded-br-xl px-1 py-0.5"
+                class="bg-warning absolute top-0 left-0 flex h-6 w-6 items-center justify-center rounded-br-xl px-1 py-0.5"
             >
-                <UIcon name="i-lucide-star" class="text-inverted text-xs" />
+                <UIcon name="i-lucide-star" class="text-inverted -translate-px text-xs" />
             </div>
         </UTooltip>
         <template #icon="{ groupHoverClass, selectedClass }">
@@ -148,21 +148,12 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
                         :color="statusInfo.color"
                     >
                         <div
-                            class="flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white"
+                            class="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white"
                             :class="[groupHoverClass, selectedClass]"
                         >
-                            <UIcon :name="getProviderIcon(model.providerId)" class="h-8 w-8" />
+                            <UIcon :name="getProviderIcon(model.providerId)" class="h-6 w-6" />
                         </div>
                     </UChip>
-                    <!-- 默认模型标识 -->
-                    <!-- <UBadge
-                        v-if="model.isDefault"
-                        color="warning"
-                        size="sm"
-                        class="absolute -top-1 -right-1"
-                    >
-                        <UIcon name="i-lucide-star" class="h-3 w-3" />
-                    </UBadge> -->
                 </div>
 
                 <div>
