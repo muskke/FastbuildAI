@@ -38,6 +38,9 @@ const showMcpServerModal = ref(false);
 const editingMcpServerId = ref("");
 const isView = ref(false);
 
+// 更新mcp服务器ID
+const updateIds = ref<string[]>([]);
+
 const { paging, getLists } = usePaging({
     fetchFun: apiGetMcpServerList,
     params: searchForm,
@@ -77,17 +80,17 @@ const handleSelectAll = (value: boolean | "indeterminate") => {
 const handleDelete = async (id: string | string[]) => {
     try {
         await useModal({
-            title: "删除MCP",
-            description: "确定要删除选中的MCP吗？此操作不可恢复。",
+            title: t("console-ai-mcp-server.deleteTitle"),
+            description: t("console-ai-mcp-server.deleteMessage"),
             color: "error",
         });
 
         if (Array.isArray(id)) {
             await apiBatchDeleteMcpServers(id);
-            toast.success("批量删除成功");
+            toast.success(t("console-ai-mcp-server.deleteSuccess"));
         } else {
             await apiDeleteMcpServer(id);
-            toast.success("删除成功");
+            toast.success(t("console-ai-mcp-server.deleteSuccess"));
         }
 
         // 清空选中状态
@@ -97,7 +100,6 @@ const handleDelete = async (id: string | string[]) => {
         getLists();
     } catch (error) {
         console.error("Delete failed:", error);
-        toast.error("删除失败");
     }
 };
 
@@ -160,6 +162,10 @@ const handleSetQuickMenu = async (mcpServer: McpServerDetail) => {
     }
 };
 
+const changeUpdate = (ids?: string[]) => {
+    updateIds.value = ids || [];
+};
+
 /**
  * 编辑供应商
  */
@@ -187,7 +193,6 @@ const handleToggleProviderActive = async (providerId: string, isDisabled: boolea
         getLists();
     } catch (error) {
         console.error("Toggle provider active failed:", error);
-        toast.error("操作失败，请稍后重试");
     }
 };
 
@@ -309,13 +314,14 @@ onMounted(() => getLists());
         <template v-if="!paging.loading && paging.items.length > 0">
             <ProScrollArea class="h-[calc(100vh-13rem)]" :shadow="false">
                 <div
-                    class="grid grid-cols-1 gap-6 py-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                    class="mt-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                 >
                     <McpServerCard
                         v-for="mcpServer in paging.items"
                         :key="mcpServer.id"
                         :mcpServer="mcpServer"
                         :selected="selectMcpServer.has(mcpServer.id as string)"
+                        :isUpdate="updateIds"
                         @select="handleMcpServerSelect"
                         @delete="handleDeleteProvider"
                         @edit="handleEditProvider"
@@ -381,6 +387,7 @@ onMounted(() => getLists());
             v-if="showMcpServerModal"
             :id="editingMcpServerId"
             :is-json-import="isJsonImport"
+            @change-update="changeUpdate"
             @close="
                 (refresh) => {
                     showMcpServerModal = false;

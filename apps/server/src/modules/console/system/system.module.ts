@@ -6,7 +6,6 @@ import { Payconfig } from "@modules/console/system/entities/payconfig.entity";
 import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { PayController } from "./controllers/pay.controller";
 import { PayconfigController } from "./controllers/payconfig.controller";
 import { SystemController } from "./controllers/system.controller";
 import { WebsiteController } from "./controllers/website.controller";
@@ -24,7 +23,7 @@ import { WebsiteService } from "./services/website.service";
         TypeOrmModule.forFeature([Payconfig]),
         forwardRef(() => PayModule),
     ],
-    controllers: [WebsiteController, SystemController, PayconfigController, PayController],
+    controllers: [WebsiteController, SystemController, PayconfigController],
     providers: [WebsiteService, SystemService, PayconfigService],
     exports: [WebsiteService, SystemService, PayconfigService],
 })

@@ -63,8 +63,8 @@ const initialMessages = messagesData.value.items.map((item: AiMessage) => {
     return {
         id: item.id || uuid(),
         role: item.role,
-        content: item.content,
-        status: "completed" as const,
+        content: item.errorMessage || item.content,
+        status: item.errorMessage ? ("failed" as const) : ("completed" as const),
         mcpToolCalls: item.mcpToolCalls,
     };
 });
@@ -129,8 +129,8 @@ async function loadMoreMessages() {
             (item: AiMessage): AiMessage => ({
                 id: item.id || uuid(),
                 role: item.role,
-                content: item.content,
-                status: "completed" as const,
+                content: item.errorMessage || item.content,
+                status: item.errorMessage ? ("failed" as const) : ("completed" as const),
                 mcpToolCalls: item.mcpToolCalls,
             }),
         );
@@ -303,7 +303,7 @@ definePageMeta({ activePath: "/" });
 <template>
     <!-- 不同 layout 风格展示不同的样式 -->
     <div
-        class="ai-chat bg-muted flex h-full min-h-0 items-center justify-center p-2"
+        class="ai-chat bg-muted dark:bg-muted/50 flex h-full min-h-0 items-center justify-center p-2 pl-0"
         :class="{
             'border-l': !controlsStore.chatSidebarVisible,
             '!bg-background !border-none !p-0':

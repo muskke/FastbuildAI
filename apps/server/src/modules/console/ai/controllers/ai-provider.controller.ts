@@ -50,7 +50,6 @@ export class AiProviderController extends BaseController {
         const queryOptions = {
             keyword: query.keyword,
             isActive: query.isActive,
-            includeModels: query.includeModels || false,
         };
 
         return await this.aiProviderService.getProviderList(query, queryOptions, ["apiKey"]);

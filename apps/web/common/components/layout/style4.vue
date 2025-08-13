@@ -70,7 +70,7 @@ const linkItems = computed((): NavigationMenuItem[] => [
 </script>
 
 <template>
-    <div class="bg-muted flex h-full w-full flex-row">
+    <div class="bg-muted/50 flex h-full w-full flex-row">
         <!-- 桌面版侧边栏 - 参考 index.vue 的实现 -->
         <aside
             class="relative hidden h-full flex-col p-2 transition-all duration-300 md:flex"

@@ -105,8 +105,7 @@ const state = ref<WxOaConfig>({
 const schema = object({
     appId: string().required(t("console-wechatoa.validation.appId.required")),
     appSecret: string().required(t("console-wechatoa.validation.appSecret.required")),
-    token: string().required(t("console-wechatoa.validation.token.required")),
-    encodingAESKey: string().required(t("console-wechatoa.validation.encodingAESKey.required")),
+
     messageEncryptType: string().required(
         t("console-wechatoa.validation.messageEncryptType.required"),
     ),
@@ -270,7 +269,6 @@ const resetForm = () => {
                         :label="t('console-wechatoa.form.token.label')"
                         name="token"
                         class="mb-6"
-                        required
                         :description="t('console-wechatoa.form.token.description')"
                     >
                         <UInput
@@ -287,7 +285,6 @@ const resetForm = () => {
                         :label="t('console-wechatoa.form.encodingAESKey.label')"
                         name="encodingAESKey"
                         class="mb-6"
-                        required
                         :description="t('console-wechatoa.form.encodingAESKey.description')"
                     >
                         <UInput

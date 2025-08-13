@@ -60,9 +60,7 @@ export class PermissionsGuard implements CanActivate {
             return true;
         }
 
-        const requiredPermissions: string[] = permissionsMetaData.map(
-            (item) => `${permissionGroupMetaData.code}:${item.code}`,
-        );
+        const requiredPermissions: string[] = permissionsMetaData.map((item) => item.code);
 
         const { request, user } = getContextPlayground(context);
 

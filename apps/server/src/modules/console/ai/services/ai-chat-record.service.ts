@@ -4,7 +4,7 @@ import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory"
 import { buildWhere } from "@common/utils/helper.util";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 
 import {
     ConversationStatus,
@@ -79,8 +79,8 @@ export class AiChatRecordService extends BaseService<AiChatRecord> {
             let whereConditions: any = where;
             if (queryDto?.keyword) {
                 whereConditions = [
-                    { ...where, title: this.ilike("title", queryDto.keyword) },
-                    { ...where, summary: this.ilike("summary", queryDto.keyword) },
+                    { ...where, title: Like(`%${queryDto.keyword}%`) },
+                    { ...where, summary: Like(`%${queryDto.keyword}%`) },
                 ];
             }
 

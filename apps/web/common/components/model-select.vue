@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ProScrollArea } from "@fastbuildai/ui";
 import type { ButtonProps } from "@nuxt/ui";
 import { computed, onMounted, ref } from "vue";
 
@@ -58,18 +59,6 @@ function select(model: AiModel | null) {
     search.value = "";
 }
 
-/**
- * 获取供应商图标
- */
-function getProviderIcon(provider: AiProvider): string {
-    if (provider.iconUrl) {
-        return provider.iconUrl;
-    }
-    // 使用供应商名称首字母作为默认图标
-    const firstLetter = provider.name?.charAt(0).toUpperCase() || "P";
-    return `https://ui-avatars.com/api/?name=${firstLetter}&background=6366f1&color=fff&size=80`;
-}
-
 async function loadModels() {
     if (loading.value) return;
     loading.value = true;
@@ -110,6 +99,7 @@ onMounted(loadModels);
             :color="selected?.name ? 'primary' : 'neutral'"
             variant="ghost"
             class="flex items-center justify-between"
+            :class="{ 'bg-primary/10': selected?.id }"
             :loading="loading"
             :disabled="props.disabled"
             v-bind="props.buttonUi"
@@ -143,7 +133,7 @@ onMounted(loadModels);
                 </div>
 
                 <div
-                    class="flex max-h-[calc((100vh-15rem)/2)] flex-col gap-3 overflow-y-auto p-2"
+                    class="flex max-h-[calc((100vh-15rem)/3)] flex-col gap-3 p-2"
                     :class="{ 'md:grid-cols-2': filteredProviders.length > 1 }"
                 >
                     <div
@@ -167,13 +157,20 @@ onMounted(loadModels);
                     >
                         <div class="flex flex-row items-center justify-between px-2">
                             <div class="flex flex-row items-center gap-2">
-                                <UAvatar :src="getProviderIcon(provider)" size="2xs" />
+                                <UAvatar
+                                    :src="provider.iconUrl"
+                                    :alt="provider.name"
+                                    :ui="{ fallback: 'text-inverted' }"
+                                    :class="provider.iconUrl ? '' : 'bg-primary'"
+                                    size="2xs"
+                                />
                                 <h3 class="text-secondary-foreground text-sm font-semibold">
                                     {{ provider.name }}
                                 </h3>
                             </div>
                             <div class="bg-muted-foreground/10 rounded-xl px-2 py-1 text-xs">
-                                {{ provider.models?.length }}个模型
+                                {{ provider.models?.length }}{{ t("common.unit.general.item")
+                                }}{{ t("common.ai.model") }}
                             </div>
                         </div>
                         <ul class="space-y-1">

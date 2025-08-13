@@ -78,8 +78,9 @@ function writeMcpIdsToStorage(ids: string[]): void {
 
 const getQuickMenu = async () => {
     const res = await apiGetQuickMenu();
+    if (!res) return;
     quickMenu.value = res;
-    QUICK_MENU_MCP_ID.value = res.id;
+    QUICK_MENU_MCP_ID.value = res?.id;
     // 初始化按钮激活态（不改写 localStorage，仅读取）
     isQuickMenu.value = readMcpIdsFromStorage().includes(QUICK_MENU_MCP_ID.value!);
 };
@@ -153,7 +154,7 @@ definePageMeta({
 <template>
     <!-- 不同 layout 风格展示不同的样式 -->
     <div
-        class="ai-chat bg-muted flex h-full min-h-0 items-center justify-center p-2"
+        class="ai-chat bg-muted dark:bg-muted/50 flex h-full min-h-0 items-center justify-center p-2 pl-0"
         :class="{
             'border-l': !controlsStore.chatSidebarVisible,
             '!bg-background !border-none !p-0':
@@ -195,6 +196,7 @@ definePageMeta({
                     <ChatPrompt
                         class="[view-transition-name:chat-prompt]"
                         v-model="inputValue"
+                        :rows="2"
                         @submit="createChat"
                     >
                         <template #panel-left>
@@ -211,11 +213,11 @@ definePageMeta({
                             />
                             <UButton
                                 v-if="quickMenu"
-                                color="primary"
+                                :color="isQuickMenu ? 'primary' : 'neutral'"
                                 variant="ghost"
                                 :icon="quickMenu?.icon ? '' : 'tabler:tool'"
                                 :ui="{ leadingIcon: 'size-4' }"
-                                :class="{ 'bg-primary/15': isQuickMenu }"
+                                :class="{ 'bg-primary/10': isQuickMenu }"
                                 @click="handleQuickMenu"
                             >
                                 <UAvatar
@@ -237,7 +239,7 @@ definePageMeta({
                     <UButton
                         v-for="(suggestion, index) in suggestions"
                         :key="index"
-                        variant="soft"
+                        variant="outline"
                         color="neutral"
                         size="md"
                         @click="createChat(suggestion.text)"
@@ -253,13 +255,27 @@ definePageMeta({
                 <div class="flex flex-col items-center justify-center gap-1">
                     <span>{{ welcomeInfo.footer }}</span>
                     <div class="flex items-center justify-center gap-2">
-                        <span>
-                            Copyright ©
-                            <TimeDisplay
-                                :datetime="new Date().toLocaleString()"
-                                mode="year"
-                                class="text-xs"
-                            />. All rights Reserved. Powered by
+                        <a
+                            :href="appStore.siteConfig?.copyright.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="hover:text-primary flex items-center justify-center gap-1 transition-colors"
+                        >
+                            <UAvatar
+                                :src="appStore.siteConfig?.copyright.iconUrl"
+                                :ui="{ root: 'size-4 rounded-md' }"
+                            />
+                            <span>{{ appStore.siteConfig?.copyright.displayName }}</span>
+                        </a>
+                        <span
+                            v-if="
+                                appStore.siteConfig?.copyright.displayName ||
+                                appStore.siteConfig?.copyright.iconUrl
+                            "
+                            >|</span
+                        >
+                        <span class="space-x-1">
+                            <span>Powered by</span>
                             <a
                                 class="text-primary font-bold"
                                 href="https://www.fastbuildai.com"
@@ -268,15 +284,6 @@ definePageMeta({
                                 FastbuildAI
                             </a>
                         </span>
-                        <span v-if="appStore.siteConfig?.copyright.displayName">|</span>
-                        <a
-                            :href="appStore.siteConfig?.copyright.url"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="hover:text-primary flex items-center transition-colors"
-                        >
-                            <span>{{ appStore.siteConfig?.copyright.displayName }}</span>
-                        </a>
                     </div>
                 </div>
             </div>

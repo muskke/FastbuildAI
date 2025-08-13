@@ -193,6 +193,7 @@ definePageMeta({
                         {{ t("web-personal-rights.rechargeCenter.selectRechargePackage") }}
                     </h2>
                     <div
+                        v-if="rechargeOptions.length > 0"
                         class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                     >
                         <div
@@ -201,6 +202,7 @@ definePageMeta({
                             class="border-muted relative cursor-pointer rounded-lg border p-4 transition-all duration-200"
                             :class="{
                                 'border-primary-500 bg-muted': selectedOptionIndex === index,
+                                'bg-primary/5': selectedOptionIndex === index,
                                 'hover:border-primary-300 border-gray-200':
                                     selectedOptionIndex !== index,
                             }"
@@ -216,24 +218,22 @@ definePageMeta({
 
                             <!-- 电力值 -->
                             <div class="mb-2 flex items-center gap-2">
-                                <UIcon name="i-lucide-zap" class="text-xl text-blue-500" />
+                                <UIcon name="i-lucide-zap" class="text-primary text-xl" />
                                 <span class="text-xl font-bold">{{ option.power }}</span>
                             </div>
 
                             <!-- 价格 -->
-                            <div class="mb-4 text-lg font-medium text-gray-700">
-                                ¥ {{ option.sellPrice }}
-                            </div>
+                            <div class="mb-4 text-lg font-medium">¥ {{ option.sellPrice }}</div>
 
                             <!-- 描述列表 -->
                             <ul class="space-y-2">
                                 <li v-if="option.givePower" class="flex items-center gap-2">
                                     <UIcon name="i-lucide-check" class="text-sm text-green-500" />
-                                    <span class="text-sm text-gray-600">
+                                    <span class="space-x-1 text-sm text-gray-600">
                                         <span>{{
                                             t("web-personal-rights.rechargeCenter.add")
                                         }}</span>
-                                        <span class="font-bold">{{ option.givePower }}</span>
+                                        <span class="font-bold"> {{ option.givePower }} </span>
                                         <span>{{
                                             t("web-personal-rights.rechargeCenter.power")
                                         }}</span>
@@ -241,6 +241,9 @@ definePageMeta({
                                 </li>
                             </ul>
                         </div>
+                    </div>
+                    <div v-else class="text-muted-foreground">
+                        {{ t("web-personal-rights.rechargeCenter.noRechargeOptions") }}
                     </div>
                 </div>
 
@@ -273,9 +276,13 @@ definePageMeta({
                         {{ t("web-personal-rights.rechargeCenter.rechargeInstructions.title") }}
                     </h2>
                     <div
+                        v-if="rechargeInstructions"
                         v-html="rechargeInstructions"
-                        class="space-y-2 text-sm whitespace-pre-wrap text-gray-600"
+                        class="text-muted-foreground space-y-2 text-sm whitespace-pre-wrap"
                     ></div>
+                    <div v-else class="text-muted-foreground text-sm">
+                        {{ t("web-personal-rights.rechargeCenter.rechargeInstructions.content") }}
+                    </div>
                 </div>
             </div>
 
@@ -325,9 +332,16 @@ definePageMeta({
                                 ¥{{ orderInfo?.orderAmount }}
                             </span>
                         </div>
-                        <div class="text-center text-lg">请使用微信扫码支付</div>
+                        <div class="text-center text-lg">
+                            {{ t("web-personal-rights.rechargeCenter.use")
+                            }}{{
+                                prepaidData?.payType === 1
+                                    ? t("web-personal-rights.rechargeCenter.wxPay")
+                                    : t("web-personal-rights.rechargeCenter.alipayPay")
+                            }}{{ t("web-personal-rights.rechargeCenter.pay") }}
+                        </div>
                         <div class="text-muted-foreground pt-2 text-center text-sm">
-                            如遇问题无法解决时，请联系站点管理员
+                            {{ t("web-personal-rights.rechargeCenter.contact") }}
                         </div>
                     </div>
                 </template>

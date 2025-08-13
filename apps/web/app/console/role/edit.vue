@@ -16,7 +16,6 @@ const isOpen = ref<boolean>(true);
 
 const roleSchema = object({
     name: string().required(t("console-system-perms.role.nameInput")),
-    description: string().required(t("console-system-perms.role.descriptionInput")),
 });
 
 const formData = ref<Omit<RoleFormData, "permissions">>({
@@ -28,7 +27,9 @@ const formData = ref<Omit<RoleFormData, "permissions">>({
 /** 获取详情数据 */
 const { lockFn: fetchDetail, isLock: loading } = useLockFn(async () => {
     try {
-        const data = await apiGetRoleDetail(props.id as string);
+        const { createdAt, updatedAt, permissions, ...data } = await apiGetRoleDetail(
+            props.id as string,
+        );
         formData.value = data;
     } catch (error) {
         console.error("获取详情失败:", error);
@@ -77,11 +78,7 @@ onMounted(() => props.id && fetchDetail());
                 />
             </UFormField>
 
-            <UFormField
-                :label="t('console-system-perms.role.describe')"
-                name="description"
-                required
-            >
+            <UFormField :label="t('console-system-perms.role.describe')" name="description">
                 <UTextarea
                     v-model="formData.description"
                     :ui="{ root: 'w-full' }"

@@ -165,7 +165,7 @@ export class AiMcpServerController extends BaseController {
         const defaultModelId = await this.dictService.get(AI_MCP_IS_QUICK_MENU);
 
         if (defaultModelId && batchDeleteDto.ids.includes(defaultModelId)) {
-            await this.dictService.delete(AI_MCP_IS_QUICK_MENU);
+            await this.dictService.deleteByKey(AI_MCP_IS_QUICK_MENU);
         }
         return null;
     }

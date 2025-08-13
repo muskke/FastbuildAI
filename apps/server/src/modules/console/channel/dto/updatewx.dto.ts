@@ -19,14 +19,12 @@ export class UpdateWxOaConfigDto {
     /**
      * 公众号token
      */
-    @IsNotEmpty()
     @IsString()
     token: string;
 
     /**
      * 消息加密密钥
      */
-    @IsNotEmpty()
     @IsString()
     encodingAESKey: string;
 
