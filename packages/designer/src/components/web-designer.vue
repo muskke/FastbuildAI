@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { defineAsyncComponent, onMounted, ref } from "vue";
 
 import { setDesignConfig } from "../config/design";
 import { useDesignStore } from "../stores/design";

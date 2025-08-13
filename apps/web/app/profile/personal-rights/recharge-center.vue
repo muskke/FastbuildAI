@@ -216,24 +216,22 @@ definePageMeta({
 
                             <!-- 电力值 -->
                             <div class="mb-2 flex items-center gap-2">
-                                <UIcon name="i-lucide-zap" class="text-xl text-blue-500" />
+                                <UIcon name="i-lucide-zap" class="text-primary text-xl" />
                                 <span class="text-xl font-bold">{{ option.power }}</span>
                             </div>
 
                             <!-- 价格 -->
-                            <div class="mb-4 text-lg font-medium text-gray-700">
-                                ¥ {{ option.sellPrice }}
-                            </div>
+                            <div class="mb-4 text-lg font-medium">¥ {{ option.sellPrice }}</div>
 
                             <!-- 描述列表 -->
                             <ul class="space-y-2">
                                 <li v-if="option.givePower" class="flex items-center gap-2">
                                     <UIcon name="i-lucide-check" class="text-sm text-green-500" />
-                                    <span class="text-sm text-gray-600">
+                                    <span class="space-x-1 text-sm text-gray-600">
                                         <span>{{
                                             t("web-personal-rights.rechargeCenter.add")
                                         }}</span>
-                                        <span class="font-bold">{{ option.givePower }}</span>
+                                        <span class="font-bold"> {{ option.givePower }} </span>
                                         <span>{{
                                             t("web-personal-rights.rechargeCenter.power")
                                         }}</span>
@@ -274,7 +272,7 @@ definePageMeta({
                     </h2>
                     <div
                         v-html="rechargeInstructions"
-                        class="space-y-2 text-sm whitespace-pre-wrap text-gray-600"
+                        class="text-muted-foreground space-y-2 text-sm whitespace-pre-wrap"
                     ></div>
                 </div>
             </div>
@@ -325,9 +323,16 @@ definePageMeta({
                                 ¥{{ orderInfo?.orderAmount }}
                             </span>
                         </div>
-                        <div class="text-center text-lg">请使用微信扫码支付</div>
+                        <div class="text-center text-lg">
+                            {{ t("web-personal-rights.rechargeCenter.use")
+                            }}{{
+                                prepaidData?.payType === 1
+                                    ? t("web-personal-rights.rechargeCenter.wxPay")
+                                    : t("web-personal-rights.rechargeCenter.alipayPay")
+                            }}{{ t("web-personal-rights.rechargeCenter.pay") }}
+                        </div>
                         <div class="text-muted-foreground pt-2 text-center text-sm">
-                            如遇问题无法解决时，请联系站点管理员
+                            {{ t("web-personal-rights.rechargeCenter.contact") }}
                         </div>
                     </div>
                 </template>

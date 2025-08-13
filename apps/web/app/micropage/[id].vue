@@ -3,9 +3,11 @@
  * 前台微页面预览页面
  * @description 展示微页面的最终效果
  */
-import { WebPreview } from "@fastbuildai/designer";
+// import { WebPreview } from "@fastbuildai/designer";
+// import WebPreview from "@fastbuildai/designer/components/web-preview";
 
 import { apiGetWebMicropageDetail } from "~/services/web/decorate";
+const WebPreview = defineAsyncComponent(() => import("@fastbuildai/designer/web-preview"));
 
 // 设置页面元信息
 definePageMeta({
@@ -19,7 +21,7 @@ const micropageId = computed(() => (URLQueryParams as Record<string, string>).id
 
 // 获取微页面详情
 const { data: micropage, pending } = await useAsyncData(() =>
-    apiGetWebMicropageDetail(micropageId.value),
+    apiGetWebMicropageDetail(micropageId.value as string),
 );
 
 // 如果页面不存在，抛出404错误

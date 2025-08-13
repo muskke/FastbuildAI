@@ -136,74 +136,73 @@ onMounted(loadModels);
                     class="flex max-h-[calc((100vh-15rem)/3)] flex-col gap-3 p-2"
                     :class="{ 'md:grid-cols-2': filteredProviders.length > 1 }"
                 >
-                    <ProScrollArea class="h-full" type="hover">
-                        <div
-                            v-if="loading"
-                            class="text-muted-foreground col-span-full py-10 text-center"
-                        >
-                            {{ t("console-common.loading") }}...
-                        </div>
+                    <div
+                        v-if="loading"
+                        class="text-muted-foreground col-span-full py-10 text-center"
+                    >
+                        {{ t("console-common.loading") }}...
+                    </div>
 
-                        <div
-                            v-else-if="!filteredProviders.length"
-                            class="text-muted-foreground col-span-full py-10 text-center"
-                        >
-                            {{ t("console-common.empty") }}
-                        </div>
+                    <div
+                        v-else-if="!filteredProviders.length"
+                        class="text-muted-foreground col-span-full py-10 text-center"
+                    >
+                        {{ t("console-common.empty") }}
+                    </div>
 
-                        <section
-                            v-for="provider in filteredProviders"
-                            :key="provider.id"
-                            class="space-y-2"
-                        >
-                            <div class="flex flex-row items-center justify-between px-2">
-                                <div class="flex flex-row items-center gap-2">
-                                    <UAvatar
-                                        :src="provider.iconUrl"
-                                        :alt="provider.name"
-                                        :ui="{ fallback: 'text-inverted' }"
-                                        :class="provider.iconUrl ? '' : 'bg-primary'"
-                                        size="2xs"
-                                    />
-                                    <h3 class="text-secondary-foreground text-sm font-semibold">
-                                        {{ provider.name }}
-                                    </h3>
-                                </div>
-                                <div class="bg-muted-foreground/10 rounded-xl px-2 py-1 text-xs">
-                                    {{ provider.models?.length }}个模型
-                                </div>
+                    <section
+                        v-for="provider in filteredProviders"
+                        :key="provider.id"
+                        class="space-y-2"
+                    >
+                        <div class="flex flex-row items-center justify-between px-2">
+                            <div class="flex flex-row items-center gap-2">
+                                <UAvatar
+                                    :src="provider.iconUrl"
+                                    :alt="provider.name"
+                                    :ui="{ fallback: 'text-inverted' }"
+                                    :class="provider.iconUrl ? '' : 'bg-primary'"
+                                    size="2xs"
+                                />
+                                <h3 class="text-secondary-foreground text-sm font-semibold">
+                                    {{ provider.name }}
+                                </h3>
                             </div>
-                            <ul class="space-y-1">
-                                <li
-                                    v-for="model in provider.models"
-                                    :key="model.id"
-                                    class="group hover:bg-muted flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors"
-                                    :class="{ 'bg-secondary': selected?.id === model.id }"
-                                    @click="select(model)"
-                                >
-                                    <div class="space-y-0.5 overflow-hidden">
-                                        <p
-                                            class="text-secondary-foreground truncate text-sm font-medium"
-                                        >
-                                            {{ model.name }}
-                                        </p>
-                                        <p
-                                            v-if="props.showDescription && model.description"
-                                            class="text-muted-foreground line-clamp-1 text-xs"
-                                        >
-                                            {{ model.description }}
-                                        </p>
-                                    </div>
-                                    <UIcon
-                                        v-if="selected?.id === model.id"
-                                        name="i-lucide-check-circle"
-                                        class="text-primary flex-none"
-                                        size="lg"
-                                    />
-                                </li>
-                            </ul>
-                        </section>
-                    </ProScrollArea>
+                            <div class="bg-muted-foreground/10 rounded-xl px-2 py-1 text-xs">
+                                {{ provider.models?.length }}{{ t("common.unit.general.item")
+                                }}{{ t("common.ai.model") }}
+                            </div>
+                        </div>
+                        <ul class="space-y-1">
+                            <li
+                                v-for="model in provider.models"
+                                :key="model.id"
+                                class="group hover:bg-muted flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors"
+                                :class="{ 'bg-secondary': selected?.id === model.id }"
+                                @click="select(model)"
+                            >
+                                <div class="space-y-0.5 overflow-hidden">
+                                    <p
+                                        class="text-secondary-foreground truncate text-sm font-medium"
+                                    >
+                                        {{ model.name }}
+                                    </p>
+                                    <p
+                                        v-if="props.showDescription && model.description"
+                                        class="text-muted-foreground line-clamp-1 text-xs"
+                                    >
+                                        {{ model.description }}
+                                    </p>
+                                </div>
+                                <UIcon
+                                    v-if="selected?.id === model.id"
+                                    name="i-lucide-check-circle"
+                                    class="text-primary flex-none"
+                                    size="lg"
+                                />
+                            </li>
+                        </ul>
+                    </section>
                 </div>
             </div>
         </template>
