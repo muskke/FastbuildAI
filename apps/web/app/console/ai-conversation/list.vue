@@ -159,6 +159,11 @@ onMounted(() => getLists());
             <ModelSelect
                 v-model="searchForm.modelId"
                 :default-selected="false"
+                :button-ui="{
+                    variant: 'outline',
+                    color: 'neutral',
+                    class: 'bg-background',
+                }"
                 @change="getLists"
             />
 
