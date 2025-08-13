@@ -255,13 +255,27 @@ definePageMeta({
                 <div class="flex flex-col items-center justify-center gap-1">
                     <span>{{ welcomeInfo.footer }}</span>
                     <div class="flex items-center justify-center gap-2">
-                        <span>
-                            Copyright ©
-                            <TimeDisplay
-                                :datetime="new Date().toLocaleString()"
-                                mode="year"
-                                class="text-xs"
-                            />. All rights Reserved. Powered by
+                        <a
+                            :href="appStore.siteConfig?.copyright.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="hover:text-primary flex items-center justify-center gap-1 transition-colors"
+                        >
+                            <UAvatar
+                                :src="appStore.siteConfig?.copyright.iconUrl"
+                                :ui="{ root: 'size-4 rounded-md' }"
+                            />
+                            <span>{{ appStore.siteConfig?.copyright.displayName }}</span>
+                        </a>
+                        <span
+                            v-if="
+                                appStore.siteConfig?.copyright.displayName ||
+                                appStore.siteConfig?.copyright.iconUrl
+                            "
+                            >|</span
+                        >
+                        <span class="space-x-1">
+                            <span>Powered by</span>
                             <a
                                 class="text-primary font-bold"
                                 href="https://www.fastbuildai.com"
@@ -270,15 +284,6 @@ definePageMeta({
                                 FastbuildAI
                             </a>
                         </span>
-                        <span v-if="appStore.siteConfig?.copyright.displayName">|</span>
-                        <a
-                            :href="appStore.siteConfig?.copyright.url"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="hover:text-primary flex items-center transition-colors"
-                        >
-                            <span>{{ appStore.siteConfig?.copyright.displayName }}</span>
-                        </a>
                     </div>
                 </div>
             </div>
