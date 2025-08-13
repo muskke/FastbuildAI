@@ -174,7 +174,7 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
                     </h3>
 
                     <div class="mt-1 flex items-center gap-2">
-                        <UBadge v-if="model.modelType" variant="outline" color="neutral" size="sm">
+                        <UBadge v-if="model.modelType" variant="soft" color="neutral" size="sm">
                             {{ model.modelType.toLocaleUpperCase().replaceAll("-", " ") }}
                         </UBadge>
                     </div>

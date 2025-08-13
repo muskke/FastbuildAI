@@ -156,7 +156,7 @@ onMounted(() => getLists());
 </script>
 
 <template>
-    <div class="provider-list-container px-8">
+    <div class="provider-list-container">
         <div
             class="bg-background sticky top-0 z-50 flex flex-wrap items-center justify-between gap-4 pb-4"
         >
