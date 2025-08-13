@@ -13,7 +13,7 @@
         "code": "dashboard"
     },
     {
-        "name": "console-menu.providers",
+        "name": "console-menu.providers.title",
         "path": "ai_config/provide",
         "icon": "i-lucide-brain-circuit",
         "component": "/console/ai-config/provider/list",
@@ -25,7 +25,7 @@
         "pluginPackName": "",
         "children": [
             {
-                "name": "console-menu.model",
+                "name": "console-menu.providers.model.title",
                 "path": "model",
                 "icon": "",
                 "component": "/console/ai-config/provider/model/list",
@@ -175,7 +175,7 @@
         "code": "ai-config-mcp-server"
     },
     {
-        "name": "console-menu.agent",
+        "name": "console-menu.agent.title",
         "code": null,
         "path": "ai-agent",
         "icon": "i-lucide-bot",
@@ -188,7 +188,7 @@
         "pluginPackName": "",
         "children": [
             {
-                "name": "数据看板",
+                "name": "console-menu.agent.dashboard",
                 "code": null,
                 "path": ":id/dashboard",
                 "icon": "",
@@ -201,7 +201,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "记录与标注",
+                "name": "console-menu.agent.logs",
                 "code": null,
                 "path": ":id/logs",
                 "icon": "",
@@ -215,7 +215,7 @@
 
                 "children": [
                     {
-                        "name": "审核标注",
+                        "name": "console-menu.agent.annotations.review",
                         "code": null,
                         "path": "",
                         "icon": "",
@@ -228,7 +228,7 @@
                         "pluginPackName": ""
                     },
                     {
-                        "name": "删除标注",
+                        "name": "console-menu.agent.annotations.delete",
                         "code": null,
                         "path": "",
                         "icon": "",
@@ -241,7 +241,7 @@
                         "pluginPackName": ""
                     },
                     {
-                        "name": "编辑标注",
+                        "name": "console-menu.agent.annotations.update",
                         "code": null,
                         "path": "",
                         "icon": "",
@@ -254,7 +254,7 @@
                         "pluginPackName": ""
                     },
                     {
-                        "name": "创建标注",
+                        "name": "console-menu.agent.annotations.create",
                         "code": null,
                         "path": "",
                         "icon": "",
@@ -269,7 +269,7 @@
                 ]
             },
             {
-                "name": "发布",
+                "name": "console-menu.agent.publish",
                 "code": null,
                 "path": ":id/publish",
                 "icon": "",
@@ -282,7 +282,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "编排",
+                "name": "console-menu.agent.configuration",
                 "code": null,
                 "path": ":id/configuration",
                 "icon": "",
@@ -296,7 +296,7 @@
 
                 "children": [
                     {
-                        "name": "更新",
+                        "name": "console-menu.agent.update",
                         "code": null,
                         "path": "",
                         "icon": "",
@@ -313,10 +313,10 @@
         ]
     },
     {
-        "name": "console-menu.datasets",
+        "name": "console-menu.datasets.title",
         "code": null,
         "path": "ai-datasets",
-        "icon": "i-lucide-cpu",
+        "icon": "i-lucide-file-search",
         "component": "/console/ai-datasets/list",
         "permissionCode": "ai-datasets:list",
         "sort": 400,
@@ -326,7 +326,7 @@
         "pluginPackName": "",
         "children": [
             {
-                "name": "重试",
+                "name": "console-menu.datasets.retry",
                 "code": null,
                 "path": "",
                 "icon": "",
@@ -339,7 +339,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "删除",
+                "name": "console-menu.datasets.delete",
                 "code": null,
                 "path": "",
                 "icon": "",
@@ -352,7 +352,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "知识库文档分段",
+                "name": "console-menu.datasets.documents.segments",
                 "code": null,
                 "path": ":id/documents/segments",
                 "icon": "",
@@ -365,7 +365,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "知识库文档新增",
+                "name": "console-menu.datasets.documents.create",
                 "code": null,
                 "path": ":id/documents/create",
                 "icon": "",
@@ -378,7 +378,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "知识库设置",
+                "name": "console-menu.datasets.settings",
                 "code": null,
                 "path": ":id/settings",
                 "icon": "",
@@ -391,7 +391,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "知识库成员",
+                "name": "console-menu.datasets.members",
                 "code": null,
                 "path": ":id/members",
                 "icon": "",
@@ -404,7 +404,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "知识库测试",
+                "name": "console-menu.datasets.test",
                 "code": null,
                 "path": ":id/test",
                 "icon": "",
@@ -417,7 +417,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "创建知识库",
+                "name": "console-menu.datasets.create",
                 "code": null,
                 "path": "create",
                 "icon": "",
@@ -430,7 +430,7 @@
                 "pluginPackName": ""
             },
             {
-                "name": "知识库文档",
+                "name": "console-menu.datasets.documents.title",
                 "code": null,
                 "path": ":id/documents",
                 "icon": "",
@@ -499,7 +499,7 @@
         ]
     },
     {
-        "name": "console-menu.aiConversation",
+        "name": "console-menu.aiConversation.title",
         "code": null,
         "path": "conversation",
         "icon": "i-lucide-message-square-diff",
@@ -512,7 +512,7 @@
         "pluginPackName": "",
         "children": [
             {
-                "name": "console-menu.aiChat",
+                "name": "console-menu.aiConversation.aiChat",
                 "code": "ai-chat",
                 "path": "ai-conversation",
                 "icon": "",
@@ -553,7 +553,7 @@
                 ]
             },
             {
-                "name": "console-menu.chatConfig",
+                "name": "console-menu.aiConversation.chatConfig",
                 "code": null,
                 "path": "config",
                 "icon": "",
@@ -583,7 +583,7 @@
         ]
     },
     {
-        "name": "console-menu.userManagement",
+        "name": "console-menu.userManagement.title",
         "code": null,
         "path": "user",
         "icon": "i-lucide-users",
@@ -596,7 +596,7 @@
         "pluginPackName": "",
         "children": [
             {
-                "name": "console-menu.userManagement",
+                "name": "console-menu.userManagement.userList",
                 "path": "list",
                 "icon": "",
                 "component": "/console/user/list",
@@ -678,7 +678,7 @@
         ]
     },
     {
-        "name": "console-menu.orderManagement",
+        "name": "console-menu.financial.orderManagement",
         "path": "order-management",
         "icon": "i-lucide-clipboard-list",
         "component": "",
@@ -690,7 +690,7 @@
         "pluginPackName": "",
         "children": [
             {
-                "name": "console-menu.orderList",
+                "name": "console-menu.financial.orderList",
                 "path": "order-recharge",
                 "icon": "",
                 "component": "/console/order-management/order-recharge",
@@ -705,7 +705,7 @@
         ]
     },
     {
-        "name": "console-menu.diyCenter",
+        "name": "console-menu.diyCenter.title",
         "path": "decorate",
         "icon": "i-lucide-paint-roller",
         "component": "",
@@ -718,7 +718,7 @@
         "code": "diy-center",
         "children": [
             {
-                "name": "console-menu.microPage",
+                "name": "console-menu.diyCenter.microPage",
                 "path": "micropage",
                 "icon": "",
                 "component": "/console/decorate/micropage/list",
@@ -813,7 +813,7 @@
         ]
     },
     {
-        "name": "console-menu.financial",
+        "name": "console-menu.financial.title",
         "path": "financial",
         "icon": "i-lucide-circle-dollar-sign",
         "component": "",
@@ -825,7 +825,7 @@
         "pluginPackName": null,
         "children": [
             {
-                "name": "console-menu.financialCenter",
+                "name": "console-menu.financial.financialCenter",
                 "path": "financial-center",
                 "icon": "",
                 "component": "/console/financial/financial-center",
@@ -838,7 +838,7 @@
                 "code": "financial-center"
             },
             {
-                "name": "console-menu.accountBalance",
+                "name": "console-menu.financial.accountBalance",
                 "path": "account-balance",
                 "icon": "",
                 "component": "/console/financial/account-balance",
@@ -853,7 +853,7 @@
         ]
     },
     {
-        "name": "console-menu.permission",
+        "name": "console-menu.permission.title",
         "path": "system-perms",
         "icon": "i-lucide-user-lock",
         "component": "",
@@ -865,7 +865,7 @@
         "pluginPackName": null,
         "children": [
             {
-                "name": "console-menu.permissionList",
+                "name": "console-menu.permission.permissionList",
                 "path": "permission/list",
                 "icon": "",
                 "component": "/console/permission/list",
@@ -919,7 +919,7 @@
                 "code": "system-permission-list"
             },
             {
-                "name": "console-menu.roleList",
+                "name": "console-menu.permission.roleList",
                 "path": "role/list",
                 "icon": "",
                 "component": "/console/role/list",
@@ -986,7 +986,7 @@
                 "code": "system-role"
             },
             {
-                "name": "console-menu.menuList",
+                "name": "console-menu.permission.menuList",
                 "path": "menu/list",
                 "icon": "",
                 "component": "/console/menu/list",
@@ -1056,7 +1056,7 @@
         "code": "system-permission"
     },
     {
-        "name": "console-menu.systemSettings",
+        "name": "console-menu.systemSettings.title",
         "path": "system",
         "icon": "i-lucide-settings-2",
         "component": "",
@@ -1068,7 +1068,7 @@
         "pluginPackName": null,
         "children": [
             {
-                "name": "console-menu.siteInfo",
+                "name": "console-menu.systemSettings.siteInfo",
                 "path": "website",
                 "icon": "",
                 "component": "/console/system-setting/website/index",
@@ -1096,7 +1096,7 @@
                 "code": "system-website"
             },
             {
-                "name": "console-menu.PayConfig",
+                "name": "console-menu.systemSettings.PayConfig",
                 "path": "getPayConfig",
                 "icon": "",
                 "component": "/console/system-setting/payConfig/index",
@@ -1109,7 +1109,7 @@
                 "code": "system-payConfig-list"
             },
             {
-                "name": "console-menu.PayConfig",
+                "name": "console-menu.systemSettings.PayConfig",
                 "path": "setPayConfig",
                 "icon": "",
                 "component": "/console/system-setting/payConfig/edit",
@@ -1125,7 +1125,7 @@
         "code": "system-settings"
     },
     {
-        "name": "console-menu.channelManagement",
+        "name": "console-menu.systemSettings.channelManagement",
         "path": "channel",
         "icon": "i-lucide-network",
         "component": "",
@@ -1137,7 +1137,7 @@
         "pluginPackName": null,
         "children": [
             {
-                "name": "console-menu.wechatOaConfig",
+                "name": "console-menu.systemSettings.wechatOaConfig",
                 "path": "wechat-oa",
                 "icon": "",
                 "component": "/console/channel/wechatoa/index",
