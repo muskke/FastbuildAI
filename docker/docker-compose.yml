@@ -19,7 +19,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       QUICK_START_MODE: ${QUICK_START_MODE:-false}
     ports:
-      - "${REDIS_EXTERNAL_PORT}:6379"
+      - "6379"
     volumes:
       - ./data/redis:/data
     networks:
@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
     ports:
-      - "${DB_EXTERNAL_PORT}:5432"
+      - "5432"
     volumes:
       - ./data/postgres/postgres_data:/var/lib/postgresql/data
     networks:
@@ -67,6 +67,7 @@ services:
     environment:
       TZ: Asia/Shanghai
       SERVER_PORT: ${SERVER_PORT}
+      QUICK_START_MODE: ${QUICK_START_MODE:-false}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -89,7 +90,7 @@ services:
         echo "📦 Installing dependencies..."
       fi
       
-      if [ ! -d "./public" ] || [ "$QUICK_START_MODE" = "false" ]; then
+      if [ ! -d "./public/index.html" ] || [ "$QUICK_START_MODE" = "false" ]; then
         pnpm --filter ./apps/web run generate
         echo "🌐 Building web application..."
       fi
