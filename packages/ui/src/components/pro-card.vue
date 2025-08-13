@@ -146,7 +146,8 @@ const showCheckbox = computed(() => {
         :class="[
             variantClasses,
             {
-                'ring-primary-500 ring-2 ring-offset-2 dark:ring-offset-gray-800': selected,
+                // 'ring-primary-500 ring-2 ring-offset-2 dark:ring-offset-gray-800': selected,
+                'border-primary hover:border-primary': selected && variant === 'outlined',
                 'cursor-pointer hover:shadow-lg':
                     clickable && !disabled && !loading && variant !== 'outlined',
                 'hover:shadow-md': !clickable && !disabled && !loading && variant !== 'outlined',
@@ -202,7 +203,7 @@ const showCheckbox = computed(() => {
                         <UCheckbox
                             :model-value="selected"
                             @update:model-value="handleSelect"
-                            class="opacity-0 transition-opacity duration-200 group-hover/icon:opacity-100"
+                            class="cursor-pointer opacity-0 transition-opacity duration-200 group-hover/icon:opacity-100"
                             :class="{ 'opacity-100': selected }"
                             size="xl"
                         />

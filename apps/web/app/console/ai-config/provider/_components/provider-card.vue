@@ -145,35 +145,43 @@ function openWebsite() {
         </template>
 
         <template #title>
-            <h3 class="text-secondary-foreground flex items-center text-base font-semibold">
-                <UTooltip :text="provider.name" :delay="0">
-                    <span class="line-clamp-1">
-                        {{ provider.name }}
+            <div class="flex items-center justify-between">
+                <h3 class="text-secondary-foreground flex items-center text-base font-semibold">
+                    <UTooltip :text="provider.name" :delay="0">
+                        <span class="line-clamp-1 shrink-0">
+                            {{ provider.name }}
+                        </span>
+                    </UTooltip>
+                    <span class="text-muted-foreground mr-2 ml-1 line-clamp-1 shrink-0 text-sm">
+                        ({{ provider.provider }})
                     </span>
-                </UTooltip>
-                <span class="text-muted-foreground mr-2 ml-1 text-sm">
-                    ({{ provider.provider }})
-                </span>
-            </h3>
+                </h3>
+
+                <UBadge variant="outline" color="neutral" size="sm" class="shrink-0 rounded-full">
+                    {{ provider.models.length }}
+                    {{ `${t("common.unit.general.item")}${t("common.ai.model")}` }}
+                </UBadge>
+            </div>
         </template>
 
         <template #description>
-            <div class="flex flex-row flex-wrap gap-1">
-                <UBadge
-                    v-for="type in provider.supportedModelTypes"
-                    :key="type"
-                    variant="outline"
-                    color="neutral"
-                    size="sm"
-                >
-                    {{ type.toLocaleUpperCase().replaceAll("-", " ") }}
-                </UBadge>
-            </div>
-
             <!-- 描述 -->
             <p v-if="provider.description" class="text-muted-foreground line-clamp-2 text-xs">
                 {{ provider.description }}
             </p>
+
+            <div class="flex flex-row flex-wrap gap-1">
+                <UBadge
+                    v-for="type in provider.supportedModelTypes"
+                    :key="type"
+                    variant="soft"
+                    color="neutral"
+                    size="sm"
+                    class="h-fit"
+                >
+                    {{ type.toLocaleUpperCase().replaceAll("-", " ") }}
+                </UBadge>
+            </div>
         </template>
 
         <!-- <template #footer>

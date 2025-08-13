@@ -38,6 +38,8 @@ export interface AiProviderInfo {
     supportedModelTypes: string[];
     /** 是否为内置供应商 */
     isBuiltIn: boolean;
+    /** 模型 */
+    models: modelConfigItem[];
 }
 
 /**
