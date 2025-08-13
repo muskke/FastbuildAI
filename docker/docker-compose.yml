@@ -67,7 +67,7 @@ services:
     environment:
       TZ: Asia/Shanghai
       SERVER_PORT: ${SERVER_PORT}
-      QUICK_START_MODE: ${QUICK_START_MODE:-false}
+      QUICK_START_MODE: ${QUICK_START_MODE:-true}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -81,23 +81,27 @@ services:
       set -e
       echo "🚀 Starting FastbuildAI container..."
       echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
-      npm install -g pnpm
+      if ! command -v pnpm >/dev/null 2>&1; then
+        echo "📦 Installing pnpm..."
+        npm install -g pnpm
+      fi
       
-      if [ ! -d "./node_modules" ] || [ "$QUICK_START_MODE" = "false" ]; then
-        rm -rf ./node_modules
+      if [ ! -d "/fastbuildai/node_modules" ] || [ "$QUICK_START_MODE" = "false" ]; then
         echo "🧹 Cleaning node_modules (QUICK_START_MODE=false)..."
-        pnpm i
+        rm -rf ./node_modules
         echo "📦 Installing dependencies..."
+        pnpm i
       fi
-      
-      if [ ! -d "./public/index.html" ] || [ "$QUICK_START_MODE" = "false" ]; then
-        pnpm --filter ./apps/web run generate
+      echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
+      if [ ! -f "/fastbuildai/public/index.html" ] || [ "$QUICK_START_MODE" = "false" ]; then
+        NODE_OPTIONS="--max-old-space-size=1550" NUXT_BUILD_SSR=false NUXT_BUILD_ENV=production
         echo "🌐 Building web application..."
+        pnpm --filter ./apps/web run generate
       fi
       
-      if [ ! -d "./apps/server/dist" ] || [ "$QUICK_START_MODE" = "false" ]; then
-        pnpm --filter ./apps/server run build
+      if [ ! -d "/fastbuildai/apps/server/dist" ] || [ "$QUICK_START_MODE" = "false" ]; then
         echo "🔧 Building server application..."
+        pnpm --filter ./apps/server run build
       fi
       
       echo "🎯 Starting production server..."
@@ -115,7 +119,7 @@ services:
       test: ["CMD-SHELL", "ps aux | grep 'dist/main' | grep -v grep || exit 1"]
       interval: 30s
       timeout: 10s
-      retries: 15
+      retries: 10
       start_period: 180s
 
 networks:
