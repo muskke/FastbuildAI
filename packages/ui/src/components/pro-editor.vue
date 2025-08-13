@@ -8,8 +8,7 @@ import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent } from "@tiptap/vue-3";
-import { useVModel } from "@vueuse/core";
-import { nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
 
 import { apiUploadFile } from "@/services/common";
 
@@ -38,7 +37,10 @@ const props = withDefaults(
     },
 );
 
-const content = useVModel(props, "modelValue", emits);
+const content = computed<string>({
+    get: () => props.modelValue,
+    set: (val: string) => emits("update:modelValue", val),
+});
 
 const editor = shallowRef<any | null>(null);
 const uiRefresh = ref(0);
@@ -58,7 +60,8 @@ onMounted(() => {
         autofocus: false,
         injectCSS: false,
         editorProps: {
-            attributes: { class: "prose prose-sm focus:outline-none" },
+            // 使用原生浏览器样式，移除排版增强
+            attributes: { class: "focus:outline-none" },
         },
         onUpdate: ({ editor }: { editor: any }) => {
             content.value = editor.getHTML();
@@ -173,52 +176,55 @@ function redo() {
 </script>
 
 <template>
-    <div class="rounded-md border border-gray-200/60 dark:border-gray-700/60" :class="customClass">
+    <div
+        class="fb-editor rounded-md border border-gray-200/60 dark:border-gray-700/60"
+        :class="customClass"
+    >
         <!-- 工具栏 -->
         <div
             class="flex flex-wrap items-center gap-1 border-b border-gray-200/60 p-2 dark:border-gray-700/60"
         >
             <!-- 行内样式 -->
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('bold') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleBold().run()"
-                :color="editor?.isActive('bold') ? 'primary' : undefined"
                 @click="toggleMark('bold')"
             >
                 B
             </UButton>
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('italic') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleItalic().run()"
-                :color="editor?.isActive('italic') ? 'primary' : undefined"
                 @click="toggleMark('italic')"
             >
                 <i>I</i>
             </UButton>
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
-                :color="editor?.isActive('underline') ? 'primary' : undefined"
+                :variant="editor?.isActive('underline') ? 'soft' : 'ghost'"
                 @click="toggleMark('underline')"
             >
                 <u>U</u>
             </UButton>
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('strike') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleStrike().run()"
-                :color="editor?.isActive('strike') ? 'primary' : undefined"
                 @click="toggleMark('strike')"
             >
                 <s>S</s>
             </UButton>
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('code') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleCode().run()"
-                :color="editor?.isActive('code') ? 'primary' : undefined"
                 @click="toggleInlineCode"
             >
                 { }
@@ -227,57 +233,57 @@ function redo() {
 
             <!-- 段落与标题 -->
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
-                :color="editor?.isActive('paragraph') ? 'primary' : undefined"
+                :variant="editor?.isActive('paragraph') ? 'soft' : 'ghost'"
                 @click="setParagraph"
                 >P</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('heading', { level: 1 }) ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleHeading({ level: 1 }).run()"
-                :color="editor?.isActive('heading', { level: 1 }) ? 'primary' : undefined"
                 @click="setHeading(1)"
                 >H1</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('heading', { level: 2 }) ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleHeading({ level: 2 }).run()"
-                :color="editor?.isActive('heading', { level: 2 }) ? 'primary' : undefined"
                 @click="setHeading(2)"
                 >H2</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('heading', { level: 3 }) ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleHeading({ level: 3 }).run()"
-                :color="editor?.isActive('heading', { level: 3 }) ? 'primary' : undefined"
                 @click="setHeading(3)"
                 >H3</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('heading', { level: 4 }) ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleHeading({ level: 4 }).run()"
-                :color="editor?.isActive('heading', { level: 4 }) ? 'primary' : undefined"
                 @click="setHeading(4)"
                 >H4</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('heading', { level: 5 }) ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleHeading({ level: 5 }).run()"
-                :color="editor?.isActive('heading', { level: 5 }) ? 'primary' : undefined"
                 @click="setHeading(5)"
                 >H5</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('heading', { level: 6 }) ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleHeading({ level: 6 }).run()"
-                :color="editor?.isActive('heading', { level: 6 }) ? 'primary' : undefined"
                 @click="setHeading(6)"
                 >H6</UButton
             >
@@ -285,56 +291,64 @@ function redo() {
 
             <!-- 列表/引用/代码块 -->
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('bulletList') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleBulletList().run()"
-                :color="editor?.isActive('bulletList') ? 'primary' : undefined"
                 @click="toggleBulletList"
                 >• List</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('orderedList') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleOrderedList().run()"
-                :color="editor?.isActive('orderedList') ? 'primary' : undefined"
                 @click="toggleOrderedList"
                 >1. List</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('blockquote') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleBlockquote().run()"
-                :color="editor?.isActive('blockquote') ? 'primary' : undefined"
                 @click="toggleBlockquote"
                 >“”</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="editor?.isActive('codeBlock') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleCodeBlock().run()"
-                :color="editor?.isActive('codeBlock') ? 'primary' : undefined"
                 @click="toggleCodeBlock"
                 >{ }</UButton
             >
             <span class="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700"></span>
 
             <!-- 图片与清理 -->
-            <UButton size="xs" variant="soft" @click="handlePickAndInsertImage">Img</UButton>
-            <UButton size="xs" variant="ghost" @click="clearMarks">Clear marks</UButton>
-            <UButton size="xs" variant="ghost" @click="clearNodes">Clear nodes</UButton>
+            <UButton size="xs" color="neutral" variant="soft" @click="handlePickAndInsertImage"
+                >Img</UButton
+            >
+            <UButton size="xs" color="neutral" variant="ghost" @click="clearMarks"
+                >Clear marks</UButton
+            >
+            <UButton size="xs" color="neutral" variant="ghost" @click="clearNodes"
+                >Clear nodes</UButton
+            >
             <span class="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700"></span>
 
             <!-- 撤销/重做 与 分隔 -->
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="'ghost'"
                 :disabled="!editor?.can().chain().focus().undo().run()"
                 @click="undo"
                 >Undo</UButton
             >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
+                :variant="'ghost'"
                 :disabled="!editor?.can().chain().focus().redo().run()"
                 @click="redo"
                 >Redo</UButton
@@ -342,12 +356,16 @@ function redo() {
             <span class="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700"></span>
 
             <!-- 水平线/硬回车/颜色示例 -->
-            <UButton size="xs" variant="ghost" @click="insertHorizontalRule">HR</UButton>
-            <UButton size="xs" variant="ghost" @click="insertHardBreak">BR</UButton>
+            <UButton size="xs" color="neutral" :variant="'ghost'" @click="insertHorizontalRule"
+                >HR</UButton
+            >
+            <UButton size="xs" color="neutral" :variant="'ghost'" @click="insertHardBreak"
+                >BR</UButton
+            >
             <UButton
+                color="neutral"
                 size="xs"
-                variant="ghost"
-                :color="editor?.isActive('textStyle', { color: '#958DF1' }) ? 'primary' : undefined"
+                :variant="editor?.isActive('textStyle', { color: '#958DF1' }) ? 'soft' : 'ghost'"
                 @click="setTextColor('#958DF1')"
                 >Purple</UButton
             >
@@ -355,101 +373,147 @@ function redo() {
 
         <!-- 编辑区域 -->
         <div class="min-h-48 p-3">
-            <EditorContent v-if="editor" :editor="editor as any" />
+            <EditorContent v-if="editor" class="tiptap" :editor="editor as any" />
         </div>
     </div>
 </template>
 
 <style lang="scss">
-/* Basic editor styles */
-.tiptap {
-    :first-child {
-        margin-top: 0;
-    }
+/* Editor scoped base styles: avoid global CSS overrides */
+.fb-editor {
+    .tiptap {
+        line-height: 1.7 !important;
+        word-wrap: break-word !important;
 
-    /* List styles */
-    ul,
-    ol {
-        padding: 0 1rem;
-        margin: 1.25rem 1rem 1.25rem 0.4rem;
-
-        li p {
-            margin-top: 0.25em;
-            margin-bottom: 0.25em;
+        &:focus {
+            outline: none !important;
         }
-    }
 
-    /* Heading styles */
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        line-height: 1.1;
-        margin-top: 2.5rem;
-        text-wrap: pretty;
-    }
+        p {
+            margin: 0 0 0.75rem !important;
+        }
+        p:last-child {
+            margin-bottom: 0 !important;
+        }
 
-    h1,
-    h2 {
-        margin-top: 3.5rem;
-        margin-bottom: 1.5rem;
-    }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 1rem 0 0.5rem !important;
+            font-weight: 600 !important;
+            line-height: 1.2 !important;
+        }
+        h1 {
+            font-size: 1.5rem !important;
+        }
+        h2 {
+            font-size: 1.35rem !important;
+        }
+        h3 {
+            font-size: 1.2rem !important;
+        }
+        h4 {
+            font-size: 1.1rem !important;
+        }
+        h5,
+        h6 {
+            font-size: 1rem !important;
+        }
 
-    h1 {
-        font-size: 1.4rem;
-    }
+        ul,
+        ol {
+            padding-left: 1.25rem !important;
+            margin: 0.5rem 0 0.75rem !important;
+        }
+        ul {
+            list-style: disc !important;
+        }
+        ol {
+            list-style: decimal !important;
+        }
+        li {
+            margin: 0.25rem 0 !important;
+        }
 
-    h2 {
-        font-size: 1.2rem;
-    }
-
-    h3 {
-        font-size: 1.1rem;
-    }
-
-    h4,
-    h5,
-    h6 {
-        font-size: 1rem;
-    }
-
-    /* Code and preformatted text styles */
-    code {
-        background-color: var(--purple-light);
-        border-radius: 0.4rem;
-        color: var(--black);
-        font-size: 0.85rem;
-        padding: 0.25em 0.3em;
-    }
-
-    pre {
-        background: var(--black);
-        border-radius: 0.5rem;
-        color: var(--white);
-        font-family: "JetBrainsMono", monospace;
-        margin: 1.5rem 0;
-        padding: 0.75rem 1rem;
+        a {
+            color: #2563eb !important; /* blue-600 */
+            text-decoration: underline !important;
+            text-underline-offset: 2px !important;
+        }
+        a:hover {
+            opacity: 0.9 !important;
+        }
 
         code {
-            background: none;
-            color: inherit;
-            font-size: 0.8rem;
-            padding: 0;
+            font-family:
+                ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+                "Courier New", monospace !important;
+            background-color: #f3f4f6 !important; /* gray-100 */
+            border-radius: 4px !important;
+            padding: 0.15em 0.35em !important;
+            font-size: 0.9em !important;
         }
-    }
+        pre {
+            background-color: #111827 !important; /* gray-900 */
+            color: #e5e7eb !important; /* gray-200 */
+            border-radius: 6px !important;
+            padding: 0.75rem 1rem !important;
+            overflow: auto !important;
+            margin: 0.75rem 0 1rem !important;
+        }
+        pre code {
+            background: transparent !important;
+            color: inherit !important;
+            padding: 0 !important;
+            font-size: 0.95em !important;
+        }
 
-    blockquote {
-        border-left: 3px solid var(--gray-3);
-        margin: 1.5rem 0;
-        padding-left: 1rem;
-    }
+        blockquote {
+            border-left: 3px solid #e5e7eb !important; /* gray-200 */
+            padding-left: 0.75rem !important;
+            margin: 0.75rem 0 !important;
+            color: inherit !important;
+        }
 
-    hr {
-        border: none;
-        border-top: 1px solid var(--gray-2);
-        margin: 2rem 0;
+        hr {
+            border: 0 !important;
+            border-top: 1px solid #e5e7eb !important; /* gray-200 */
+            margin: 1rem 0 !important;
+        }
+
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 6px !important;
+            display: inline-block !important;
+        }
+
+        table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+            margin: 0.75rem 0 !important;
+        }
+        th,
+        td {
+            border: 1px solid #e5e7eb !important; /* gray-200 */
+            padding: 0.5rem 0.75rem !important;
+            text-align: left !important;
+        }
+        thead th {
+            background: #f9fafb !important; /* gray-50 */
+        }
+
+        /* Placeholder support (tiptap Placeholder extension) */
+        .is-empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af; /* gray-400 */
+            float: left;
+            height: 0;
+            pointer-events: none;
+        }
     }
 }
 </style>
