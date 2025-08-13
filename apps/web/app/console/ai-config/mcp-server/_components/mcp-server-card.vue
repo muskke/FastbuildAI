@@ -7,6 +7,7 @@ import { apiCheckMcpServerConnect } from "@/services/console/mcp-server";
 interface ProviderCardProps {
     mcpServer: McpServerDetail;
     selected?: boolean;
+    isUpdate?: string[];
 }
 
 interface ProviderCardEmits {
@@ -26,7 +27,7 @@ const emit = defineEmits<ProviderCardEmits>();
 const { t } = useI18n();
 const router = useRouter();
 const { hasAccessByCodes } = useAccessControl();
-const connectable = ref(false);
+const connectable = ref<boolean | "">("");
 const connectableError = ref<string | undefined>("");
 
 /**
@@ -39,11 +40,11 @@ const handleCheckConnect = async () => {
 };
 
 const connectableType = computed(() => {
-    return props.mcpServer.connectable || connectable.value;
+    return connectable.value === "" ? props.mcpServer.connectable : connectable.value;
 });
 
 const connectableErrorInfo = computed(() => {
-    return props.mcpServer.connectError || connectableError.value;
+    return connectable.value === "" ? props.mcpServer.connectError : connectableError.value;
 });
 
 /**
@@ -141,7 +142,7 @@ function getFormattedUrl(url: string): string {
 }
 
 onMounted(() => {
-    if (!props.mcpServer.connectable && !props.mcpServer.connectError) {
+    if (props.isUpdate?.includes(props.mcpServer.id)) {
         handleCheckConnect();
     }
 });

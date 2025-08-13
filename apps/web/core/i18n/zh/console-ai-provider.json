@@ -33,7 +33,8 @@
         "addDescription": "配置新的AI服务供应商",
         "editDescription": "修改AI服务供应商信息",
         "modelType": "支持模型类型",
-        "modelTypePlaceholder": "请输入模型类型"
+        "modelTypePlaceholder": "请输入模型类型",
+        "supportedModelTypesRequired": "请输入支持的模型类型"
     },
 
     "search": {

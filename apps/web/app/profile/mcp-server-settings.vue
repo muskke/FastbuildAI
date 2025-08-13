@@ -34,6 +34,8 @@ const editingMcpServerId = ref("");
 const isView = ref(false);
 const isSystemMcp = ref(false);
 
+const updateIds = ref<string[]>([]);
+
 const systemList = ref<McpServerInfo[]>([]);
 const page = ref(1);
 
@@ -132,6 +134,10 @@ const handleToggleVisible = async (providerId: string, isVisible: boolean) => {
     }
 };
 
+const changeUpdate = (ids?: string[]) => {
+    updateIds.value = ids || [];
+};
+
 const handleSearchChange = useDebounceFn(() => {
     page.value = 1;
     systemList.value = [];
@@ -211,6 +217,7 @@ onMounted(() => getLists());
                     :key="mcpServer.id"
                     :mcpServer="mcpServer"
                     :selected="selectMcpServer.has(mcpServer.id as string)"
+                    :update-ids="updateIds"
                     @delete="handleDeleteProvider"
                     @edit="handleEditProvider"
                     @view-models="handleViewModels"
@@ -283,6 +290,7 @@ onMounted(() => getLists());
             :is-view="isView"
             :is-json-import="isJsonImport"
             :is-system-mcp="isSystemMcp"
+            @change-update="changeUpdate"
             @close="
                 (refresh) => {
                     showMcpServerModal = false;
