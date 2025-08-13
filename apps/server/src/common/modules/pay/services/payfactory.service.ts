@@ -5,6 +5,7 @@ import { PayconfigService } from "@modules/console/system/services/payconfig.ser
 import { Injectable, Logger } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { WechatPayService } from "@sdk/wechat/pay";
+import { log } from "console";
 
 /**
  * 支付服务配置接口
@@ -173,7 +174,6 @@ export class PayfactoryService {
      */
     @OnEvent(PAY_EVENTS.REFRESH, { async: true })
     handleOrderCreatedEvent(payType: PayConfigType) {
-        this.logger.log("支付配置更新");
         this.clearCache(payType);
     }
 }
