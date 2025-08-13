@@ -125,29 +125,44 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
     <ProCard
         selectable
         show-actions
+        variant="outlined"
+        class="cursor-pointer"
         :selected="selected"
         :actions="dropdownActions"
         @select="handleSelect"
     >
+        <UTooltip :text="t('console-ai-provider.model.form.isDefault')" :delay="0">
+            <div
+                v-if="model.isDefault"
+                class="bg-warning absolute top-0 left-0 flex h-5 w-5 items-center justify-center rounded-br-xl px-1 py-0.5"
+            >
+                <UIcon name="i-lucide-star" class="text-inverted text-xs" />
+            </div>
+        </UTooltip>
         <template #icon="{ groupHoverClass, selectedClass }">
             <div class="relative flex items-start gap-4">
                 <!-- 模型图标 -->
                 <div class="relative">
-                    <div
-                        class="flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white"
-                        :class="[groupHoverClass, selectedClass]"
+                    <UChip
+                        :position="model.isActive ? 'top-right' : undefined"
+                        :color="statusInfo.color"
                     >
-                        <UIcon :name="getProviderIcon(model.providerId)" class="h-8 w-8" />
-                    </div>
+                        <div
+                            class="flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white"
+                            :class="[groupHoverClass, selectedClass]"
+                        >
+                            <UIcon :name="getProviderIcon(model.providerId)" class="h-8 w-8" />
+                        </div>
+                    </UChip>
                     <!-- 默认模型标识 -->
-                    <UBadge
+                    <!-- <UBadge
                         v-if="model.isDefault"
                         color="warning"
                         size="sm"
                         class="absolute -top-1 -right-1"
                     >
                         <UIcon name="i-lucide-star" class="h-3 w-3" />
-                    </UBadge>
+                    </UBadge> -->
                 </div>
 
                 <div>
@@ -158,13 +173,23 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
                         </UTooltip>
                     </h3>
 
-                    <UBadge v-if="model.modelType" variant="outline" color="neutral" size="sm">
-                        {{ model.modelType.toLocaleUpperCase().replaceAll("-", " ") }}
-                    </UBadge>
+                    <div class="mt-1 flex items-center gap-2">
+                        <UBadge v-if="model.modelType" variant="outline" color="neutral" size="sm">
+                            {{ model.modelType.toLocaleUpperCase().replaceAll("-", " ") }}
+                        </UBadge>
+                    </div>
 
                     <!-- 模型标识 -->
                     <p v-if="model.model" class="text-muted-foreground mt-2 line-clamp-2 text-xs">
-                        {{ t("console-ai-provider.model.form.model") }}: ({{ model.model }})
+                        {{ t("console-ai-provider.model.form.model") }}: {{ model.model }}
+                    </p>
+
+                    <p
+                        v-if="model.createdAt"
+                        class="text-muted-foreground mt-2 line-clamp-2 text-xs"
+                    >
+                        {{ t("console-common.updateAt") }}:
+                        <TimeDisplay :datetime="model.createdAt" mode="date" />
                     </p>
                 </div>
             </div>
@@ -177,12 +202,8 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
             </p>
         </template>
 
-        <template #details>
-            <!-- 模型配置信息 -->
+        <!-- <template #details>
             <div class="space-y-2">
-                <!-- Token限制 -->
-
-                <!-- 定价信息-输入 -->
                 <div v-if="model.pricing" class="text-accent-foreground flex items-center text-xs">
                     <UIcon name="i-lucide-dollar-sign" class="mr-1 h-3 w-3" />
                     <span>
@@ -191,7 +212,6 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
                     </span>
                 </div>
 
-                <!-- 定价信息-输出 -->
                 <div v-if="model.pricing" class="text-accent-foreground flex items-center text-xs">
                     <UIcon name="i-lucide-dollar-sign" class="mr-1 h-3 w-3" />
                     <span>
@@ -200,21 +220,18 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
                     </span>
                 </div>
             </div>
-        </template>
+        </template> -->
 
-        <template #footer>
+        <!-- <template #footer>
             <div class="flex items-center gap-2">
-                <!-- 状态标识 -->
                 <UTooltip :text="statusInfo.label" :delay="0">
                     <UBadge :color="statusInfo.color" :icon="statusInfo.icon" size="xs" />
                 </UTooltip>
-                <!-- 创建时间 -->
                 <span class="text-muted-foreground text-xs">
                     {{ t("console-common.updateAt") }}:
                     <TimeDisplay :datetime="model.createdAt" mode="date" />
                 </span>
 
-                <!-- 快捷操作 -->
                 <div class="ml-auto flex items-center gap-1">
                     <AccessControl :codes="['ai-models:update']">
                         <UButton
@@ -232,6 +249,6 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
                     </AccessControl>
                 </div>
             </div>
-        </template>
+        </template> -->
     </ProCard>
 </template>
