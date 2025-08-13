@@ -76,7 +76,7 @@ const activeFileData = computed(() => props.results.fileResults[activeFileIndex.
         >
             <!-- 加载状态 -->
             <div v-if="isPreviewing" class="p-4">
-                <div v-for="item in 20" class="mb-6">
+                <div v-for="item in 20" :key="item" class="mb-6">
                     <div class="mb-3 flex">
                         <USkeleton class="size-3" />
                         <USkeleton class="ml-1 h-3 w-12" />

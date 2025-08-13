@@ -227,8 +227,6 @@ onMounted(() => {
                 <USwitch
                     :model-value="!mcpServer.isDisabled"
                     @update:model-value="(val) => emit('toggle-visible', mcpServer.id, !val)"
-                    unchecked-icon="lucide:eye-off"
-                    checked-icon="lucide:eye"
                     size="md"
                 />
 

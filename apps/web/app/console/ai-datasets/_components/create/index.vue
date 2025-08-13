@@ -134,9 +134,9 @@ onMounted(() => {
 
 <template>
     <div class="create-dataset-container flex h-full flex-col">
-        <div class="sticky top-0 z-10 flex px-4 py-2">
+        <div class="sticky top-0 z-10 flex">
             <UButton
-                class="absolute top-1/2 left-2 -translate-y-[50%]"
+                class="absolute top-1/2 -translate-y-[50%]"
                 variant="link"
                 color="neutral"
                 :label="$t('datasets.dataset.title')"
@@ -152,7 +152,7 @@ onMounted(() => {
             <TopBar :steps="STEPS" :activeIndex="step" />
         </div>
 
-        <div class="container mx-auto h-full px-4 py-2">
+        <div class="container mx-auto h-full pb-6">
             <!-- 步骤1 选择知识库数据 -->
             <div v-show="step === 1" class="flex h-full min-h-0 w-full">
                 <StepOne

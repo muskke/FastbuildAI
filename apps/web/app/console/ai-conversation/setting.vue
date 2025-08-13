@@ -87,11 +87,6 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
     }
 });
 
-/** 处理取消操作 */
-const handleCancel = () => {
-    router.back();
-};
-
 // 初始化
 onMounted(() => getChatConfig());
 </script>
@@ -215,9 +210,6 @@ onMounted(() => getChatConfig());
 
             <!-- 操作按钮 -->
             <div class="flex gap-3 pt-4">
-                <UButton color="neutral" variant="soft" size="lg" @click="handleCancel">
-                    {{ t("console-common.cancel") }}
-                </UButton>
                 <AccessControl :codes="['ai-conversations:update-config']">
                     <UButton
                         color="primary"
@@ -226,7 +218,7 @@ onMounted(() => getChatConfig());
                         :loading="isLock"
                         :disabled="detailLoading"
                     >
-                        {{ t("console-common.confirm") }}
+                        {{ t("console-common.save") }}
                     </UButton>
                 </AccessControl>
             </div>

@@ -227,7 +227,7 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
 
                 <UFormField
                     label=" "
-                    class="flex w-full justify-between"
+                    class="flex w-full justify-between pb-8"
                     :ui="{
                         wrapper: 'flex  ',
                         labelWrapper: 'items-stretch ',
