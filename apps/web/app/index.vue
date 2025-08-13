@@ -213,7 +213,7 @@ definePageMeta({
                             />
                             <UButton
                                 v-if="quickMenu"
-                                color="primary"
+                                :color="isQuickMenu ? 'primary' : 'neutral'"
                                 variant="ghost"
                                 :icon="quickMenu?.icon ? '' : 'tabler:tool'"
                                 :ui="{ leadingIcon: 'size-4' }"
