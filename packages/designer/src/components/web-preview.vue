@@ -4,12 +4,13 @@
  * @description 专门用于预览设计结果，模拟真实网页显示效果
  */
 import { useColorMode } from "@vueuse/core";
-import { type Component, computed, onMounted, onUnmounted, ref, shallowRef } from "vue";
+import { type Component, computed, defineAsyncComponent, onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import { DESIGN_CONFIG } from "../config/design";
 import { useDesignStore } from "../stores/design";
-import { registerComponents } from "../utils/register-components";
+// 避免一次性注册所有组件，按需加载
+const contentModules = import.meta.glob("../components/widgets/**/content.vue", { eager: false });
 
 const router = useRouter();
 const colorMode = useColorMode();
@@ -33,8 +34,14 @@ const props = withDefaults(
 // 响应式窗口宽度
 const windowWidth = ref(typeof window !== "undefined" ? window.innerWidth : 1920);
 
-// 动态注册内容组件
-const componentsMaps = shallowRef<Record<string, Component>>(registerComponents("content"));
+function resolveComponent(type: string) {
+    const entry = Object.entries(contentModules).find(([path]) =>
+        path.includes(`/${type}/content.vue`),
+    );
+    if (!entry) return null;
+    const loader = entry[1] as any;
+    return defineAsyncComponent(loader);
+}
 
 // 使用配置中的设计尺寸
 const designWidth = computed(() => DESIGN_CONFIG.value.DEFAULT_WIDTH);
@@ -202,17 +209,16 @@ onMounted(async () => {
         <!-- 顶部工具栏 -->
         <div
             v-if="showToolbar"
-            class="bg-background/80 fixed top-4 left-4 z-50 rounded-lg border border-gray-200 px-3 py-2 shadow-lg backdrop-blur-sm"
+            class="fixed top-4 left-4 z-50 rounded-lg border border-gray-200 bg-white/80 px-3 py-2 shadow-lg backdrop-blur-sm dark:bg-black/40"
         >
-            <UButton
-                variant="ghost"
-                color="neutral"
-                size="sm"
-                icon="i-lucide-arrow-left"
+            <button
+                type="button"
+                class="inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                 @click="router.back()"
             >
+                <span aria-hidden>←</span>
                 返回编辑
-            </UButton>
+            </button>
         </div>
 
         <!-- 预览画布 - 正常网页效果 -->
@@ -224,7 +230,7 @@ onMounted(async () => {
                 class="design-component"
                 :style="getOutsideComponentStyle(component)"
             >
-                <component :is="componentsMaps[component.type]" v-bind="component.props" />
+                <component :is="resolveComponent(component.type)" v-bind="component.props" />
             </div>
 
             <!-- 居中内容区 - 始终mx-auto -->
@@ -236,7 +242,7 @@ onMounted(async () => {
                     class="design-component"
                     :style="getCenterComponentStyle(component)"
                 >
-                    <component :is="componentsMaps[component.type]" v-bind="component.props" />
+                    <component :is="resolveComponent(component.type)" v-bind="component.props" />
                 </div>
 
                 <!-- 空状态 -->
