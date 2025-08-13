@@ -22,20 +22,20 @@ const categoryConfigMap = reactive<CategoryConfigMap>({});
  * 动态导入组件配置
  * @param DEFAULT_DEVICE_TYPE - 设备类型（web/mobile）
  */
-export function importComponentConfigs(DEFAULT_DEVICE_TYPE: DecorateScene) {
+export async function importComponentConfigs(DEFAULT_DEVICE_TYPE: DecorateScene) {
     // 重置组件配置数据
     Object.keys(componentConfigMap).forEach((key) => delete componentConfigMap[key]);
     Object.keys(categoryConfigMap).forEach((key) => delete categoryConfigMap[key]);
 
     // 动态导入PC组件配置
     const webConfigs = import.meta.glob<ConfigModule>("../components/widgets/web/*/config.ts", {
-        eager: true,
+        eager: false,
     });
 
     // 动态导入Mobile组件配置
     const mobileConfigs = import.meta.glob<ConfigModule>(
         "../components/widgets/mobile/*/config.ts",
-        { eager: true },
+        { eager: false },
     );
 
     // 根据设备类型选择要处理的配置
@@ -43,14 +43,14 @@ export function importComponentConfigs(DEFAULT_DEVICE_TYPE: DecorateScene) {
 
     // 处理每个配置集合
     for (const configs of configsToProcess) {
-        Object.entries(configs).forEach(([path, module]) => {
+        for (const [path, loader] of Object.entries(configs)) {
             const match = path.match(/\/(web|mobile)\/([^/]+)\/config\.ts$/);
-            if (!match) return;
+            if (!match) continue;
 
             const componentType = match[2];
-
-            const config = Object.values(module).find(
-                (item) => item && typeof item === "object" && item.type === componentType,
+            const mod = (await (loader as any)()) as ConfigModule;
+            const config = Object.values(mod).find(
+                (item) => item && typeof item === "object" && (item as any).type === componentType,
             ) as ComponentMenuItem | undefined;
 
             if (config) {
@@ -59,7 +59,7 @@ export function importComponentConfigs(DEFAULT_DEVICE_TYPE: DecorateScene) {
                     categoryConfigMap[config.category.id] = config.category;
                 }
             }
-        });
+        }
     }
 }
 

@@ -3,12 +3,10 @@
  * 动态属性编辑器容器
  * @description 自动注册 widgets 目录下的属性组件
  */
-import type { Component } from "vue";
-import { computed, ref, shallowRef } from "vue";
+import { computed, defineAsyncComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import { useDesignStore } from "../../stores/design";
-import { registerComponents } from "../../utils/register-components";
 import WidgetsBasePage from "../widgets/base/widgets-base-page.vue";
 import LayersPanel from "./layers-panel.vue";
 
@@ -16,13 +14,23 @@ const router = useRouter();
 const gridStore = useDesignStore();
 const isExpanded = ref(true);
 
-// 动态注册属性编辑器组件
-const components = shallowRef<Record<string, Component>>(registerComponents("attribute"));
+// 按需解析属性编辑器组件，避免全量注册
+const attributeModules = import.meta.glob("../../components/widgets/**/attribute.vue", {
+    eager: false,
+});
+function resolveAttributeComponent(type: string) {
+    const entry = Object.entries(attributeModules).find(([path]) =>
+        path.includes(`/${type}/attribute.vue`),
+    );
+    if (!entry) return null;
+    const loader = entry[1] as any;
+    return defineAsyncComponent(loader);
+}
 
 // 当前激活的组件
 const currentComponent = computed(() => gridStore.activeComponent);
-const currentEditor = computed(
-    () => (currentComponent.value?.type && components.value[currentComponent.value.type]) || null,
+const currentEditor = computed(() =>
+    currentComponent.value?.type ? resolveAttributeComponent(currentComponent.value.type) : null,
 );
 
 // 组件属性的计算属性

@@ -3,7 +3,7 @@
  * 网页设计预览页面
  * @description 简单预览网页设计的最终效果
  */
-import { WebPreview } from "@fastbuildai/designer";
+const WebPreview = defineAsyncComponent(() => import("@fastbuildai/designer/web-preview"));
 
 // 设置页面元信息
 definePageMeta({

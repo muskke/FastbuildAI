@@ -21,8 +21,7 @@ export default defineNuxtConfig({
         "@nuxt/ui",
         "@nuxtjs/i18n",
         // "@vite-pwa/nuxt",
-        // 生产构建禁用 ESLint 模块以减少打包耗时
-        ...(!isProd ? ["@nuxt/eslint"] : []),
+        "@nuxt/eslint",
         "motion-v/nuxt",
     ],
 
@@ -135,6 +134,8 @@ export default defineNuxtConfig({
         "/profile/**": { prerender: false, ssr: false, swr: true },
     },
 
+    sourcemap: false,
+
     devServer: {
         port: 4091,
         host: "127.0.0.1, 0.0.0.0",
@@ -185,17 +186,7 @@ export default defineNuxtConfig({
 
     // // 配置 Vite
     vite: {
-        plugins: [
-            tailwindcss() as PluginOption,
-            // import.meta.env.NUXT_BUILD_ENV === "production"
-            //     ? visualizer({
-            //           open: true, //注意这里要设置为true，否则无效
-            //           filename: "stats.html", //分析图生成的文件名
-            //           gzipSize: true, // 收集 gzip 大小并将其显示
-            //           brotliSize: true, // 收集 brotli 大小并将其显示
-            //       })
-            //     : null,
-        ],
+        plugins: [tailwindcss() as PluginOption],
         optimizeDeps: {
             include:
                 import.meta.env.NUXT_BUILD_ENV === "development"
@@ -203,7 +194,8 @@ export default defineNuxtConfig({
                           "@tanstack/table-core",
                           "@internationalized/date",
                           "reka-ui",
-                          "md-editor-v3",
+                          "@tiptap/vue-3",
+                          "@tiptap/starter-kit",
                           "@tanstack/vue-table",
                           "@iconify-json/lucide",
                           "yup",
@@ -227,6 +219,13 @@ export default defineNuxtConfig({
                           "@nuxt/ui/runtime/locale/index.js",
                           "clsx",
                           "tailwind-merge",
+                          "@tiptap/extension-color",
+                          "@tiptap/extension-image",
+                          "@tiptap/extension-link",
+                          "@tiptap/extension-list-item",
+                          "@tiptap/extension-placeholder",
+                          "@tiptap/extension-text-style",
+                          "@tiptap/extension-underline",
                       ]
                     : [],
             exclude: [],
@@ -272,6 +271,5 @@ export default defineNuxtConfig({
     icon: {
         serverBundle: "remote",
     },
-
     // // pwa,
 });

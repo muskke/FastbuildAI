@@ -1,8 +1,12 @@
 <script lang="ts" setup>
-import { type Component, shallowRef } from "vue";
+import { type Component, defineAsyncComponent } from "vue";
 
 import { useDesignStore } from "../../stores/design";
-import { registerComponents } from "../../utils/register-components";
+// 避免一次性注册全部组件，按需加载 content 组件
+const contentModules = import.meta.glob("../../components/widgets/**/content.vue", {
+    eager: false,
+});
+const componentCache: Record<string, Component | null> = {};
 
 const props = defineProps<{
     component: ComponentConfig;
@@ -18,8 +22,19 @@ const emit = defineEmits<{
 
 const designStore = useDesignStore();
 
-// 动态注册内容组件
-const components = shallowRef<Record<string, Component>>(registerComponents("content"));
+function resolveComponent(type: string) {
+    if (componentCache[type] !== undefined) return componentCache[type];
+    const matcher = new RegExp(`/(?:web|mobile)/${type}/content\\.vue$`);
+    const entry = Object.entries(contentModules).find(([path]) => matcher.test(path));
+    if (!entry) {
+        componentCache[type] = null;
+        return null;
+    }
+    const loader = entry[1] as any;
+    const comp = defineAsyncComponent(loader);
+    componentCache[type] = comp as unknown as Component;
+    return comp as unknown as Component;
+}
 
 // 处理右键菜单命令
 function handleCommand(command: string) {
@@ -95,7 +110,7 @@ function handleResizeStart(direction: string, event: MouseEvent) {
         <!-- 内容区域 -->
         <div class="component-content-wrapper">
             <component
-                :is="components[component.type]"
+                :is="resolveComponent(component.type)"
                 v-bind="component.props"
                 :size="component.size"
                 class="pointer-events-none select-none"
