@@ -92,7 +92,7 @@ services:
         echo "📦 Installing dependencies..."
         pnpm i
       fi
-      echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
+  
       if [ ! -f "/fastbuildai/public/index.html" ] || [ "$QUICK_START_MODE" = "false" ]; then
         NODE_OPTIONS="--max-old-space-size=1550" NUXT_BUILD_SSR=false NUXT_BUILD_ENV=production
         echo "🌐 Building web application..."
@@ -104,6 +104,7 @@ services:
         pnpm --filter ./apps/server run build
       fi
       
+      echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
       echo "🎯 Starting production server..."
       exec pnpm --filter ./apps/server run start:prod
       '
