@@ -168,7 +168,8 @@ onMounted(loadModels);
                                 </h3>
                             </div>
                             <div class="bg-muted-foreground/10 rounded-xl px-2 py-1 text-xs">
-                                {{ provider.models?.length }}个模型
+                                {{ provider.models?.length }}
+                                {{ t("console-common.placeholder.modelsCount") }}
                             </div>
                         </div>
                         <ul class="space-y-1">

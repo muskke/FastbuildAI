@@ -305,7 +305,7 @@ async function handlePopoverUpdate(value: boolean) {
                                 >
                                     <div class="flex w-full flex-row items-center justify-between">
                                         <div
-                                            class="flex flex-row items-start gap-2 space-y-0.5 overflow-hidden"
+                                            class="flex flex-row items-center gap-2 space-y-0.5 overflow-hidden"
                                         >
                                             <UAvatar
                                                 v-if="mcp.icon"
