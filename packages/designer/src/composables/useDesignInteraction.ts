@@ -31,10 +31,18 @@ export function useDesignInteraction(
         const design = designRef.value;
         if (!design) return null;
 
-        const zoomContainer = design.closest(".zoom-content") as HTMLElement;
-        if (!zoomContainer) return null;
+        // 优先从设计容器向上查找缩放容器
+        let zoomContainer = design.closest(".zoom-content") as HTMLElement | null;
+        // 兜底：如果未找到，尝试全局查询
+        if (!zoomContainer) {
+            zoomContainer = document.querySelector(".zoom-content") as HTMLElement | null;
+        }
+        // 再兜底：取父级作为缩放容器，按未缩放处理
+        if (!zoomContainer) {
+            return { design, zoomContainer: design.parentElement as HTMLElement } as const;
+        }
 
-        return { design, zoomContainer };
+        return { design, zoomContainer } as const;
     }
 
     /**
@@ -48,8 +56,11 @@ export function useDesignInteraction(
 
         // 获取缩放容器的变换信息
         const style = window.getComputedStyle(zoomContainer);
-        const transform = new DOMMatrix(style.transform);
-        const scale = transform.a; // transform.a 是 x 轴的缩放值
+        const transformStr = style.transform;
+        // 处理 transform 为 'none' 的情况
+        const matrix =
+            transformStr && transformStr !== "none" ? new DOMMatrix(transformStr) : new DOMMatrix();
+        const scale = matrix.a || 1; // transform.a 是 x 轴缩放值
 
         // 计算鼠标相对于设计画布的实际位置
         const designRect = design.getBoundingClientRect();
