@@ -35,7 +35,7 @@ function formatScore(score: number): string {
 
 function openKnowledgeBase(datasetId: string, documentId: string) {
     router.push({
-        path: `/datasets/${datasetId}/documents/segments`,
+        path: useRoutePath("ai-datasets:detail", { id: datasetId }),
         query: {
             documentId: documentId,
         },
