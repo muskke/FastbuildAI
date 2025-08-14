@@ -175,7 +175,18 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                     <div class="text-muted-foreground text-sm">
                         {{ t("console-ai-mcp-server.detail.url") }}
                     </div>
-                    <UTooltip :text="formData.url" :delay-duration="0">
+                    <UTooltip
+                        :ui="{
+                            content:
+                                'max-w-100 !whitespace-pre-wrap !break-all leading-relaxed h-fit p-2',
+                        }"
+                        :delay-duration="0"
+                    >
+                        <template #content>
+                            <div class="max-w-100">
+                                {{ formData.url }}
+                            </div>
+                        </template>
                         <div class="text-secondary-foreground mt-1 truncate font-medium">
                             {{ formData.url }}
                         </div>
