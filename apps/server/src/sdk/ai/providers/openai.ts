@@ -2,7 +2,12 @@ import OpenAI, { ClientOptions } from "openai";
 import { CreateEmbeddingResponse, EmbeddingCreateParams } from "openai/resources/embeddings";
 import { ChatCompletion, ChatCompletionCreateParams } from "openai/resources/index";
 
-import { Adapter, ProviderChatCompletionStream } from "../interfaces/adapter";
+import {
+    Adapter,
+    ProviderChatCompletionStream,
+    RerankParams,
+    RerankResponse,
+} from "../interfaces/adapter";
 
 export class OpenAIAdapter implements Adapter {
     public name = "openai";
@@ -58,6 +63,47 @@ export class OpenAIAdapter implements Adapter {
             ...params,
             model: params.model || "text-embedding-3-small",
         });
+    }
+
+    /**
+     * 通用重排功能实现
+     * 基于 OpenAI 兼容的重排接口，子类可以根据需要重写此方法
+     */
+    async rerankDocuments(params: RerankParams): Promise<RerankResponse> {
+        try {
+            // 构建请求体，使用通用的重排接口格式
+            const requestBody = {
+                model: params.model || "rerank-1", // 默认重排模型
+                query: params.query,
+                documents: params.documents,
+                top_n: params.top_n || params.documents.length,
+            };
+
+            // 发送重排请求，使用基础 URL + /rerank 路径
+            const response = await fetch(`${this.client.baseURL}/rerank`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${this.client.apiKey}`,
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (!response.ok) {
+                throw new Error(`重排请求失败: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            // 标准化返回格式
+            return {
+                results: data.results || data.rankings || [],
+                model: data.model || requestBody.model,
+            };
+        } catch (error) {
+            console.error(`${this.name} 重排服务调用失败:`, error);
+            throw new Error(`${this.name} 重排服务调用失败: ${error.message}`);
+        }
     }
 }
 

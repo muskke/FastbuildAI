@@ -108,7 +108,7 @@ export class RetrievalConfigDto implements RetrievalConfig {
     @Min(0, { message: "Score阈值不能小于0" })
     @Max(1, { message: "Score阈值不能超过1" })
     @Transform(({ value }) => parseFloat(value))
-    scoreThreshold?: number = 0.5;
+    scoreThreshold?: number = 0.3;
 
     /**
      * 是否启用阈值过滤
