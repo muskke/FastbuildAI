@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ProScrollArea } from "@fastbuildai/ui";
 import type { ButtonProps } from "@nuxt/ui";
 import { computed, onMounted, ref } from "vue";
 

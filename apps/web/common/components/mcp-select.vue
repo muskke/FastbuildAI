@@ -295,7 +295,7 @@ async function handlePopoverUpdate(value: boolean) {
                                 @click="mcp.connectable && select(mcp)"
                             >
                                 <UPopover
-                                    mode="click"
+                                    mode="hover"
                                     :open-delay="500"
                                     :content="{
                                         align: 'start',
