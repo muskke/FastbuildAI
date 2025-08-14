@@ -342,7 +342,7 @@ const handleRemoveMember = async (row: Row<TeamMember>) => {
 
         await apiRemoveTeamMember({ memberId: row.original.id });
         if (row.original.oneself) {
-            router.push("/datasets");
+            router.push(useRoutePath("ai-datasets:list"));
             toast.success(t("datasets.members.exitSuccess"));
             return;
         }

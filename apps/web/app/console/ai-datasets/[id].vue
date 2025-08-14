@@ -28,8 +28,6 @@ const retrievalModeMap = {
     fullText: t("datasets.retrieval.fullText"),
     hybrid: t("datasets.retrieval.hybrid"),
 } as const;
-
-definePageMeta({ activePath: "/datasets" });
 </script>
 
 <template>
