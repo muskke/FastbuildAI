@@ -8,6 +8,18 @@ export interface SiteConfig {
     copyright: WebsiteCopyright;
     /** 统计信息 */
     statistics: WebsiteStatistics;
+    /** 协议 */
+    agreement: Agreement;
+}
+
+export interface Agreement {
+    paymentTitle: string;
+    paymentContent: string;
+    privacyTitle: string;
+    privacyContent: string;
+    serviceTitle: string;
+    serviceContent: string;
+    updateAt: string;
 }
 
 /** 协议项接口 */

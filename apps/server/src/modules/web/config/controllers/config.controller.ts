@@ -37,13 +37,7 @@ export class ConfigController extends BaseController {
     @BuildFileUrl(["**.logo", "**.icon"])
     @Public()
     async getConfig() {
-        const fullConfig = await this.websiteService.getConfig();
-
-        return {
-            webinfo: fullConfig.webinfo,
-            copyright: fullConfig.copyright,
-            statistics: fullConfig.statistics,
-        };
+        return await this.websiteService.getConfig();
     }
 
     /**
