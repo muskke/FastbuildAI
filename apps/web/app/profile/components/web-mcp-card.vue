@@ -190,9 +190,18 @@ onMounted(() => {
         <template #description>
             <!-- 描述 -->
             <UTooltip
-                :text="mcpServer.description || t('console-ai-mcp-server.noDescription')"
+                :disabled="!mcpServer.description"
+                :text="mcpServer.description"
+                :ui="{
+                    content: 'max-w-100 !whitespace-pre-wrap leading-relaxed h-fit p-2',
+                }"
                 :delay-duration="0"
             >
+                <template #content>
+                    <div class="max-w-100">
+                        {{ mcpServer.description }}
+                    </div>
+                </template>
                 <h4 v-if="mcpServer.description" class="text-muted-foreground line-clamp-2 text-xs">
                     {{ mcpServer.description }}
                 </h4>
