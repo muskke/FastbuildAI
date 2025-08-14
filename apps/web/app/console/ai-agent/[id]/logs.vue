@@ -23,9 +23,6 @@ const components: { value: string; label: string; component: any }[] = [
         component: Annotations,
     },
 ];
-
-// 设置layout
-definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
