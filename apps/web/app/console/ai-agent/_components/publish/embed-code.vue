@@ -206,7 +206,7 @@ const copyCode = (code: string) => {
                 <div class="border-border flex justify-center rounded-lg border p-6">
                     <div
                         class="border-border overflow-hidden rounded-lg border shadow-lg"
-                        style="width: 400px; height: 300px"
+                        style="width: 400px; height: 750px"
                     >
                         <iframe
                             :src="`${publishUrl}?embed=true&preview=true`"

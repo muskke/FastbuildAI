@@ -135,4 +135,10 @@ export class Datasets {
      */
     @OneToMany(() => DatasetMember, (member) => member.dataset)
     members?: Awaited<DatasetMember[]>;
+
+    /**
+     * 关联应用（智能体）数量
+     * 非持久化字段，仅用于接口返回展示
+     */
+    relatedAgentCount?: number;
 }

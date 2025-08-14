@@ -133,6 +133,8 @@ export interface Dataset extends BaseEntity {
     createdBy: string;
     /** 扩展数据 */
     metadata?: Record<string, any>;
+    /** 关联应用数量 */
+    relatedAgentCount?: number;
 }
 
 /**
