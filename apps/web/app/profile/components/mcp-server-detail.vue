@@ -72,6 +72,7 @@ const formData = reactive<Detail>({
     mcpServerId: "",
     isDisabled: false,
 });
+const reconnecting = ref(false);
 
 // 获取供应商详情
 const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
@@ -107,22 +108,23 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
 const handleReconnect = async () => {
     try {
         loading.value = true;
-        const res = await apiCheckMcpServerConnect(formData.mcpServerId);
+        const res = await apiCheckMcpServerConnect(mcpServerId.value as string);
         if (res.connectable) {
             toast.success(res.message);
+            fetchDetail();
+            reconnecting.value = true;
         } else {
             toast.error(res.message);
         }
     } catch (error) {
         console.error("重新链接失败:", error);
-        toast.error("重新链接失败");
     } finally {
         loading.value = false;
     }
 };
 
-const handleClose = () => {
-    emits("close");
+const handleClose = (value: boolean) => {
+    emits("close", value);
 };
 
 onMounted(async () => mcpServerId.value && (await fetchDetail()));
@@ -136,7 +138,7 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
         :ui="{
             content: 'max-w-2xl overflow-y-auto h-fit',
         }"
-        @update:model-value="(value) => !value && handleClose()"
+        @update:model-value="(value) => !value && handleClose(reconnecting)"
     >
         <div v-if="detailLoading" class="flex items-center justify-center" style="height: 400px">
             <UIcon name="i-lucide-loader-2" class="size-8 animate-spin" />
@@ -178,7 +180,7 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                     color="error"
                     @click="handleReconnect()"
                 >
-                    重新链接
+                    {{ t("console-ai-mcp-server.detail.reconnect") }}
                 </UButton>
             </div>
             <!-- 描述 -->
