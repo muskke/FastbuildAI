@@ -23,6 +23,8 @@ interface PaymentMethod {
     icon: string;
 }
 
+const appStore = useAppStore();
+
 // 组合式函数
 const { t } = useI18n();
 const toast = useMessage();
@@ -293,15 +295,20 @@ definePageMeta({
                         t("web-personal-rights.rechargeCenter.agreement")
                     }}</span>
                     <UButton variant="link" class="p-0" @click="toServiceTerms">
-                        《{{ t("web-personal-rights.rechargeCenter.payment") }}》
+                        《{{
+                            appStore.siteConfig?.agreement.paymentTitle ||
+                            t("web-personal-rights.rechargeCenter.payment")
+                        }}》
                     </UButton>
                 </div>
                 <div class="flex items-center gap-4">
-                    <div class="text-xl font-bold">¥ {{ currentOption?.sellPrice }}</div>
+                    <div v-if="currentOption" class="text-xl font-bold">
+                        ¥ {{ currentOption?.sellPrice }}
+                    </div>
                     <UButton
                         color="primary"
                         size="lg"
-                        :disabled="!rechargeCenterInfo?.rechargeStatus"
+                        :disabled="!rechargeCenterInfo?.rechargeRule.length"
                         @click="handleRecharge"
                     >
                         {{ t("web-personal-rights.rechargeCenter.immediatelyPurchase") }}
