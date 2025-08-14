@@ -32,18 +32,6 @@ const connectable = ref<boolean | "">("");
 const connectableError = ref<string | undefined>("");
 
 /**
- * 获取MCP服务器图标
- */
-function getMcpServerIcon(mcpServer: McpServerInfo): string {
-    if (mcpServer.icon) {
-        return mcpServer.icon;
-    }
-    // 使用MCP服务器名称首字母作为默认图标
-    const firstLetter = mcpServer.name?.charAt(0).toUpperCase() || "P";
-    return `https://ui-avatars.com/api/?name=${firstLetter}&background=6366f1&color=fff&size=80`;
-}
-
-/**
  * mcp 连通性测试
  */
 const handleCheckConnect = async () => {
