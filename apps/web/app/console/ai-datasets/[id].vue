@@ -4,6 +4,7 @@ import { apiGetDatasetDetail } from "@/services/console/ai-datasets";
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
+const isMobile = useMediaQuery("(max-width: 1380px)");
 const { hasAccessByCodes } = useAccessControl();
 const datasetId = computed(() => (route.params as Record<string, string>).id);
 const collapsed = ref<boolean>(false);
@@ -28,6 +29,14 @@ const retrievalModeMap = {
     fullText: t("datasets.retrieval.fullText"),
     hybrid: t("datasets.retrieval.hybrid"),
 } as const;
+
+watch(isMobile, (newVal) => {
+    if (newVal) {
+        collapsed.value = true;
+    } else {
+        collapsed.value = false;
+    }
+});
 </script>
 
 <template>

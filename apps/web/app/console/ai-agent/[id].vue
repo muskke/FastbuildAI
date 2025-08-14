@@ -7,7 +7,7 @@ const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
 const { hasAccessByCodes } = useAccessControl();
-const isMobile = useMediaQuery("(max-width: 1280px)");
+const isMobile = useMediaQuery("(max-width: 1380px)");
 const agentId = computed(() => (route.params as Record<string, string>).id);
 const collapsed = ref<boolean>(false);
 
@@ -43,10 +43,6 @@ watch(isMobile, (newVal) => {
     } else {
         collapsed.value = false;
     }
-});
-
-definePageMeta({
-    layout: "full-screen",
 });
 </script>
 
