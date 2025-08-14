@@ -262,6 +262,7 @@ definePageMeta({
                             class="hover:text-primary flex items-center justify-center gap-1 transition-colors"
                         >
                             <UAvatar
+                                v-if="appStore.siteConfig?.copyright.iconUrl"
                                 :src="appStore.siteConfig?.copyright.iconUrl"
                                 :ui="{ root: 'size-4 rounded-md' }"
                             />
