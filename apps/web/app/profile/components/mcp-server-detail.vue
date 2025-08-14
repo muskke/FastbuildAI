@@ -183,7 +183,7 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
             </div>
             <!-- 描述 -->
             <div class="bg-muted rounded-lg p-4 pb-4">
-                <p class="text-muted-foreground">
+                <p class="text-muted-foreground text-xs">
                     {{ formData.description || t("common.mcp-server.detail.noDescription") }}
                 </p>
             </div>
@@ -194,7 +194,19 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                     <div class="text-muted-foreground text-sm">
                         {{ t("common.mcp-server.detail.url") }}
                     </div>
-                    <UTooltip :text="formData.url" :delay-duration="0">
+                    <UTooltip
+                        :text="formData.url"
+                        :ui="{
+                            content:
+                                'max-w-100 !whitespace-pre-wrap break-all leading-relaxed h-fit p-2',
+                        }"
+                        :delay-duration="0"
+                    >
+                        <template #content>
+                            <div class="max-w-100">
+                                {{ formData.url }}
+                            </div>
+                        </template>
                         <div class="text-secondary-foreground mt-1 truncate font-medium">
                             {{ formData.url }}
                         </div>
