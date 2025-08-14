@@ -1,4 +1,9 @@
-import { useWebDelete, useWebGet, useWebPost, useWebPut } from "@/common/composables/useRequest";
+import {
+    useConsoleDelete,
+    useConsoleGet,
+    useConsolePost,
+    useConsolePut,
+} from "@/common/composables/useRequest";
 import type { AiMessage } from "@/models";
 import type { CreateAgentAnnotationParams, UpdateAgentAnnotationParams } from "@/models/ai-agent";
 
@@ -53,7 +58,7 @@ export function apiPublishAgent(
     agentId: string,
     params: PublishAgentParams = {},
 ): Promise<PublishAgentResponse> {
-    return useWebPost(`/agent/${agentId}/publish`, params);
+    return useConsolePost(`/ai-agent/${agentId}/publish`, params);
 }
 
 /**
@@ -61,7 +66,7 @@ export function apiPublishAgent(
  * @param agentId 智能体ID
  */
 export function apiUnpublishAgent(agentId: string): Promise<{ message: string }> {
-    return useWebPost(`/agent/${agentId}/unpublish`, {});
+    return useConsolePost(`/ai-agent/${agentId}/unpublish`, {});
 }
 
 /**
@@ -69,7 +74,7 @@ export function apiUnpublishAgent(agentId: string): Promise<{ message: string }>
  * @param agentId 智能体ID
  */
 export function apiRegenerateApiKey(agentId: string): Promise<RegenerateApiKeyResponse> {
-    return useWebPost(`/agent/${agentId}/regenerate-api-key`, {});
+    return useConsolePost(`/ai-agent/${agentId}/regenerate-api-key`, {});
 }
 
 /**
@@ -77,7 +82,7 @@ export function apiRegenerateApiKey(agentId: string): Promise<RegenerateApiKeyRe
  * @param agentId 智能体ID
  */
 export function apiGetEmbedCode(agentId: string): Promise<EmbedCodeResponse> {
-    return useWebGet(`/agent/${agentId}/embed-code`);
+    return useConsoleGet(`/ai-agent/${agentId}/embed-code`);
 }
 
 // ==================== 公开智能体对话相关 API ====================
@@ -88,7 +93,7 @@ export function apiGetEmbedCode(agentId: string): Promise<EmbedCodeResponse> {
  * @returns 智能体公开信息
  */
 export function apiGetPublicAgentInfo(publishToken: string, accessToken: string): Promise<any> {
-    return useWebGet(
+    return useConsoleGet(
         `/public-agent/${publishToken}/info`,
         {},
         {
@@ -110,7 +115,7 @@ export function apiGeneratePublicAgentAccessToken(publishToken: string): Promise
     agentName: string;
     description: string;
 }> {
-    return useWebPost(`/public-agent/${publishToken}/generate-access-token`);
+    return useConsolePost(`/public-agent/${publishToken}/generate-access-token`);
 }
 
 /**
@@ -125,7 +130,7 @@ export function apiGetPublicAgentConversations(
     accessToken: string,
     params: { page?: number; pageSize?: number } = {},
 ): Promise<any> {
-    return useWebGet(`/public-agent/${publishToken}/conversations`, params, {
+    return useConsoleGet(`/public-agent/${publishToken}/conversations`, params, {
         headers: {
             "X-Public-Access-Token": accessToken,
         },
@@ -146,7 +151,7 @@ export function apiGetPublicAgentMessages(
     conversationId: string,
     params: { page?: number; pageSize?: number } = {},
 ): Promise<any> {
-    return useWebGet(
+    return useConsoleGet(
         `/public-agent/${publishToken}/conversations/${conversationId}/messages`,
         params,
         {
@@ -169,7 +174,7 @@ export function apiDeletePublicAgentConversation(
     accessToken: string,
     conversationId: string,
 ): Promise<any> {
-    return useWebDelete(
+    return useConsoleDelete(
         `/public-agent/${publishToken}/conversations/${conversationId}`,
         undefined,
         {
@@ -194,11 +199,15 @@ export function apiUpdatePublicAgentConversation(
     conversationId: string,
     updateData: { title?: string },
 ): Promise<any> {
-    return useWebPut(`/public-agent/${publishToken}/conversations/${conversationId}`, updateData, {
-        headers: {
-            "X-Public-Access-Token": accessToken,
+    return useConsolePut(
+        `/public-agent/${publishToken}/conversations/${conversationId}`,
+        updateData,
+        {
+            headers: {
+                "X-Public-Access-Token": accessToken,
+            },
         },
-    });
+    );
 }
 
 // ==================== 公开智能体标注相关 API ====================
@@ -215,7 +224,7 @@ export function apiCreatePublicAgentAnnotation(
     accessToken: string,
     data: CreateAgentAnnotationParams,
 ): Promise<any> {
-    return useWebPost(`/public-agent/${publishToken}/annotations`, data, {
+    return useConsolePost(`/public-agent/${publishToken}/annotations`, data, {
         headers: {
             "X-Public-Access-Token": accessToken,
         },
@@ -234,7 +243,7 @@ export function apiGetPublicAgentAnnotationDetail(
     accessToken: string,
     annotationId: string,
 ): Promise<any> {
-    return useWebGet(
+    return useConsoleGet(
         `/public-agent/${publishToken}/annotations/${annotationId}`,
         {},
         {
@@ -259,7 +268,7 @@ export function apiUpdatePublicAgentAnnotation(
     annotationId: string,
     data: UpdateAgentAnnotationParams,
 ): Promise<any> {
-    return useWebPut(`/public-agent/${publishToken}/annotations/${annotationId}`, data, {
+    return useConsolePut(`/public-agent/${publishToken}/annotations/${annotationId}`, data, {
         headers: {
             "X-Public-Access-Token": accessToken,
         },
@@ -289,7 +298,7 @@ export function apiPublicAgentChatByAccessToken(
     delete config.body?.publishToken;
     delete config.body?.accessToken;
 
-    return useWebStream(`/public-agent/${publishToken}/chat/stream`, {
+    return useConsoleStream(`/public-agent/${publishToken}/chat/stream`, {
         ...config,
         messages,
         headers: {

@@ -31,7 +31,7 @@ const retrievalModeMap = {
 </script>
 
 <template>
-    <div class="flex h-[calc(100vh-6rem)] min-h-0 w-full" v-if="dataset !== undefined">
+    <div class="flex h-full min-h-0 w-full" v-if="dataset !== undefined">
         <div
             class="bg-muted flex h-full w-50 flex-none flex-col rounded-xl p-4"
             :class="{ '!w-18': collapsed }"
@@ -84,7 +84,8 @@ const retrievalModeMap = {
                         class="text-accent-foreground flex items-center justify-between font-medium"
                         v-if="!collapsed"
                     >
-                        <span>{{ $t("datasets.menu.relatedApplications") }}：</span>0
+                        <span>{{ $t("datasets.menu.relatedApplications") }}：</span>
+                        {{ dataset?.relatedAgentCount || 0 }}
                     </div>
                 </div>
             </div>
