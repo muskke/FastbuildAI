@@ -204,9 +204,16 @@ onMounted(() => {
 
             <UTooltip
                 :disabled="!mcpServer.description"
-                :text="mcpServer.description"
                 :delay-duration="0"
+                :ui="{
+                    content: 'max-w-100 !whitespace-pre-wrap leading-relaxed h-fit p-2',
+                }"
             >
+                <template #content>
+                    <div class="max-w-100">
+                        {{ mcpServer.description }}
+                    </div>
+                </template>
                 <h4 v-if="mcpServer.description" class="text-muted-foreground line-clamp-2 text-xs">
                     {{ mcpServer.description }}
                 </h4>
@@ -214,7 +221,16 @@ onMounted(() => {
                     {{ t("console-ai-mcp-server.noDescription") }}
                 </h4>
             </UTooltip>
-            <UTooltip :text="connectableErrorInfo" :delay-duration="0">
+            <UTooltip
+                :text="connectableErrorInfo"
+                :ui="{ content: 'max-w-100 !whitespace-pre-wrap leading-relaxed h-fit p-2' }"
+                :delay-duration="0"
+            >
+                <template #content>
+                    <div class="max-w-100">
+                        {{ connectableErrorInfo }}
+                    </div>
+                </template>
                 <div v-if="connectableErrorInfo" class="flex flex-row items-center gap-1.5">
                     <UIcon name="tabler:plug-connected-x" size="16" class="text-red-500" />
                     <h4 class="line-clamp-2 text-xs text-red-500">

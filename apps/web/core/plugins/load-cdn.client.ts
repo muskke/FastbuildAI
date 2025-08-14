@@ -3,9 +3,9 @@ export default defineNuxtPlugin(() => {
     // eslint-disable-next-line turbo/no-undeclared-env-vars
     if (import.meta.env.SSR) return;
 
-    const shikiUrl = "https://esm.sh/shiki@3.7.0?bundle";
-    const mermaidUrl = "https://esm.sh/mermaid@9.1.7?bundle";
-    const katexUrl = "https://esm.sh/katex@0.16.21?bundle";
+    const shikiUrl = "https://esm.sh/shiki@3.7.0?target=es2022";
+    const mermaidUrl = "https://cdn.jsdelivr.net/npm/mermaid@9.1.7/dist/mermaid.esm.min.mjs";
+    const katexUrl = "https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.mjs";
 
     // 使用 Web Worker 来预加载模块，完全非阻塞
     if (typeof Worker !== "undefined") {
