@@ -52,10 +52,27 @@ const selectedPaymentMethod = ref<number>(1);
 const rechargeInstructions = ref<string>();
 
 // 充值中心信息
-const rechargeCenterInfo = ref<RechargeCenterInfo | null>(null);
+// const rechargeCenterInfo = ref<RechargeCenterInfo | null>(null);
 let interval: ReturnType<typeof setInterval> | null = null;
 // 充值成功提示
 const rechargeSuccess = ref<boolean>(false);
+
+const { data: rechargeCenterInfo } = await useAsyncData(
+    "rechargeCenterInfo",
+    () => getRechargeCenterInfo(),
+    {
+        transform: (data) => {
+            paymentMethods.value = data.payWayList.map((item) => ({
+                value: item.payType,
+                label: item.name,
+                icon: item.logo,
+            }));
+            rechargeInstructions.value = data.rechargeExplain;
+            rechargeOptions.value = data.rechargeRule;
+            return data;
+        },
+    },
+);
 
 // 获取充值中心信息
 const getRechargeInfo = async () => {
@@ -144,10 +161,6 @@ const toServiceTerms = () => {
 const close = () => {
     rechargeSuccess.value = false;
 };
-
-onMounted(() => {
-    getRechargeInfo();
-});
 
 // 页面销毁时清除轮询
 onUnmounted(() => {
