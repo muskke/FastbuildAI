@@ -398,6 +398,15 @@ onMounted(() => getLists());
             "
         />
 
-        <McpDetail v-if="isView" :id="editingMcpServerId" @close="isView = false" />
+        <McpDetail
+            v-if="isView"
+            :id="editingMcpServerId"
+            @close="
+                (refresh) => {
+                    isView = false;
+                    if (refresh) handleModalSuccess();
+                }
+            "
+        />
     </div>
 </template>
