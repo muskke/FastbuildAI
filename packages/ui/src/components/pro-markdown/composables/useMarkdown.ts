@@ -36,7 +36,7 @@ async function getMarkdownInstance(config: any): Promise<any> {
 
     // 创建新实例
     const md = MarkdownItAsync({
-        html: false,
+        html: true,
         linkify: true,
         breaks: true,
     });
