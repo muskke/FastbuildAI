@@ -72,10 +72,6 @@ export default defineNuxtConfig({
                     content: "#222222",
                 },
             ],
-            link: [
-                { rel: "preconnect", href: "https://esm.sh" },
-                { rel: "dns-prefetch", href: "https://esm.sh" },
-            ],
         },
 
         rootAttrs: {
