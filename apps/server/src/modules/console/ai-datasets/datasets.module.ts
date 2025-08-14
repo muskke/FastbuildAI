@@ -7,6 +7,7 @@ import { QueueModule } from "@/core/queue/queue.module";
 import { AiConsoleModule } from "@/modules/console/ai/ai.module";
 import { UploadModule } from "@/modules/web/upload/upload.module";
 
+import { Agent } from "../ai-agent/entities/agent.entity";
 import { DatasetsController } from "./controllers/datasets.controller";
 import { DocumentsController } from "./controllers/documents.controller";
 import { SegmentsController } from "./controllers/segments.controller";
@@ -33,6 +34,7 @@ import { VectorizationQueueService } from "./services/vectorization-queue.servic
             DatasetsSegments,
             DatasetMember,
             User,
+            Agent,
         ]),
         AiConsoleModule,
         forwardRef(() => QueueModule),
