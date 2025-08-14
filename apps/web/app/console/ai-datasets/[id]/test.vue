@@ -216,9 +216,6 @@ function showChunkDetail(chunk: DatasetChunk) {
         },
     });
 }
-
-// 设置layout
-definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
