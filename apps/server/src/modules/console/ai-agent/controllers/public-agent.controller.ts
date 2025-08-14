@@ -1,5 +1,5 @@
 import { Public } from "@common/decorators";
-import { WebController } from "@common/decorators/controller.decorator";
+import { ConsoleController } from "@common/decorators/controller.decorator";
 import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { PublicAccessTokenGuard } from "@common/guards/public-access-token.guard";
 import { Body, Delete, Get, Param, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
@@ -15,7 +15,7 @@ import { PublicAgentChatService } from "../services/public-agent-chat.service";
  * 公开访问智能体控制器
  * 提供无需认证的智能体访问功能
  */
-@WebController("public-agent")
+@ConsoleController("public-agent", "公开访问智能体")
 export class PublicAgentController {
     constructor(
         private readonly agentService: AgentService,
