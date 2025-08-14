@@ -304,7 +304,12 @@ onMounted(() => getLists());
             :id="editingMcpServerId"
             :is-view="isView"
             :is-system-mcp="isSystemMcp"
-            @close="isView = false"
+            @close="
+                (refresh) => {
+                    isView = false;
+                    if (refresh) handleModalSuccess();
+                }
+            "
         />
     </div>
 </template>

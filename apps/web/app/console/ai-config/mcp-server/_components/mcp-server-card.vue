@@ -144,6 +144,7 @@ function getFormattedUrl(url: string): string {
 onMounted(() => {
     if (props.isUpdate?.includes(props.mcpServer.id)) {
         handleCheckConnect();
+        props.isUpdate?.splice(props.isUpdate.indexOf(props.mcpServer.id), 1);
     }
 });
 </script>
