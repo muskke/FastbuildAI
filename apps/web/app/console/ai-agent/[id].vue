@@ -44,6 +44,10 @@ watch(isMobile, (newVal) => {
         collapsed.value = false;
     }
 });
+
+definePageMeta({
+    layout: "full-screen",
+});
 </script>
 
 <template>

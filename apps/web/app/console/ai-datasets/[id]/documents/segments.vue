@@ -181,6 +181,9 @@ const currentDocument = computed(() => {
 
 // 初始化
 onMounted(() => getLists());
+
+// 设置layout
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
