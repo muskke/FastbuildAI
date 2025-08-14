@@ -326,7 +326,7 @@
                 "code": "user-management"
             },
             {
-                "name": "console-menu.userRecharge",
+                "name": "console-menu.userManagement.userRecharge",
                 "path": "user-recharge",
                 "icon": "",
                 "component": "/console/user/user-recharge/index",
@@ -474,7 +474,7 @@
                 "code": "diy-micropage"
             },
             {
-                "name": "console-menu.layout",
+                "name": "console-menu.diyCenter.layout",
                 "path": "layout",
                 "icon": "",
                 "component": "/console/decorate/layout/index",
