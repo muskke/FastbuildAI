@@ -361,6 +361,9 @@ const handleRowClick = (row: TableRow<DatasetDocument>) => {
 
 // 初始化
 onMounted(() => getLists());
+
+// 设置layout
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>

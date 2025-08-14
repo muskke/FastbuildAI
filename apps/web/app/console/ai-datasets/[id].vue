@@ -84,7 +84,8 @@ const retrievalModeMap = {
                         class="text-accent-foreground flex items-center justify-between font-medium"
                         v-if="!collapsed"
                     >
-                        <span>{{ $t("datasets.menu.relatedApplications") }}：</span>0
+                        <span>{{ $t("datasets.menu.relatedApplications") }}：</span>
+                        {{ dataset?.relatedAgentCount || 0 }}
                     </div>
                 </div>
             </div>

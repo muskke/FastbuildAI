@@ -5,6 +5,9 @@ const CreateDataset = defineAsyncComponent(() => import("../../_components/creat
 
 const datasetId = computed(() => (useRoute().params as Record<string, string>).id);
 const datasetDetail = inject<Dataset>("datasets");
+
+// 设置layout
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
