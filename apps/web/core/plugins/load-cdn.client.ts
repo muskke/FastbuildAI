@@ -3,12 +3,9 @@ export default defineNuxtPlugin(() => {
     // eslint-disable-next-line turbo/no-undeclared-env-vars
     if (import.meta.env.SSR) return;
 
-    const shikiUrl =
-        (globalThis as any).NUXT_PUBLIC_SHIKI_CDN || "https://esm.sh/shiki@3.7.0?bundle";
-    const mermaidUrl =
-        (globalThis as any).NUXT_PUBLIC_MERMAID_CDN || "https://esm.sh/mermaid@9.1.7?bundle";
-    const katexUrl =
-        (globalThis as any).NUXT_PUBLIC_KATEX_CDN || "https://esm.sh/katex@0.16.21?bundle";
+    const shikiUrl = "https://esm.sh/shiki@3.7.0?bundle";
+    const mermaidUrl = "https://esm.sh/mermaid@9.1.7?bundle";
+    const katexUrl = "https://esm.sh/katex@0.16.21?bundle";
 
     // 使用 Web Worker 来预加载模块，完全非阻塞
     if (typeof Worker !== "undefined") {
@@ -69,24 +66,8 @@ export default defineNuxtPlugin(() => {
             setTimeout(cleanupWorker, 30000); // 30秒后自动清理
         } catch (error) {
             console.warn("[Preload Plugin] 创建 Worker 失败，降级到 setTimeout:", error);
-            // 降级方案：使用 setTimeout
-            fallbackPreload();
         }
     } else {
-        // 浏览器不支持 Worker，使用降级方案
-        fallbackPreload();
-    }
-
-    // 降级预加载方案
-    function fallbackPreload() {
-        setTimeout(() => {
-            Promise.allSettled([
-                import(/* @vite-ignore */ shikiUrl),
-                import(/* @vite-ignore */ mermaidUrl),
-                import(/* @vite-ignore */ katexUrl),
-            ]).catch(() => {
-                // 忽略错误，渲染时各插件自带容错
-            });
-        }, 100);
+        console.warn("[Preload Plugin] 浏览器不支持 Worker");
     }
 });
