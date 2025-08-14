@@ -7,6 +7,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 
+import { Agent } from "../../ai-agent/entities/agent.entity";
 import {
     DOCUMENT_MODE,
     PARENT_CONTEXT_MODE,
@@ -56,6 +57,8 @@ export class DatasetsService extends BaseService<Datasets> {
         private readonly datasetMemberService: DatasetMemberService,
         private readonly queueService: QueueService,
         private readonly documentsService: DocumentsService,
+        @InjectRepository(Agent)
+        private readonly agentRepository: Repository<Agent>,
     ) {
         super(datasetsRepository);
     }
@@ -572,6 +575,26 @@ export class DatasetsService extends BaseService<Datasets> {
         const dataset = await this.findOneById(id);
         if (!dataset) throw HttpExceptionFactory.notFound("知识库不存在");
 
+        // 删除前校验：若有智能体关联该知识库，则不允许删除
+        try {
+            const relatedAgentCount = await this.agentRepository
+                .createQueryBuilder("agent")
+                .where(":id = ANY(string_to_array(agent.datasetIds, ','))", { id })
+                .getCount();
+            if (relatedAgentCount > 0) {
+                throw HttpExceptionFactory.badRequest(
+                    `该知识库已被 ${relatedAgentCount} 个应用关联，无法删除，请先在相关应用中移除该知识库`,
+                );
+            }
+        } catch (err) {
+            // 如果是抛出的业务异常，直接向上抛出；否则转换为内部错误
+            if (err?.status && err?.response) {
+                throw err;
+            }
+            this.logger.error(`[!] 删除前校验失败: ${err?.message || err}`);
+            throw HttpExceptionFactory.internal("删除前校验失败");
+        }
+
         try {
             await this.segmentsRepository.delete({ datasetId: id });
             await this.documentRepository.delete({ datasetId: id });
@@ -593,6 +616,17 @@ export class DatasetsService extends BaseService<Datasets> {
         if (dataset.createdBy !== userId) {
             const isMember = await this.datasetMemberService.isDatasetMember(id, userId);
             if (!isMember) throw HttpExceptionFactory.notFound("知识库不存在或无权限访问");
+        }
+
+        // 统计引用该知识库的智能体数量
+        try {
+            const relatedAgentCount = await this.agentRepository
+                .createQueryBuilder("agent")
+                .where(":id = ANY(string_to_array(agent.datasetIds, ','))", { id })
+                .getCount();
+            (dataset as Datasets).relatedAgentCount = relatedAgentCount;
+        } catch (err) {
+            this.logger.warn(`[知识库详情] 统计关联智能体数量失败: ${err?.message || err}`);
         }
 
         return dataset as Datasets;
