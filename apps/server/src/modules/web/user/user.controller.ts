@@ -9,10 +9,9 @@ import { UserPlayground } from "@common/interfaces/context.interface";
 import { ACCOUNT_LOG_TYPE_DESCRIPTION } from "@common/modules/account/constants/account-log.constants";
 import { RolePermissionService } from "@common/modules/auth/services/role-permission.service";
 import { AccountLog } from "@modules/console/finance/entities/account-log.entity";
-import { FinanceService } from "@modules/console/finance/services/finance.service";
 import { Body, Get, Inject, Patch, Query } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Like, Repository } from "typeorm";
+import { IsNull, Like, Not, Repository } from "typeorm";
 
 import { UserService } from "../../console/user/services/user.service";
 import { AccountLogDto } from "./dto/account-log-dto";
@@ -81,25 +80,26 @@ export class UserController extends BaseController {
      *
      * @param keyword 搜索关键词
      * @param limit 返回数量限制
-     * @returns 用户列表
+     * @returns 用户列表（只返回有角色的用户）
      */
     @Get("search")
     @BuildFileUrl(["**.avatar"])
     async searchUsers(@Query("keyword") keyword?: string, @Query("limit") limit?: number) {
         const searchLimit = Math.min(limit || 20, 50); // 限制最大返回50条
 
-        // 查询用户列表
+        // 查询用户列表 - 只返回有角色的用户
         const users = await this.userService.findAll({
             where: keyword
                 ? [
-                      { username: Like(`%${keyword}%`), status: 1 },
-                      { nickname: Like(`%${keyword}%`), status: 1 },
-                      { email: Like(`%${keyword}%`), status: 1 },
+                      { username: Like(`%${keyword}%`), status: 1, role: Not(IsNull()) },
+                      { nickname: Like(`%${keyword}%`), status: 1, role: Not(IsNull()) },
+                      { email: Like(`%${keyword}%`), status: 1, role: Not(IsNull()) },
                   ]
-                : { isRoot: 0, status: 1 },
+                : { isRoot: 0, status: 1, role: Not(IsNull()) },
             take: searchLimit,
             order: { createdAt: "DESC" },
             excludeFields: ["password", "phone", "phoneAreaCode", "permissions"],
+            relations: ["role"],
         });
 
         return users;

@@ -58,7 +58,8 @@ definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
-    <div class="datasets-settings-container inline-block p-6">
+   <div class="h-full w-full overflow-auto">
+    <div class="datasets-settings-container inline-block p-6 h-full">
         <div class="mb-8">
             <h5 class="text-foreground mb-1 text-lg font-medium">
                 {{ $t("datasets.settings.name") }}
@@ -173,4 +174,6 @@ definePageMeta({ layout: "full-screen" });
             </UFormField>
         </div>
     </div>
+
+   </div>
 </template>
