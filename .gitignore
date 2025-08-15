@@ -36,6 +36,7 @@ dist
 !/public/web/
 /public/web/*
 !/public/web/index.html
+!/public/index.html
 
 
 # Debug
