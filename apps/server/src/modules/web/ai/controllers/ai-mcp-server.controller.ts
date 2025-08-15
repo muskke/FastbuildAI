@@ -9,7 +9,6 @@ import { buildWhere } from "@common/utils/helper.util";
 import { isEnabled } from "@common/utils/is.util";
 import { McpServerType } from "@modules/console/ai/entities/ai-mcp-server.entity";
 import { AiMcpServer } from "@modules/console/ai/entities/ai-mcp-server.entity";
-import { AiMcpToolService } from "@modules/console/ai/services/ai-mcp-tool.service";
 import { Body, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import Ajv from "ajv";
 import { Like } from "typeorm";
@@ -24,7 +23,6 @@ import {
     UpdateWebAiMcpServerDto,
 } from "../dto/ai-mcp-server.dto";
 import { WebAiMcpServerService } from "../services/ai-mcp-server.service";
-import { UserMcpServerService } from "../services/user-mcp-server.service";
 
 /**
  * MCP服务前台控制器
@@ -35,8 +33,6 @@ import { UserMcpServerService } from "../services/user-mcp-server.service";
 export class WebAiMcpServerController {
     constructor(
         private readonly webAiMcpServerService: WebAiMcpServerService,
-        private readonly userMcpServerService: UserMcpServerService,
-        private readonly aiMcpToolService: AiMcpToolService,
         private readonly dictService: DictService,
     ) {}
 

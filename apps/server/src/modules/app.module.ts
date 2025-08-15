@@ -13,6 +13,7 @@ import { DynamicModule, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { existsSync } from "fs";
 import { join } from "path";
 
 @Module({})
@@ -20,11 +21,23 @@ export class AppModule {
     static async register(plugins?: DynamicModule[]): Promise<DynamicModule> {
         // const pluginsList = getPluginList();
 
+        /**
+         * 检查web目录和index.html文件是否存在
+         * 如果web不存在或者web为空或者web缺失index.html，则使用public作为根目录
+         */
+        const publicPath = join(__dirname, "..", "..", "..", "..", "public");
+        const webPath = join(publicPath, "web");
+        const webIndexPath = join(webPath, "index.html");
+
+        // 检查web目录是否存在，web目录是否有内容，以及index.html是否存在
+        const shouldUseWebPath = existsSync(webPath) && existsSync(webIndexPath);
+        const rootPath = shouldUseWebPath ? webPath : publicPath;
+
         return {
             module: AppModule,
             imports: [
                 ServeStaticModule.forRoot({
-                    rootPath: join(__dirname, "..", "..", "..", "..", "public", "web"),
+                    rootPath,
                     exclude: [
                         // ...pluginsList.map((plugin) => `/${plugin.name}`),
                         `${process.env.VITE_APP_WEB_API_PREFIX}`,

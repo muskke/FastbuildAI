@@ -208,7 +208,7 @@ watch(
             <!-- 内容区域 -->
             <div class="flex flex-1 flex-col">
                 <!-- 返回按钮和标题 -->
-                <div class="mb-12 flex h-fit items-center gap-2">
+                <div class="flex h-fit items-center gap-2 pb-4">
                     <UButton
                         variant="soft"
                         color="primary"
