@@ -460,16 +460,7 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
             ) as DatasetRetrievalResult[];
             if (results.length === 0) return [];
 
-            const bestDataset = this.findBestDataset(results, query);
-            const rerankConfig = bestDataset.retrievalConfig?.rerankConfig;
-            if (rerankConfig?.enabled && rerankConfig.modelId) {
-                return await this.applyUnifiedReranking([bestDataset], query, {
-                    enabled: rerankConfig.enabled,
-                    modelId: rerankConfig.modelId,
-                });
-            }
-
-            return [bestDataset];
+            return results;
         } catch (err) {
             this.logger.error(`知识库检索失败: ${err.message}`);
             return [];
@@ -586,85 +577,6 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
             this.logger.error(`[!] 获取知识库配置失败: ${err.message}`, err.stack);
             return null;
         }
-    }
-
-    protected async applyUnifiedReranking(
-        allResults: DatasetRetrievalResult[],
-        query: string,
-        rerankConfig: { enabled: boolean; modelId?: string },
-    ): Promise<DatasetRetrievalResult[]> {
-        try {
-            const allChunks: any[] = [];
-            allResults.forEach((result) => {
-                result.chunks.forEach((chunk: any) => {
-                    allChunks.push({
-                        ...chunk,
-                        originalDatasetId: result.datasetId,
-                        originalDatasetName: result.datasetName,
-                    });
-                });
-            });
-
-            this.logger.log(`[+] 开始统一重排序，共 ${allChunks.length} 个分块`);
-            const rerankedChunks = allChunks
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 10)
-                .map((chunk, index) => ({
-                    ...chunk,
-                    score: 0.9 - index * 0.05,
-                    reranked: true,
-                }));
-
-            const regroupedResults = this.regroupByDataset(rerankedChunks);
-            this.logger.log(`[+] 统一重排序完成，返回 ${regroupedResults.length} 个知识库的结果`);
-            return regroupedResults;
-        } catch (err) {
-            this.logger.error(`[!] 统一重排序失败: ${err.message}`, err.stack);
-            return this.sortAndLimitResults(allResults);
-        }
-    }
-
-    protected regroupByDataset(
-        chunks: Array<
-            RetrievalChunk & {
-                originalDatasetId?: string;
-                originalDatasetName?: string;
-                datasetId?: string;
-                datasetName?: string;
-                score?: number;
-                reranked?: boolean;
-            }
-        >,
-    ): DatasetRetrievalResult[] {
-        const groupedMap = new Map<string, DatasetRetrievalResult>();
-
-        chunks.forEach((chunk) => {
-            const datasetId = chunk.originalDatasetId || chunk.datasetId;
-            if (!groupedMap.has(datasetId)) {
-                groupedMap.set(datasetId, {
-                    datasetId,
-                    datasetName: chunk.originalDatasetName || chunk.datasetName,
-                    retrievalConfig: {} as RetrievalConfig,
-                    chunks: [],
-                    reranked: true,
-                });
-            }
-
-            groupedMap.get(datasetId)!.chunks.push({
-                datasetId: datasetId,
-                datasetName: chunk.originalDatasetName || chunk.datasetName,
-                ...chunk,
-            });
-        });
-
-        return Array.from(groupedMap.values());
-    }
-
-    protected sortAndLimitResults(allResults: DatasetRetrievalResult[]): DatasetRetrievalResult[] {
-        return allResults.map((result) => ({
-            ...result,
-            chunks: result.chunks.sort((a, b) => b.score - a.score).slice(0, 5),
-        }));
     }
 
     /**
