@@ -107,6 +107,7 @@ export default defineNuxtConfig({
             colors: ["primary", "secondary", "success", "info", "warning", "error"],
         },
     },
+    spaLoadingTemplate: "./app/spa-loading-template.html",
 
     dir: {
         plugins: "core/plugins",

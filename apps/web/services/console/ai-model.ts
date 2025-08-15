@@ -109,7 +109,7 @@ export function apiDeleteAiModel(id: string): Promise<void> {
  * @returns {Promise<void>} 删除结果
  */
 export function apiBatchDeleteAiModel(ids: string[]): Promise<void> {
-    return useConsolePost("/ai-models/batch-delete", ids);
+    return useConsoleDelete("/ai-models", { ids });
 }
 
 // ==================== AI模型操作相关 API ====================
