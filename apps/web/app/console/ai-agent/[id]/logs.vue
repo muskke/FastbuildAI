@@ -23,6 +23,8 @@ const components: { value: string; label: string; component: any }[] = [
         component: Annotations,
     },
 ];
+
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>

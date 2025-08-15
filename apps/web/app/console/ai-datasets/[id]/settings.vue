@@ -53,6 +53,8 @@ onMounted(() => {
         }
     });
 });
+
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>

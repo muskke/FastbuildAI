@@ -40,7 +40,7 @@ watch(isMobile, (newVal) => {
 </script>
 
 <template>
-    <div class="flex h-[calc(100vh-6rem)] min-h-0 w-full" v-if="dataset !== undefined">
+    <div class="flex h-full min-h-0 w-full" v-if="dataset !== undefined">
         <div
             class="bg-muted flex h-full w-50 flex-none flex-col rounded-xl p-4"
             :class="{ '!w-18': collapsed }"

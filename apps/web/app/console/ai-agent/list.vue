@@ -40,7 +40,6 @@ const getLists = async () => {
 
         agents.value = res.items || [];
         hasMore.value = res.totalPages > searchForm.page;
-        searchForm.page = searchForm.page! + 1;
     } catch (error) {
         console.error("获取数据失败:", error);
         hasMore.value = false;
