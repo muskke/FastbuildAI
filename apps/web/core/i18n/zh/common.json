@@ -26,6 +26,7 @@
         "chatTitleRequired": "对话名称不能为空",
         "expandSidebar": "展开侧边栏",
         "collapseSidebar": "折叠侧边栏",
+        "selectModel": "请先选择模型",
         "messages": {
             "thinking": "AI正在思考中...",
             "typing": "对方正在输入中...",

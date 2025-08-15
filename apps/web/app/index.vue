@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useMessage } from "@fastbuildai/ui";
+import { useI18n } from "vue-i18n";
+
 import { STORAGE_KEYS } from "@/common/constants/storage.constant";
 import type { QuickMenu } from "@/models";
 import type { ChatConfig } from "@/models/ai-conversation.d.ts";
@@ -7,6 +10,8 @@ import {
     apiGetChatConfig,
     apiGetQuickMenu,
 } from "@/services/web/ai-conversation";
+
+const { t } = useI18n();
 
 // 从API获取对话配置
 const { data: chatConfig } = await useAsyncData("chat-config", () => apiGetChatConfig());
@@ -87,6 +92,8 @@ const getQuickMenu = async () => {
 
 async function createChat(prompt: string) {
     try {
+        if (!selectedModelId.value) return useMessage().warning(t("common.chat.selectModel"));
+
         const chat = await apiCreateAiConversation({
             title: "",
         });
