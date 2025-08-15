@@ -186,6 +186,7 @@ export class DatasetsRetrievalService {
                 config.rerankConfig.modelId,
                 topK,
                 scoreThreshold,
+                scoreThresholdEnabled,
             );
             rerankUsed = true;
         }
@@ -255,6 +256,7 @@ export class DatasetsRetrievalService {
                 config.rerankConfig.modelId,
                 topK,
                 scoreThreshold,
+                scoreThresholdEnabled,
             );
             rerankUsed = true;
         }
@@ -444,6 +446,7 @@ export class DatasetsRetrievalService {
             rerankConfig.modelId!,
             topK,
             scoreThreshold,
+            config?.scoreThresholdEnabled ?? true,
         );
 
         return {
@@ -466,6 +469,7 @@ export class DatasetsRetrievalService {
         rerankModelId: string,
         topK: number,
         scoreThreshold: number,
+        scoreThresholdEnabled: boolean = true,
     ): Promise<RetrievalChunk[]> {
         // 获取Rerank模型配置
         const rerankModel = await this.aiModelService.findOne({
@@ -485,11 +489,6 @@ export class DatasetsRetrievalService {
                 baseURL: rerankModel.provider.baseUrl,
             });
 
-            // 检查adapter是否支持rerank方法
-            if (!adapter.rerankDocuments) {
-                throw new Error("当前AI适配器不支持Rerank功能");
-            }
-
             const generator = rerankGenerator(adapter);
             const rerankParams: RerankParams = {
                 model: rerankModel.model,
@@ -500,19 +499,24 @@ export class DatasetsRetrievalService {
 
             const rerankResponse = await generator.rerank.create(rerankParams);
 
-            // 映射重排序结果
+            // 映射重排序结果并排序
             const rerankedChunks = rerankResponse.results
-                .filter((result) => result.relevance_score >= scoreThreshold)
+                .filter(
+                    (result) => !scoreThresholdEnabled || result.relevance_score >= scoreThreshold,
+                )
+                .sort((a, b) => b.relevance_score - a.relevance_score)
                 .map((result) => ({
                     ...chunks[result.index],
-                    score: result.relevance_score,
+                    relevanceScore: result.relevance_score,
                 }));
 
             return rerankedChunks;
         } catch (error) {
             this.logger.error(`Rerank重排序失败: ${error.message}`);
             // 如果Rerank失败，返回原始结果
-            return chunks.filter((chunk) => chunk.score >= scoreThreshold).slice(0, topK);
+            return chunks
+                .filter((chunk) => !scoreThresholdEnabled || chunk.score >= scoreThreshold)
+                .slice(0, topK);
         }
     }
 }

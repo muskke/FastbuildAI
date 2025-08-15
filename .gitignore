@@ -33,8 +33,7 @@ coverage
 out/
 build
 dist
-!/public/**/build/
-!/public/readme/
+!/public/index.html
 
 
 # Debug

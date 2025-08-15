@@ -66,7 +66,7 @@ export interface Adapter {
     generateEmbedding?(params: EmbeddingCreateParams): Promise<CreateEmbeddingResponse>;
 
     /**
-     * 重排序文档
+     * 重排序
      * @param params 重排序参数
      * @returns 重排序结果
      */
