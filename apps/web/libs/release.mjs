@@ -26,7 +26,7 @@ if (Number(currentVersion) < requiredVersion) {
 
 // 路径配置
 const cwd = process.cwd();
-const releasePath = path.resolve(cwd, "../../public");
+const releasePath = path.resolve(cwd, "../../public/web");
 const outputPath = path.resolve(cwd, ".output");
 const isSSR = process.env.NUXT_BUILD_SSR === "true";
 
