@@ -5,6 +5,7 @@
 /documentation
 .installed
 .initialized
+data/versions
 
 # Logs
 *.log

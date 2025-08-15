@@ -14,6 +14,7 @@
     },
     {
         "name": "console-menu.providers.title",
+        "code": "ai-config-provide",
         "path": "ai_config/provide",
         "icon": "i-lucide-brain-circuit",
         "component": "/console/ai-config/provider/list",
@@ -26,6 +27,7 @@
         "children": [
             {
                 "name": "console-menu.providers.model.title",
+                "code": "ai-config-provide-model",
                 "path": "model",
                 "icon": "",
                 "component": "/console/ai-config/provider/model/list",
@@ -38,6 +40,7 @@
                 "children": [
                     {
                         "name": "console-common.delete",
+                        "code": "ai-config-provide-model-delete",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -46,11 +49,11 @@
                         "isHidden": 0,
                         "type": 3,
                         "sourceType": 1,
-                        "pluginPackName": "",
-                        "code": "ai-config-model-delete"
+                        "pluginPackName": ""
                     },
                     {
                         "name": "console-common.add",
+                        "code": "ai-config-provide-model-add",
                         "path": "add",
                         "icon": "",
                         "component": "/console/ai-config/provider/model/add",
@@ -59,11 +62,11 @@
                         "isHidden": 1,
                         "type": 2,
                         "sourceType": 1,
-                        "pluginPackName": "",
-                        "code": "ai-config-model-create"
+                        "pluginPackName": ""
                     },
                     {
                         "name": "console-common.edit",
+                        "code": "ai-config-provide-model-edit",
                         "path": "edit",
                         "icon": "",
                         "component": "/console/ai-config/provider/model/edit",
@@ -72,14 +75,13 @@
                         "isHidden": 1,
                         "type": 2,
                         "sourceType": 1,
-                        "pluginPackName": "",
-                        "code": "ai-config-model-edit"
+                        "pluginPackName": ""
                     }
-                ],
-                "code": "ai-config-model"
+                ]
             },
             {
                 "name": "console-common.delete",
+                "code": "ai-config-provide-delete",
                 "path": "",
                 "icon": "",
                 "component": "",
@@ -88,11 +90,11 @@
                 "isHidden": 0,
                 "type": 3,
                 "sourceType": 1,
-                "pluginPackName": "",
-                "code": "ai-config-provider-delete"
+                "pluginPackName": ""
             },
             {
                 "name": "console-common.edit",
+                "code": "ai-config-provide-edit",
                 "path": "",
                 "icon": "",
                 "component": "",
@@ -101,11 +103,11 @@
                 "isHidden": 0,
                 "type": 3,
                 "sourceType": 1,
-                "pluginPackName": "",
-                "code": "ai-config-provider-update"
+                "pluginPackName": ""
             },
             {
                 "name": "console-common.add",
+                "code": "ai-config-provide-add",
                 "path": "",
                 "icon": "",
                 "component": "",
@@ -114,11 +116,9 @@
                 "isHidden": 0,
                 "type": 3,
                 "sourceType": 1,
-                "pluginPackName": "",
-                "code": "ai-config-provider-create"
+                "pluginPackName": ""
             }
-        ],
-        "code": "ai-config-provider"
+        ]
     },
     {
         "name": "console-menu.mcpServer",
@@ -176,7 +176,7 @@
     },
     {
         "name": "console-menu.agent.title",
-        "code": null,
+        "code": "ai-agent",
         "path": "ai-agent",
         "icon": "i-lucide-bot",
         "component": "/console/ai-agent/list",
@@ -189,7 +189,7 @@
         "children": [
             {
                 "name": "console-menu.agent.dashboard",
-                "code": null,
+                "code": "ai-agent-dashboard",
                 "path": ":id/dashboard",
                 "icon": "",
                 "component": "/console/ai-agent/[id]/dashboard",
@@ -202,7 +202,7 @@
             },
             {
                 "name": "console-menu.agent.logs",
-                "code": null,
+                "code": "ai-agent-logs",
                 "path": ":id/logs",
                 "icon": "",
                 "component": "/console/ai-agent/[id]/logs",
@@ -212,11 +212,10 @@
                 "type": 2,
                 "sourceType": 1,
                 "pluginPackName": "",
-
                 "children": [
                     {
                         "name": "console-menu.agent.annotations.review",
-                        "code": null,
+                        "code": "ai-agent-logs-annotations-review",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -229,7 +228,7 @@
                     },
                     {
                         "name": "console-menu.agent.annotations.delete",
-                        "code": null,
+                        "code": "ai-agent-logs-annotations-delete",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -242,7 +241,7 @@
                     },
                     {
                         "name": "console-menu.agent.annotations.update",
-                        "code": null,
+                        "code": "ai-agent-logs-annotations-update",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -255,7 +254,7 @@
                     },
                     {
                         "name": "console-menu.agent.annotations.create",
-                        "code": null,
+                        "code": "ai-agent-logs-annotations-create",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -270,7 +269,7 @@
             },
             {
                 "name": "console-menu.agent.publish",
-                "code": null,
+                "code": "ai-agent-publish",
                 "path": ":id/publish",
                 "icon": "",
                 "component": "/console/ai-agent/[id]/publish",
@@ -283,7 +282,7 @@
             },
             {
                 "name": "console-menu.agent.configuration",
-                "code": null,
+                "code": "ai-agent-configuration",
                 "path": ":id/configuration",
                 "icon": "",
                 "component": "/console/ai-agent/[id]/configuration",
@@ -293,11 +292,10 @@
                 "type": 2,
                 "sourceType": 1,
                 "pluginPackName": "",
-
                 "children": [
                     {
                         "name": "console-menu.agent.update",
-                        "code": null,
+                        "code": "ai-agent-configuration-update",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -314,7 +312,7 @@
     },
     {
         "name": "console-menu.datasets.title",
-        "code": null,
+        "code": "ai-datasets",
         "path": "ai-datasets",
         "icon": "i-lucide-file-search",
         "component": "/console/ai-datasets/list",
@@ -327,7 +325,7 @@
         "children": [
             {
                 "name": "console-menu.datasets.retry",
-                "code": null,
+                "code": "ai-datasets-retry",
                 "path": "",
                 "icon": "",
                 "component": "",
@@ -340,7 +338,7 @@
             },
             {
                 "name": "console-menu.datasets.delete",
-                "code": null,
+                "code": "ai-datasets-delete",
                 "path": "",
                 "icon": "",
                 "component": "",
@@ -353,7 +351,7 @@
             },
             {
                 "name": "console-menu.datasets.documents.segments",
-                "code": null,
+                "code": "ai-datasets-documents-segments",
                 "path": ":id/documents/segments",
                 "icon": "",
                 "component": "/console/ai-datasets/[id]/documents/segments",
@@ -366,7 +364,7 @@
             },
             {
                 "name": "console-menu.datasets.documents.create",
-                "code": null,
+                "code": "ai-datasets-documents-create",
                 "path": ":id/documents/create",
                 "icon": "",
                 "component": "/console/ai-datasets/[id]/documents/create",
@@ -379,7 +377,7 @@
             },
             {
                 "name": "console-menu.datasets.settings",
-                "code": null,
+                "code": "ai-datasets-settings",
                 "path": ":id/settings",
                 "icon": "",
                 "component": "/console/ai-datasets/[id]/settings",
@@ -392,7 +390,7 @@
             },
             {
                 "name": "console-menu.datasets.members",
-                "code": null,
+                "code": "ai-datasets-members",
                 "path": ":id/members",
                 "icon": "",
                 "component": "/console/ai-datasets/[id]/members",
@@ -405,7 +403,7 @@
             },
             {
                 "name": "console-menu.datasets.test",
-                "code": null,
+                "code": "ai-datasets-test",
                 "path": ":id/test",
                 "icon": "",
                 "component": "/console/ai-datasets/[id]/test",
@@ -418,7 +416,7 @@
             },
             {
                 "name": "console-menu.datasets.create",
-                "code": null,
+                "code": "ai-datasets-create",
                 "path": "create",
                 "icon": "",
                 "component": "/console/ai-datasets/create",
@@ -431,7 +429,7 @@
             },
             {
                 "name": "console-menu.datasets.documents.title",
-                "code": null,
+                "code": "ai-datasets-documents",
                 "path": ":id/documents",
                 "icon": "",
                 "component": "/console/ai-datasets/[id]/documents/index",
@@ -444,7 +442,7 @@
                 "children": [
                     {
                         "name": "console-menu.common.actions.rename",
-                        "code": null,
+                        "code": "ai-datasets-documents-rename",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -457,7 +455,7 @@
                     },
                     {
                         "name": "console-menu.common.actions.status",
-                        "code": null,
+                        "code": "ai-datasets-documents-status",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -470,7 +468,7 @@
                     },
                     {
                         "name": "console-menu.common.actions.retry",
-                        "code": null,
+                        "code": "ai-datasets-documents-retry",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -483,7 +481,7 @@
                     },
                     {
                         "name": "console-menu.common.actions.delete",
-                        "code": null,
+                        "code": "ai-datasets-documents-delete",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -500,7 +498,7 @@
     },
     {
         "name": "console-menu.aiConversation.title",
-        "code": null,
+        "code": "conversation",
         "path": "conversation",
         "icon": "i-lucide-message-square-diff",
         "component": "",
@@ -513,7 +511,7 @@
         "children": [
             {
                 "name": "console-menu.aiConversation.aiChat",
-                "code": "ai-chat",
+                "code": "conversation-ai-conversation",
                 "path": "ai-conversation",
                 "icon": "",
                 "component": "/console/ai-conversation/list",
@@ -526,7 +524,7 @@
                 "children": [
                     {
                         "name": "console-common.view",
-                        "code": "ai-chat-view",
+                        "code": "conversation-ai-conversation-view",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -539,7 +537,7 @@
                     },
                     {
                         "name": "console-common.delete",
-                        "code": "ai-chat-delete",
+                        "code": "conversation-ai-conversation-delete",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -554,7 +552,7 @@
             },
             {
                 "name": "console-menu.aiConversation.chatConfig",
-                "code": null,
+                "code": "conversation-config",
                 "path": "config",
                 "icon": "",
                 "component": "/console/ai-conversation/setting",
@@ -567,7 +565,7 @@
                 "children": [
                     {
                         "name": "console-common.save",
-                        "code": null,
+                        "code": "conversation-config-save",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -583,332 +581,8 @@
         ]
     },
     {
-        "name": "console-menu.agent.title",
-        "code": null,
-        "path": "ai-agent",
-        "icon": "i-lucide-bot",
-        "component": "/console/ai-agent/list",
-        "permissionCode": "ai-agent:list",
-        "sort": 300,
-        "isHidden": 0,
-        "type": 2,
-        "sourceType": 1,
-        "pluginPackName": "",
-        "children": [
-            {
-                "name": "console-menu.agent.dashboard",
-                "code": null,
-                "path": ":id/dashboard",
-                "icon": "",
-                "component": "/console/ai-agent/[id]/dashboard",
-                "permissionCode": "ai-agent:statistics",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.agent.logs",
-                "code": null,
-                "path": ":id/logs",
-                "icon": "",
-                "component": "/console/ai-agent/[id]/logs",
-                "permissionCode": "ai-agent-chat-record:list",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": "",
-
-                "children": [
-                    {
-                        "name": "console-menu.agent.annotations.review",
-                        "code": null,
-                        "path": "",
-                        "icon": "",
-                        "component": "",
-                        "permissionCode": "ai-agent-annotations:review",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 3,
-                        "sourceType": 1,
-                        "pluginPackName": ""
-                    },
-                    {
-                        "name": "console-menu.agent.annotations.delete",
-                        "code": null,
-                        "path": "",
-                        "icon": "",
-                        "component": "",
-                        "permissionCode": "ai-agent-annotations:delete",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 3,
-                        "sourceType": 1,
-                        "pluginPackName": ""
-                    },
-                    {
-                        "name": "console-menu.agent.annotations.update",
-                        "code": null,
-                        "path": "",
-                        "icon": "",
-                        "component": "",
-                        "permissionCode": "ai-agent-annotations:update",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 3,
-                        "sourceType": 1,
-                        "pluginPackName": ""
-                    },
-                    {
-                        "name": "console-menu.agent.annotations.create",
-                        "code": null,
-                        "path": "",
-                        "icon": "",
-                        "component": "",
-                        "permissionCode": "ai-agent-annotations:create",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 3,
-                        "sourceType": 1,
-                        "pluginPackName": ""
-                    }
-                ]
-            },
-            {
-                "name": "console-menu.agent.publish",
-                "code": null,
-                "path": ":id/publish",
-                "icon": "",
-                "component": "/console/ai-agent/[id]/publish",
-                "permissionCode": "ai-agent:publish",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.agent.configuration",
-                "code": null,
-                "path": ":id/configuration",
-                "icon": "",
-                "component": "/console/ai-agent/[id]/configuration",
-                "permissionCode": "ai-agent:detail",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": "",
-
-                "children": [
-                    {
-                        "name": "console-menu.agent.update",
-                        "code": null,
-                        "path": "",
-                        "icon": "",
-                        "component": "",
-                        "permissionCode": "ai-agent:update",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 3,
-                        "sourceType": 1,
-                        "pluginPackName": ""
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "name": "console-menu.datasets.title",
-        "code": null,
-        "path": "ai-datasets",
-        "icon": "i-lucide-file-search",
-        "component": "/console/ai-datasets/list",
-        "permissionCode": "ai-datasets:list",
-        "sort": 400,
-        "isHidden": 0,
-        "type": 2,
-        "sourceType": 1,
-        "pluginPackName": "",
-        "children": [
-            {
-                "name": "console-menu.datasets.retry",
-                "code": null,
-                "path": "",
-                "icon": "",
-                "component": "",
-                "permissionCode": "ai-datasets:retry",
-                "sort": 0,
-                "isHidden": 0,
-                "type": 3,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.datasets.delete",
-                "code": null,
-                "path": "",
-                "icon": "",
-                "component": "",
-                "permissionCode": "ai-datasets:delete",
-                "sort": 0,
-                "isHidden": 0,
-                "type": 3,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.datasets.documents.segments",
-                "code": null,
-                "path": ":id/documents/segments",
-                "icon": "",
-                "component": "/console/ai-datasets/[id]/documents/segments",
-                "permissionCode": "ai-datasets-segments:list",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.datasets.documents.create",
-                "code": null,
-                "path": ":id/documents/create",
-                "icon": "",
-                "component": "/console/ai-datasets/[id]/documents/create",
-                "permissionCode": "ai-datasets-documents:create",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.datasets.settings",
-                "code": null,
-                "path": ":id/settings",
-                "icon": "",
-                "component": "/console/ai-datasets/[id]/settings",
-                "permissionCode": "ai-datasets:update",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.datasets.members",
-                "code": null,
-                "path": ":id/members",
-                "icon": "",
-                "component": "/console/ai-datasets/[id]/members",
-                "permissionCode": "ai-datasets-team-members:list",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.datasets.test",
-                "code": null,
-                "path": ":id/test",
-                "icon": "",
-                "component": "/console/ai-datasets/[id]/test",
-                "permissionCode": "ai-datasets:retrieval-test",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.datasets.create",
-                "code": null,
-                "path": "create",
-                "icon": "",
-                "component": "/console/ai-datasets/create",
-                "permissionCode": "ai-datasets:create",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": ""
-            },
-            {
-                "name": "console-menu.datasets.documents.title",
-                "code": null,
-                "path": ":id/documents",
-                "icon": "",
-                "component": "/console/ai-datasets/[id]/documents/index",
-                "permissionCode": "ai-datasets-documents:list",
-                "sort": 0,
-                "isHidden": 1,
-                "type": 2,
-                "sourceType": 1,
-                "pluginPackName": "",
-                "children": [
-                    {
-                        "name": "console-menu.common.actions.rename",
-                        "code": null,
-                        "path": "",
-                        "icon": "",
-                        "component": "",
-                        "permissionCode": "ai-datasets-documents:rename",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 3,
-                        "sourceType": 1,
-                        "pluginPackName": ""
-                    },
-                    {
-                        "name": "console-menu.common.actions.status",
-                        "code": null,
-                        "path": "",
-                        "icon": "",
-                        "component": "",
-                        "permissionCode": "ai-datasets-documents:set-enabled",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 3,
-                        "sourceType": 1,
-                        "pluginPackName": ""
-                    },
-                    {
-                        "name": "console-menu.common.actions.retry",
-                        "code": null,
-                        "path": "",
-                        "icon": "",
-                        "component": "",
-                        "permissionCode": "ai-datasets-documents:retry",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 3,
-                        "sourceType": 1,
-                        "pluginPackName": ""
-                    },
-                    {
-                        "name": "console-menu.common.actions.delete",
-                        "code": null,
-                        "path": "",
-                        "icon": "",
-                        "component": "",
-                        "permissionCode": "ai-datasets-documents:delete",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 3,
-                        "sourceType": 1,
-                        "pluginPackName": ""
-                    }
-                ]
-            }
-        ]
-    },
-    {
         "name": "console-menu.userManagement.title",
-        "code": null,
+        "code": "user",
         "path": "user",
         "icon": "i-lucide-users",
         "component": "",
@@ -921,6 +595,7 @@
         "children": [
             {
                 "name": "console-menu.userManagement.userList",
+                "code": "user-list",
                 "path": "list",
                 "icon": "",
                 "component": "/console/user/list",
@@ -933,6 +608,7 @@
                 "children": [
                     {
                         "name": "console-common.delete",
+                        "code": "user-list-delete",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -941,11 +617,11 @@
                         "isHidden": 0,
                         "type": 3,
                         "sourceType": 1,
-                        "pluginPackName": "",
-                        "code": "user-delete"
+                        "pluginPackName": ""
                     },
                     {
                         "name": "console-common.edit",
+                        "code": "user-list-update",
                         "path": "update",
                         "icon": "",
                         "component": "/console/user/edit",
@@ -954,11 +630,11 @@
                         "isHidden": 1,
                         "type": 2,
                         "sourceType": 1,
-                        "pluginPackName": "",
-                        "code": "user-edit"
+                        "pluginPackName": ""
                     },
                     {
                         "name": "console-common.create",
+                        "code": "user-list-create",
                         "path": "create",
                         "icon": "",
                         "component": "/console/user/add",
@@ -967,14 +643,13 @@
                         "isHidden": 1,
                         "type": 2,
                         "sourceType": 1,
-                        "pluginPackName": "",
-                        "code": "user-create"
+                        "pluginPackName": ""
                     }
-                ],
-                "code": "user-management"
+                ]
             },
             {
                 "name": "console-menu.userManagement.userRecharge",
+                "code": "user-user-recharge",
                 "path": "user-recharge",
                 "icon": "",
                 "component": "/console/user/user-recharge/index",
@@ -987,6 +662,7 @@
                 "children": [
                     {
                         "name": "console-common.save",
+                        "code": "user-user-recharge-save",
                         "path": "",
                         "icon": "",
                         "component": "",
@@ -994,10 +670,10 @@
                         "sort": 0,
                         "isHidden": 1,
                         "type": 2,
-                        "sourceType": 1
+                        "sourceType": 1,
+                        "pluginPackName": ""
                     }
-                ],
-                "code": "user-recharge"
+                ]
             }
         ]
     },

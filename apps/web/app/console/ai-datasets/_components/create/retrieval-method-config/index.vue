@@ -15,6 +15,22 @@ const emit = defineEmits<{
 }>();
 
 const retrievalConfig = useVModel(props, "modelValue", emit);
+
+// 切换检索模式时保持 strategy 字段
+function handleModeChange(mode: 'vector' | 'fullText' | 'hybrid') {
+    const currentStrategy = retrievalConfig.value.strategy;
+    retrievalConfig.value.retrievalMode = mode;
+
+    // 如果从混合检索切换到其他模式，保留 strategy 字段以便回到混合检索时恢复
+    if (currentStrategy && mode !== 'hybrid') {
+        retrievalConfig.value.strategy = currentStrategy;
+    }
+
+    // 如果切换到混合检索且没有 strategy，设置默认值
+    if (mode === 'hybrid' && !retrievalConfig.value.strategy) {
+        retrievalConfig.value.strategy = 'weighted_score';
+    }
+}
 </script>
 
 <template>
@@ -27,7 +43,7 @@ const retrievalConfig = useVModel(props, "modelValue", emit);
             icon-class="text-purple-500"
             selected-header-class="!to-muted !from-purple-50"
             :selected="retrievalConfig.retrievalMode === 'vector'"
-            @click="retrievalConfig.retrievalMode = 'vector'"
+            @click="handleModeChange('vector')"
         >
             <RetrievalParamConfig v-model="retrievalConfig" />
         </OptionCard>
@@ -40,7 +56,7 @@ const retrievalConfig = useVModel(props, "modelValue", emit);
             icon-class="text-blue-500"
             selected-header-class="!to-muted !from-blue-50"
             :selected="retrievalConfig.retrievalMode === 'fullText'"
-            @click="retrievalConfig.retrievalMode = 'fullText'"
+            @click="handleModeChange('fullText')"
         >
             <RetrievalParamConfig v-model="retrievalConfig" />
         </OptionCard>
@@ -53,7 +69,7 @@ const retrievalConfig = useVModel(props, "modelValue", emit);
             icon-class="text-indigo-500"
             selected-header-class="!to-muted !from-indigo-50"
             :selected="retrievalConfig.retrievalMode === 'hybrid'"
-            @click="retrievalConfig.retrievalMode = 'hybrid'"
+            @click="handleModeChange('hybrid')"
         >
             <RetrievalParamConfig v-model="retrievalConfig" />
         </OptionCard>

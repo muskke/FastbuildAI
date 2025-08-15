@@ -220,22 +220,10 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
                     size="lg"
                     @click="emits('onStepChange')"
                 />
-            </UFormField>
 
-            <template v-if="!disabled">
-                <USeparator />
 
-                <UFormField
-                    label=" "
-                    class="flex w-full justify-between pb-8"
-                    :ui="{
-                        wrapper: 'flex  ',
-                        labelWrapper: 'items-stretch ',
-                        label: 'text-accent-foreground width140 pt-2',
-                        container: 'flex-1 flex gap-4 items-center',
-                    }"
-                >
-                    <UButton
+                <UButton
+                 v-if="!disabled"
                         leading-icon="i-lucide-folder"
                         color="primary"
                         variant="link"
@@ -244,7 +232,10 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
                     >
                         {{ $t("datasets.create.createEmpty") }}
                     </UButton>
-                </UFormField>
+            </UFormField>
+
+            <template>
+                <USeparator />
             </template>
         </div>
     </div>

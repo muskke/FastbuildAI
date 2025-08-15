@@ -252,13 +252,14 @@
             "dragOrSelectFiles": "Drag files or",
             "chooseFile": "Browse",
             "supportedTypes": "Supports {types}",
-            "fileSizeLimit": "Max {maxSize}MB per file"
+            "fileSizeLimit": "Max {maxSize}MB per file",
+            "comingSoon": "Support additional formats in the future"
         },
         "segmentPreview": {
             "title": "Preview",
             "clickLeftPreviewBlock": "Click preview button to view"
         },
-        "createEmpty": "Create Empty",
+        "createEmpty": "Skip uploading files and create an empty knowledge base",
         "nextStep": "Next",
         "previousStep": "Back",
         "saveAndCreate": "Save",
