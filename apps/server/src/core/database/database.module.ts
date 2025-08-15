@@ -171,6 +171,7 @@ function getEntityModule(entity: EntityMetadata): string {
                         "dist/core/**/*.entity.js",
                         // "dist/plugins/**/*.entity.js",
                     ],
+                    synchronize: appConfig.database.synchronize,
                 };
             },
             dataSourceFactory: async (options: PostgresConnectionOptions) => {
