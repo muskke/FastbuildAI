@@ -81,17 +81,10 @@ services:
       set -e
       echo "🚀 Starting FastbuildAI container..."
       
-      # 检查并设置 QUICK_START_MODE 默认值
       if [ -z "$QUICK_START_MODE" ]; then
         QUICK_START_MODE="false"
         echo "⚠️  QUICK_START_MODE is empty, setting default value: true"
-      fi
-      
-      # 检查并设置 SSR_MODE 默认值
-      if [ -z "$SSR_MODE" ]; then
-        SSR_MODE="false"
-        echo "⚠️  SSR_MODE is empty, setting default value: false"
-      fi
+      fi      
       
       echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
       
