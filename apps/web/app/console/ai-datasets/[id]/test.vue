@@ -363,7 +363,7 @@ definePageMeta({ layout: "full-screen" });
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <UBadge
-                                            :label="`SCORE ${chunk.score.toFixed(2)}`"
+                                            :label="`SCORE ${chunk.score?.toFixed(2) ?? '-'}`"
                                             color="primary"
                                             variant="soft"
                                         />
