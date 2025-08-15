@@ -349,7 +349,7 @@ const handleRename = async (document: DatasetDocument) => {
 
 // 点击表格行跳转分段
 const handleRowClick = (row: TableRow<DatasetDocument>) => {
-    if (hasAccessByCodes(["ai-datasets-segments:list"])) return;
+    if (!hasAccessByCodes(["ai-datasets-segments:list"])) return;
     router.push(
         useRoutePath(
             "ai-datasets-segments:list",
@@ -361,6 +361,8 @@ const handleRowClick = (row: TableRow<DatasetDocument>) => {
 
 // 初始化
 onMounted(() => getLists());
+
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>

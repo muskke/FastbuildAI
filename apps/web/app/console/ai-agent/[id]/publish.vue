@@ -151,6 +151,8 @@ const isPublished = computed(() => agent.value?.isPublished || false);
 
 // 组件挂载时加载数据
 onMounted(() => loadAgentDetail());
+
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>

@@ -82,7 +82,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex h-[calc(100vh-6rem)] min-h-0 flex-1 flex-col p-4">
+    <div class="flex h-full min-h-0 flex-1 flex-col p-4">
         <div class="flex items-center justify-between">
             <h1 class="text-foreground text-lg font-medium">编排</h1>
         </div>

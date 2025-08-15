@@ -78,6 +78,10 @@ export class WebAiMcpServerController {
             if (item.userMcpServer?.length > 0) {
                 item.isDisabled = item.userMcpServer[0].isDisabled;
             }
+            // 只有用户类型的服务才返回真实的url，系统类型的服务url设置为null
+            if (item.type !== McpServerType.USER) {
+                item.url = null;
+            }
         });
 
         return result;
@@ -112,10 +116,24 @@ export class WebAiMcpServerController {
                 );
             });
 
+            // 只有用户类型的服务才返回真实的url，系统类型的服务url设置为null
+            filtered.forEach((item) => {
+                if (item.type !== McpServerType.USER) {
+                    item.url = null;
+                }
+            });
+
             return filtered;
         } else {
             const filtered = result.filter((item) => {
                 return item.type === McpServerType.SYSTEM && item.id !== isQuickMenuId;
+            });
+
+            // 只有用户类型的服务才返回真实的url，系统类型的服务url设置为null
+            filtered.forEach((item) => {
+                if (item.type !== McpServerType.USER) {
+                    item.url = null;
+                }
             });
 
             return filtered;
@@ -134,6 +152,10 @@ export class WebAiMcpServerController {
         if (id) {
             const mcpServer = await this.webAiMcpServerService.findOneById(id);
             if (mcpServer && !mcpServer.isDisabled) {
+                // 只有用户类型的服务才返回真实的url，系统类型的服务url设置为null
+                if (mcpServer.type !== McpServerType.USER) {
+                    mcpServer.url = null;
+                }
                 return mcpServer;
             }
         }
@@ -157,6 +179,11 @@ export class WebAiMcpServerController {
             }
         }
 
+        // 只有用户类型的服务才返回真实的url，系统类型的服务url设置为null
+        if (result.type !== McpServerType.USER) {
+            result.url = null;
+        }
+
         return result;
     }
 
@@ -166,7 +193,14 @@ export class WebAiMcpServerController {
     @Post()
     @BuildFileUrl(["**.icon"])
     async create(@Body() createDto: CreateWebAiMcpServerDto, @Playground() user: UserPlayground) {
-        return await this.webAiMcpServerService.createMcpServer(createDto, user.id);
+        const result = await this.webAiMcpServerService.createMcpServer(createDto, user.id);
+
+        // 只有用户类型的服务才返回真实的url，系统类型的服务url设置为null
+        if (result.type !== McpServerType.USER) {
+            result.url = null;
+        }
+
+        return result;
     }
 
     /**
@@ -179,7 +213,14 @@ export class WebAiMcpServerController {
         @Body() updateDto: UpdateWebAiMcpServerDto,
         @Playground() user: UserPlayground,
     ) {
-        return await this.webAiMcpServerService.updateMcpServer(id, updateDto, user.id);
+        const result = await this.webAiMcpServerService.updateMcpServer(id, updateDto, user.id);
+
+        // 只有用户类型的服务才返回真实的url，系统类型的服务url设置为null
+        if (result.type !== McpServerType.USER) {
+            result.url = null;
+        }
+
+        return result;
     }
 
     /**

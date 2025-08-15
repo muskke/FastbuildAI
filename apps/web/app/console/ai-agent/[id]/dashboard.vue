@@ -205,6 +205,8 @@ onMounted(() => {
 
     fetchStatistics();
 });
+
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
