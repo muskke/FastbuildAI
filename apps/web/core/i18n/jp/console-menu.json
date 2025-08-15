@@ -1,42 +1,82 @@
 {
     "functionMenu": "機能メニュー",
-    "dashboard": "データダッシュボード",
-    "userManagement": "ユーザー管理",
+    "dashboard": "ダッシュボード",
+    "providers": {
+        "title": "モデル管理",
+        "model": {
+            "title": "モデル"
+        }
+    },
+    "mcpServer": "MCP管理",
+    "agent": {
+        "title": "エージェント",
+        "dashboard": "ダッシュボード",
+        "logs": "記録とラベル",
+        "publish": "公開",
+        "configuration": "設定",
+        "annotations": {
+            "review": "レビュー",
+            "delete": "削除",
+            "update": "編集",
+            "create": "作成"
+        },
+        "update": "更新"
+    },
+    "datasets": {
+        "title": "ナレッジベース",
+        "retry": "再試行",
+        "delete": "削除",
+        "documents": {
+            "title": "ドキュメント",
+            "segments": "セグメント",
+            "create": "文書追加"
+        },
+        "settings": "設定",
+        "members": "メンバー",
+        "test": "テスト",
+        "create": "作成"
+    },
+    "aiConversation": {
+        "title": "会話管理",
+        "aiChat": "会話記録",
+        "chatConfig": "会話設定"
+    },
+    "userManagement": {
+        "title": "ユーザー管理",
+        "userList": "ユーザー一覧",
+        "userInfo": "ユーザー情報",
+        "userRecharge": "チャージ管理"
+    },
+    "diyCenter": {
+        "title": "DIYセンター",
+        "microPage": "マイクロページ",
+        "layout": "レイアウト",
+        "appCenter": "アプリセンター"
+    },
+    "financial": {
+        "title": "財務管理",
+        "accountBalance": "残高明細",
+        "financialCenter": "財務センター",
+        "orderManagement": "注文管理",
+        "orderList": "チャージ注文"
+    },
+    "permission": {
+        "title": "権限管理",
+        "permissionList": "権限管理",
+        "roleList": "ロール管理",
+        "menuList": "メニュー管理"
+    },
+    "systemSettings": {
+        "title": "システム設定",
+        "siteInfo": "サイト情報",
+        "PayConfig": "支払い設定",
+        "channelManagement": "チャネル管理",
+        "wechatOaConfig": "公式アカウント設定"
+    },
     "pluginMarket": "プラグイン市場",
     "myPlugins": "マイプラグイン",
     "pluginDev": "プラグイン開発",
     "devKeys": "開発者キー",
-    "datasets": "ナレッジベース",
-    "datasetList": "ナレッジベース一覧",
-    "datasetDetail": "ナレッジベース詳細",
-    "datasetDocuments": "ドキュメント一覧",
-    "datasetSegments": "セグメント一覧",
-    "datasetDataRecords": "データレコード",
-    "transferOwnership": "所有権移転",
-    "diyCenter": "DIYセンター",
-    "microPage": "マイクロページ",
-    "layout": "ページレイアウト",
-    "appCenter": "アプリケーションセンター",
-    "aiConversation": "会話管理",
-    "aiChat": "会話記録",
-    "chatConfig": "会話設定",
     "aiConfig": "AI設定",
-    "providers": "モデル管理",
-    "mcpServer": "MCP管理",
-    "model": "モデル",
-    "permission": "権限管理",
-    "permissionList": "権限管理",
-    "roleList": "ロール管理",
-    "menuList": "メニュー管理",
-    "systemSettings": "システム設定",
-    "siteInfo": "サイト情報",
-    "PayConfig": "支払い設定",
-    "channelManagement": "チャネル管理",
-    "wechatOaConfig": "公式アカウント設定",
-    "userRecharge": "チャージ管理",
-    "orderManagement": "注文管理",
-    "orderList": "チャージ注文",
-    "financial": "財務管理",
-    "accountBalance": "残高明細",
-    "financialCenter": "財務センター"
+    "model": "モデル"
 }
