@@ -181,11 +181,13 @@ const currentDocument = computed(() => {
 
 // 初始化
 onMounted(() => getLists());
+
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
     <div class="flex h-full w-full flex-col">
-        <div class="flex items-center justify-between gap-1 py-4 pl-4">
+        <div class="flex items-center justify-between gap-1 p-4">
             <div class="flex w-full items-center">
                 <UButton
                     variant="ghost"
@@ -252,7 +254,7 @@ onMounted(() => getLists());
             <USeparator />
         </div>
 
-        <div class="bg-background mb-2 flex w-full justify-between gap-4 py-4 pl-6">
+        <div class="bg-background mb-2 flex w-full justify-between gap-4 p-4 pl-6">
             <div class="flex items-center gap-3">
                 <UCheckbox
                     :model-value="isAllSelected"
@@ -461,7 +463,7 @@ onMounted(() => getLists());
             </ProScrollArea>
 
             <!-- 右侧：文档信息面板 -->
-            <div class="w-100 overflow-hidden pl-6" v-if="paging.items.length">
+            <div class="w-100 overflow-hidden px-6" v-if="paging.items.length">
                 <div class="mb-4">
                     <h3 class="text-foreground text-lg font-semibold">
                         {{ t("datasets.documents.table.fileName") }}
@@ -589,7 +591,7 @@ onMounted(() => getLists());
             </div>
         </div>
 
-        <div class="flex items-center justify-end py-2 pl-4">
+        <div class="flex items-center justify-end p-4">
             <ProPaginaction
                 v-model:page="paging.page"
                 v-model:size="paging.pageSize"
