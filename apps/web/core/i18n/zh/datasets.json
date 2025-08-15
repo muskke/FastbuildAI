@@ -253,13 +253,14 @@
             "dragOrSelectFiles": "拖拽文件或文件夹至此，或者",
             "chooseFile": "选择文件",
             "supportedTypes": "已支持 {types}",
-            "fileSizeLimit": "每个文件不超过 {maxSize}MB"
+            "fileSizeLimit": "每个文件不超过 {maxSize}MB",
+            "comingSoon": "后续支持上传其他文件类型"
         },
         "segmentPreview": {
             "title": "预览",
             "clickLeftPreviewBlock": "点击左侧的\"预览块\"按钮来查看预览效果"
         },
-        "createEmpty": "创建一个空知识库",
+        "createEmpty": "跳过上传文件，创建一个空知识库",
         "nextStep": "下一步",
         "previousStep": "上一步",
         "saveAndCreate": "保存并创建",

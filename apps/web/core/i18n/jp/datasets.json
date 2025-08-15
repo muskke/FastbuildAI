@@ -252,13 +252,14 @@
             "dragOrSelectFiles": "ファイルまたはフォルダをここにドラッグするか、",
             "chooseFile": "ファイルを選択",
             "supportedTypes": "{types} をサポート",
-            "fileSizeLimit": "各ファイルは {maxSize}MB まで"
+            "fileSizeLimit": "各ファイルは {maxSize}MB まで",
+            "comingSoon": "将来、他のファイルタイプのアップロードをサポートします"
         },
         "segmentPreview": {
             "title": "プレビュー",
             "clickLeftPreviewBlock": "左側の「プレビューブロック」ボタンをクリックしてプレビュー効果を確認"
         },
-        "createEmpty": "空のナレッジベースを作成",
+        "createEmpty": "ファイルのアップロードをスキップし、空のナレッジベースを作成します",
         "nextStep": "次へ",
         "previousStep": "前へ",
         "saveAndCreate": "保存して作成",
