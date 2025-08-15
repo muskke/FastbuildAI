@@ -229,7 +229,7 @@ definePageMeta({ layout: "full-screen" });
             </p>
         </div>
 
-        <div class="flex flex-1 gap-6 py-6">
+        <div class="flex h-full min-h-0 gap-6 py-6">
             <!-- 左侧：查询输入和历史记录 -->
             <div class="flex h-full w-1/2 flex-col space-y-6">
                 <!-- 查询输入区域 -->
@@ -280,7 +280,7 @@ definePageMeta({ layout: "full-screen" });
                 </ChatPrompt>
 
                 <!-- 历史记录 -->
-                <div class="flex h-full flex-col">
+                <div class="flex h-full flex-col min-h-0">
                     <h3 class="mb-2 text-base font-medium">
                         {{ t("datasets.test.record") }}
                     </h3>
