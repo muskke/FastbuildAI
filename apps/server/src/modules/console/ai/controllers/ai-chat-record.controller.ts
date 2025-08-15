@@ -1,6 +1,7 @@
 import { BaseController } from "@common/base/controllers/base.controller";
 import { Playground } from "@common/decorators";
 import { ConsoleController } from "@common/decorators/controller.decorator";
+import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { Permissions } from "@common/decorators/permissions.decorator";
 import { PaginationDto } from "@common/dto/pagination.dto";
 import { UserPlayground } from "@common/interfaces/context.interface";
@@ -33,6 +34,7 @@ export class AiChatRecordController extends BaseController {
      * 分页查询对话记录
      */
     @Get()
+    @BuildFileUrl(["**.avatar"])
     @Permissions({
         code: "list",
         name: "查询AI对话记录",

@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ProDateRangePicker, ProPaginaction } from "@fastbuildai/ui";
 import { useMessage, useModal, usePaging } from "@fastbuildai/ui";
+import type { DropdownMenuItem, TableColumn } from "@nuxt/ui";
+import { type Row } from "@tanstack/table-core";
 import { computed, onMounted, reactive, ref } from "vue";
 
+import TimeDisplay from "@/common/components/time-display.vue";
 import type { AiConversation } from "@/models/ai-conversation";
 import {
     apiBatchDeleteConversations,
@@ -12,6 +15,8 @@ import {
 
 const ConversationCard = defineAsyncComponent(() => import("./_components/conversation-card.vue"));
 const ConversationDetail = defineAsyncComponent(() => import("./detail.vue"));
+
+const { hasAccessByCodes } = useAccessControl();
 
 // 路由实例
 const toast = useMessage();
@@ -24,6 +29,12 @@ const searchForm = reactive({
     startDate: "",
     endDate: "",
 });
+
+const tab = ref(1);
+const tabs = [
+    { value: 1, icon: "i-lucide-list" },
+    { value: 2, icon: "i-tabler-layout-grid" },
+];
 
 // 选中的对话
 const selectedConversations = ref<Set<string>>(new Set());
@@ -53,6 +64,67 @@ const handleConversationSelect = (
         }
     }
 };
+
+const columns = ref<TableColumn<AiConversation>[]>([
+    {
+        accessorKey: "title",
+        header: "对话标题",
+    },
+    {
+        accessorKey: "userName",
+        header: "用户名称",
+    },
+    {
+        accessorKey: "messageCount",
+        header: "对话次数",
+    },
+    {
+        accessorKey: "totalTokens",
+        header: "Token消耗",
+    },
+    {
+        accessorKey: "updatedAt",
+        header: "更新时间",
+        cell: ({ row }) => {
+            const createdAt = row.getValue("createdAt") as string;
+            return h(TimeDisplay, {
+                datetime: createdAt,
+                mode: "datetime",
+            });
+        },
+    },
+    {
+        accessorKey: "action",
+        header: "操作",
+        size: 40, // 固定宽度
+        enableSorting: false,
+        enableHiding: false,
+    },
+]);
+
+// 操作栏
+function getRowItems(row: Row<AiConversation>) {
+    return [
+        {
+            label: t("console-order-management.recharge.list.viewDetails"),
+            icon: "lucide:eye",
+            color: "info",
+            onClick: () => {
+                handleViewDetail(row.original.id);
+            },
+        },
+        hasAccessByCodes(["ai-conversations:ai_conversation_delete"])
+            ? {
+                  label: t("console-common.delete"),
+                  icon: "i-lucide-trash-2",
+                  color: "error",
+                  onSelect() {
+                      handleDeleteConversation(row.original);
+                  },
+              }
+            : null,
+    ].filter(Boolean) as DropdownMenuItem[];
+}
 
 /**
  * 全选/取消全选
@@ -206,11 +278,78 @@ onMounted(() => getLists());
                         </template>
                     </UButton>
                 </AccessControl>
+
+                <UTabs
+                    v-model="tab"
+                    :items="tabs"
+                    size="xs"
+                    :ui="{
+                        root: 'gap-0',
+                        indicator: 'bg-background dark:bg-primary',
+                        leadingIcon: 'bg-black dark:bg-white',
+                    }"
+                ></UTabs>
             </div>
         </div>
 
+        <!-- 列表展示 -->
+        <template v-if="!paging.loading && paging.items.length > 0 && tab === 1">
+            <UTable
+                ref="table"
+                :data="paging.items"
+                :columns="columns"
+                :ui="{
+                    base: 'table-fixed border-separate border-spacing-0',
+                    thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
+                    tbody: '[&>tr]:last:[&>td]:border-b-0',
+                    th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
+                    td: 'border-b border-default',
+                    tr: '[&:has(>td[colspan])]:hidden',
+                }"
+            >
+                <template #title-cell="{ row }">
+                    <div class="flex items-center gap-2">
+                        <UIcon name="i-lucide-message-circle" class="text-primary size-5" />
+                        {{ row.original.title }}
+                    </div>
+                </template>
+                <template #userName-cell="{ row }">
+                    <div class="flex items-center gap-2">
+                        <UAvatar
+                            v-if="row.original.user?.avatar"
+                            :src="row.original.user?.avatar"
+                        />
+                        <UAvatar
+                            v-else
+                            icon="i-heroicons-user"
+                            :name="row.original.user?.username"
+                        />
+                        <span>{{ row.original.user?.nickname }}</span>
+                    </div>
+                </template>
+                <template #messageCount-cell="{ row }">
+                    <UBadge color="primary" variant="subtle">
+                        {{ row.original.messageCount }}
+                    </UBadge>
+                </template>
+                <template #totalTokens-cell="{ row }">
+                    <span class="text-primary">{{ row.original.totalTokens }}</span>
+                </template>
+                <template #action-cell="{ row }">
+                    <UDropdownMenu :items="getRowItems(row)">
+                        <UButton
+                            icon="i-lucide-ellipsis-vertical"
+                            color="neutral"
+                            variant="ghost"
+                            aria-label="Actions"
+                        />
+                    </UDropdownMenu>
+                </template>
+            </UTable>
+        </template>
+
         <!-- 卡片网格 -->
-        <template v-if="!paging.loading && paging.items.length > 0">
+        <template v-else-if="!paging.loading && paging.items.length > 0 && tab === 2">
             <ProScrollArea class="h-[calc(100vh-13rem)]" :shadow="false">
                 <div
                     class="mt-2 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
