@@ -134,7 +134,7 @@ onMounted(() => {
 
 <template>
     <div class="create-dataset-container flex h-full flex-col">
-        <div class="sticky top-0 z-10 flex">
+        <div class="sticky top-0 z-10 flex bg-background">
             <UButton
                 class="absolute top-1/2 -translate-y-[50%]"
                 variant="link"

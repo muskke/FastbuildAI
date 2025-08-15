@@ -27,6 +27,40 @@ const defaultColors: Record<LogLevel, keyof typeof chalk> = {
 };
 
 /**
+ * 计算字符串的实际显示宽度（中文字符按2个字符宽度计算）
+ *
+ * @param str 输入字符串
+ * @returns 实际显示宽度
+ */
+const getDisplayWidth = (str: string): number => {
+    let width = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        // 判断是否为中文字符（包括中文标点符号）
+        if (/[\u4e00-\u9fff\u3400-\u4dbf\uff00-\uffef]/.test(char)) {
+            width += 2;
+        } else {
+            width += 1;
+        }
+    }
+    return width;
+};
+
+/**
+ * 按实际显示宽度填充字符串
+ *
+ * @param str 输入字符串
+ * @param targetWidth 目标显示宽度
+ * @param fillChar 填充字符，默认为空格
+ * @returns 填充后的字符串
+ */
+const padEndByDisplayWidth = (str: string, targetWidth: number, fillChar: string = " "): string => {
+    const currentWidth = getDisplayWidth(str);
+    const paddingNeeded = Math.max(0, targetWidth - currentWidth);
+    return str + fillChar.repeat(paddingNeeded);
+};
+
+/**
  * 通用日志输出函数
  *
  * @param message 消息内容
@@ -44,7 +78,7 @@ const TerminalLogger = (message: string, opts: LoggerOptions = {}) => {
     if (!labelText.includes(":") && labelText) {
         labelText += ":";
     }
-    const paddedLabel = `${labelText.padEnd(labelWidth)}`;
+    const paddedLabel = padEndByDisplayWidth(labelText, labelWidth);
 
     if (!label) {
         console.log(`${coloredIcon}${space}${coloredMessage}`);
@@ -77,6 +111,7 @@ TerminalLogger.warn = (label: string, message: string, opts?: LoggerOptions) =>
         iconColor: defaultColors.warn,
         color: defaultColors.warn,
         label,
+        ...opts,
     });
 
 TerminalLogger.info = (label: string, message: string, opts?: LoggerOptions) =>

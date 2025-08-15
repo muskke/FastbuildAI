@@ -260,7 +260,7 @@ function handleKeywordChange(val: number) {
 
                 <!-- 重排模型选择（混合检索 - Rerank 策略） -->
                 <ModelSelect
-                    v-if="retrievalConfig.rerankConfig!.enabled"
+                    v-if="retrievalConfig.strategy === 'rerank'"
                     :modelValue="retrievalConfig.rerankConfig!.modelId"
                     :button-ui="{
                         variant: 'outline',
