@@ -1,0 +1,13 @@
+[
+    {
+        "id": "menu_1755255556893",
+        "icon": "i-lucide-bot-message-square",
+        "link": {
+            "name": "menu.general",
+            "path": "/profile/general-settings",
+            "type": "system",
+            "query": {}
+        },
+        "title": "智能体"
+    }
+]
