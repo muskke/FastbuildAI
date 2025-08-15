@@ -192,7 +192,7 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
 
             <!-- 基本信息 -->
             <div class="grid grid-cols-1 gap-x-6 gap-y-4 py-4 pb-4 md:grid-cols-2">
-                <div>
+                <div v-if="formData.type === 'user'">
                     <div class="text-muted-foreground text-sm">
                         {{ t("common.mcp-server.detail.url") }}
                     </div>

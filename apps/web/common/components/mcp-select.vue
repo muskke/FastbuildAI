@@ -358,10 +358,15 @@ async function handlePopoverUpdate(value: boolean) {
                                                 </p>
                                                 <div
                                                     v-if="mcp.connectError"
-                                                    class="line-clamp-1 flex items-center gap-1 text-xs text-red-500"
+                                                    class="flex items-center gap-1 text-xs text-red-500"
                                                 >
-                                                    <UIcon name="i-lucide-alert-octagon" />
-                                                    <p>{{ mcp.connectError }}</p>
+                                                    <UIcon
+                                                        size="16"
+                                                        name="i-lucide-alert-octagon"
+                                                    />
+                                                    <p class="line-clamp-1">
+                                                        {{ mcp.connectError }}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -402,10 +407,15 @@ async function handlePopoverUpdate(value: boolean) {
                                                     </UBadge>
                                                     <div
                                                         v-else
-                                                        class="line-clamp-1 flex items-center gap-1 text-sm text-red-500"
+                                                        class="flex items-start gap-1 text-sm text-red-500"
                                                     >
-                                                        <UIcon name="i-lucide-alert-octagon" />
-                                                        <p>{{ mcp.connectError }}</p>
+                                                        <UIcon
+                                                            size="20"
+                                                            name="i-lucide-alert-octagon"
+                                                        />
+                                                        <p>
+                                                            {{ mcp.connectError }}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -423,7 +433,7 @@ async function handlePopoverUpdate(value: boolean) {
                                                 </p>
                                             </div>
 
-                                            <div class="space-y-2">
+                                            <div v-if="mcp.connectable" class="space-y-2">
                                                 <h2 class="text-xs font-bold">
                                                     {{ t("common.mcp-server.detail.tools") }}
                                                 </h2>
