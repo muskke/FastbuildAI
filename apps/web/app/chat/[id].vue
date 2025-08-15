@@ -208,6 +208,7 @@ const handleQuickMenu = () => {
 
 const getQuickMenu = async () => {
     const res = await apiGetQuickMenu();
+    if (!res) return;
     quickMenu.value = res;
     QUICK_MENU_MCP_ID.value = res.id;
     // 初始化按钮激活态（不改写 localStorage，仅读取）
@@ -228,7 +229,7 @@ async function saveEditedName(event: Event): Promise<void> {
 
 async function handleSubmitMessage(content: string) {
     if (!content.trim() || isLoading.value) return;
-    if (!selectedModel.value.id) return toast.warning("请先选择模型");
+    if (!selectedModel.value.id) return toast.warning(t("common.chat.selectModel"));
     await handleSubmit(content);
     scrollToBottom();
 }
