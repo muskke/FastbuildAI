@@ -27,13 +27,15 @@ coverage
 
 # Build Outputs
 .next/
-/public/.output
-/public/package.json
-/public/*
 out/
 build
 dist
-!/public/index.html
+/public/.output
+/public/package.json
+/public/*
+!/public/web/
+/public/web/*
+!/public/web/index.html
 
 
 # Debug
