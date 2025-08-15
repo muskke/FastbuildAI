@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import LogoImg from "@fastbuildai/assets/images/logo.png";
+import LogoImg from "@fastbuildai/assets/images/logo.svg";
 import { ref } from "vue";
 import { defineOptions } from "vue";
 
