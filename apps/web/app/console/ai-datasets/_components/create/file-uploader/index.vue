@@ -23,8 +23,8 @@ const props = defineProps<{
 const UPLOAD_CONFIG = Object.freeze({
     maxSize: 15,
     maxCount: 10,
-    supportedTypes: ["TXT", "MARKDOWN", "PDF", "HTML", "XLSX", "DOC", "DOCX", "CSV", "PPT", "MD"],
-    accept: ".txt,.md,.pdf,.doc,.docx,.csv,.xlsx,.xls,.ppt,.pptx,.html,.htm,.xml,.epub,.eml,.msg,.vtt,.properties,.mdx",
+    supportedTypes: ["TXT", "MARKDOWN", "DOCX"],
+    accept: ".txt,.md,.docx",
 });
 
 const { t } = useI18n();
@@ -192,5 +192,9 @@ const handleDropOver = (e: DragEvent) => {
             :accept="UPLOAD_CONFIG.accept"
             @change="handleFileSelect"
         />
+    </div>
+
+    <div class="mt-2 text-sm text-muted-foreground">
+        {{ t("datasets.create.file.comingSoon") }}
     </div>
 </template>
