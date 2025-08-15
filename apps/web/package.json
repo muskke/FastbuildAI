@@ -4,10 +4,10 @@
     "packageManager": "pnpm@10.0.0",
     "license": "MIT",
     "scripts": {
-        "build": "NUXT_BUILD_SSR=true NUXT_BUILD_ENV=production nuxi build --dotenv ../../.env.production.local && NUXT_BUILD_SSR=true node libs/release.mjs",
+        "build": "NODE_OPTIONS='--max-old-space-size=4096' NUXT_BUILD_SSR=true NUXT_BUILD_ENV=production nuxi build --dotenv ../../.env.production.local && NUXT_BUILD_SSR=true node libs/release.mjs",
         "dev:pwa": "NUXT_BUILD_ENV=production VITE_PLUGIN_PWA=true nuxi dev --dotenv ../../.env.development.local",
         "dev": "NUXT_BUILD_SSR=true NUXT_BUILD_ENV=development nuxi dev --no-clear --dotenv ../../.env.development.local",
-        "generate": "NUXT_BUILD_SSR=false NUXT_BUILD_ENV=production nuxi generate --dotenv ../../.env.production.local && NUXT_BUILD_SSR=false node libs/release.mjs",
+        "generate": "NODE_OPTIONS='--max-old-space-size=4096' NUXT_BUILD_SSR=false NUXT_BUILD_ENV=production nuxi generate --dotenv ../../.env.production.local && NUXT_BUILD_SSR=false node libs/release.mjs",
         "prepare": "NUXT_BUILD_SSR=true NUXT_BUILD_ENV=development nuxi prepare --dotenv ../../.env.development.local",
         "start": "node .output/server/index.mjs",
         "start:generate": "npx serve .output/public",
