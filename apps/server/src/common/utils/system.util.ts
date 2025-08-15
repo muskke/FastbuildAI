@@ -192,7 +192,7 @@ export const getPackageJsonSync = (dirPath: string): PluginPackageJson => {
 export const setAssetsDir = async (app: NestExpressApplication) => {
     const dirs = [
         {
-            dir: path.join(process.cwd(), "..", "..", "public"),
+            dir: path.join(process.cwd(), "..", "..", "public", "web"),
             prefix: "/",
         },
         {
