@@ -1,42 +1,97 @@
 {
     "functionMenu": "Menu",
     "dashboard": "Dashboard",
-    "userManagement": "Users",
+    "common": {
+        "actions": {
+            "rename": "Rename",
+            "retry": "Retry",
+            "delete": "Delete",
+            "update": "Update",
+            "create": "Create",
+            "enable": "Enable",
+            "disable": "Disable",
+            "save": "Save",
+            "confirm": "Confirm",
+            "cancel": "Cancel",
+            "status": "Status"
+        }
+    },
+    "providers": {
+        "title": "Models",
+        "model": {
+            "title": "Model"
+        }
+    },
+    "mcpServer": "MCP",
+    "agent": {
+        "title": "Agent",
+        "dashboard": "Dashboard",
+        "logs": "Logs & Labels",
+        "publish": "Publish",
+        "configuration": "Config",
+        "annotations": {
+            "review": "Review",
+            "delete": "Delete",
+            "update": "Edit",
+            "create": "Create"
+        },
+        "update": "Update"
+    },
+    "datasets": {
+        "title": "Knowledge",
+        "retry": "Retry",
+        "delete": "Delete",
+        "documents": {
+            "title": "Documents",
+            "segments": "Segments",
+            "create": "Add Doc"
+        },
+        "settings": "Settings",
+        "members": "Members",
+        "test": "Test",
+        "create": "Create"
+    },
+    "aiConversation": {
+        "title": "Chats",
+        "aiChat": "History",
+        "chatConfig": "Chat Settings"
+    },
+    "userManagement": {
+        "title": "Users",
+        "userList": "User List",
+        "userInfo": "User Info",
+        "userRecharge": "Top-up"
+    },
+    "diyCenter": {
+        "title": "DIY Center",
+        "microPage": "Micro Pages",
+        "layout": "Layout",
+        "appCenter": "Apps"
+    },
+    "financial": {
+        "title": "Finance",
+        "accountBalance": "Balance",
+        "financialCenter": "Finance Center",
+        "orderManagement": "Orders",
+        "orderList": "Orders"
+    },
+    "permission": {
+        "title": "Permissions",
+        "permissionList": "Permissions",
+        "roleList": "Roles",
+        "menuList": "Menus"
+    },
+    "systemSettings": {
+        "title": "Settings",
+        "siteInfo": "Site Info",
+        "PayConfig": "Payments",
+        "channelManagement": "Channels",
+        "wechatOaConfig": "WeChat OA"
+    },
     "pluginMarket": "Plugins",
     "myPlugins": "My Plugins",
     "pluginDev": "Plugin Dev",
     "devKeys": "API Keys",
-    "datasets": "Knowledge",
-    "datasetList": "Knowledge Bases",
-    "datasetDetail": "Details",
-    "datasetDocuments": "Documents",
-    "datasetSegments": "Segments",
-    "datasetDataRecords": "Records",
-    "transferOwnership": "Transfer",
-    "diyCenter": "DIY Center",
-    "microPage": "Micro Pages",
-    "layout": "Layout",
-    "appCenter": "Apps",
-    "aiConversation": "Chats",
-    "aiChat": "History",
-    "chatConfig": "Chat Settings",
     "aiConfig": "AI Settings",
-    "providers": "Models",
-    "mcpServer": "MCP",
-    "model": "Models",
-    "permission": "Permissions",
-    "permissionList": "Permissions",
-    "roleList": "Roles",
-    "menuList": "Menus",
-    "systemSettings": "Settings",
-    "siteInfo": "Site Info",
-    "PayConfig": "Payments",
-    "channelManagement": "Channels",
-    "wechatOaConfig": "WeChat OA",
-    "userRecharge": "Top-up",
-    "orderManagement": "Orders",
-    "orderList": "Orders",
-    "financial": "Finance",
-    "accountBalance": "Balance",
-    "financialCenter": "Finance Center"
+    "model": "Models"
 }

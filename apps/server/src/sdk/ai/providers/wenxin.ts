@@ -1,4 +1,5 @@
 import { ClientOptions } from "openai";
+import { CreateEmbeddingResponse, EmbeddingCreateParams } from "openai/resources/index";
 
 import { Adapter, RerankParams, RerankResponse } from "../interfaces/adapter";
 import { OpenAIAdapter } from "./openai";
@@ -11,6 +12,37 @@ export class WenXinAdapter extends OpenAIAdapter implements Adapter {
             options.baseURL = "https://qianfan.baidubce.com/v2";
         }
         super(options);
+    }
+
+    async generateEmbedding(params: EmbeddingCreateParams): Promise<CreateEmbeddingResponse> {
+        try {
+            // 构建请求体，适配百度千帆向量接口
+            const requestBody = {
+                model: params.model,
+                input: params.input,
+            };
+
+            // 使用千帆的向量接口
+            const response = await fetch(`${this.client.baseURL}/embeddings`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${this.client.apiKey}`,
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (!response.ok) {
+                throw new Error(`文心一言向量请求失败: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            return data;
+        } catch (error) {
+            console.error("文心一言向量服务调用失败:", error);
+            throw new Error(`文心一言向量服务调用失败: ${error.message}`);
+        }
     }
 
     /**
