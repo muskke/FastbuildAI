@@ -173,6 +173,62 @@ const { lockFn: jsonSubmitForm, isLock: jsonIsLock } = useLockFn(async () => {
     }
 });
 
+interface JsonType {
+    mcpServers: Record<string, any>;
+}
+
+const correctJson: JsonType = {
+    mcpServers: {
+        "zhipu-web-search-sse": {
+            url: "xxxxx",
+        },
+    },
+};
+
+const errorJson: JsonType = {
+    mcpServers: {
+        "zhipu-web-search-sse": {
+            command: "npx",
+            args: ["@playwright/mcp@latest"],
+        },
+    },
+};
+
+// 自动高亮 JSON
+function highlightJSON(json: JsonType, isError = false) {
+    let jsonStr;
+    try {
+        // 如果是对象，直接格式化
+        jsonStr =
+            typeof json === "string"
+                ? JSON.stringify(JSON.parse(json), null, 2)
+                : JSON.stringify(json, null, 2);
+    } catch {
+        // 错误 JSON，直接用原文
+        jsonStr = typeof json === "string" ? json : JSON.stringify(json, null, 2);
+    }
+
+    // 高亮处理
+    let highlighted = jsonStr
+        .replace(/"([^"]+)":/g, '<span class="text-muted">"$1"</span>:')
+        .replace(/:\s*"([^"]+)"/g, ': <span class="text-muted">"$1"</span>')
+        .replace(/\[\s*"([^"]+)"\s*(,|\])/g, '[ <span class="text-muted">"$1"</span>$2')
+        .replace(/,\s*"([^"]+)"/g, ', <span class="text-muted">"$1"</span>')
+        .replace(/: "([^"]+)"/g, ': <span class="text-muted">"$1"</span>')
+        .replace(/: (\d+)/g, ': <span class="text-muted">$1</span>')
+        .replace(/: (true|false|null)/g, ': <span class="text-muted">$1</span>')
+        .replace(/([{}[\],])/g, '<span class="text-muted">$1</span>');
+
+    // 注释行
+    const commentText = isError
+        ? `// ${t("console-ai-mcp-server.jsonImportErrorExample")}`
+        : `// ${t("console-ai-mcp-server.jsonImportCorrectExample")}`;
+    const commentColor = isError ? "text-red-400" : "text-green-400";
+    highlighted = `<span class="${commentColor}">${commentText}</span>\n` + highlighted;
+
+    return highlighted;
+}
+
 const handleClose = () => {
     emits("close");
 };
@@ -354,6 +410,31 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                         :rows="13"
                         :ui="{ root: 'w-full' }"
                     />
+                    <template #hint>
+                        <UPopover mode="click" :open-delay="0" :close-delay="0">
+                            <UButton variant="ghost" class="text-muted-foreground text-xs">
+                                {{ t("console-ai-mcp-server.jsonImportExample") }}
+                            </UButton>
+                            <template #content>
+                                <div class="flex flex-col gap-4 p-4">
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center gap-2">
+                                            <pre
+                                                class="bg-muted w-full overflow-x-auto rounded-lg p-4 text-sm"
+                                            ><code v-html="highlightJSON(correctJson)"></code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <pre
+                                                class="bg-muted w-full overflow-x-auto rounded-lg p-4 text-sm"
+                                            ><code v-html="highlightJSON(errorJson, true)"></code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </UPopover>
+                    </template>
                 </UFormField>
             </div>
 

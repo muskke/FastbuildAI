@@ -32,6 +32,9 @@
     "deleteSuccess": "删除成功",
     "deleteTitle": "删除MCP服务",
     "deleteMessage": "确定要删除选中的MCP服务吗？此操作不可恢复。",
+    "jsonImportExample": "JSON导入示例",
+    "jsonImportCorrectExample": "正确的 JSON 示例",
+    "jsonImportErrorExample": "错误的 JSON 示例",
     "search": {
         "placeholder": "搜索MCP名称",
         "status": "选择状态",
