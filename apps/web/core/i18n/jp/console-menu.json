@@ -1,6 +1,21 @@
 {
     "functionMenu": "機能メニュー",
     "dashboard": "ダッシュボード",
+    "common": {
+        "actions": {
+            "rename": "名前変更",
+            "retry": "再試行",
+            "delete": "削除",
+            "update": "更新",
+            "create": "作成",
+            "enable": "有効",
+            "disable": "無効",
+            "save": "保存",
+            "confirm": "確認",
+            "cancel": "キャンセル",
+            "status": "状態"
+        }
+    },
     "providers": {
         "title": "モデル管理",
         "model": {

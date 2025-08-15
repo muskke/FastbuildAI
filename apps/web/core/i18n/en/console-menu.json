@@ -1,6 +1,21 @@
 {
     "functionMenu": "Menu",
     "dashboard": "Dashboard",
+    "common": {
+        "actions": {
+            "rename": "Rename",
+            "retry": "Retry",
+            "delete": "Delete",
+            "update": "Update",
+            "create": "Create",
+            "enable": "Enable",
+            "disable": "Disable",
+            "save": "Save",
+            "confirm": "Confirm",
+            "cancel": "Cancel",
+            "status": "Status"
+        }
+    },
     "providers": {
         "title": "Models",
         "model": {

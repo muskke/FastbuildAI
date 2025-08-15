@@ -1,6 +1,21 @@
 {
     "functionMenu": "功能菜单",
     "dashboard": "数据看板",
+    "common": {
+        "actions": {
+            "rename": "重命名",
+            "retry": "重试",
+            "delete": "删除",
+            "update": "更新",
+            "create": "创建",
+            "enable": "启用",
+            "disable": "禁用",
+            "save": "保存",
+            "confirm": "确认",
+            "cancel": "取消",
+            "status": "状态"
+        }
+    },
     "providers": {
         "title": "模型管理",
         "model": {
