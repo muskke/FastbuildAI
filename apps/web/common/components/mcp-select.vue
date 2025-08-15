@@ -201,6 +201,7 @@ async function handlePopoverUpdate(value: boolean) {
                 >
                     <UAvatar
                         v-for="(id, index) in selectedValidIds"
+                        :src="allMcpList.find((m) => m.id === id)?.icon"
                         :style="`z-index: ${index + 1}`"
                         :key="id"
                         class="bg-primary"
