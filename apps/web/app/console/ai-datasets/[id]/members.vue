@@ -387,6 +387,8 @@ const handleTransferOwnership = async (member: TeamMember) => {
 };
 
 onMounted(() => getLists());
+
+definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>

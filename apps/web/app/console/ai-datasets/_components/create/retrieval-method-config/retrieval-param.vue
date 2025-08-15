@@ -49,6 +49,7 @@ function handleKeywordChange(val: number) {
 
             <!-- 重排模型选择（向量检索） -->
             <ModelSelect
+                v-if="retrievalConfig.rerankConfig!.enabled"
                 :modelValue="retrievalConfig.rerankConfig!.modelId"
                 :button-ui="{
                     variant: 'outline',
@@ -110,6 +111,7 @@ function handleKeywordChange(val: number) {
 
             <!-- 重排模型选择（全文检索） -->
             <ModelSelect
+                v-if="retrievalConfig.rerankConfig!.enabled"
                 :modelValue="retrievalConfig.rerankConfig!.modelId"
                 :button-ui="{
                     variant: 'outline',
@@ -117,7 +119,7 @@ function handleKeywordChange(val: number) {
                     ui: { base: 'w-full' },
                     class: 'bg-background',
                 }"
-                :supportedModelTypes="['rerank']"
+                :supportedModelTypes="['llm']"
                 :defaultSelected="false"
                 capability="chat"
                 placeholder="选择重排模型"
@@ -258,6 +260,7 @@ function handleKeywordChange(val: number) {
 
                 <!-- 重排模型选择（混合检索 - Rerank 策略） -->
                 <ModelSelect
+                    v-if="retrievalConfig.rerankConfig!.enabled"
                     :modelValue="retrievalConfig.rerankConfig!.modelId"
                     :button-ui="{
                         variant: 'outline',

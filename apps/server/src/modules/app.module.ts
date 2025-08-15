@@ -24,7 +24,7 @@ export class AppModule {
             module: AppModule,
             imports: [
                 ServeStaticModule.forRoot({
-                    rootPath: join(__dirname, "..", "..", "..", "..", "public"),
+                    rootPath: join(__dirname, "..", "..", "..", "..", "public", "web"),
                     exclude: [
                         // ...pluginsList.map((plugin) => `/${plugin.name}`),
                         `${process.env.VITE_APP_WEB_API_PREFIX}`,
