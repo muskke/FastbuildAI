@@ -35,7 +35,8 @@
         "PM2_CLI",
         "PM2_APP_NAME",
         "SERVER_SHOW_DETAILED_ERRORS",
-        "LOG_DATABASE_SCHEMA"
+        "LOG_DATABASE_SCHEMA",
+        "SERVER_IS_DEMO_ENV"
     ],
     "tasks": {
         "build": {
