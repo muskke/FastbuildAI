@@ -152,7 +152,6 @@ const { lockFn: changePasswordLockFn, isLock: isSubmitting } = useLockFn(async (
         resetForm();
     } catch (error: any) {
         console.error("修改密码失败:", error);
-        toast.error(error.message || t("common.profile.passwordChangeFailed"));
         throw error;
     }
 });

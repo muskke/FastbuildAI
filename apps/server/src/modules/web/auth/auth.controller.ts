@@ -3,12 +3,14 @@ import { UserTerminal } from "@common/constants/status-codes.constant";
 import { Playground, WebController } from "@common/decorators";
 import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { Public } from "@common/decorators/public.decorator";
+import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { UserPlayground } from "@common/interfaces/context.interface";
 import { AuthService } from "@common/modules/auth/auth.service";
 import { ChangePasswordDto } from "@common/modules/auth/dto/change-password.dto";
 import { LoginDto } from "@common/modules/auth/dto/login.dto";
 import { RegisterDto } from "@common/modules/auth/dto/register.dto";
 import { WechatOaService } from "@common/modules/wechat/services/wechatoa.service";
+import { isEnabled } from "@common/utils/is.util";
 import { Body, Get, Headers, Param, Post, Query, Req, Res } from "@nestjs/common";
 import { Request, Response } from "express";
 /**
@@ -89,6 +91,9 @@ export class AuthController extends BaseController {
         @Body() changePasswordDto: ChangePasswordDto,
         @Playground() user: UserPlayground,
     ) {
+        if (process.env.SERVER_IS_DEMO_ENV === "true" && isEnabled(user.isRoot)) {
+            throw HttpExceptionFactory.forbidden("演示模式下禁止修改管理员密码");
+        }
         // 获取当前用户ID
         const userId = user.id;
 
