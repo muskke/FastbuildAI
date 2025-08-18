@@ -353,14 +353,35 @@ onMounted(() => getLists());
             <p class="text-accent-foreground">
                 {{ $t("console-ai-mcp-server.emptyStateDescription") }}
             </p>
-            <UButton
-                class="mt-4"
-                icon="i-heroicons-plus"
-                color="primary"
-                @click="handleAddMcpServer"
+            <UDropdownMenu
+                size="lg"
+                :items="[
+                    {
+                        label: t('console-ai-mcp-server.quickCreateTitle'),
+                        icon: 'i-heroicons-plus',
+                        color: 'primary',
+                        onSelect: () => handleAddMcpServer(),
+                    },
+                    {
+                        label: t('console-ai-mcp-server.importTitle'),
+                        icon: 'lucide:file-json-2',
+                        color: 'primary',
+                        onSelect: () => handleImportMcpServer(),
+                    },
+                ]"
+                :content="{
+                    align: 'start',
+                    side: 'bottom',
+                    sideOffset: 8,
+                }"
+                :ui="{
+                    content: 'w-48',
+                }"
             >
-                {{ $t("console-ai-mcp-server.addFirstMcpServer") }}
-            </UButton>
+                <UButton class="mt-4" icon="i-heroicons-plus" color="primary">
+                    {{ $t("console-ai-mcp-server.addFirstMcpServer") }}
+                </UButton>
+            </UDropdownMenu>
         </div>
 
         <!-- 分页 -->
