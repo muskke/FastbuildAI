@@ -209,14 +209,14 @@ onMounted(() => {
                                     :assistant="{
                                         actions: [
                                             {
-                                                label: t('console-ai-agent.configuration.dialogContext'),
+                                                label: t('console-ai-agent.configuration.chatContext'),
                                                 icon: 'i-lucide-file-type',
                                                 show: !agents.showContext,
                                                 onClick: (message) => {
                                                     if (message?.metadata?.context) {
                                                         openContextModal(message.metadata.context);
                                                     } else {
-                                                        toast.error(t('console-ai-agent.configuration.noDialogContext'));
+                                                        toast.error(t('console-ai-agent.configuration.noChatContext'));
                                                     }
                                                 },
                                             },
