@@ -124,84 +124,78 @@ onMounted(() => getLists());
 </script>
 
 <template>
-    <div class="datasets-list-container flex flex-col items-center justify-center">
-        <div class="datasets-list-container container">
-            <!-- 搜索区域 -->
-            <div class="bg-background sticky top-0 z-10 flex flex-wrap gap-4 pb-2">
-                <UButton label="智能体" color="primary" />
+    <div class="flex w-full flex-col items-center justify-center">
+        <!-- 搜索区域 -->
+        <div class="bg-background sticky top-0 z-10 flex w-full flex-wrap gap-4 pb-2">
+            <UInput
+                v-model="searchForm.keyword"
+                :placeholder="$t('datasets.dataset.searchPlaceholder')"
+                class="w-80"
+                @change="getLists"
+            />
+        </div>
 
-                <div class="flex items-center gap-2 md:ml-auto">
-                    <UInput
-                        v-model="searchForm.keyword"
-                        :placeholder="$t('datasets.dataset.searchPlaceholder')"
-                        class="w-80"
-                        @change="getLists"
-                    />
-                </div>
-            </div>
-
-            <!-- 使用无限滚动 -->
-            <ProScrollArea class="h-[calc(100vh-9rem)] min-h-0 w-full">
-                <ProInfiniteScroll
-                    :loading="loading"
-                    :has-more="hasMore"
-                    :threshold="200"
-                    :loading-text="$t('common.loading')"
-                    :no-more-text="searchForm.page !== 1 ? $t('common.noMoreData') : ' '"
-                    @load-more="loadMore"
+        <!-- 使用无限滚动 -->
+        <ProScrollArea class="h-[calc(100vh-9rem)] min-h-0 w-full">
+            <ProInfiniteScroll
+                :loading="loading"
+                :has-more="hasMore"
+                :threshold="200"
+                :loading-text="$t('common.loading')"
+                :no-more-text="searchForm.page !== 1 ? $t('common.noMoreData') : ' '"
+                @load-more="loadMore"
+            >
+                <div
+                    class="grid grid-cols-1 gap-6 py-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                 >
+                    <!-- 创建智能体卡片 -->
                     <div
-                        class="grid grid-cols-1 gap-6 py-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                        class="group border-default relative cursor-pointer rounded-lg border border-dashed p-4 transition-all duration-200 hover:shadow-lg"
+                        @click="handleCreateAgent"
                     >
-                        <!-- 创建智能体卡片 -->
+                        <!-- 左上角图标和标题 -->
                         <div
-                            class="group border-default relative cursor-pointer rounded-lg border border-dashed p-4 transition-all duration-200 hover:shadow-lg"
-                            @click="handleCreateAgent"
+                            class="group-hover:text-primary text-foreground mb-3 flex items-center gap-3"
                         >
-                            <!-- 左上角图标和标题 -->
                             <div
-                                class="group-hover:text-primary text-foreground mb-3 flex items-center gap-3"
+                                class="border-default flex size-10 flex-shrink-0 items-center justify-center rounded-lg border border-dashed"
                             >
-                                <div
-                                    class="border-default flex size-10 flex-shrink-0 items-center justify-center rounded-lg border border-dashed"
-                                >
-                                    <UIcon name="i-lucide-plus" class="h-6 w-6" />
-                                </div>
-
-                                <h3 class="truncate text-sm font-medium">创建智能体</h3>
+                                <UIcon name="i-lucide-plus" class="h-6 w-6" />
                             </div>
 
-                            <!-- 描述文字 -->
-                            <div class="text-muted-foreground mb-6 pr-8 text-xs">
-                                <p class="line-clamp-2 overflow-hidden">
-                                    创建具备自主工具调用能力，以及知识库能力的应用
-                                </p>
-                            </div>
-
-                            <div class="flex items-center gap-2">
-                                <UButton
-                                    color="neutral"
-                                    variant="ghost"
-                                    class="w-full"
-                                    icon="i-lucide-file-input"
-                                    size="sm"
-                                    label="导入DSL文件"
-                                />
-                            </div>
+                            <h3 class="truncate text-sm font-medium">创建智能体</h3>
                         </div>
 
-                        <!-- 智能体卡片 -->
-                        <AgentCard
-                            v-for="agent in agents"
-                            :key="agent.id"
-                            :agent="agent"
-                            @delete="handleDelete"
-                            @edit="handleEdit"
-                        />
+                        <!-- 描述文字 -->
+                        <div class="text-muted-foreground mb-6 pr-8 text-xs">
+                            <p class="line-clamp-2 overflow-hidden">
+                                创建具备自主工具调用能力，以及知识库能力的应用
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <UButton
+                                color="neutral"
+                                variant="ghost"
+                                class="w-full"
+                                icon="i-lucide-file-input"
+                                size="sm"
+                                label="导入DSL文件"
+                            />
+                        </div>
                     </div>
-                </ProInfiniteScroll>
-            </ProScrollArea>
-        </div>
+
+                    <!-- 智能体卡片 -->
+                    <AgentCard
+                        v-for="agent in agents"
+                        :key="agent.id"
+                        :agent="agent"
+                        @delete="handleDelete"
+                        @edit="handleEdit"
+                    />
+                </div>
+            </ProInfiniteScroll>
+        </ProScrollArea>
 
         <!-- 编辑智能体弹窗 -->
         <AgentModal v-if="showModal" :id="editAgentId" @close="handleEditModalClose" />

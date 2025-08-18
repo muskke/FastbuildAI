@@ -66,18 +66,26 @@
             }
         },
         "statistics": {
-            "title": "アクセス解析設定",
-            "description": "アクセス解析ツールを設定",
+            "title": "サイト統計設定",
+            "description": "分析ツールを設定します",
+            "clarity": {
+                "label": "Clarity アプリID",
+                "placeholder": "アプリIDを入力",
+                "required": "アプリIDを入力してください",
+                "minLength": "5文字以上で入力してください",
+                "maxLength": "50文字以内で入力してください",
+                "linkLabel": "申請リンク"
+            },
             "appid": {
-                "label": "アプリケーションID",
-                "placeholder": "アプリケーションIDを入力",
-                "required": "アプリケーションIDを入力してください",
+                "label": "統計アプリID",
+                "placeholder": "アプリIDを入力",
+                "required": "アプリIDを入力してください",
                 "minLength": "5文字以上で入力してください",
                 "maxLength": "50文字以内で入力してください"
             },
             "info": {
-                "title": "主要な解析ツールに対応",
-                "description": "Google Analytics、百度統計、Clarityなどの解析ツールのアプリケーションIDを入力してください"
+                "title": "Google Analytics・百度統計・Clarity などに対応",
+                "description": "各分析プラットフォームでアプリ作成後、上にIDを入力してください"
             }
         },
         "actions": {
