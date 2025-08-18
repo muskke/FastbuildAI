@@ -66,18 +66,26 @@
             }
         },
         "statistics": {
-            "title": "Analytics",
-            "description": "Configure tracking tools",
+            "title": "Site Statistics Settings",
+            "description": "Configure web analytics tools",
+            "clarity": {
+                "label": "Clarity App ID",
+                "placeholder": "Enter App ID",
+                "required": "Please enter App ID",
+                "minLength": "App ID must be at least 5 characters",
+                "maxLength": "App ID must be no more than 50 characters",
+                "linkLabel": "Signup Link"
+            },
             "appid": {
-                "label": "App ID",
-                "placeholder": "Enter analytics ID",
-                "required": "App ID required",
-                "minLength": "Minimum 5 characters",
-                "maxLength": "Maximum 50 characters"
+                "label": "Analytics App ID",
+                "placeholder": "Enter App ID",
+                "required": "Please enter App ID",
+                "minLength": "App ID must be at least 5 characters",
+                "maxLength": "App ID must be no more than 50 characters"
             },
             "info": {
-                "title": "Supports Google Analytics, Baidu Stats, Clarity etc.",
-                "description": "Enter App ID from your analytics platform"
+                "title": "Supports tools such as Google Analytics, Baidu Analytics, Clarity, etc.",
+                "description": "Create the app in your analytics platform, then paste the App ID above"
             }
         },
         "actions": {

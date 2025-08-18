@@ -68,6 +68,14 @@
         "statistics": {
             "title": "站点统计配置",
             "description": "配置网站统计分析工具",
+            "clarity": {
+                "label": "clarity 应用ID",
+                "placeholder": "请输入应用 ID",
+                "required": "请输入应用 ID",
+                "minLength": "应用 ID 长度不能少于 5 个字符",
+                "maxLength": "应用 ID 长度不能超过 50 个字符",
+                "linkLabel": "开通地址"
+            },
             "appid": {
                 "label": "统计应用 ID",
                 "placeholder": "请输入统计应用 ID",
