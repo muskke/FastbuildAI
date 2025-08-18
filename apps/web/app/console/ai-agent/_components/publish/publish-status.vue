@@ -54,7 +54,7 @@ const openLink = (url: string) => {
 
         <!-- 发布信息 -->
         <div v-if="isPublished" class="space-y-3">
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="flex flex-col gap-4">
                 <!-- 公开链接 -->
                 <div class="space-y-2">
                     <UFormField :label="$t('console-ai-agent.publish.publicAccessLink')" :ui="{ container: 'flex items-center gap-2' }">
@@ -95,24 +95,6 @@ const openLink = (url: string) => {
                             @click="copyText(agent.apiKey || '')"
                         />
                     </UFormField>
-                </div>
-            </div>
-
-            <!-- 访问统计 -->
-            <div class="border-border mt-4 rounded-lg border p-4">
-                <div class="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                        <div class="text-2xl font-bold">{{ agent?.userCount || 0 }}</div>
-                        <div class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.accessUser") }}</div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold">-</div>
-                        <div class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.todayAccess") }}</div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold">-</div>
-                        <div class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.totalDialog") }}</div>
-                    </div>
                 </div>
             </div>
         </div>

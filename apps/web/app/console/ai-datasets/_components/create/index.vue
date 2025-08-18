@@ -157,9 +157,9 @@ onMounted(() => {
             <!-- 步骤1 选择知识库数据 -->
             <div v-show="step === 1" class="flex h-full min-h-0 w-full">
                 <StepOne
-                    v-model:fileIds="console-ai-datasets.indexingConfig.fileIds"
-                    v-model:name="console-ai-datasets.name"
-                    v-model:description="console-ai-datasets.description"
+                    v-model:fileIds="datasets.indexingConfig.fileIds"
+                    v-model:name="datasets.name"
+                    v-model:description="datasets.description"
                     :disabled="!!props.id"
                     @onStepChange="nextStep"
                     @createEmpty="handleCreateEmpty"
@@ -168,9 +168,9 @@ onMounted(() => {
             <!-- 步骤2 分段与配置模型 -->
             <div v-show="step === 2" class="flex h-full min-h-0 w-full">
                 <StepTwo
-                    v-model:indexingConfig="console-ai-datasets.indexingConfig"
-                    v-model:embeddingModelId="console-ai-datasets.embeddingModelId"
-                    v-model:retrievalConfig="console-ai-datasets.retrievalConfig"
+                    v-model:indexingConfig="datasets.indexingConfig"
+                    v-model:embeddingModelId="datasets.embeddingModelId"
+                    v-model:retrievalConfig="datasets.retrievalConfig"
                     :disabled="!!props.id"
                     @onStepChange="changeStep"
                     @onCreate="handleCreate"
@@ -182,7 +182,7 @@ onMounted(() => {
                     :datasetsId="datasetsId"
                     :createData="datasets"
                     :isAddDocument="!!props.id"
-                    :fileIds="console-ai-datasets.indexingConfig.fileIds"
+                    :fileIds="datasets.indexingConfig.fileIds"
                 />
             </div>
         </div>
