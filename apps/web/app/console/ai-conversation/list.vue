@@ -107,7 +107,7 @@ function getRowItems(row: Row<AiConversation>) {
     return [
         {
             label: t("console-order-management.recharge.list.viewDetails"),
-            icon: "lucide:eye",
+            icon: "i-lucide-eye",
             color: "info",
             onClick: () => {
                 handleViewDetail(row.original.id);

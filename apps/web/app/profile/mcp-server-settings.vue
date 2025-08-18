@@ -200,14 +200,14 @@ onMounted(() => getLists());
                             class="text-primary hover:bg-primary-50 flex cursor-pointer items-center rounded-lg px-2 py-2 text-sm"
                             @click="handleAddMcpServer"
                         >
-                            <UIcon name="lucide:file-plus-2" class="mr-2 size-4" />
+                            <UIcon name="i-lucide-file-plus-2" class="mr-2 size-4" />
                             <span>{{ t("console-ai-mcp-server.quickCreateTitle") }}</span>
                         </div>
                         <div
                             class="text-primary hover:bg-primary-50 flex cursor-pointer items-center rounded-lg px-2 py-2 text-sm"
                             @click="handleImportMcpServer"
                         >
-                            <UIcon name="lucide:file-json-2" class="mr-2 size-4" />
+                            <UIcon name="i-lucide-file-json-2" class="mr-2 size-4" />
                             <span>{{ t("console-ai-mcp-server.importTitle") }}</span>
                         </div>
                     </div>
@@ -254,7 +254,7 @@ onMounted(() => getLists());
                 </UButton>
                 <UButton
                     v-if="searchForm.type !== 'system'"
-                    icon="lucide:file-json-2"
+                    icon="i-lucide-file-json-2"
                     color="primary"
                     variant="subtle"
                     @click="handleImportMcpServer"

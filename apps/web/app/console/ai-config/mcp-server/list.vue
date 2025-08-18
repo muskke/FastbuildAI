@@ -288,7 +288,7 @@ onMounted(() => getLists());
                             },
                             {
                                 label: t('console-ai-mcp-server.importTitle'),
-                                icon: 'lucide:file-json-2',
+                                icon: 'i-lucide-file-json-2',
                                 color: 'primary',
                                 onSelect: () => handleImportMcpServer(),
                             },
@@ -364,7 +364,7 @@ onMounted(() => getLists());
                     },
                     {
                         label: t('console-ai-mcp-server.importTitle'),
-                        icon: 'lucide:file-json-2',
+                        icon: 'i-lucide-file-json-2',
                         color: 'primary',
                         onSelect: () => handleImportMcpServer(),
                     },

@@ -136,7 +136,7 @@ function getRowItems(row: Row<OrderListItem>) {
         hasAccessByCodes(["menu:add"])
             ? {
                   label: t("console-order-management.recharge.list.viewDetails"),
-                  icon: "lucide:eye",
+                  icon: "i-lucide-eye",
                   color: "info",
                   onClick: () => {
                       getOrderDetail(row.original.id);

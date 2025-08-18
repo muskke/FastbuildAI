@@ -33,7 +33,7 @@ const items = computed<MenuItem[]>(() => [
         children: [
             {
                 label: t("common.personalRights.rechargeCenter"),
-                icon: "lucide:badge-dollar-sign",
+                icon: "i-lucide-badge-dollar-sign",
                 to: "/profile/personal-rights/recharge-center",
             },
         ],
@@ -61,7 +61,7 @@ const items = computed<MenuItem[]>(() => [
             },
             {
                 label: t("common.profile.purchaseRecord"),
-                icon: "lucide:clock-8",
+                icon: "i-lucide-clock-8",
                 to: "/profile/purchase-record",
             },
             {
