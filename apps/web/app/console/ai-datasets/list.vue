@@ -81,8 +81,8 @@ const loadMore = async () => {
 const handleDelete = async (dataset: Dataset) => {
     try {
         await useModal({
-            title: t("datasets.list.delete.title"),
-            description: t("datasets.list.delete.desc"),
+            title: t("console-ai-datasets.list.delete.title"),
+            description: t("console-ai-datasets.list.delete.desc"),
             color: "error",
         });
 
@@ -95,9 +95,10 @@ const handleDelete = async (dataset: Dataset) => {
 
         searchForm.page = originalPage;
         searchForm.pageSize = 15;
-        toast.success(t("datasets.list.delete.success"));
+        toast.success(t("common.message.deleteSuccess"));
     } catch (error) {
         console.error("删除失败:", error);
+        toast.error((error as Error).message);
     }
 };
 
@@ -115,18 +116,18 @@ const handleCreateDataset = () => {
 const handleRetryDataset = async (dataset: Dataset) => {
     try {
         await useModal({
-            title: t("datasets.dataset.retry.title"),
-            description: t("datasets.dataset.retry.desc"),
+            title: t("console-ai-datasets.dataset.retry.title"),
+            description: t("console-ai-datasets.dataset.retry.desc"),
             color: "warning",
         });
         const { success } = await apiRetryDataset(dataset.id);
         if (success) {
-            toast.success(t("datasets.dataset.retry.success"));
+            toast.success(t("console-ai-datasets.dataset.retry.success"));
         } else {
-            toast.error(t("datasets.dataset.retry.failed"));
+            toast.error(t("console-ai-datasets.dataset.retry.failed"));
         }
     } catch (error) {
-        toast.error(t("datasets.dataset.retry.failed"));
+        toast.error(t("console-ai-datasets.dataset.retry.failed"));
     }
 };
 
@@ -142,12 +143,12 @@ onMounted(() => getLists());
         >
             <UInput
                 v-model="searchForm.keyword"
-                :placeholder="$t('datasets.dataset.searchPlaceholder')"
+                :placeholder="$t('console-ai-datasets.dataset.searchPlaceholder')"
                 class="w-80"
                 @change="getLists"
             />
 
-            <UCheckbox v-model="searchForm.showAll" :label="$t('datasets.dataset.allDatasets')" />
+            <UCheckbox v-model="searchForm.showAll" :label="$t('console-ai-datasets.dataset.allDatasets')" />
         </div>
 
         <!-- 使用无限滚动 -->
@@ -180,14 +181,14 @@ onMounted(() => getLists());
                                 </div>
 
                                 <h3 class="truncate text-sm font-medium">
-                                    {{ $t("datasets.dataset.create.title") }}
+                                    {{ $t("console-ai-datasets.dataset.create.title") }}
                                 </h3>
                             </div>
 
                             <!-- 描述文字 -->
                             <div class="text-muted-foreground mb-6 pr-8 text-xs">
                                 <p class="line-clamp-2 overflow-hidden">
-                                    {{ $t("datasets.dataset.create.desc") }}
+                                    {{ $t("console-ai-datasets.dataset.create.desc") }}
                                 </p>
                             </div>
                         </div>

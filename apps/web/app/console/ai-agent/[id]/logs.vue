@@ -10,16 +10,17 @@ const agentId = computed(() => (URLQueryParams as Record<string, string>).id);
 
 // 标签页数据
 const active = ref("0");
+const { t } = useI18n();
 
 const components: { value: string; label: string; component: any }[] = [
     {
         value: "0",
-        label: "对话记录",
+        label: t("console-ai-agent.logs.title"),
         component: ChatRecords,
     },
     {
         value: "1",
-        label: "标注管理",
+        label: t("console-ai-agent.logs.annotations"),
         component: Annotations,
     },
 ];

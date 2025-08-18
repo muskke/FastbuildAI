@@ -19,7 +19,7 @@ const activeFileData = computed(() => props.results.fileResults[activeFileIndex.
         <div class="mb-2 flex items-center justify-between">
             <div class="flex items-center gap-1">
                 <h5 class="text-foreground flex-none text-sm font-medium">
-                    {{ $t("datasets.create.segmentPreview.title") }}
+                    {{ $t("console-ai-datasets.create.segmentPreview.title") }}
                 </h5>
 
                 <template v-if="results?.fileResults.length">
@@ -48,7 +48,7 @@ const activeFileData = computed(() => props.results.fileResults[activeFileIndex.
                 </template>
             </div>
             <p class="text-muted-foreground flex-none text-xs">
-                {{ $t("datasets.create.segmentPreview.clickLeftPreviewBlock") }}
+                {{ $t("console-ai-datasets.create.segmentPreview.clickLeftPreviewBlock") }}
             </p>
         </div>
 
@@ -63,7 +63,7 @@ const activeFileData = computed(() => props.results.fileResults[activeFileIndex.
                     class="text-muted-foreground mx-auto mb-4 h-12 w-12"
                 />
                 <p class="text-muted-foreground text-sm">
-                    {{ $t("datasets.create.segmentPreview.clickLeftPreviewBlock") }}
+                    {{ $t("console-ai-datasets.create.segmentPreview.clickLeftPreviewBlock") }}
                 </p>
             </div>
         </div>

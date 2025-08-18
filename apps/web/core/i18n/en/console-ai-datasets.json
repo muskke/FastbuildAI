@@ -51,9 +51,7 @@
         },
         "delete": {
             "title": "Delete Knowledge Base",
-            "desc": "Permanently delete selected knowledge bases?",
-            "success": "Deleted",
-            "failed": "Failed"
+            "desc": "Permanently delete selected knowledge bases?"
         },
         "viewDocuments": "View Documents"
     },
@@ -75,9 +73,7 @@
         },
         "delete": {
             "title": "Delete Document",
-            "desc": "Delete this document?",
-            "success": "Deleted",
-            "failed": "Failed"
+            "desc": "Delete this document?"
         },
         "renameModal": {
             "title": "Rename",

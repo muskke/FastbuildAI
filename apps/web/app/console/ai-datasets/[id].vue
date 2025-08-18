@@ -19,15 +19,15 @@ provide("datasets", dataset);
 
 // 分段模式映射
 const segmentModeMap = {
-    normal: t("datasets.create.segment.general"),
-    hierarchical: t("datasets.create.segment.hierarchical"),
+    normal: t("console-ai-datasets.create.segment.general"),
+    hierarchical: t("console-ai-datasets.create.segment.hierarchical"),
 } as const;
 
 // 检索模式映射
 const retrievalModeMap = {
-    vector: t("datasets.retrieval.vector"),
-    fullText: t("datasets.retrieval.fullText"),
-    hybrid: t("datasets.retrieval.hybrid"),
+    vector: t("console-ai-datasets.retrieval.vector"),
+    fullText: t("console-ai-datasets.retrieval.fullText"),
+    hybrid: t("console-ai-datasets.retrieval.hybrid"),
 } as const;
 
 watch(isMobile, (newVal) => {
@@ -75,17 +75,17 @@ watch(isMobile, (newVal) => {
 
                 <div class="text-muted-foreground flex flex-col space-y-3 text-xs">
                     <div class="flex items-center justify-between font-medium" v-if="!collapsed">
-                        <span> {{ t("datasets.create.stepThree.segmentMode") }}：</span>
+                        <span> {{ t("console-ai-datasets.create.stepThree.segmentMode") }}：</span>
                         {{ segmentModeMap[dataset?.indexingConfig?.documentMode || "normal"] }}
                     </div>
 
                     <div class="flex items-center justify-between font-medium" v-if="!collapsed">
-                        <span>{{ t("datasets.common.retrievalMode") }}：</span>
+                        <span>{{ t("console-ai-datasets.common.retrievalMode") }}：</span>
                         {{ retrievalModeMap[dataset?.retrievalConfig?.retrievalMode || "vector"] }}
                     </div>
 
                     <div class="flex items-center justify-between font-medium" v-if="!collapsed">
-                        <span>{{ t("datasets.dataset.table.storageSize") }}：</span>
+                        <span>{{ t("console-ai-datasets.dataset.table.storageSize") }}：</span>
                         {{ formatFileSize(dataset?.storageSize * 1) }}
                     </div>
 
@@ -93,7 +93,7 @@ watch(isMobile, (newVal) => {
                         class="text-accent-foreground flex items-center justify-between font-medium"
                         v-if="!collapsed"
                     >
-                        <span>{{ $t("datasets.menu.relatedApplications") }}：</span>
+                        <span>{{ $t("console-ai-datasets.menu.relatedApplications") }}：</span>
                         {{ dataset?.relatedAgentCount || 0 }}
                     </div>
                 </div>
@@ -107,7 +107,7 @@ watch(isMobile, (newVal) => {
                         [
                             hasAccessByCodes(['ai-datasets-documents:list'])
                                 ? {
-                                      label: $t('datasets.menu.documents'),
+                                      label: $t('console-ai-datasets.menu.documents'),
                                       icon: 'i-lucide-files',
                                       to: useRoutePath('ai-datasets-documents:list', {
                                           id: datasetId as string,
@@ -123,7 +123,7 @@ watch(isMobile, (newVal) => {
                                 : null,
                             hasAccessByCodes(['ai-datasets:retrieval-test'])
                                 ? {
-                                      label: $t('datasets.menu.retrieval'),
+                                      label: $t('console-ai-datasets.menu.retrieval'),
                                       icon: 'i-lucide-radar',
                                       to: useRoutePath('ai-datasets:retrieval-test', {
                                           id: datasetId as string,
@@ -132,7 +132,7 @@ watch(isMobile, (newVal) => {
                                 : null,
                             hasAccessByCodes(['ai-datasets-team-members:list'])
                                 ? {
-                                      label: $t('datasets.menu.members'),
+                                      label: $t('console-ai-datasets.menu.members'),
                                       icon: 'i-lucide-users',
                                       to: useRoutePath('ai-datasets-team-members:list', {
                                           id: datasetId as string,
@@ -141,7 +141,7 @@ watch(isMobile, (newVal) => {
                                 : null,
                             hasAccessByCodes(['ai-datasets:update'])
                                 ? {
-                                      label: $t('datasets.menu.settings'),
+                                      label: $t('console-ai-datasets.menu.settings'),
                                       icon: 'i-lucide-settings-2',
                                       to: useRoutePath('ai-datasets:update', {
                                           id: datasetId as string,
@@ -190,14 +190,14 @@ watch(isMobile, (newVal) => {
         <div class="max-w-md">
             <h1 class="text-error mb-4 text-6xl font-extrabold">403</h1>
             <p class="mb-2 text-xl font-semibold text-gray-800">
-                {{ $t("datasets.permission.title") }}
+                {{ $t("console-ai-datasets.permission.title") }}
             </p>
             <p class="text-muted-foreground mb-6">
-                {{ $t("datasets.permission.description") }}
+                {{ $t("console-ai-datasets.permission.description") }}
             </p>
 
             <UButton to="/" color="primary" size="lg" icon="i-heroicons-arrow-left">
-                {{ $t("datasets.permission.back") }}
+                {{ $t("console-ai-datasets.permission.back") }}
             </UButton>
         </div>
     </div>

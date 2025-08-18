@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ProPaginaction, useMessage, usePaging } from "@fastbuildai/ui";
+import { ProPaginaction, usePaging } from "@fastbuildai/ui";
 import type { TableColumn, TableRow } from "@nuxt/ui";
 import { useDebounceFn } from "@vueuse/core";
 import { h, onMounted, reactive, resolveComponent, watch } from "vue";
@@ -20,7 +20,7 @@ const props = defineProps<{
     agentId: string;
 }>();
 
-const toast = useMessage();
+const { t } = useI18n();
 
 // 表格实例 Refs
 const table = useTemplateRef("table");
@@ -37,12 +37,12 @@ const searchForm = reactive<QueryAgentChatRecordParams>({
 
 // 列ID到中文名称的映射
 const columnLabels = computed(() => ({
-    select: "选择",
-    title: "对话标题",
-    user: "用户信息",
-    messageCount: "消息数量",
-    totalTokens: "Token消耗",
-    updatedAt: "更新时间",
+    select: t("console-common.select"),
+    title: t("console-ai-agent.logs.dialogTitle"),
+    user: t("console-ai-agent.logs.user"),
+    messageCount: t("console-ai-agent.logs.messageCount"),
+    totalTokens: t("console-ai-agent.logs.totalTokens"),
+    updatedAt: t("console-ai-agent.logs.updatedAt"),
 }));
 
 // 分页查询对话记录
@@ -220,7 +220,7 @@ onMounted(() => getLists());
                 <div class="flex items-center gap-2">
                     <UInput
                         v-model="searchForm.keyword"
-                        placeholder="搜索对话标题或摘要..."
+                        :placeholder="t('console-ai-agent.logs.dialogSearchPlaceholder')"
                         class="w-80"
                         icon="i-lucide-search"
                     />
@@ -251,7 +251,7 @@ onMounted(() => getLists());
                         :content="{ align: 'end' }"
                     >
                         <UButton
-                            label="显示列"
+                            :label="t('console-common.showColumns')"
                             color="neutral"
                             variant="outline"
                             trailing-icon="i-lucide-chevron-down"
@@ -259,7 +259,7 @@ onMounted(() => getLists());
                     </UDropdownMenu>
 
                     <UButton
-                        label="刷新"
+                        :label="t('console-common.refresh')"
                         color="neutral"
                         variant="outline"
                         leading-icon="i-lucide-refresh-cw"

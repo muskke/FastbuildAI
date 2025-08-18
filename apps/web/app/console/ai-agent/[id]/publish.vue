@@ -161,9 +161,9 @@ definePageMeta({ layout: "full-screen" });
         <div class="mb-2">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold">智能体发布</h1>
+                    <h1 class="text-2xl font-bold">{{ $t("console-ai-agent.publish.title") }}</h1>
                     <p class="text-muted-foreground mt-1 text-sm">
-                        将智能体发布为公开服务，支持网页链接、嵌入代码和API调用
+                        {{ $t("console-ai-agent.publish.desc") }}
                     </p>
                 </div>
 
@@ -171,13 +171,13 @@ definePageMeta({ layout: "full-screen" });
                 <div class="flex gap-2">
                     <UButton v-if="!isPublished" :loading="publishing" @click="handlePublish">
                         <UIcon name="i-lucide-globe" class="mr-2 size-4" />
-                        发布智能体
+                        {{ $t("console-ai-agent.publish.publish") }}
                     </UButton>
 
                     <template v-else>
                         <UButton variant="outline" @click="handleRegenerateApiKey">
                             <UIcon name="i-lucide-refresh-cw" class="mr-2 size-4" />
-                            重新生成密钥
+                            {{ $t("console-ai-agent.publish.regenerateApiKey") }}
                         </UButton>
 
                         <UButton
@@ -187,7 +187,7 @@ definePageMeta({ layout: "full-screen" });
                             @click="handleUnpublish"
                         >
                             <UIcon name="i-lucide-globe-lock" class="mr-2 size-4" />
-                            取消发布
+                            {{ $t("console-ai-agent.publish.unpublish") }}
                         </UButton>
                     </template>
                 </div>
@@ -198,7 +198,7 @@ definePageMeta({ layout: "full-screen" });
         <div v-if="loading" class="flex h-64 items-center justify-center">
             <div class="text-muted-foreground flex items-center gap-2">
                 <UIcon name="i-lucide-loader-2" class="size-4 animate-spin" />
-                正在加载智能体信息...
+                {{ $t("console-ai-agent.publish.loading") }}
             </div>
         </div>
 

@@ -63,17 +63,17 @@ definePageMeta({ layout: "full-screen" });
         <div class="inline-block p-6">
             <div class="mb-8">
                 <h5 class="text-foreground mb-1 text-lg font-medium">
-                    {{ $t("datasets.settings.name") }}
+                    {{ $t("console-ai-datasets.settings.name") }}
                 </h5>
                 <p class="text-muted text-sm">
-                    {{ $t("datasets.settings.description") }}
+                    {{ $t("console-ai-datasets.settings.description") }}
                 </p>
             </div>
 
             <div class="space-y-8">
                 <div class="flex flex-col space-y-8">
                     <UFormField
-                        :label="$t('datasets.common.name')"
+                        :label="$t('console-ai-datasets.common.name')"
                         class="flex w-full justify-between"
                         :ui="{
                             wrapper: 'flex',
@@ -84,7 +84,7 @@ definePageMeta({ layout: "full-screen" });
                     >
                         <UInput
                             v-model="formData.name"
-                            :placeholder="$t('datasets.settings.nameInput')"
+                            :placeholder="$t('console-ai-datasets.settings.nameInput')"
                             :ui="{ root: 'w-full' }"
                         />
                     </UFormField>
@@ -97,12 +97,12 @@ definePageMeta({ layout: "full-screen" });
                             label: 'text-accent-foreground width180 pt-2',
                             container: 'flex-1',
                         }"
-                        :label="$t('datasets.common.description')"
+                        :label="$t('console-ai-datasets.common.description')"
                         required
                     >
                         <UTextarea
                             v-model="formData.description"
-                            :placeholder="$t('datasets.settings.descriptionInput')"
+                            :placeholder="$t('console-ai-datasets.settings.descriptionInput')"
                             :ui="{ root: 'w-full' }"
                         />
                     </UFormField>
@@ -116,7 +116,7 @@ definePageMeta({ layout: "full-screen" });
                         label: 'text-accent-foreground width180 pt-2',
                         container: 'flex-1',
                     }"
-                    :label="$t('datasets.create.stepTwo.embeddingModel')"
+                    :label="$t('console-ai-datasets.create.stepTwo.embeddingModel')"
                     required
                 >
                     <ModelSelect
@@ -145,7 +145,7 @@ definePageMeta({ layout: "full-screen" });
                         label: 'text-accent-foreground width180 pt-2',
                         container: 'flex-1',
                     }"
-                    :label="$t('datasets.settings.retrievalMethod')"
+                    :label="$t('console-ai-datasets.settings.retrievalMethod')"
                     required
                 >
                     <RetrievalMethodConfig

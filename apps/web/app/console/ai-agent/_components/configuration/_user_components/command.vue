@@ -21,9 +21,9 @@ const editingIndex = ref<number>(-1);
 
 // 表单验证规则
 const formSchema = object({
-    name: string().required("请输入指令名称"),
-    content: string().required("请输入发送指令内容"),
-    replyType: string().required("请选择回答方式"),
+    name: string().required(t("console-ai-agent.configuration.commandNameEmpty")),
+    content: string().required(t("console-ai-agent.configuration.commandContentEmpty")),
+    replyType: string().required(t("console-ai-agent.configuration.commandReplyTypeEmpty")),
 });
 
 const defaultState: QuickCommandConfig = {
@@ -45,7 +45,7 @@ const submitForm = async () => {
             (field, index) => field.name === state.value.name && index !== editingIndex.value,
         );
         if (existingField) {
-            useMessage().error("字段名已存在，请使用其他名称");
+            useMessage().error(t("console-ai-agent.configuration.formVariableNameExists"));
             return;
         }
 
@@ -60,7 +60,6 @@ const submitForm = async () => {
         modalClose();
     } catch (error) {
         console.error("操作失败:", error);
-        useMessage().error("操作失败");
     }
 };
 
@@ -98,7 +97,6 @@ const modalClose = () => {
 /** 删除变量 */
 const removeCommand = (index: number) => {
     command.value.splice(index, 1);
-    useMessage().success("变量删除成功");
 };
 </script>
 
@@ -107,13 +105,13 @@ const removeCommand = (index: number) => {
         <div class="bg-muted rounded-lg p-3">
             <div class="flex items-center justify-between">
                 <div class="text-foreground flex items-center gap-1 text-sm font-medium">
-                    快捷指令
+                    {{ $t("console-ai-agent.configuration.command") }}
                     <UTooltip :delay-duration="0" :ui="{ content: 'w-xs h-auto' }">
                         <UIcon name="i-lucide-circle-help" />
 
                         <template #content>
                             <div class="text-background text-xs">
-                                展示在对话框上方的指令按钮，用户可快速发起预设对话或指令
+                                {{ $t("console-ai-agent.configuration.commandDesc") }}
                             </div>
                         </template>
                     </UTooltip>
@@ -127,7 +125,7 @@ const removeCommand = (index: number) => {
                     @click="openModal"
                 >
                     <UIcon name="i-lucide-plus" />
-                    <span>添加</span>
+                    <span>{{ $t("console-common.add") }}</span>
                 </UButton>
             </div>
 
@@ -153,7 +151,7 @@ const removeCommand = (index: number) => {
 
                     <div class="block group-hover:hidden">
                         <UBadge v-if="item.replyType" color="neutral" variant="outline" size="sm">
-                            {{ item.replyType === "custom" ? "自定义" : "模型" }}
+                            {{ item.replyType === "custom" ? $t("console-ai-agent.configuration.commandReplyTypeCustom") : $t("console-ai-agent.configuration.commandReplyTypeModel") }}
                         </UBadge>
                     </div>
                     <div class="hidden items-center group-hover:flex">
@@ -179,17 +177,17 @@ const removeCommand = (index: number) => {
         <!-- 添加变量弹窗 -->
         <ProModal
             v-model="isOpen"
-            :title="isEdit ? '编辑快捷指令' : '添加快捷指令'"
-            description="展示在对话框上方的指令按钮，用户可快速发起预设对话或指令"
+            :title="isEdit ? $t('console-ai-agent.configuration.commandEditTitle') : $t('console-ai-agent.configuration.commandAddTitle')"
+            :description="t('console-ai-agent.configuration.commandDesc')"
             :ui="{ content: 'max-w-md' }"
             @close="modalClose"
         >
             <UForm :state="state" :schema="formSchema" class="space-y-4" @submit="submitForm">
-                <UFormField label="指令图标" name="avatar">
+                <UFormField :label="$t('console-ai-agent.configuration.commandUploadIcon')" name="avatar">
                     <ProUploader
                         v-model="state.avatar"
                         class="h-16 w-16"
-                        text="上传图标"
+                        text=" "
                         icon="i-lucide-upload"
                         accept=".jpg,.png,.jpeg,.gif,.webp"
                         :maxCount="1"
@@ -198,27 +196,27 @@ const removeCommand = (index: number) => {
                     />
                 </UFormField>
 
-                <UFormField label="指令名称" name="name" required>
-                    <UInput v-model="state.name" placeholder="请输入" :ui="{ root: 'w-full' }" />
+                <UFormField :label="$t('console-ai-agent.configuration.commandName')" name="name" required>
+                    <UInput v-model="state.name" :placeholder="$t('console-ai-agent.configuration.commandNamePlaceholder')" :ui="{ root: 'w-full' }" />
                 </UFormField>
 
-                <UFormField label="发送指令内容" name="content" required>
+                <UFormField :label="$t('console-ai-agent.configuration.commandContent')" name="content" required>
                     <UTextarea
                         v-model="state.content"
-                        placeholder="请输入"
+                        :placeholder="$t('console-ai-agent.configuration.commandContentPlaceholder')"
                         :ui="{ root: 'w-full' }"
                         :rows="3"
                     />
                 </UFormField>
 
-                <UFormField label="回答方式" name="type" required>
+                <UFormField :label="$t('console-ai-agent.configuration.commandReplyType')" name="type" required>
                     <div class="flex items-center gap-2">
                         <UCheckbox
                             :model-value="state.replyType === 'custom'"
                             indicator="end"
                             variant="card"
                             default-value
-                            label="自定义回答"
+                            :label="$t('console-ai-agent.configuration.commandReplyTypeCustom')"
                             @update:model-value="state.replyType = 'custom'"
                         />
                         <UCheckbox
@@ -226,7 +224,7 @@ const removeCommand = (index: number) => {
                             indicator="end"
                             variant="card"
                             default-value
-                            label="模型回答"
+                            :label="$t('console-ai-agent.configuration.commandReplyTypeModel')"
                             @update:model-value="state.replyType = 'model'"
                         />
                     </div>
@@ -234,7 +232,7 @@ const removeCommand = (index: number) => {
 
                 <UFormField
                     v-if="state.replyType === 'custom'"
-                    label="回答内容"
+                    :label="$t('console-ai-agent.configuration.commandReplyContent')"
                     name="replyContent"
                     required
                 >
@@ -243,9 +241,9 @@ const removeCommand = (index: number) => {
 
                 <div class="mt-6 flex justify-end gap-2">
                     <UButton color="neutral" variant="soft" size="lg" @click="modalClose">
-                        取消
+                        {{ $t("console-common.cancel") }}
                     </UButton>
-                    <UButton color="primary" size="lg" type="submit"> 保存 </UButton>
+                    <UButton color="primary" size="lg" type="submit"> {{ $t("console-common.save") }} </UButton>
                 </div>
             </UForm>
         </ProModal>
