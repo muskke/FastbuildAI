@@ -7,23 +7,19 @@
     "passwordPlaceholder": "Enter password",
     "forgotPassword": "Forgot password?",
     "passwordRule": "6-25 chars with letters + numbers/symbols",
-
     "agreement": "I agree to the ",
     "userAgreement": "Terms",
     "and": " and ",
     "privacyPolicy": "Privacy Policy",
-
     "register": "Sign up",
     "loginNow": "Login now",
     "orLoginTo": "Or login with...",
-
     "registerTitle": "Create Account",
     "registerWelcome": "Welcome aboard! Unlock powerful features today. 🚀",
     "confirmPassword": "Confirm Password",
     "confirmPasswordPlaceholder": "Re-enter password",
     "backToLogin": "Back to login",
     "registerNow": "Sign up now",
-
     "validation": {
         "accountRequired": "Account required",
         "accountMinLength": "Minimum 3 characters",
@@ -37,14 +33,12 @@
         "confirmPasswordRequired": "Confirm password",
         "passwordMismatch": "Passwords don't match"
     },
-
     "messages": {
         "agreementRequired": "Please agree to terms",
         "agreementTitle": "Reminder",
         "registerFailed": "Sign up failed",
         "loginFailed": "Login failed"
     },
-
     "placeholders": {
         "enterAccount": "Enter account",
         "enterPassword": "Enter password",

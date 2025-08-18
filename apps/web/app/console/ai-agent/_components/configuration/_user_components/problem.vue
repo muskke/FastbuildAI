@@ -25,7 +25,9 @@ const removeProblem = (index: number) => {
 <template>
     <div class="bg-muted space-y-2 rounded-lg p-3">
         <div class="flex items-center justify-between">
-            <div class="text-foreground flex items-center gap-1 text-sm font-medium">开场问题</div>
+            <div class="text-foreground flex items-center gap-1 text-sm font-medium">
+                {{ $t("console-ai-agent.configuration.problem") }}
+            </div>
 
             <UButton
                 size="sm"
@@ -35,7 +37,7 @@ const removeProblem = (index: number) => {
                 @click="addProblem"
             >
                 <UIcon name="i-lucide-plus" />
-                <span>添加</span>
+                <span>{{ $t("console-common.add") }}</span>
             </UButton>
         </div>
 
@@ -52,7 +54,7 @@ const removeProblem = (index: number) => {
                         <UInput
                             icon="i-lucide-grip-vertical"
                             v-model="problem[index]"
-                            placeholder="选项标签"
+                            :placeholder="$t('console-ai-agent.configuration.formVariableOptionsLabel')"
                             :ui="{ root: 'flex-1', leadingIcon: 'drag-move' }"
                         />
                         <UButton

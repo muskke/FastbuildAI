@@ -30,6 +30,7 @@ const props = defineProps<{
 
 const toast = useMessage();
 const { hasAccessByCodes } = useAccessControl();
+const { t } = useI18n();
 // 表格实例 Refs
 const table = useTemplateRef("table");
 
@@ -47,36 +48,36 @@ const searchForm = reactive<QueryAgentAnnotationParams>({
 
 // 审核状态映射
 const reviewStatusOptions = [
-    { value: undefined as AnnotationReviewStatus | undefined, label: "全部状态" },
-    { value: "pending" as AnnotationReviewStatus, label: "待审核" },
-    { value: "approved" as AnnotationReviewStatus, label: "已通过" },
-    { value: "rejected" as AnnotationReviewStatus, label: "已拒绝" },
+    { value: undefined as AnnotationReviewStatus | undefined, label: t("console-ai-agent.logs.allStatus") },
+    { value: "pending" as AnnotationReviewStatus, label: t("console-ai-agent.logs.pending") },
+    { value: "approved" as AnnotationReviewStatus, label: t("console-ai-agent.logs.approved") },
+    { value: "rejected" as AnnotationReviewStatus, label: t("console-ai-agent.logs.rejected") },
 ];
 
 // 获取审核状态的显示信息
 const getReviewStatusDisplay = (status: AnnotationReviewStatus) => {
     switch (status) {
         case "pending":
-            return { label: "待审核", color: "warning" };
+            return { label: t("console-ai-agent.logs.pending"), color: "warning" };
         case "approved":
-            return { label: "已通过", color: "success" };
+            return { label: t("console-ai-agent.logs.approved"), color: "success" };
         case "rejected":
-            return { label: "已拒绝", color: "red" };
+            return { label: t("console-ai-agent.logs.rejected"), color: "red" };
         default:
-            return { label: "未知", color: "neutral" };
+            return { label: t("console-ai-agent.logs.unknown"), color: "neutral" };
     }
 };
 
 // 列ID到中文名称的映射
 const columnLabels = computed(() => ({
-    question: "标注问题",
-    answer: "标注答案",
-    hitCount: "命中次数",
-    enabled: "启用状态",
-    reviewStatus: "审核状态",
-    reviewer: "审核人",
-    createdAt: "创建时间",
-    actions: "操作",
+    question: t("console-ai-agent.logs.question"),
+    answer: t("console-ai-agent.logs.answer"),
+    hitCount: t("console-ai-agent.logs.hitCount"),
+    enabled: t("console-ai-agent.logs.enabled"),
+    reviewStatus: t("console-ai-agent.logs.reviewStatus"),
+    reviewer: t("console-ai-agent.logs.reviewer"),
+    createdAt: t("console-ai-agent.logs.createdAt"),
+    actions: t("console-ai-agent.logs.actions"),
 }));
 
 // 分页查询标注列表
@@ -90,11 +91,11 @@ const { lockFn: reviewAnnotation } = useLockFn(
     async (id: string, reviewStatus: AnnotationReviewStatus) => {
         try {
             await apiReviewAgentAnnotation(id, { reviewStatus });
-            toast.success(`标注${reviewStatus === "approved" ? "通过" : "拒绝"}成功`);
+            toast.success(`${t("console-ai-agent.logs.annotation")}${reviewStatus === "approved" ? t("console-ai-agent.logs.approved") : t("console-ai-agent.logs.rejected")}${t("console-ai-agent.logs.success")}`);
             getLists();
         } catch (error) {
             console.error("审核标注失败:", error);
-            toast.error("审核标注失败");
+            toast.error((error as Error).message);
         }
     },
 );
@@ -103,11 +104,11 @@ const { lockFn: reviewAnnotation } = useLockFn(
 const { lockFn: deleteAnnotation } = useLockFn(async (id: string) => {
     try {
         await apiDeleteAgentAnnotation(id);
-        toast.success("标注删除成功");
+        toast.success(t("common.message.deleteSuccess"));
         getLists();
     } catch (error) {
         console.error("删除标注失败:", error);
-        toast.error("删除标注失败");
+        toast.error((error as Error).message);
     }
 });
 
@@ -175,7 +176,7 @@ const columns: TableColumn<AgentAnnotation>[] = [
                         color: row.original.enabled ? "success" : "neutral",
                         variant: "subtle",
                     },
-                    () => (row.original.enabled ? "启用" : "禁用"),
+                    () => (row.original.enabled ? t("console-common.enabled") : t("console-common.disabled")),
                 ),
             );
         },
@@ -208,7 +209,7 @@ const columns: TableColumn<AgentAnnotation>[] = [
                 return h(
                     "div",
                     { class: "flex items-center flex-none" },
-                    h("span", { class: "text-muted-foreground text-sm" }, "未审核"),
+                    h("span", { class: "text-muted-foreground text-sm" }, t("console-ai-agent.logs.unreviewed")),
                 );
             }
             return h(
@@ -377,26 +378,26 @@ onMounted(() => getLists());
                 <div class="flex items-center gap-2">
                     <UInput
                         v-model="searchForm.keyword"
-                        placeholder="搜索标注问题或答案..."
+                        :placeholder="t('console-ai-agent.logs.searchPlaceholder')"
                         class="w-80"
                         icon="i-lucide-search"
                     />
                     <UDropdownMenu
                         :items="[
                             {
-                                label: '全部状态',
+                                label: t('console-ai-agent.logs.allStatus'),
                                 type: 'radio' as const,
                                 checked: searchForm.enabled === undefined,
                                 onSelect: () => (searchForm.enabled = undefined),
                             },
                             {
-                                label: '已启用',
+                                label: t('console-common.enabled'),
                                 type: 'radio' as const,
                                 checked: searchForm.enabled === true,
                                 onSelect: () => (searchForm.enabled = true),
                             },
                             {
-                                label: '已禁用',
+                                label: t('console-common.disabled'),
                                 type: 'radio' as const,
                                 checked: searchForm.enabled === false,
                                 onSelect: () => (searchForm.enabled = false),
@@ -407,10 +408,10 @@ onMounted(() => getLists());
                         <UButton
                             :label="
                                 searchForm.enabled === undefined
-                                    ? '全部状态'
+                                    ? t('console-ai-agent.logs.allStatus')
                                     : searchForm.enabled
-                                      ? '已启用'
-                                      : '已禁用'
+                                      ? t('console-common.enabled')
+                                      : t('console-common.disabled')
                             "
                             color="neutral"
                             variant="outline"
@@ -434,7 +435,7 @@ onMounted(() => getLists());
                             :label="
                                 reviewStatusOptions.find(
                                     (opt) => opt.value === searchForm.reviewStatus,
-                                )?.label || '全部状态'
+                                )?.label || t('console-ai-agent.logs.allStatus')
                             "
                             color="neutral"
                             variant="outline"
@@ -446,7 +447,7 @@ onMounted(() => getLists());
                 <div class="flex items-center gap-2 md:ml-auto">
                     <AccessControl :codes="['ai-agent-annotations:create']">
                         <UButton
-                            label="新增标注"
+                            :label="t('console-ai-agent.logs.addAnnotation')"
                             color="primary"
                             variant="solid"
                             leading-icon="i-lucide-plus"
@@ -478,7 +479,7 @@ onMounted(() => getLists());
                         :content="{ align: 'end' }"
                     >
                         <UButton
-                            label="显示列"
+                            :label="t('console-common.showColumns')"
                             color="neutral"
                             variant="outline"
                             trailing-icon="i-lucide-chevron-down"
@@ -486,7 +487,7 @@ onMounted(() => getLists());
                     </UDropdownMenu>
 
                     <UButton
-                        label="刷新"
+                        :label="t('console-common.refresh')"
                         color="neutral"
                         variant="outline"
                         leading-icon="i-lucide-refresh-cw"

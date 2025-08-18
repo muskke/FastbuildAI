@@ -16,9 +16,9 @@ const showAvatar = ref<boolean>(!!avatar.value);
     <div class="bg-muted rounded-lg p-3">
         <div class="flex items-center justify-between gap-2">
             <div class="flex flex-col gap-1">
-                <span class="text-foreground text-sm font-medium">对话头像</span>
+                <span class="text-foreground text-sm font-medium">{{ $t("console-ai-agent.configuration.chatAvatar") }}</span>
                 <span class="text-muted-foreground text-xs">
-                    自定义对话头像，默认不设置，如需要设置，请上传图片
+                    {{ $t("console-ai-agent.configuration.chatAvatarDesc") }}
                 </span>
             </div>
             <USwitch v-model="showAvatar" />
@@ -27,7 +27,7 @@ const showAvatar = ref<boolean>(!!avatar.value);
             <ProUploader
                 v-model="avatar"
                 class="h-20 w-20"
-                text="上传图标"
+                text=" "
                 icon="i-lucide-upload"
                 accept=".jpg,.png,.jpeg,.gif,.webp"
                 :maxCount="1"

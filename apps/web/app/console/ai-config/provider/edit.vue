@@ -28,7 +28,7 @@ const providerId = computed(() => props.id || (route.query.id as string) || null
 const { t } = useI18n();
 
 const modelTypes = ref<string[]>([]);
-const allModelTypes = ref<string[]>([]);
+const allModelTypes = ref<ModelType[]>([]);
 
 const detail = ref<AiProviderInfo | null>(null);
 
@@ -57,7 +57,7 @@ const providerSchema = object({
 const { data: modelTypesData } = await useAsyncData("model-types", () =>
     apiGetAiProviderModelTypes(),
 );
-allModelTypes.value = modelTypesData.value?.map((item) => item.value) || [];
+allModelTypes.value = modelTypesData.value || [];
 
 // 获取供应商详情
 const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
@@ -244,6 +244,7 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                         :disabled="detail?.isBuiltIn"
                         v-model="formData.supportedModelTypes"
                         multiple
+                        value-key="value"
                         :items="allModelTypes"
                         :ui="{ root: 'w-full' }"
                     />

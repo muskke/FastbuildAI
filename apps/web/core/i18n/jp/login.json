@@ -7,23 +7,19 @@
     "passwordPlaceholder": "パスワードを入力",
     "forgotPassword": "パスワードをお忘れですか？",
     "passwordRule": "パスワードは6-25文字の英数字+記号の組み合わせを推奨",
-
     "agreement": "以下の内容に同意します ",
     "userAgreement": "利用規約",
     "and": "および",
     "privacyPolicy": "プライバシーポリシー",
-
     "register": "アカウント登録",
     "loginNow": "ログイン",
     "orLoginTo": "または以下でログイン...",
-
     "registerTitle": "新規登録",
     "registerWelcome": "新メンバー登録へようこそ、強力な機能の世界が広がっています。🚀",
     "confirmPassword": "パスワード確認",
     "confirmPasswordPlaceholder": "パスワードを再入力",
     "backToLogin": "ログイン画面に戻る",
     "registerNow": "今すぐ登録",
-
     "validation": {
         "accountRequired": "アカウントを入力してください",
         "accountMinLength": "アカウントは3文字以上必要です",
@@ -37,14 +33,12 @@
         "confirmPasswordRequired": "パスワード確認を入力してください",
         "passwordMismatch": "パスワードが一致しません"
     },
-
     "messages": {
         "agreementRequired": "利用規約とプライバシーポリシーに同意してください",
         "agreementTitle": "ご注意",
         "registerFailed": "登録に失敗しました",
         "loginFailed": "ログインに失敗しました"
     },
-
     "placeholders": {
         "enterAccount": "アカウントを入力",
         "enterPassword": "パスワードを入力",

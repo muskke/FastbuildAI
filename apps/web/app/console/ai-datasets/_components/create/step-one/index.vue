@@ -40,22 +40,22 @@ const selectedSourceId = ref<string>("text");
 const DATA_SOURCES = [
     {
         id: "text",
-        title: t("datasets.create.dataSources.text.title"),
-        description: t("datasets.create.dataSources.text.description"),
+        title: t("console-ai-datasets.create.dataSources.text.title"),
+        description: t("console-ai-datasets.create.dataSources.text.description"),
         icon: "i-heroicons-document-text",
         disabled: false,
     },
     {
         id: "chat",
-        title: t("datasets.create.dataSources.chat.title"),
-        description: t("datasets.create.dataSources.chat.description"),
+        title: t("console-ai-datasets.create.dataSources.chat.title"),
+        description: t("console-ai-datasets.create.dataSources.chat.description"),
         icon: "i-heroicons-presentation-chart-bar",
         disabled: true,
     },
     {
         id: "web",
-        title: t("datasets.create.dataSources.web.title"),
-        description: t("datasets.create.dataSources.web.description"),
+        title: t("console-ai-datasets.create.dataSources.web.title"),
+        description: t("console-ai-datasets.create.dataSources.web.description"),
         icon: "i-heroicons-globe-alt",
         disabled: true,
     },
@@ -70,17 +70,17 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
     <div class="data-source-selector mx-auto inline-block pt-6">
         <div class="mb-8" v-if="!disabled">
             <h5 class="text-foreground mb-1 text-lg font-medium">
-                {{ $t("datasets.create.basicInfo") }}
+                {{ $t("console-ai-datasets.create.basicInfo") }}
             </h5>
             <p class="text-muted text-sm">
-                {{ $t("datasets.create.basicInfoDesc") }}
+                {{ $t("console-ai-datasets.create.basicInfoDesc") }}
             </p>
         </div>
 
         <div class="space-y-8">
             <div class="flex flex-col space-y-8" v-if="!disabled">
                 <UFormField
-                    :label="$t('datasets.create.name')"
+                    :label="$t('console-ai-datasets.create.name')"
                     class="flex w-full justify-between"
                     :ui="{
                         wrapper: 'flex',
@@ -91,7 +91,7 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
                 >
                     <UInput
                         v-model="name"
-                        :placeholder="$t('datasets.settings.nameInput')"
+                        :placeholder="$t('console-ai-datasets.settings.nameInput')"
                         :ui="{ root: 'w-full' }"
                     />
                 </UFormField>
@@ -104,12 +104,12 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
                         label: 'text-accent-foreground width140 pt-2',
                         container: 'flex-1',
                     }"
-                    :label="$t('datasets.create.description')"
+                    :label="$t('console-ai-datasets.create.description')"
                     required
                 >
                     <UTextarea
                         v-model="description"
-                        :placeholder="$t('datasets.settings.descriptionInput')"
+                        :placeholder="$t('console-ai-datasets.settings.descriptionInput')"
                         :ui="{ root: 'w-full' }"
                     />
                 </UFormField>
@@ -117,15 +117,15 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
 
             <div class="mb-8">
                 <h5 class="text-foreground mb-1 text-lg font-medium">
-                    {{ $t("datasets.create.selectDataSource") }}
+                    {{ $t("console-ai-datasets.create.selectDataSource") }}
                 </h5>
                 <p class="text-muted text-sm">
-                    {{ $t("datasets.create.selectDataSourceDesc") }}
+                    {{ $t("console-ai-datasets.create.selectDataSourceDesc") }}
                 </p>
             </div>
 
             <UFormField
-                :label="$t('datasets.create.selectDataSource')"
+                :label="$t('console-ai-datasets.create.selectDataSource')"
                 class="flex w-full justify-between"
                 :ui="{
                     wrapper: 'flex  ',
@@ -168,7 +168,7 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
                         </div>
                         <div class="absolute top-[-6px] right-0">
                             <UBadge variant="soft" size="sm" v-if="source.disabled">
-                                {{ $t("datasets.create.comingSoon") }}
+                                {{ $t("console-ai-datasets.create.comingSoon") }}
                             </UBadge>
                         </div>
                     </div>
@@ -176,7 +176,7 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
             </UFormField>
 
             <UFormField
-                :label="$t('datasets.create.uploadTextFile')"
+                :label="$t('console-ai-datasets.create.uploadTextFile')"
                 class="flex w-full justify-between"
                 :ui="{
                     wrapper: 'flex  ',
@@ -190,7 +190,7 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
             </UFormField>
             <UFormField
                 v-if="fileList.length"
-                :label="$t('datasets.create.fileList')"
+                :label="$t('console-ai-datasets.create.fileList')"
                 class="flex w-full justify-between"
                 :ui="{
                     wrapper: 'flex  ',
@@ -215,7 +215,7 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
             >
                 <UButton
                     trailing-icon="i-lucide-arrow-right"
-                    :label="$t('datasets.create.nextStep')"
+                    :label="$t('console-ai-datasets.create.nextStep')"
                     :disabled="!canProceed"
                     size="lg"
                     @click="emits('onStepChange')"
@@ -230,7 +230,7 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
                         size="lg"
                         @click="emits('createEmpty')"
                     >
-                        {{ $t("datasets.create.createEmpty") }}
+                        {{ $t("console-ai-datasets.create.createEmpty") }}
                     </UButton>
             </UFormField>
 

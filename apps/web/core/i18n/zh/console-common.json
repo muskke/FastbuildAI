@@ -21,6 +21,7 @@
     "empty": "暂无数据",
     "copy": "复制",
     "now": "现在",
+    "refresh": "刷新",
     "error": "错误信息",
     "batchEnable": "批量启用",
     "batchDisable": "批量禁用",
@@ -100,6 +101,7 @@
     "reset": "重置",
     "tips": "温馨提示",
     "required": "请输入{ label }",
+    "requiredSelect": "请选择{ label }",
     "theme": {
         "dark": "暗黑",
         "light": "亮色",

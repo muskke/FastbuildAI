@@ -61,26 +61,32 @@
         "title": "高级参数",
         "temperature": {
             "title": "温度 (temperature)",
-            "description": "控制输出的随机性，值越高结果越发散，常用范围0~2，默认1"
+            "label": "温度",
+            "description": "控制输出的随机性，值越高结果越发散，常用范围0~1，默认1"
         },
         "top_p": {
             "title": "采样率 (top_p)",
+            "label": "Top P",
             "description": "控制核采样的阈值，通常与temperature互斥，默认1"
         },
         "max_tokens": {
             "title": "最大Token数 (max_tokens)",
+            "label": "最大Token数",
             "description": "限制生成文本的最大长度，默认16"
         },
         "top_k": {
             "title": "采样数量 (top_k)",
+            "label": "采样数量",
             "description": "从前k个概率最高的词汇中采样，部分模型支持，默认50"
         },
         "frequency_penalty": {
             "title": "重复惩罚 (frequency_penalty)",
+            "label": "重复惩罚",
             "description": "控制重复使用词汇的惩罚系数，值越大越少重复，默认0"
         },
         "presence_penalty": {
-            "title": "出现惩罚 (presence_penalty)",
+            "title": "存在惩罚 (presence_penalty)",
+            "label": "存在惩罚",
             "description": "控制话题引入新词汇的倾向，值越大越容易引入新话题，默认0"
         },
         "stop": {

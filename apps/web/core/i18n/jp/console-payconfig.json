@@ -9,7 +9,6 @@
     "wxMiniProgram": "WeChatミニプログラム",
     "H5Pay": "H5支払い",
     "oaPay": "WeChat公式アカウント支払い",
-
     "form": {
         "addLogo": "アイコン追加",
         "formValidationFailed": "フォーム検証失敗",

@@ -18,10 +18,10 @@
     "batchDelete": "Batch Delete",
     "showColumns": "Show Columns",
     "edit": "Edit",
-    "open": "Open",
     "empty": "No Data",
     "copy": "Copy",
     "now": "Now",
+    "refresh": "Refresh",
     "error": "Error",
     "batchEnable": "Batch Enable",
     "batchDisable": "Batch Disable",
@@ -100,6 +100,7 @@
     "reset": "Reset",
     "tips": "Tips",
     "required": "Enter {label}",
+    "requiredSelect": "Please select { label }",
     "theme": {
         "dark": "Dark",
         "light": "Light",
@@ -142,6 +143,7 @@
     "createAt": "Created",
     "updateAt": "Updated",
     "total": "Total",
+    "open": "Open",
     "items": "items",
     "unit": "order",
     "yuan": "¥",
@@ -191,7 +193,8 @@
         "modelSelect": "Select model",
         "searchModel": "Search models...",
         "colorSelect": "Select color",
-        "mcpSelect": "Select MCP..."
+        "mcpSelect": "Select MCP...",
+        "modelsCount": "models"
     },
     "colorPicker": {
         "presetColors": "Presets",

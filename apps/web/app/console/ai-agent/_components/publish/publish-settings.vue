@@ -57,19 +57,19 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
 <template>
     <div class="space-y-6">
         <div>
-            <h3 class="mb-4 text-lg font-medium">发布配置</h3>
-            <p class="text-muted-foreground text-sm">配置智能体公开访问的安全和功能设置</p>
+            <h3 class="mb-4 text-lg font-medium">{{ $t("console-ai-agent.publish.publishConfig") }}</h3>
+            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.publishConfigDesc") }}</p>
         </div>
 
         <!-- 访问控制 -->
         <div class="space-y-4">
-            <h4 class="font-medium">访问控制</h4>
+            <h4 class="font-medium">{{ $t("console-ai-agent.publish.accessControl") }}</h4>
 
             <!-- 允许的域名 -->
             <div class="space-y-2">
-                <label class="text-sm font-medium">允许的域名</label>
+                <label class="text-sm font-medium">{{ $t("console-ai-agent.publish.allowedDomains") }}</label>
                 <p class="text-muted-foreground text-xs">
-                    限制可以嵌入此智能体的域名，为空则允许所有域名
+                    {{ $t("console-ai-agent.publish.allowedDomainsDesc") }}
                 </p>
 
                 <!-- 域名列表 -->
@@ -97,15 +97,15 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
                         class="flex-1"
                         @keydown="handleOriginKeydown"
                     />
-                    <UButton @click="addOrigin">添加</UButton>
+                    <UButton @click="addOrigin">{{ $t("console-common.add") }}</UButton>
                 </div>
             </div>
 
             <!-- 频率限制 -->
             <div class="space-y-2">
-                <label class="text-sm font-medium">频率限制（每分钟）</label>
+                <label class="text-sm font-medium">{{ $t("console-ai-agent.publish.rateLimit") }}</label>
                 <p class="text-muted-foreground text-xs">
-                    限制每个IP地址每分钟的请求次数，0表示无限制
+                    {{ $t("console-ai-agent.publish.rateLimitDesc") }}
                 </p>
                 <UInput
                     v-model="config.rateLimitPerMinute"
@@ -120,15 +120,15 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
 
         <!-- 功能设置 -->
         <div class="space-y-4">
-            <h4 class="font-medium">功能设置</h4>
+            <h4 class="font-medium">{{ $t("console-ai-agent.publish.featureSettings") }}</h4>
 
             <div class="space-y-3">
                 <!-- 显示品牌信息 -->
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-sm font-medium">显示品牌信息</div>
+                        <div class="text-sm font-medium">{{ $t("console-ai-agent.publish.showBranding") }}</div>
                         <div class="text-muted-foreground text-xs">
-                            在智能体界面显示 "Powered by FastbuildAI" 标识
+                            {{ $t("console-ai-agent.publish.showBrandingDesc") }}
                         </div>
                     </div>
                     <UToggle v-model="config.showBranding" />
@@ -137,8 +137,8 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
                 <!-- 允许下载历史记录 -->
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-sm font-medium">允许下载历史记录</div>
-                        <div class="text-muted-foreground text-xs">允许用户下载对话历史记录</div>
+                        <div class="text-sm font-medium">{{ $t("console-ai-agent.publish.allowDownloadHistory") }}</div>
+                        <div class="text-muted-foreground text-xs">{{ $t("console-ai-agent.publish.allowDownloadHistoryDesc") }}</div>
                     </div>
                     <UToggle v-model="config.allowDownloadHistory" />
                 </div>
@@ -147,7 +147,7 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
 
         <!-- 配置预览 -->
         <div class="border-border rounded-lg border p-4">
-            <h4 class="mb-3 font-medium">配置预览</h4>
+            <h4 class="mb-3 font-medium">{{ $t("console-ai-agent.publish.previewConfig") }}</h4>
             <pre class="text-muted-foreground overflow-auto text-xs">{{
                 JSON.stringify(config, null, 2)
             }}</pre>

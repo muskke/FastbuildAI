@@ -36,6 +36,7 @@ const emits = defineEmits<{
     (e: "close", refresh?: boolean): void;
 }>();
 
+const { t } = useI18n();
 const isOpen = ref(true);
 
 // 表单数据
@@ -76,7 +77,7 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
         };
     } catch (error) {
         console.error("获取标注详情失败:", error);
-        toast.error("获取标注详情失败");
+        toast.error((error as Error).message);
     }
 });
 
@@ -103,7 +104,7 @@ const { lockFn: submitForm, isLock: submitting } = useLockFn(async () => {
                     messageId: props.messageId || undefined,
                 });
             }
-            toast.success("成功更新标注");
+            toast.success(t("console-ai-agent.logs.success"));
         } else {
             // 创建标注
             if (props.isPublic && props.publishToken && props.accessToken) {
@@ -121,12 +122,12 @@ const { lockFn: submitForm, isLock: submitting } = useLockFn(async () => {
                     messageId: props.messageId || undefined,
                 });
             }
-            toast.success("成功创建标注");
+            toast.success(t("console-ai-agent.logs.createAnnotationSuccess"));
         }
         emits("close", true);
     } catch (error) {
         console.error(`${props.annotationId ? "更新" : "创建"}标注失败:`, error);
-        toast.error(`${props.annotationId ? "更新" : "创建"}标注失败`);
+        toast.error((error as Error).message);
     }
 });
 
@@ -145,11 +146,11 @@ onMounted(async () => {
 <template>
     <ProModal
         v-model="isOpen"
-        :title="props.annotationId ? '编辑标注' : '新增标注'"
+        :title="props.annotationId ? t('console-ai-agent.logs.updateAnnotation') : t('console-ai-agent.logs.addAnnotation')"
         :description="
             props.annotationId
-                ? '修改智能体标注的问题和答案'
-                : '为智能体添加预设的问答对，提高回答效率'
+                ? t('console-ai-agent.logs.updateAnnotationDesc')
+                : t('console-ai-agent.logs.addAnnotationDesc')
         "
         :ui="{ content: 'max-w-xl' }"
         @close="handleClose"
@@ -162,39 +163,39 @@ onMounted(async () => {
         <!-- 表单内容 -->
         <UForm v-else :schema="schema" :state="formData" class="space-y-4" @submit="submitForm">
             <div class="flex flex-col gap-4">
-                <UFormField label="标注问题" name="question" required>
+                <UFormField :label="t('console-ai-agent.logs.question')" name="question" required>
                     <UTextarea
                         v-model="formData.question"
-                        placeholder="请输入用户可能提出的问题，例如：如何重置密码？"
+                        :placeholder="t('console-ai-agent.logs.questionPlaceholder')"
                         :rows="5"
                         :ui="{ root: 'w-full' }"
                     />
-                    <template #hint> 建议输入用户常见的提问方式，支持模糊匹配 </template>
+                    <template #hint> {{ t('console-ai-agent.logs.questionHint') }} </template>
                 </UFormField>
 
-                <UFormField label="标注答案" name="answer" required>
+                <UFormField :label="t('console-ai-agent.logs.answer')" name="answer" required>
                     <ProEditor v-model="formData.answer" custom-class="!h-70" />
-                    <template #hint> 当用户问题匹配时，将直接返回此答案，无需调用大模型 </template>
+                    <template #hint> {{ t('console-ai-agent.logs.answerHint') }} </template>
                 </UFormField>
 
-                <UFormField label="启用状态" name="enabled">
+                <UFormField :label="t('console-ai-agent.logs.enabled')" name="enabled">
                     <div class="flex items-center gap-3">
                         <USwitch v-model="formData.enabled" color="primary" />
                         <span class="text-muted-foreground text-sm">
-                            {{ formData.enabled ? "启用" : "禁用" }}此标注
+                            {{ formData.enabled ? t('console-common.enabled') : t('console-common.disabled') }}
                         </span>
                     </div>
-                    <template #hint> 禁用的标注不会参与匹配 </template>
+                    <template #hint> {{ t('console-ai-agent.logs.enabledHint') }} </template>
                 </UFormField>
             </div>
 
             <!-- 底部按钮 -->
             <div class="mt-6 flex justify-end gap-2">
                 <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
-                    取消
+                    {{ t('console-common.cancel') }}
                 </UButton>
                 <UButton color="primary" size="lg" :loading="submitting" type="submit">
-                    {{ props.annotationId ? "更新" : "创建" }}
+                    {{ props.annotationId ? t('console-common.update') : t('console-common.create') }}
                 </UButton>
             </div>
         </UForm>
