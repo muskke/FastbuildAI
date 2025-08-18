@@ -3,6 +3,7 @@ import { Transform, Type } from "class-transformer";
 import {
     IsArray,
     IsBoolean,
+    IsEnum,
     IsNotEmpty,
     IsObject,
     IsOptional,
@@ -362,6 +363,13 @@ export class QueryAgentDto extends PaginationDto {
     @IsOptional()
     @IsBoolean({ message: "是否公开必须是布尔值" })
     isPublic?: boolean;
+
+    /**
+     * 排序方式
+     */
+    @IsOptional()
+    @IsEnum(["popular", "latest"], { message: "排序方式必须是 popular 或 latest" })
+    sortBy?: "popular" | "latest";
 }
 
 /**

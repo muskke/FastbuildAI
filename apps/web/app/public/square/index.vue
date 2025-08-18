@@ -24,7 +24,6 @@ const { data: initialData, pending: ssrLoading } = await useAsyncData("public-ag
         sortBy: searchForm.sortBy,
         page: searchForm.page,
         pageSize: searchForm.pageSize,
-        publishedOnly: true,
     }),
 );
 
@@ -56,7 +55,6 @@ const getAgentList = async (reset = false) => {
             sortBy: searchForm.sortBy,
             page: searchForm.page,
             pageSize: searchForm.pageSize,
-            publishedOnly: true,
         });
 
         if (reset) {
@@ -115,7 +113,7 @@ definePageMeta({
         class="flex h-full flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-slate-900"
     >
         <!-- Header -->
-        <div class="mx-auto max-w-7xl px-4 py-8">
+        <div class="container mx-auto w-full px-4 pt-16 pb-8">
             <div class="text-center">
                 <h1 class="text-foreground mb-4 text-4xl font-bold">
                     {{ $t("square.title") }}
@@ -125,7 +123,7 @@ definePageMeta({
                 </p>
 
                 <!-- 搜索框 -->
-                <div class="relative mx-auto max-w-2xl">
+                <div class="relative mx-auto w-full max-w-3xl">
                     <UInput
                         v-model="searchForm.keyword"
                         :placeholder="$t('square.searchPlaceholder')"
@@ -141,7 +139,7 @@ definePageMeta({
             </div>
         </div>
 
-        <div class="mx-auto h-full max-w-7xl px-4 py-8">
+        <div class="container mx-auto h-full px-4 py-8">
             <section class="flex h-full flex-col">
                 <div class="mb-6 flex items-center justify-between">
                     <h2 class="text-xl font-bold text-gray-900">
@@ -177,6 +175,7 @@ definePageMeta({
                         @load-more="loadMore"
                     >
                         <div
+                            v-if="agents.length > 0"
                             class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                         >
                             <AgentSquareCard
@@ -185,6 +184,15 @@ definePageMeta({
                                 :agent="agent"
                                 @click="handleAgentClick"
                             />
+                        </div>
+                        <div v-else>
+                            <div class="flex h-full w-full items-center justify-center py-16">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-muted-foreground">{{
+                                        $t("square.noResults")
+                                    }}</span>
+                                </div>
+                            </div>
                         </div>
                     </ProInfiniteScroll>
                 </ProScrollArea>
