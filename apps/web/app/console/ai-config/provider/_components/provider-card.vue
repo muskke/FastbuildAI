@@ -58,18 +58,18 @@ const dropdownActions = computed(() => {
         });
     }
 
-    if (hasAccessByCodes(["ai-providers:update"])) {
-        items.push({
-            label: t(
-                props.provider.isActive
-                    ? "console-ai-provider.search.disabled"
-                    : "console-ai-provider.search.enabled",
-            ),
-            icon: props.provider.isActive ? "i-lucide-eye-off" : "i-lucide-eye",
-            color: props.provider.isActive ? ("warning" as const) : ("success" as const),
-            onSelect: () => emit("toggle-active", props.provider.id, !props.provider.isActive),
-        });
-    }
+    // if (hasAccessByCodes(["ai-providers:update"])) {
+    //     items.push({
+    //         label: t(
+    //             props.provider.isActive
+    //                 ? "console-ai-provider.search.disabled"
+    //                 : "console-ai-provider.search.enabled",
+    //         ),
+    //         icon: props.provider.isActive ? "i-lucide-eye-off" : "i-lucide-eye",
+    //         color: props.provider.isActive ? ("warning" as const) : ("success" as const),
+    //         onSelect: () => emit("toggle-active", props.provider.id, !props.provider.isActive),
+    //     });
+    // }
 
     if (hasAccessByCodes(["ai-providers:delete"]) && !props.provider.isBuiltIn) {
         if (items.length > 0) {
@@ -110,6 +110,10 @@ function handleSelect(selected: boolean | "indeterminate") {
         emit("select", props.provider, selected);
     }
 }
+
+const handleToggleActive = () => {
+    emit("toggle-active", props.provider.id, props.provider.isActive);
+};
 
 function openWebsite() {
     if (!props.provider.websiteUrl) return;
@@ -157,10 +161,10 @@ function openWebsite() {
                     </span>
                 </h3>
 
-                <UBadge variant="outline" color="neutral" size="sm" class="shrink-0 rounded-full">
+                <!-- <UBadge variant="outline" color="neutral" size="sm" class="shrink-0 rounded-full">
                     {{ provider.models.length }}
                     {{ `${t("common.unit.general.item")}${t("common.ai.model")}` }}
-                </UBadge>
+                </UBadge> -->
             </div>
         </template>
 
@@ -184,14 +188,23 @@ function openWebsite() {
             </div>
         </template>
 
-        <!-- <template #footer>
-            <div class="flex justify-end gap-2">
+        <template #footer>
+            <div class="flex items-center justify-between gap-2">
+                <UBadge variant="outline" color="neutral" size="sm" class="shrink-0 rounded-full">
+                    {{ provider.models.length }}
+                    {{ `${t("common.unit.general.item")}${t("common.ai.model")}` }}
+                </UBadge>
+                <AccessControl :codes="['ai-providers:update']">
+                    <USwitch v-model="provider.isActive" @click.stop @change="handleToggleActive" />
+                </AccessControl>
+            </div>
+            <!-- <div class="flex justify-end gap-2">
                 <div class="flex items-center gap-1">
                     <UButton trailing-icon="i-lucide-chevron-right" variant="ghost" size="sm">
                         {{ t("console-ai-provider.modelManagement") }}
                     </UButton>
                 </div>
-            </div>
-        </template> -->
+            </div> -->
+        </template>
     </ProCard>
 </template>
