@@ -28,7 +28,7 @@ definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
-    <div class="flex h-[calc(100vh-6rem)] flex-1 flex-col px-4 pt-4">
+    <div class="flex h-full flex-1 flex-col px-4 pt-4">
         <div class="flex">
             <UTabs v-model="active" :items="components" class="block w-auto" />
         </div>

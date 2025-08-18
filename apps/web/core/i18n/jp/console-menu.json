@@ -22,7 +22,7 @@
             "title": "モデル"
         }
     },
-    "mcpServer": "MCP管理",
+    "mcpServer": "MCPツール",
     "agent": {
         "title": "エージェント",
         "dashboard": "ダッシュボード",
