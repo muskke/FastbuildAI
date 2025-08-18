@@ -41,27 +41,8 @@ const collapsed = computed(() => props.collapsed);
  * 构建导航菜单
  */
 const items = computed<NavigationMenuItem[][]>(() => {
-    const navigationItems = buildSidebarItems(useRoute().path);
-
-    return [
-        [
-            {
-                label: t("console-menu.functionMenu"),
-                type: "label",
-            },
-            ...navigationItems,
-        ],
-    ];
+    return [buildSidebarItems(useRoute().path)];
 });
-
-const linkItems = computed<NavigationMenuItem[]>(() => [
-    // {
-    //     label: t("console-common.pluginMarket"),
-    //     icon: "i-lucide-box",
-    //     to: "https://fastbuildai-shop.yixiangonline.com",
-    //     target: "_blank",
-    // },
-]);
 </script>
 
 <template>
@@ -76,7 +57,7 @@ const linkItems = computed<NavigationMenuItem[]>(() => [
 
             <!-- 菜单区域 -->
             <ProScrollArea class="flex-1">
-                <div class="flex flex-grow flex-col overflow-y-auto px-1.5 py-4">
+                <div class="flex flex-grow flex-col overflow-hidden px-1 py-4">
                     <!-- 搜索按钮 -->
                     <ConsoleDashboardSearchButton
                         v-if="!collapsed"
@@ -95,11 +76,12 @@ const linkItems = computed<NavigationMenuItem[]>(() => [
                             orientation="vertical"
                             :items="items"
                             :ui="{
+                                label: 'text-muted-foreground',
                                 list: 'navbar-menu',
                                 link: collapsed
-                                    ? 'justify-center py-3 hover:bg-secondary dark:hover:bg-surface-800 rounded-lg'
+                                    ? 'justify-center size-10 hover:bg-secondary dark:hover:bg-surface-800 rounded-lg'
                                     : 'justify-start hover:bg-secondary dark:hover:bg-surface-800 p-2 px-3 leading-6 rounded-lg',
-                                linkLeadingIcon: collapsed ? 'size-5' : 'size-4',
+                                linkLeadingIcon: collapsed ? 'size-4.5' : 'size-4',
                             }"
                         >
                             <template #item-trailing="{ item }">
@@ -111,19 +93,6 @@ const linkItems = computed<NavigationMenuItem[]>(() => [
                             </template>
                         </UNavigationMenu>
                     </div>
-                    <UNavigationMenu
-                        :collapsed="collapsed"
-                        orientation="vertical"
-                        :items="linkItems"
-                        class="mt-auto w-full"
-                        :ui="{
-                            list: 'navbar-other',
-                            link: collapsed
-                                ? 'justify-center py-3 hover:bg-secondary dark:hover:bg-surface-800 rounded-lg'
-                                : 'justify-start hover:bg-secondary dark:hover:bg-surface-800 p-2 px-3 leading-6 rounded-lg',
-                            linkLeadingIcon: collapsed ? 'size-5' : 'size-4',
-                        }"
-                    />
                 </div>
             </ProScrollArea>
 
@@ -172,17 +141,6 @@ const linkItems = computed<NavigationMenuItem[]>(() => [
                                 </template>
                             </UNavigationMenu>
                         </div>
-                        <UNavigationMenu
-                            :collapsed="false"
-                            orientation="vertical"
-                            :items="linkItems"
-                            class="mt-auto w-full"
-                            :ui="{
-                                list: 'navbar-other',
-                                link: 'justify-start hover:bg-secondary dark:hover:bg-surface-800 p-2 px-3 leading-6 rounded-lg',
-                                linkLeadingIcon: 'size-4',
-                            }"
-                        />
                     </div>
 
                     <!-- 底部折叠按钮 -->

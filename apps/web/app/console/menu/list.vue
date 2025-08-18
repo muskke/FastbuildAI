@@ -187,6 +187,7 @@ const columns: TableColumn<MenuFormData>[] = [
         cell: ({ row }) => {
             const type = row.getValue("type") as number;
             const typeMap: Record<number, { label: string; color: string }> = {
+                0: { label: t("console-common.menuType.group"), color: "neutral" },
                 1: { label: t("console-common.menuType.catalogue"), color: "warning" },
                 2: { label: t("console-common.menuType.menu"), color: "info" },
                 3: { label: t("console-common.menuType.button"), color: "neutral" },

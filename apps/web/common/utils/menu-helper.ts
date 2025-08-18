@@ -82,7 +82,12 @@ export function transformMenus(
 ): TransformedMenuItem[] {
     const { $i18n } = useNuxtApp();
     const { t, locale } = $i18n as Composer;
-    return filterVisibleMenus(menus, false).map((menu) => {
+
+    // 处理结果数组
+    let result: TransformedMenuItem[] = [];
+
+    // 处理每个菜单项
+    filterVisibleMenus(menus, false).forEach((menu) => {
         // 如果是插件菜单且有pluginPackName，使用pluginPackName作为路径前缀
         const isPluginMenu = menu.sourceType === 2 && menu.pluginPackName;
         let basePath: string;
@@ -98,22 +103,44 @@ export function transformMenus(
         const matchPath = getMatchPath(menu, basePath);
         const fullPath = normalizePath(basePath, menu.path);
         const to =
-            options.directoryToEmpty && menu.type === MENU_TYPE.DIRECTORY
+            (options.directoryToEmpty && menu.type === MENU_TYPE.DIRECTORY) ||
+            menu.type === MENU_TYPE.GROUP
                 ? undefined
                 : getToPath(menu, basePath);
 
         const defaultOpen = options.currentPath ? options.currentPath.startsWith(matchPath) : false;
 
-        return {
-            label: t(menu.name) || menu.name,
-            icon: menu.icon || "",
-            to,
-            matchPath,
-            active: !!to && defaultOpen,
-            defaultOpen,
-            children: menu.children?.length ? transformMenus(menu.children, fullPath, options) : [],
-        };
+        // 特殊处理 GROUP 类型的菜单
+        if (menu.type === MENU_TYPE.GROUP) {
+            // 1. 添加标签项
+            result.push({
+                label: t(menu.name) || menu.name,
+                type: "label",
+                matchPath,
+                children: [],
+            } as TransformedMenuItem);
+
+            // 2. 将子项添加到同级
+            if (menu.children?.length) {
+                result = result.concat(transformMenus(menu.children, fullPath, options));
+            }
+        } else {
+            // 正常处理其他类型的菜单
+            result.push({
+                label: t(menu.name) || menu.name,
+                icon: menu.icon || "",
+                to,
+                matchPath,
+                active: !!to && defaultOpen,
+                defaultOpen,
+                children: menu.children?.length
+                    ? transformMenus(menu.children, fullPath, options)
+                    : [],
+            });
+        }
     });
+
+    return result;
 }
 
 // -------------------- 功能模块 --------------------
@@ -135,9 +162,12 @@ export function buildRoutes(
         if (menu.type === MENU_TYPE.MENU && menu.component && allowed) {
             const layout = (useNuxtApp() as any).$getConsoleLayout(menu.component);
 
+            // 确保路径格式正确，避免多个斜杠连在一起
+            const normalizedPath = path.replace(/\/+/g, "/");
+
             return {
                 name: `menu-${menu.id}`,
-                path,
+                path: normalizedPath,
                 component: loadComponent(menu.component, componentLoader),
                 meta: {
                     title: t(menu.name),
@@ -314,10 +344,16 @@ function walkFlat<T>(
 
         // 如果是插件菜单且有pluginPackName
         if (menu.sourceType === 2 && menu.pluginPackName) {
-            path = normalizePath(`${ROUTES.CONSOLE}/${menu.pluginPackName}`, menu.path);
+            // 先将多个斜杠合并为一个
+            const consolePath = ROUTES.CONSOLE.replace(/\/+$/, "");
+            const pluginPath = menu.pluginPackName.replace(/^\/+|\/+$/g, "");
+            path = normalizePath(`${consolePath}/${pluginPath}`, menu.path);
         } else {
             path = normalizePath(parent, menu.path) as typeof ROUTES.CONSOLE;
         }
+
+        // 最终规范化路径，确保不会有多个斜杠连在一起
+        path = path.replace(/\/+/g, "/");
 
         const result = visitor(menu, path, parent);
         const children = menu.children?.length ? walkFlat(menu.children, visitor, path) : [];

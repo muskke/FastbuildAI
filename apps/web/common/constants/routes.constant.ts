@@ -17,6 +17,8 @@ export const ROUTES = {
  * @description 用于标识权限类型：目录、菜单、按钮
  */
 export const MENU_TYPE = {
+    /** 组别 */
+    GROUP: 0,
     /** 目录 */
     DIRECTORY: 1,
     /** 菜单 */

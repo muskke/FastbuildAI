@@ -244,7 +244,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
 
 <template>
     <!-- Sidebar模式的容器 -->
-    <div class="px-1.5">
+    <div :class="collapsed ? 'px-1' : 'px-1.5'">
         <div
             class="hover:bg-secondary dark:hover:bg-surface-800 flex cursor-pointer flex-col rounded-lg select-none"
             :class="{ 'bg-secondary dark:bg-surface-800': open }"
@@ -256,7 +256,9 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
                     target="_blank"
                 >
                     <Icon name="i-lucide-external-link" />
-                    <span>{{ t("console-common.officeLink") }}</span>
+                    <span v-if="!collapsed" class="truncate">{{
+                        t("console-common.officeLink")
+                    }}</span>
                 </a>
             </div>
         </div>

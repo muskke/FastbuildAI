@@ -15,6 +15,11 @@ import {
  */
 export enum MenuType {
     /**
+     * 分组
+     */
+    GROUP = 0,
+
+    /**
      * 目录
      */
     DIRECTORY = 1,
