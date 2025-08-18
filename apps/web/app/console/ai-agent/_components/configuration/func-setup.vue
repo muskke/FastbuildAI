@@ -5,6 +5,7 @@ const Context = defineAsyncComponent(() => import("./_func_components/context.vu
 const Datasets = defineAsyncComponent(() => import("./_func_components/datasets.vue"));
 const Feedback = defineAsyncComponent(() => import("./_func_components/feedback.vue"));
 const Prompt = defineAsyncComponent(() => import("./_func_components/prompt.vue"));
+const Public = defineAsyncComponent(() => import("./_func_components/public.vue"));
 const Reference = defineAsyncComponent(() => import("./_func_components/reference.vue"));
 const Variable = defineAsyncComponent(() => import("./_func_components/variable.vue"));
 
@@ -38,5 +39,8 @@ const state = useVModel(props, "modelValue", emit);
 
         <!-- 反馈按钮 -->
         <Feedback v-model="state.enableFeedback as boolean" />
+
+        <!-- 公开设置 -->
+        <Public v-model="state.isPublic as boolean" />
     </div>
 </template>

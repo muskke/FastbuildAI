@@ -29,6 +29,24 @@ const handleViewDetail = () => {
         class="group border-default relative cursor-pointer rounded-lg border p-4 transition-all duration-200 hover:shadow-lg"
         @click="handleViewDetail"
     >
+        <!-- 左下角公开状态 -->
+        <div
+            class="absolute right-3 bottom-3.5 z-10 flex gap-1 opacity-100 transition-opacity duration-200 group-hover:opacity-0"
+            @click.stop
+        >
+            <UBadge
+                :color="agent.isPublic ? 'success' : 'neutral'"
+                variant="soft"
+                size="sm"
+            >
+                <UIcon
+                    :name="agent.isPublic ? 'i-lucide-globe' : 'i-lucide-globe-lock'"
+                    class="size-3 mr-1"
+                />
+                {{ agent.isPublic ? $t("console-ai-agent.configuration.public") : $t("console-ai-agent.configuration.private") }}
+            </UBadge>
+        </div>
+
         <!-- 右下角操作按钮组 -->
         <div
             class="absolute right-3 bottom-3 z-10 flex gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100"

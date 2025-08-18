@@ -6,7 +6,9 @@
         }
     },
     "search": {
-        "placeholder": "Search agent name, description, or identifier"
+        "placeholder": "Search agent name, description, or identifier",
+        "allStatus": "All Status",
+        "filterByStatus": "Filter by Status"
     },
     "create": {
         "title": "Create Agent",
@@ -83,6 +85,9 @@
         "referenceDesc": "When answers reference documents, users can view the source documents",
         "feedback": "Q&A Annotation",
         "feedbackDesc": "Supports question/answer annotation by administrators and users",
+        "public": "Public Agent",
+        "publicDesc": "When enabled, the agent will be visible in the public list and other users can discover and use it",
+        "private": "Private Agent",
         "prologue": "Opening Remarks",
         "prologueDesc": "If editor tools are obscured, click and drag left/right to view remaining tools",
         "problem": "Opening Question",

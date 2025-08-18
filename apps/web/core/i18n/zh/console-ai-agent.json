@@ -6,7 +6,9 @@
         }
     },
     "search": {
-        "placeholder": "搜索智能体名称、描述或标识符"
+        "placeholder": "搜索智能体名称、描述或标识符",
+        "allStatus": "全部状态",
+        "filterByStatus": "按状态筛选"
     },
     "create": {
         "title": "创建智能体",
@@ -83,6 +85,9 @@
         "referenceDesc": "当回答引用了文档后，可查看回答对应的文档来源",
         "feedback": "问答标注",
         "feedbackDesc": "支持管理员和用户标注问题和答案",
+        "public": "公开智能体",
+        "publicDesc": "开启后智能体将在公开列表中可见，其他用户可以发现并使用",
+        "private": "私有智能体",
         "prologue": "开场白",
         "prologueDesc": "编辑器工具如果被遮住则使用鼠标按住左右拖地即可查看剩余工具",
         "problem": "开场问题",
