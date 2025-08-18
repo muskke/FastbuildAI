@@ -8,9 +8,9 @@ export interface StepItem {
 export function useStep(initStep = 1) {
     const { t } = useI18n();
     const STEPS: StepItem[] = [
-        { id: 1, title: t("datasets.create.step.one") },
-        { id: 2, title: t("datasets.create.step.two") },
-        { id: 3, title: t("datasets.create.step.three") },
+        { id: 1, title: t("console-ai-datasets.create.step.one") },
+        { id: 2, title: t("console-ai-datasets.create.step.two") },
+        { id: 3, title: t("console-ai-datasets.create.step.three") },
     ];
 
     const step = ref<number>(initStep);

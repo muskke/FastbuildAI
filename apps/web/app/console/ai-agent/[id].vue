@@ -99,7 +99,7 @@ watch(isMobile, (newVal) => {
                         [
                             hasAccessByCodes(['ai-agent:detail'])
                                 ? {
-                                      label: '编排',
+                                      label: t('console-ai-agent.menu.arrange'),
                                       icon: 'i-lucide-radar',
                                       to: useRoutePath('ai-agent:detail', {
                                           id: agentId as string,
@@ -108,7 +108,7 @@ watch(isMobile, (newVal) => {
                                 : null,
                             hasAccessByCodes(['ai-agent:publish'])
                                 ? {
-                                      label: '发布更新',
+                                      label: t('console-ai-agent.menu.publish'),
                                       icon: 'i-lucide-radio-tower',
                                       to: useRoutePath('ai-agent:publish', {
                                           id: agentId as string,
@@ -117,7 +117,7 @@ watch(isMobile, (newVal) => {
                                 : null,
                             hasAccessByCodes(['ai-agent-chat-record:list'])
                                 ? {
-                                      label: '记录与标注',
+                                      label: t('console-ai-agent.menu.chatRecord'),
                                       icon: 'i-lucide-file-text',
                                       to: useRoutePath('ai-agent-chat-record:list', {
                                           id: agentId as string,
@@ -126,7 +126,7 @@ watch(isMobile, (newVal) => {
                                 : null,
                             hasAccessByCodes(['ai-agent:statistics'])
                                 ? {
-                                      label: '数据看板',
+                                      label: t('console-ai-agent.menu.statistics'),
                                       icon: 'i-lucide-pie-chart',
                                       to: useRoutePath('ai-agent:statistics', {
                                           id: agentId as string,

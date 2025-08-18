@@ -68,7 +68,7 @@ const EMBEDDING_MODELS = [
                 <!-- 分段设置 -->
                 <section class="space-y-2">
                     <h5 class="text-foreground text-sm font-medium">
-                        {{ $t("datasets.create.stepTwo.segmentation") }}
+                        {{ $t("console-ai-datasets.create.stepTwo.segmentation") }}
                     </h5>
                     <SegmentMethodConfig
                         v-model="indexingConfig"
@@ -80,7 +80,7 @@ const EMBEDDING_MODELS = [
                 <!-- Embedding 模型 -->
                 <section class="mt-4 space-y-4">
                     <h5 class="text-foreground text-sm font-medium">
-                        {{ $t("datasets.create.stepTwo.embeddingModel") }}
+                        {{ $t("console-ai-datasets.create.stepTwo.embeddingModel") }}
                     </h5>
                     <ModelSelect
                         :button-ui="{
@@ -99,7 +99,7 @@ const EMBEDDING_MODELS = [
                 <!-- 检索设置 -->
                 <section class="mt-4 space-y-4" :class="{ 'cursor-not-allowed': disabled }">
                     <h5 class="text-foreground text-sm font-medium">
-                        {{ $t("datasets.settings.retrievalMethod") }}
+                        {{ $t("console-ai-datasets.settings.retrievalMethod") }}
                     </h5>
                     <RetrievalMethodConfig
                         v-model="retrievalConfig"
@@ -110,10 +110,10 @@ const EMBEDDING_MODELS = [
                 <!-- 创建按钮 -->
                 <section class="flex justify-end gap-4 py-4">
                     <UButton size="lg" variant="outline" @click="emits('onStepChange', -1)">
-                        {{ $t("datasets.create.previousStep") }}
+                        {{ $t("console-ai-datasets.create.previousStep") }}
                     </UButton>
                     <UButton size="lg" @click="emits('onCreate')">
-                        {{ $t("datasets.create.saveAndCreate") }}
+                        {{ $t("console-ai-datasets.create.saveAndCreate") }}
                     </UButton>
                 </section>
             </ProScrollArea>

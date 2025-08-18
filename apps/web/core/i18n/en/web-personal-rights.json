@@ -36,6 +36,11 @@
                 "Unauthorized recharge methods may result in account penalties"
             ]
         },
+        "noRechargeOptions": "There is no recharge option at the moment",
+        "total": "total",
+        "use": "Please use",
+        "pay": "Scan the QR code to pay",
+        "contact": "If you can't resolve the issue, contact your site administrator",
         "agreement": "Payment indicates agreement to",
         "serviceTerms": "Terms",
         "payment": "Payment Policy",

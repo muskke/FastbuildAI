@@ -21,6 +21,7 @@
     "empty": "暂无数据",
     "copy": "复制",
     "now": "现在",
+    "refresh": "刷新",
     "error": "错误信息",
     "batchEnable": "批量启用",
     "batchDisable": "批量禁用",
@@ -77,7 +78,8 @@
         "top": "顶级菜单",
         "catalogue": "目录",
         "menu": "菜单",
-        "button": "按钮"
+        "button": "按钮",
+        "group": "组别"
     },
     "paste": "粘贴",
     "cut": "剪切",
@@ -99,6 +101,7 @@
     "reset": "重置",
     "tips": "温馨提示",
     "required": "请输入{ label }",
+    "requiredSelect": "请选择{ label }",
     "theme": {
         "dark": "暗黑",
         "light": "亮色",

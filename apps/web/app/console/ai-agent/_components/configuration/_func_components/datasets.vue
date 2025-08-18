@@ -24,9 +24,9 @@ const selectedDataset = ref<Dataset[]>([]);
 
 // 检索模式标签
 const retrievalModeLabels = {
-    vector: { value: t("datasets.retrieval.vector"), color: "primary" },
-    fullText: { value: t("datasets.retrieval.fullText"), color: "success" },
-    hybrid: { value: t("datasets.retrieval.hybrid"), color: "warning" },
+    vector: { value: t("console-ai-datasets.retrieval.vector"), color: "primary" },
+    fullText: { value: t("console-ai-datasets.retrieval.fullText"), color: "success" },
+    hybrid: { value: t("console-ai-datasets.retrieval.hybrid"), color: "warning" },
 } as const;
 type RetrievalMode = keyof typeof retrievalModeLabels;
 
@@ -94,14 +94,14 @@ onMounted(() => fetchDatasetList());
         <div class="bg-muted rounded-lg p-3">
             <div class="flex items-center justify-between">
                 <div class="text-foreground flex items-center gap-1 text-sm font-medium">
-                    关联知识库
+                    {{ $t("console-ai-agent.configuration.datasets") }}
                     <UTooltip :delay-duration="0" :ui="{ content: 'w-xs h-auto' }">
                         <UIcon name="i-lucide-circle-help" />
                         <template #content>
                             <div class="text-background text-xs">
-                                选择智能体可以访问的知识库
+                                {{ $t("console-ai-agent.configuration.datasetsDesc") }}
                                 <br />
-                                智能体将根据这些知识库的内容回答用户问题。
+                                {{ $t("console-ai-agent.configuration.datasetsDesc2") }}
                             </div>
                         </template>
                     </UTooltip>
@@ -115,7 +115,7 @@ onMounted(() => fetchDatasetList());
                     @click="openModal"
                 >
                     <UIcon name="i-lucide-plus" />
-                    <span>添加</span>
+                    <span>{{ $t("console-common.add") }}</span>
                 </UButton>
             </div>
 
@@ -159,15 +159,15 @@ onMounted(() => fetchDatasetList());
         <!-- 添加知识库弹窗 -->
         <ProModal
             v-model="isOpen"
-            title="选择引用知识库"
-            description="选择智能体可以引用的知识库，支持多选"
+            :title="t('console-ai-agent.configuration.datasetsTitle')"
+            :description="t('console-ai-agent.configuration.datasetsDesc')"
             :ui="{ content: 'max-w-md' }"
             @close="handleClose"
         >
             <!-- 加载中 -->
             <div class="flex h-90 flex-col items-center justify-center" v-if="loading">
                 <UIcon name="i-lucide-loader-circle" class="animate-spin" />
-                <span class="text-sm">加载中...</span>
+                <span class="text-sm">{{ $t("common.loading") }}</span>
             </div>
             <div class="h-90" v-else-if="datasetList.length">
                 <ProScrollArea class="h-full pr-3" :shadow="false">
@@ -204,7 +204,7 @@ onMounted(() => fetchDatasetList());
 
             <div class="mt-6 flex justify-end gap-2">
                 <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
-                    取消
+                    {{ $t("console-common.cancel") }}
                 </UButton>
                 <UButton
                     color="primary"
@@ -213,7 +213,7 @@ onMounted(() => fetchDatasetList());
                     :disabled="loading"
                     @click="handleSave"
                 >
-                    保存
+                    {{ $t("console-common.save") }}
                 </UButton>
             </div>
         </ProModal>

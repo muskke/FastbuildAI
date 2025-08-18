@@ -28,10 +28,7 @@
     },
     "delete": {
         "title": "Delete Chat",
-        "description": "Permanently delete selected chat(s)?",
-        "success": "Deleted",
-        "batchSuccess": "Batch deleted",
-        "failed": "Delete failed"
+        "description": "Permanently delete selected chat(s)?"
     },
     "fetch": {
         "detailFailed": "Failed to load details",

@@ -22,9 +22,9 @@ const editingIndex = ref<number>(-1);
 
 // 表单验证规则
 const formSchema = object({
-    name: string().required("字段名不能为空"),
-    label: string().required("字段标签不能为空"),
-    type: string().required("字段类型不能为空").oneOf(["text", "textarea", "select"]),
+    name: string().required(t("console-ai-agent.configuration.formVariableNameEmpty")),
+    label: string().required(t("console-ai-agent.configuration.formVariableLabelEmpty")),
+    type: string().required(t("console-ai-agent.configuration.formVariableTypeEmpty")).oneOf(["text", "textarea", "select"]),
     required: boolean().optional(),
 });
 
@@ -50,7 +50,7 @@ const submitForm = async () => {
             (field, index) => field.name === state.value.name && index !== editingIndex.value,
         );
         if (existingField) {
-            useMessage().error("字段名已存在，请使用其他名称");
+            useMessage().error(t("console-ai-agent.configuration.formVariableNameExists"));
             return;
         }
 
@@ -65,7 +65,6 @@ const submitForm = async () => {
         handleClose();
     } catch (error) {
         console.error("操作失败:", error);
-        useMessage().error("操作失败");
     }
 };
 
@@ -116,7 +115,6 @@ const handleClose = () => {
 /** 删除变量 */
 const removeVariable = (index: number) => {
     variable.value.splice(index, 1);
-    useMessage().success("变量删除成功");
 };
 </script>
 
@@ -125,15 +123,15 @@ const removeVariable = (index: number) => {
         <div class="bg-muted rounded-lg p-3">
             <div class="flex items-center justify-between">
                 <div class="text-foreground flex items-center gap-1 text-sm font-medium">
-                    表单变量
+                    {{ $t("console-ai-agent.configuration.formVariable") }}
                     <UTooltip :delay-duration="0" :ui="{ content: 'w-xs h-auto' }">
                         <UIcon name="i-lucide-circle-help" />
 
                         <template #content>
                             <div class="text-background text-xs">
-                                变量将以表单形式让用户在对话前填写
+                                {{ $t("console-ai-agent.configuration.formVariableDesc") }}
                                 <br />
-                                用户填写的表单内容将自动替换角色设定中的变量。
+                                {{ $t("console-ai-agent.configuration.formVariableDesc2") }}
                             </div>
                         </template>
                     </UTooltip>
@@ -147,7 +145,7 @@ const removeVariable = (index: number) => {
                     @click="openModal"
                 >
                     <UIcon name="i-lucide-plus" />
-                    <span>添加</span>
+                    <span>{{ $t("console-common.add") }}</span>
                 </UButton>
             </div>
 
@@ -164,7 +162,7 @@ const removeVariable = (index: number) => {
 
                     <div class="block group-hover:hidden">
                         <UBadge v-if="item.required" color="error" variant="outline" size="sm">
-                            必填
+                            {{ $t("console-ai-agent.configuration.required") }}
                         </UBadge>
                         <UBadge color="neutral" variant="outline" size="sm" class="ml-1">
                             {{ item.type }}
@@ -193,20 +191,20 @@ const removeVariable = (index: number) => {
         <!-- 添加变量弹窗 -->
         <ProModal
             v-model="isOpen"
-            :title="isEdit ? '编辑表单变量' : '添加表单变量'"
-            description="配置表单字段，用户填写后将自动替换角色设定中的变量"
+            :title="isEdit ? $t('console-ai-agent.configuration.formVariableEditTitle') : $t('console-ai-agent.configuration.formVariableAddTitle')"
+            :description="t('console-ai-agent.configuration.formVariableTitleDesc')"
             :ui="{ content: 'max-w-md' }"
             @close="handleClose"
         >
             <UForm :state="state" :schema="formSchema" class="space-y-4" @submit="submitForm">
-                <UFormField label="字段类型" name="type" required>
+                <UFormField :label="t('console-ai-agent.configuration.formVariableType')" name="type" required>
                     <div class="flex items-center gap-2">
                         <UCheckbox
                             :model-value="state.type === 'text'"
                             indicator="end"
                             variant="card"
                             default-value
-                            label="文本输入"
+                            :label="t('console-ai-agent.configuration.formVariableTypeText')"
                             @update:model-value="state.type = 'text'"
                         />
                         <UCheckbox
@@ -214,7 +212,7 @@ const removeVariable = (index: number) => {
                             indicator="end"
                             variant="card"
                             default-value
-                            label="多行文本"
+                            :label="t('console-ai-agent.configuration.formVariableTypeTextarea')"
                             @update:model-value="state.type = 'textarea'"
                         />
                         <UCheckbox
@@ -222,27 +220,27 @@ const removeVariable = (index: number) => {
                             indicator="end"
                             variant="card"
                             default-value
-                            label="下拉选择"
+                            :label="t('console-ai-agent.configuration.formVariableTypeSelect')"
                             @update:model-value="state.type = 'select'"
                         />
                     </div>
                 </UFormField>
 
-                <UFormField label="变量名" name="name" required>
-                    <UInput v-model="state.name" placeholder="请输入" :ui="{ root: 'w-full' }" />
+                <UFormField :label="t('console-ai-agent.configuration.formVariableName')" name="name" required>
+                    <UInput v-model="state.name" :placeholder="t('console-ai-agent.configuration.formVariableNamePlaceholder')" :ui="{ root: 'w-full' }" />
                 </UFormField>
 
-                <UFormField label="显示名称" name="label" required>
-                    <UInput v-model="state.label" placeholder="请输入" :ui="{ root: 'w-full' }" />
+                <UFormField :label="t('console-ai-agent.configuration.formVariableLabel')" name="label" required>
+                    <UInput v-model="state.label" :placeholder="t('console-ai-agent.configuration.formVariableLabelPlaceholder')" :ui="{ root: 'w-full' }" />
                 </UFormField>
 
                 <!-- 选项配置（仅当类型为select时显示） -->
                 <div v-if="showOptions" class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <label class="text-sm font-medium">选项列表</label>
+                        <label class="text-sm font-medium">{{ $t("console-ai-agent.configuration.formVariableOptions") }}</label>
                         <UButton size="xs" color="primary" variant="ghost" @click="addOption">
                             <UIcon name="i-lucide-plus" />
-                            添加选项
+                            {{ $t("console-ai-agent.configuration.formVariableOptionsAdd") }}
                         </UButton>
                     </div>
 
@@ -259,7 +257,7 @@ const removeVariable = (index: number) => {
                                     <UInput
                                         icon="i-lucide-grip-vertical"
                                         v-model="state.options[index]"
-                                        placeholder="选项标签"
+                                        :placeholder="t('console-ai-agent.configuration.formVariableOptionsLabel')"
                                         :ui="{ root: 'flex-1', leadingIcon: 'drag-move' }"
                                     />
                                     <UButton
@@ -276,14 +274,14 @@ const removeVariable = (index: number) => {
                 </div>
 
                 <UFormField label=" " name="required">
-                    <UCheckbox v-model="state.required" label="必填" />
+                    <UCheckbox v-model="state.required" :label="t('console-ai-agent.configuration.required')" />
                 </UFormField>
 
                 <div class="mt-6 flex justify-end gap-2">
                     <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
-                        取消
+                        {{ $t("console-common.cancel") }}
                     </UButton>
-                    <UButton color="primary" size="lg" type="submit"> 保存 </UButton>
+                    <UButton color="primary" size="lg" type="submit"> {{ $t("console-common.save") }} </UButton>
                 </div>
             </UForm>
         </ProModal>

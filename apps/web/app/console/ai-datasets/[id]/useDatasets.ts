@@ -66,8 +66,8 @@ export function useDocumentActions() {
         try {
             await useModal({
                 color: "error",
-                title: t("datasets.documents.delete.title"),
-                content: t("datasets.documents.delete.desc"),
+                title: t("console-ai-datasets.documents.delete.title"),
+                content: t("console-ai-datasets.documents.delete.desc"),
                 confirmText: t("console-common.delete"),
                 ui: {
                     content: "!w-sm",
@@ -75,12 +75,12 @@ export function useDocumentActions() {
             });
 
             await apiDeleteDocument(id, datasetId.value as string);
-            toast.success(t("datasets.documents.delete.success"));
+            toast.success(t("common.message.deleteSuccess"));
             refreshNuxtData(`dataset-detail-${datasetId.value}`);
             onSuccess?.();
         } catch (error) {
             console.error("删除失败:", error);
-            toast.error(t("datasets.documents.delete.failed"));
+            toast.error((error as Error).message);
         }
     };
 
@@ -96,14 +96,16 @@ export function useDocumentActions() {
                             h(
                                 "div",
                                 { class: "text-sm text-gray-600 mb-3" },
-                                t("datasets.documents.renameModal.desc"),
+                                t("console-ai-datasets.documents.renameModal.desc"),
                             ),
                             h(UInput, {
                                 modelValue: newName.value,
                                 "onUpdate:modelValue": (value: string) => {
                                     newName.value = value;
                                 },
-                                placeholder: t("datasets.documents.renameModal.placeholder"),
+                                placeholder: t(
+                                    "console-ai-datasets.documents.renameModal.placeholder",
+                                ),
                                 class: "w-full",
                                 size: "md",
                             }),
@@ -112,7 +114,7 @@ export function useDocumentActions() {
             });
 
             await useModal({
-                title: t("datasets.documents.renameModal.title"),
+                title: t("console-ai-datasets.documents.renameModal.title"),
                 content: RenameForm,
                 confirmText: t("console-common.confirm"),
                 cancelText: t("console-common.cancel"),
@@ -126,12 +128,12 @@ export function useDocumentActions() {
                     fileName: newName.value,
                     datasetId: datasetId.value as string,
                 });
-                toast.success(t("datasets.documents.renameModal.success"));
+                toast.success(t("console-ai-datasets.documents.renameModal.success"));
                 onSuccess?.();
             }
         } catch (error) {
             console.error("重命名失败:", error);
-            toast.error(t("datasets.documents.renameModal.failed"));
+            toast.error(t("console-ai-datasets.documents.renameModal.failed"));
         }
     };
 
@@ -139,8 +141,8 @@ export function useDocumentActions() {
     const retryDocument = async (id: string, onSuccess?: () => void) => {
         try {
             await useModal({
-                title: t("datasets.documents.retry.title"),
-                content: t("datasets.documents.retry.desc"),
+                title: t("console-ai-datasets.documents.retry.title"),
+                content: t("console-ai-datasets.documents.retry.desc"),
                 confirmText: t("console-common.confirm"),
                 cancelText: t("console-common.cancel"),
                 ui: {
@@ -149,11 +151,11 @@ export function useDocumentActions() {
             });
 
             await apiRetryDocument(id);
-            toast.success(t("datasets.documents.retry.success"));
+            toast.success(t("console-ai-datasets.documents.retry.success"));
             onSuccess?.();
         } catch (error) {
             console.error("重试失败:", error);
-            toast.error(t("datasets.documents.retry.failed"));
+            toast.error(t("console-ai-datasets.documents.retry.failed"));
         }
     };
 
@@ -162,11 +164,11 @@ export function useDocumentActions() {
         try {
             await useModal({
                 title: enabled
-                    ? t("datasets.documents.enable.title")
-                    : t("datasets.documents.disable.title"),
+                    ? t("console-ai-datasets.documents.enable.title")
+                    : t("console-ai-datasets.documents.disable.title"),
                 content: enabled
-                    ? t("datasets.documents.enable.desc")
-                    : t("datasets.documents.disable.desc"),
+                    ? t("console-ai-datasets.documents.enable.desc")
+                    : t("console-ai-datasets.documents.disable.desc"),
                 confirmText: t("console-common.confirm"),
                 cancelText: t("console-common.cancel"),
                 ui: {
@@ -178,8 +180,8 @@ export function useDocumentActions() {
             toast.success(
                 t(
                     enabled
-                        ? "datasets.documents.enable.success"
-                        : "datasets.documents.disable.success",
+                        ? "console-ai-datasets.documents.enable.success"
+                        : "console-ai-datasets.documents.disable.success",
                 ),
             );
             onSuccess?.();
@@ -188,8 +190,8 @@ export function useDocumentActions() {
             toast.error(
                 t(
                     enabled
-                        ? "datasets.documents.enable.failed"
-                        : "datasets.documents.disable.failed",
+                        ? "console-ai-datasets.documents.enable.failed"
+                        : "console-ai-datasets.documents.disable.failed",
                 ),
             );
         }
@@ -216,13 +218,13 @@ export function useSegmentActions() {
             await useModal({
                 color: "error",
                 title: isBatch
-                    ? t("datasets.segments.batchDelete.title")
-                    : t("datasets.segments.delete.title"),
+                    ? t("console-ai-datasets.segments.batchDelete.title")
+                    : t("console-ai-datasets.segments.delete.title"),
                 content: isBatch
-                    ? t("datasets.segments.batchDelete.confirmDesc")
-                    : t("datasets.segments.batchDelete.confirmDesc2"),
+                    ? t("console-ai-datasets.segments.batchDelete.confirmDesc")
+                    : t("console-ai-datasets.segments.batchDelete.confirmDesc2"),
                 confirmText: isBatch
-                    ? t("datasets.segments.batchDelete.confirmText")
+                    ? t("console-ai-datasets.segments.batchDelete.confirmText")
                     : t("console-common.delete"),
                 ui: { content: "!w-sm" },
             });
@@ -232,18 +234,18 @@ export function useSegmentActions() {
             } else {
                 await apiDeleteSegment(ids, datasetId.value as string);
             }
-            toast.success(t("datasets.segments.batchDelete.success"));
+            toast.success(t("console-ai-datasets.segments.batchDelete.success"));
             onSuccess?.();
         } catch (error) {
             console.error("删除失败:", error);
-            toast.error(t("datasets.segments.batchDelete.failed"));
+            toast.error(t("console-ai-datasets.segments.batchDelete.failed"));
         }
     };
 
     /** 创建分段 */
     const createSegment = async (documentId: string, onSuccess?: () => void) => {
         if (!documentId) {
-            toast.error(t("datasets.segments.createSegmentModal.tip"));
+            toast.error(t("console-ai-datasets.segments.createSegmentModal.tip"));
             return;
         }
 
@@ -257,13 +259,15 @@ export function useSegmentActions() {
                             h(
                                 "div",
                                 { class: "text-sm text-gray-600 mb-3" },
-                                t("datasets.segments.createSegmentModal.desc"),
+                                t("console-ai-datasets.segments.createSegmentModal.desc"),
                             ),
                             h(UTextarea, {
                                 modelValue: newContent.value,
                                 "onUpdate:modelValue": (value: string) =>
                                     (newContent.value = value),
-                                placeholder: t("datasets.segments.createSegmentModal.placeholder"),
+                                placeholder: t(
+                                    "console-ai-datasets.segments.createSegmentModal.placeholder",
+                                ),
                                 class: "w-full",
                                 size: "md",
                                 rows: 10,
@@ -273,7 +277,7 @@ export function useSegmentActions() {
             });
 
             await useModal({
-                title: t("datasets.segments.createSegment"),
+                title: t("console-ai-datasets.segments.createSegment"),
                 content: CreateForm,
                 confirmText: t("console-common.create"),
                 cancelText: t("console-common.cancel"),
@@ -286,12 +290,12 @@ export function useSegmentActions() {
                     content: newContent.value.trim(),
                     datasetId: datasetId.value as string,
                 });
-                toast.success(t("datasets.segments.createSegmentModal.success"));
+                toast.success(t("console-ai-datasets.segments.createSegmentModal.success"));
                 onSuccess?.();
             }
         } catch (error) {
             console.error("创建失败:", error);
-            toast.error(t("datasets.segments.createSegmentModal.failed"));
+            toast.error(t("console-ai-datasets.segments.createSegmentModal.failed"));
         }
     };
 
@@ -307,13 +311,15 @@ export function useSegmentActions() {
                             h(
                                 "div",
                                 { class: "text-sm text-gray-600 mb-3" },
-                                t("datasets.segments.editSegmentModal.desc"),
+                                t("console-ai-datasets.segments.editSegmentModal.desc"),
                             ),
                             h(UTextarea, {
                                 modelValue: newContent.value,
                                 "onUpdate:modelValue": (value: string) =>
                                     (newContent.value = value),
-                                placeholder: t("datasets.segments.editSegmentModal.placeholder"),
+                                placeholder: t(
+                                    "console-ai-datasets.segments.editSegmentModal.placeholder",
+                                ),
                                 class: "w-full",
                                 size: "md",
                                 rows: 10,
@@ -323,7 +329,7 @@ export function useSegmentActions() {
             });
 
             await useModal({
-                title: t("datasets.segments.editSegmentModal.title"),
+                title: t("console-ai-datasets.segments.editSegmentModal.title"),
                 content: EditForm,
                 confirmText: t("console-common.confirm"),
                 cancelText: t("console-common.cancel"),
@@ -335,12 +341,12 @@ export function useSegmentActions() {
                     content: newContent.value,
                     datasetId: datasetId.value as string,
                 });
-                toast.success(t("datasets.segments.editSegmentModal.success"));
+                toast.success(t("console-ai-datasets.segments.editSegmentModal.success"));
                 onSuccess?.();
             }
         } catch (error) {
             console.error("编辑失败:", error);
-            toast.error(t("datasets.segments.editSegmentModal.failed"));
+            toast.error(t("console-ai-datasets.segments.editSegmentModal.failed"));
         }
     };
 

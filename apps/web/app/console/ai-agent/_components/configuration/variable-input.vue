@@ -23,6 +23,7 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const { t } = useI18n();
 const open = useVModel(props, "modelValue", emit);
 const inputs = useVModel(props, "inputs", emit);
 
@@ -34,7 +35,7 @@ const formSchema = computed(() => {
         let fieldSchema = string();
 
         if (field.required) {
-            fieldSchema = fieldSchema.required(`${field.label}不能为空`);
+            fieldSchema = fieldSchema.required(`${field.label}${t("console-ai-agent.configuration.notEmpty")}`);
         }
 
         schema[field.name] = fieldSchema;
@@ -55,9 +56,9 @@ const formSchema = computed(() => {
         <template #content>
             <div class="py-6 pr-6">
                 <div class="mb-6">
-                    <h2 class="text-foreground text-lg font-semibold">填写表单</h2>
+                    <h2 class="text-foreground text-lg font-semibold">{{ $t("console-ai-agent.configuration.variableTitle") }}</h2>
                     <p class="text-muted-foreground mt-1 text-sm">
-                        请填写以下表单信息，这些信息将用于角色设定中的变量替换
+                        {{ $t("console-ai-agent.configuration.variableDesc") }}
                     </p>
                 </div>
 
@@ -73,7 +74,7 @@ const formSchema = computed(() => {
                         >
                             <UInput
                                 v-model="inputs[field.name]"
-                                :placeholder="`请输入${field.label}`"
+                                :placeholder="`${t('console-common.required', { label: field.label })}`"
                                 :ui="{ root: 'w-full' }"
                             />
                         </UFormField>
@@ -87,7 +88,7 @@ const formSchema = computed(() => {
                         >
                             <UTextarea
                                 v-model="inputs[field.name]"
-                                :placeholder="`请输入${field.label}`"
+                                :placeholder="`${t('console-common.required', { label: field.label })}`"
                                 :ui="{ root: 'w-full' }"
                                 :rows="4"
                             />
@@ -103,7 +104,7 @@ const formSchema = computed(() => {
                             <USelect
                                 v-model="inputs[field.name]"
                                 :items="field.options"
-                                :placeholder="`请选择${field.label}`"
+                                :placeholder="`${t('console-common.requiredSelect', { label: field.label })}`"
                                 :ui="{ base: 'w-full' }"
                             />
                         </UFormField>

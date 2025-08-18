@@ -11,18 +11,19 @@ const VariableInput = defineAsyncComponent(() => import("./variable-input.vue"))
 const ModelConfig = defineAsyncComponent(() => import("./model-config.vue"));
 
 const route = useRoute();
+const { t } = useI18n();
 const agentId = (route.params as Record<string, string>).id;
 const agents = inject<Agent>("agents");
 const active = ref("0");
 const components: { value: string; label: string; component: any }[] = [
     {
         value: "0",
-        label: "功能配置",
+        label: t("console-ai-agent.configuration.func"),
         component: FuncSetup,
     },
     {
         value: "1",
-        label: "界面配置",
+        label: t("console-ai-agent.configuration.user"),
         component: UserSetup,
     },
 ];
@@ -61,7 +62,7 @@ const state = reactive<UpdateAgentConfigParams>({
 
 function handleVariableModalOpen() {
     if (state.formFields!.length === 0) {
-        useMessage().error("请先配置表单字段");
+        useMessage().error(t("console-ai-agent.configuration.variableInputDesc"));
         return;
     }
     showVariableInput.value = true;
@@ -69,7 +70,7 @@ function handleVariableModalOpen() {
 
 const { lockFn: handleUpdate, isLock } = useLockFn(async () => {
     await apiUpdateAgentConfig(agentId as string, state);
-    useMessage().success("更新成功");
+    useMessage().success(t("common.message.updateSuccess"));
 });
 
 onMounted(() => {
@@ -84,7 +85,7 @@ onMounted(() => {
 <template>
     <div class="flex h-full min-h-0 flex-1 flex-col p-4">
         <div class="flex items-center justify-between">
-            <h1 class="text-foreground text-lg font-medium">编排</h1>
+            <h1 class="text-foreground text-lg font-medium">{{ $t("console-ai-agent.menu.arrange") }}</h1>
         </div>
         <div class="flex h-full min-h-0 flex-1 gap-4 pt-4 pr-4">
             <div class="flex h-full min-h-0 w-1/2 flex-none flex-col">
@@ -107,7 +108,7 @@ onMounted(() => {
                             :loading="isLock"
                             @click="handleUpdate"
                         >
-                            更新
+                            {{ $t("console-common.update") }}
                         </UButton>
                     </AccessControl>
                 </div>
@@ -116,7 +117,9 @@ onMounted(() => {
                     class="bg-muted border-default flex h-full min-h-0 w-full flex-col rounded-lg border"
                 >
                     <div class="flex items-center justify-between p-4">
-                        <h1 class="text-foreground text-lg font-medium">调试与预览</h1>
+                        <h1 class="text-foreground text-lg font-medium">
+                            {{ $t("console-ai-agent.configuration.debugPreview") }}
+                        </h1>
                         <UButton
                             icon="i-lucide-settings-2"
                             color="primary"

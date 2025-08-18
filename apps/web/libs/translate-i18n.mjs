@@ -103,6 +103,28 @@ const LANG_CODE_MAP = languages.options.reduce((map, option) => {
 }, {});
 
 /**
+ * 按照源对象的键顺序重新排序目标对象
+ */
+function reorderObjectBySource(sourceObj, targetObj) {
+    const result = {};
+
+    // 按照源对象的键顺序遍历
+    for (const key of Object.keys(sourceObj)) {
+        if (targetObj.hasOwnProperty(key)) {
+            if (typeof sourceObj[key] === "object" && sourceObj[key] !== null && !Array.isArray(sourceObj[key])) {
+                // 递归处理嵌套对象
+                result[key] = reorderObjectBySource(sourceObj[key], targetObj[key]);
+            } else {
+                // 直接赋值
+                result[key] = targetObj[key];
+            }
+        }
+    }
+
+    return result;
+}
+
+/**
  * 深度翻译对象中缺失的键
  */
 async function translateMissingKeyDeeply(sourceObj, targetObj, toLanguage) {
@@ -183,6 +205,9 @@ async function translateFile(fileName, sourceLang, targetLang, i18nDir) {
         // 翻译缺失的键
         await translateMissingKeyDeeply(sourceObj, targetObj, targetLang);
 
+        // 按照源文件的字段顺序重新排序目标对象
+        const reorderedTargetObj = reorderObjectBySource(sourceObj, targetObj);
+
         // 确保目标目录存在
         const targetDir = path.dirname(targetFile);
         if (!fs.existsSync(targetDir)) {
@@ -190,7 +215,7 @@ async function translateFile(fileName, sourceLang, targetLang, i18nDir) {
         }
 
         // 写入更新后的目标文件
-        fs.writeFileSync(targetFile, JSON.stringify(targetObj, null, 2), "utf8");
+        fs.writeFileSync(targetFile, JSON.stringify(reorderedTargetObj, null, 4), "utf8");
 
         console.log(`✅ 成功翻译 ${fileName}.json 从 ${sourceLang} 到 ${targetLang}`);
         return true;

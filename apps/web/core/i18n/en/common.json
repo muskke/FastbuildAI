@@ -26,6 +26,7 @@
         "chatTitleRequired": "Name required",
         "expandSidebar": "Expand sidebar",
         "collapseSidebar": "Collapse sidebar",
+        "selectModel": "Please select the model first",
         "messages": {
             "thinking": "Thinking...",
             "typing": "Typing...",
@@ -85,12 +86,12 @@
         "deactivateWarning": "Data will be lost",
         "modifySuccess": "Updated",
         "modifyFailed": "Update failed",
-        "userNo": "User No.",
         "userIdCopied": "Copied",
         "userNoCopied": "Copied",
         "featureNotAvailable": "Coming soon",
         "purchaseRecord": "Orders",
         "powerDetail": "Usage",
+        "userNo": "User No.",
         "changePassword": "Change Password",
         "oldPassword": "Old Password",
         "newPassword": "New Password",
@@ -194,5 +195,41 @@
             "goBack": "Go back",
             "goHome": "Home"
         }
+    },
+    "unit": {
+        "general": {
+            "item": "piece",
+            "thing": "item",
+            "entry": "item",
+            "row": "Yes",
+            "column": "column",
+            "piece": "block",
+            "set": "cover",
+            "part": "part",
+            "list": "strip",
+            "number": "number"
+        },
+        "time": {
+            "second": "second",
+            "minute": "minute",
+            "hour": "hour",
+            "day": "sky",
+            "week": "week",
+            "month": "month",
+            "quarter": "quarter",
+            "year": "year"
+        }
+    },
+    "ai": {
+        "provider": "vendor",
+        "model": "model"
+    },
+    "message": {
+        "deleteSuccess": "Delete successful",
+        "deleteFailed": "Delete failed",
+        "deleteBatchSuccess": "Batch deletion is successful",
+        "deleteBatchFailed": "Bulk deletion failed",
+        "updateSuccess": "The update was successful",
+        "createSuccess": "Created successfully"
     }
 }
