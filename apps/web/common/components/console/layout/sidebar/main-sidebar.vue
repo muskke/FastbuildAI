@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ProScrollArea } from "@fastbuildai/ui";
 import type { NavigationMenuItem } from "@nuxt/ui";
 import { computed, ref } from "vue";
 
@@ -14,8 +15,6 @@ const ConsoleDashboardSearchButton = defineAsyncComponent(
     () => import("@/common/components/console/dashboard-search/button.vue"),
 );
 
-import { ProScrollArea } from "@fastbuildai/ui";
-
 const props = defineProps<{
     /** 是否折叠 */
     collapsed?: boolean;
@@ -23,15 +22,16 @@ const props = defineProps<{
     mobileMenu?: boolean;
 }>();
 
+defineShortcuts({
+    o: () => (isOpen.value = !isOpen.value),
+});
+
 const emits = defineEmits<{
     /** 打开移动端菜单 */
     (e: "update:mobileMenu"): void;
 }>();
 
 const isOpen = useVModel(props, "mobileMenu", emits);
-defineShortcuts({
-    o: () => (isOpen.value = !isOpen.value),
-});
 
 const { t } = useI18n();
 
