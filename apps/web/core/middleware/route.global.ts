@@ -36,7 +36,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             await userStore.getUser();
         }
         // 未登录且目标页需要权限 → 跳转登录
-        else if (!userStore.isLogin && to.meta.auth !== false && to.path !== ROUTES.LOGIN) {
+        if (!userStore.isLogin && to.meta.auth !== false && to.path !== ROUTES.LOGIN) {
             setPageLayout("full-screen");
             return `${ROUTES.LOGIN}?redirect=${to.fullPath}`;
         }
