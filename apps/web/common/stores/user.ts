@@ -101,6 +101,9 @@ export const useUserStore = defineStore("auth", () => {
 
     /** 去登录 */
     const toLogin = async (route = useRoute()) => {
+        if (route.path === ROUTES.LOGIN) {
+            return;
+        }
         clearToken();
         useRouter().push(`${ROUTES.LOGIN}?redirect=${route?.fullPath}`);
     };
