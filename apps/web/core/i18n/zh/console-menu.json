@@ -1,4 +1,6 @@
 {
+    "workspace": "工作空间",
+    "system": "系统管理",
     "functionMenu": "功能菜单",
     "dashboard": "数据看板",
     "common": {

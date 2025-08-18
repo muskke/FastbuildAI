@@ -17,7 +17,6 @@ const { lockFn: quickSave, isLock: saving } = useLockFn(async () => {
         });
     } catch (error) {
         console.error("保存失败:", error);
-        useMessage().error(t("console-common.messages.failed"));
     }
 });
 

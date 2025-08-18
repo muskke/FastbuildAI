@@ -5,5 +5,7 @@
     "general": "General",
     "mcpServerSetting": "MCP Settings",
     "buyRecord": "Orders",
-    "powerDetail": "Usage"
+    "powerDetail": "Usage",
+    "agent": "Agent",
+    "chat": "Chat"
 }
