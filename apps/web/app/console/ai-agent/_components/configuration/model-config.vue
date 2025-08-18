@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProSlider } from "@fastbuildai/ui";
+import ProSlider from "@fastbuildai/ui/components/pro-slider.vue";
 
 import type { ModelConfig } from "@/models/ai-agent";
 import type { AiModel } from "@/models/ai-conversation";
@@ -30,26 +30,26 @@ const modelId = ref(props.modelValue.id);
 const paramConfigs = [
     {
         key: "temperature",
-        label: "温度",
-        description: "控制输出的随机性，值越高结果越发散",
+        label: t("console-ai-provider.modelConfig.temperature.label"),
+        description: t("console-ai-provider.modelConfig.temperature.description"),
         range: { min: 0, max: 1, step: 0.1, default: 0 },
     },
     {
         key: "topP",
-        label: "Top P",
-        description: "控制核采样的阈值，通常与temperature互斥",
+        label: t("console-ai-provider.modelConfig.top_p.label"),
+        description: t("console-ai-provider.modelConfig.top_p.description"),
         range: { min: 0, max: 1, step: 0.1, default: 1 },
     },
     {
         key: "presencePenalty",
-        label: "存在惩罚",
-        description: "控制话题引入新词汇的倾向",
+        label: t("console-ai-provider.modelConfig.presence_penalty.label"),
+        description: t("console-ai-provider.modelConfig.presence_penalty.description"),
         range: { min: 0, max: 1, step: 0.1, default: 0 },
     },
     {
         key: "frequencyPenalty",
-        label: "频率惩罚",
-        description: "控制重复使用词汇的惩罚系数",
+        label: t("console-ai-provider.modelConfig.frequency_penalty.label"),
+        description: t("console-ai-provider.modelConfig.frequency_penalty.description"),
         range: { min: 0, max: 1, step: 0.1, default: 0 },
     },
 ] as const;
@@ -159,7 +159,7 @@ defineShortcuts({ o: () => (open.value = !open.value) });
         <template #content>
             <div class="bg-background w-84 overflow-hidden rounded-lg p-4 shadow-lg">
                 <div class="mb-4">
-                    <h3 class="mb-1 text-sm font-medium">模型</h3>
+                    <h3 class="mb-1 text-sm font-medium">{{ $t("console-ai-agent.configuration.model") }}</h3>
                     <ModelSelect
                         :model-value="modelId"
                         :disabled="props.disabled"
@@ -177,10 +177,10 @@ defineShortcuts({ o: () => (open.value = !open.value) });
 
                 <div class="space-y-2">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-medium">参数</h3>
-                        <UButton size="xs" variant="soft" color="primary" icon="i-lucide-plus"
-                            >预设</UButton
-                        >
+                        <h3 class="text-sm font-medium">{{ $t("console-ai-agent.configuration.parameters") }}</h3>
+                        <UButton size="xs" variant="soft" color="primary" icon="i-lucide-plus">
+                            {{ $t("console-ai-agent.configuration.preset") }}
+                        </UButton>
                     </div>
 
                     <div class="space-y-3">

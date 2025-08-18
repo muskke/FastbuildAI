@@ -29,9 +29,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 // 检索模式映射
 const retrievalModeMap = {
-    vector: t("datasets.retrieval.vector"),
-    fullText: t("datasets.retrieval.fullText"),
-    hybrid: t("datasets.retrieval.hybrid"),
+    vector: t("console-ai-datasets.retrieval.vector"),
+    fullText: t("console-ai-datasets.retrieval.fullText"),
+    hybrid: t("console-ai-datasets.retrieval.hybrid"),
 } as const;
 </script>
 

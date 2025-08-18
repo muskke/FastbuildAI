@@ -26,6 +26,7 @@
         "chatTitleRequired": "会話タイトルは必須です",
         "expandSidebar": "サイドバーを展開",
         "collapseSidebar": "サイドバーを折りたたむ",
+        "selectModel": "モデルを選択してください",
         "messages": {
             "thinking": "AIが考え中...",
             "typing": "入力中...",
@@ -76,7 +77,6 @@
         "deactivateAccount": "アカウントを削除",
         "deactivate": "削除",
         "editNickname": "ニックネームを編集",
-        "userNo": "ユーザー番号",
         "nicknamePlaceholder": "ニックネームを入力してください",
         "nicknameRequired": "ニックネームは必須です",
         "nicknameTooLong": "ニックネームは20文字以内で入力してください",
@@ -91,6 +91,7 @@
         "featureNotAvailable": "機能は現在利用できません",
         "purchaseRecord": "購入履歴",
         "powerDetail": "計算力明細",
+        "userNo": "ユーザー番号",
         "changePassword": "パスワード変更",
         "oldPassword": "現在のパスワード",
         "newPassword": "新しいパスワード",
@@ -194,5 +195,41 @@
             "goBack": "前のページに戻る",
             "goHome": "ホームに戻る"
         }
+    },
+    "unit": {
+        "general": {
+            "item": "個",
+            "thing": "件",
+            "entry": "項目",
+            "row": "行",
+            "column": "列",
+            "piece": "塊",
+            "set": "セット",
+            "part": "部分",
+            "list": "条",
+            "number": "号"
+        },
+        "time": {
+            "second": "秒",
+            "minute": "分",
+            "hour": "時間",
+            "day": "天",
+            "week": "周",
+            "month": "月",
+            "quarter": "四半期",
+            "year": "年"
+        }
+    },
+    "ai": {
+        "provider": "供給者",
+        "model": "模型"
+    },
+    "message": {
+        "deleteSuccess": "削除が成功しました",
+        "deleteFailed": "削除に失敗しました",
+        "deleteBatchSuccess": "バッチ削除に成功しました",
+        "deleteBatchFailed": "バッチ削除に失敗しました",
+        "updateSuccess": "更新に成功しました",
+        "createSuccess": "作成成功"
     }
 }

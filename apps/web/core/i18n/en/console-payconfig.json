@@ -9,7 +9,6 @@
     "wxMiniProgram": "Mini Program",
     "H5Pay": "H5 Pay",
     "oaPay": "Official Account Pay",
-
     "form": {
         "addLogo": "Add Logo",
         "formValidationFailed": "Validation Failed",

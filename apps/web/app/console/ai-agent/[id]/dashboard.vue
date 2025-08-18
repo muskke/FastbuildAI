@@ -12,7 +12,8 @@ import { apiGetAgentStatistics } from "@/services/console/ai-agent";
 
 // 路由和配置
 const route = useRoute();
-const agentId = computed(() => (route.params as any).id as string);
+const agentId = computed(() => (route.params as Record<string, string>).id) as ComputedRef<string>;
+const { t } = useI18n();
 const appConfig = useAppConfig();
 const colorMode = useColorMode();
 
@@ -172,14 +173,22 @@ const chartOptions = computed(() => {
 
     return {
         conversations: createChartConfig(
-            "对话数",
+            t("console-ai-agent.dashboard.conversations"),
             statistics.value.trends.conversations,
             currentColor.value,
         ),
-        messages: createChartConfig("消息数", statistics.value.trends.messages, successColor.value),
-        tokens: createChartConfig("Token消耗", statistics.value.trends.tokens, warningColor.value),
+        messages: createChartConfig(
+            t("console-ai-agent.dashboard.messages"),
+            statistics.value.trends.messages,
+            successColor.value,
+        ),
+        tokens: createChartConfig(
+            t("console-ai-agent.dashboard.tokens"),
+            statistics.value.trends.tokens,
+            warningColor.value,
+        ),
         activeUsers: createChartConfig(
-            "活跃用户",
+            t("console-ai-agent.dashboard.activeUsers"),
             statistics.value.trends.activeUsers,
             currentColor.value,
             "bar",
@@ -214,8 +223,10 @@ definePageMeta({ layout: "full-screen" });
         <!-- 标题和时间选择器 -->
         <div class="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-                <h1 class="text-foreground text-2xl font-bold">数据看板</h1>
-                <p class="text-muted-foreground mt-1">智能体使用情况统计与分析</p>
+                <h1 class="text-foreground text-2xl font-bold">
+                    {{ t("console-ai-agent.dashboard.title") }}
+                </h1>
+                <p class="text-muted-foreground mt-1">{{ t("console-ai-agent.dashboard.desc") }}</p>
             </div>
             <ProDateRangePicker
                 v-model:start="state.startDate"
@@ -229,7 +240,9 @@ definePageMeta({ layout: "full-screen" });
         <!-- 加载状态 -->
         <div v-if="loading" class="flex h-full flex-col items-center justify-center">
             <UIcon name="i-lucide-loader-2" class="text-primary h-6 w-6 animate-spin" />
-            <span class="text-muted-foreground ml-2">加载统计数据中...</span>
+            <span class="text-muted-foreground ml-2">{{
+                t("console-ai-agent.dashboard.loading")
+            }}</span>
         </div>
 
         <!-- 统计数据展示 -->
@@ -240,7 +253,9 @@ definePageMeta({ layout: "full-screen" });
                     <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                         <UCard>
                             <template #header>
-                                <div class="mb-1 flex items-center font-medium">对话统计</div>
+                                <div class="mb-1 flex items-center font-medium">
+                                    {{ t("console-ai-agent.dashboard.conversationStatistics") }}
+                                </div>
                                 <div class="text-muted-foreground mb-1 flex items-center gap-1">
                                     <UIcon name="i-lucide-info" class="size-3" />
                                     <TimeDisplay
@@ -261,11 +276,13 @@ definePageMeta({ layout: "full-screen" });
                                                     )
                                                 }}
                                             </span>
-                                            <span class="text-muted-foreground ml-1 text-xs"
-                                                >次</span
-                                            >
+                                            <span class="text-muted-foreground ml-1 text-xs">
+                                                {{ t("console-ai-agent.dashboard.times") }}
+                                            </span>
                                         </div>
-                                        <div class="text-muted-foreground text-xs">总对话数</div>
+                                        <div class="text-muted-foreground text-xs">
+                                            {{ t("console-ai-agent.dashboard.totalConversations") }}
+                                        </div>
                                     </div>
                                     <USeparator orientation="vertical" class="h-6" />
                                     <div>
@@ -277,11 +294,13 @@ definePageMeta({ layout: "full-screen" });
                                                     )
                                                 }}
                                             </span>
-                                            <span class="text-muted-foreground ml-1 text-xs"
-                                                >条</span
-                                            >
+                                            <span class="text-muted-foreground ml-1 text-xs">
+                                                {{ t("console-ai-agent.dashboard.messages") }}
+                                            </span>
                                         </div>
-                                        <div class="text-muted-foreground text-xs">总消息数</div>
+                                        <div class="text-muted-foreground text-xs">
+                                            {{ t("console-ai-agent.dashboard.totalMessages") }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div
@@ -291,14 +310,18 @@ definePageMeta({ layout: "full-screen" });
                                         name="i-lucide-message-circle"
                                         class="text-primary size-7"
                                     />
-                                    <span class="text-xs">对话数据</span>
+                                    <span class="text-xs">
+                                        {{ t("console-ai-agent.dashboard.conversationData") }}
+                                    </span>
                                 </div>
                             </div>
                         </UCard>
 
                         <UCard>
                             <template #header>
-                                <div class="mb-1 flex items-center font-medium">Token消耗</div>
+                                <div class="mb-1 flex items-center font-medium">
+                                    {{ t("console-ai-agent.dashboard.tokenConsumption") }}
+                                </div>
                                 <div class="text-muted-foreground mb-1 flex items-center gap-1">
                                     <UIcon name="i-lucide-info" class="size-3" />
                                     <TimeDisplay
@@ -319,11 +342,13 @@ definePageMeta({ layout: "full-screen" });
                                                     )
                                                 }}
                                             </span>
-                                            <span class="text-muted-foreground ml-1 text-xs"
-                                                >个</span
-                                            >
+                                            <span class="text-muted-foreground ml-1 text-xs">
+                                                {{ t("console-ai-agent.dashboard.tokens") }}
+                                            </span>
                                         </div>
-                                        <div class="text-muted-foreground text-xs">总Token消耗</div>
+                                        <div class="text-muted-foreground text-xs">
+                                            {{ t("console-ai-agent.dashboard.totalTokenConsumption") }}
+                                        </div>
                                     </div>
                                     <USeparator orientation="vertical" class="h-6" />
                                     <div>
@@ -335,25 +360,31 @@ definePageMeta({ layout: "full-screen" });
                                                     )
                                                 }}
                                             </span>
-                                            <span class="text-muted-foreground ml-1 text-xs"
-                                                >次</span
-                                            >
+                                            <span class="text-muted-foreground ml-1 text-xs">
+                                                {{ t("console-ai-agent.dashboard.hits") }}
+                                            </span>
                                         </div>
-                                        <div class="text-muted-foreground text-xs">标注命中</div>
+                                        <div class="text-muted-foreground text-xs">
+                                            {{ t("console-ai-agent.dashboard.annotationHits") }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div
                                     class="text-muted-foreground flex flex-col items-center justify-center"
                                 >
                                     <UIcon name="i-lucide-zap" class="text-primary size-7" />
-                                    <span class="text-xs">消耗统计</span>
+                                    <span class="text-xs">{{
+                                        t("console-ai-agent.dashboard.consumptionStatistics")
+                                    }}</span>
                                 </div>
                             </div>
                         </UCard>
 
                         <UCard>
                             <template #header>
-                                <div class="mb-1 flex items-center font-medium">标注管理</div>
+                                <div class="mb-1 flex items-center font-medium">
+                                    {{ t("console-ai-agent.dashboard.annotationManagement") }}
+                                </div>
                                 <div class="text-muted-foreground mb-1 flex items-center gap-1">
                                     <UIcon name="i-lucide-info" class="size-3" />
                                     <TimeDisplay
@@ -367,33 +398,39 @@ definePageMeta({ layout: "full-screen" });
                                 <div class="flex items-center gap-4">
                                     <div>
                                         <div>
-                                            <span class="text-2xl font-bold">{{
-                                                statistics.overview.totalAnnotations
-                                            }}</span>
-                                            <span class="text-muted-foreground ml-1 text-xs"
-                                                >个</span
-                                            >
+                                            <span class="text-2xl font-bold">
+                                                {{ statistics.overview.totalAnnotations }}
+                                            </span>
+                                            <span class="text-muted-foreground ml-1 text-xs">
+                                                {{ t("console-ai-agent.dashboard.annotations") }}
+                                            </span>
                                         </div>
-                                        <div class="text-muted-foreground text-xs">总标注数</div>
+                                        <div class="text-muted-foreground text-xs">
+                                            {{ t("console-ai-agent.dashboard.totalAnnotations") }}
+                                        </div>
                                     </div>
                                     <USeparator orientation="vertical" class="h-6" />
                                     <div>
                                         <div>
-                                            <span class="text-2xl font-bold">{{
-                                                statistics.overview.activeAnnotations
-                                            }}</span>
-                                            <span class="text-muted-foreground ml-1 text-xs"
-                                                >个</span
-                                            >
+                                            <span class="text-2xl font-bold">
+                                                {{ statistics.overview.activeAnnotations }}
+                                            </span>
+                                            <span class="text-muted-foreground ml-1 text-xs">
+                                                {{ t("console-ai-agent.dashboard.annotations") }}
+                                            </span>
                                         </div>
-                                        <div class="text-muted-foreground text-xs">活跃标注</div>
+                                        <div class="text-muted-foreground text-xs">
+                                            {{ t("console-ai-agent.dashboard.activeAnnotations") }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div
                                     class="text-muted-foreground flex flex-col items-center justify-center"
                                 >
                                     <UIcon name="i-lucide-bookmark" class="text-primary size-7" />
-                                    <span class="text-xs">标注数据</span>
+                                    <span class="text-xs">
+                                        {{ t("console-ai-agent.dashboard.annotationData") }}
+                                    </span>
                                 </div>
                             </div>
                         </UCard>
@@ -404,7 +441,9 @@ definePageMeta({ layout: "full-screen" });
                         <UCard>
                             <template #header>
                                 <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-medium">对话趋势</h3>
+                                    <h3 class="text-lg font-medium">
+                                        {{ t("console-ai-agent.dashboard.conversationTrend") }}
+                                    </h3>
                                 </div>
                                 <div class="text-muted-foreground mb-1 flex items-center gap-1">
                                     <UIcon name="i-lucide-info" class="size-3" />
@@ -433,7 +472,9 @@ definePageMeta({ layout: "full-screen" });
                         <UCard>
                             <template #header>
                                 <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-medium">消息趋势</h3>
+                                    <h3 class="text-lg font-medium">
+                                        {{ t("console-ai-agent.dashboard.messageTrend") }}
+                                    </h3>
                                 </div>
                                 <div class="text-muted-foreground mb-1 flex items-center gap-1">
                                     <UIcon name="i-lucide-info" class="size-3" />
@@ -462,7 +503,9 @@ definePageMeta({ layout: "full-screen" });
                         <UCard>
                             <template #header>
                                 <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-medium">Token输出数</h3>
+                                    <h3 class="text-lg font-medium">
+                                        {{ t("console-ai-agent.dashboard.tokenOutputCount") }}
+                                    </h3>
                                 </div>
                                 <div class="text-muted-foreground mb-1 flex items-center gap-1">
                                     <UIcon name="i-lucide-info" class="size-3" />
@@ -491,7 +534,9 @@ definePageMeta({ layout: "full-screen" });
                         <UCard>
                             <template #header>
                                 <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-medium">活跃用户数</h3>
+                                    <h3 class="text-lg font-medium">
+                                        {{ t("console-ai-agent.dashboard.activeUsers") }}
+                                    </h3>
                                 </div>
                                 <div class="text-muted-foreground mb-1 flex items-center gap-1">
                                     <UIcon name="i-lucide-info" class="size-3" />
@@ -523,9 +568,13 @@ definePageMeta({ layout: "full-screen" });
 
         <!-- 错误状态 -->
         <div v-else class="py-12 text-center">
-            <UIcon name="i-lucide-alert-circle" class="mx-auto mb-4 h-12 w-12 text-red-500" />
-            <p class="text-muted-foreground">加载统计数据失败</p>
-            <UButton @click="fetchStatistics" class="mt-4" variant="outline">重新加载</UButton>
+            <UIcon name="i-lucide-alert-circle" class="mx-auto mb-4 h-12 w-12 text-error" />
+            <p class="text-muted-foreground">
+                {{ t("console-ai-agent.dashboard.loadStatisticsFailed") }}
+            </p>
+            <UButton @click="fetchStatistics" class="mt-4" variant="outline">{{
+                t("console-ai-agent.dashboard.reload")
+            }}</UButton>
         </div>
     </div>
 </template>

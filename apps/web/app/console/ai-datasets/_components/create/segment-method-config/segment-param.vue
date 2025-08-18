@@ -21,18 +21,18 @@ const indexingConfig = useVModel(props, "modelValue", emit);
         <!-- 通用分段参数 -->
         <div v-if="indexingConfig.documentMode === 'normal'" class="space-y-4">
             <div class="grid grid-cols-3 gap-6">
-                <UFormField :label="$t('datasets.create.segment.segmentIdentifier')">
+                <UFormField :label="$t('console-ai-datasets.create.segment.segmentIdentifier')">
                     <UInput
                         v-model="indexingConfig.segmentation!.segmentIdentifier"
                         placeholder="\n\n"
                     />
                     <template #help>
                         <p class="text-muted-foreground text-xs">
-                            {{ $t("datasets.create.segment.segmentIdentifierDesc") }}
+                            {{ $t("console-ai-datasets.create.segment.segmentIdentifierDesc") }}
                         </p>
                     </template>
                 </UFormField>
-                <UFormField :label="$t('datasets.create.segment.maxSegmentLength')">
+                <UFormField :label="$t('console-ai-datasets.create.segment.maxSegmentLength')">
                     <UInput
                         v-model.number="indexingConfig.segmentation!.maxSegmentLength"
                         type="number"
@@ -41,7 +41,7 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                         placeholder="1024"
                     />
                 </UFormField>
-                <UFormField :label="$t('datasets.create.segment.segmentOverlap')">
+                <UFormField :label="$t('console-ai-datasets.create.segment.segmentOverlap')">
                     <UInput
                         v-model.number="indexingConfig.segmentation!.segmentOverlap"
                         type="number"
@@ -53,18 +53,18 @@ const indexingConfig = useVModel(props, "modelValue", emit);
             </div>
             <div class="mt-4">
                 <h5 class="text-foreground mb-2 text-sm font-medium">
-                    {{ $t("datasets.create.segment.preprocessingRules") }}
+                    {{ $t("console-ai-datasets.create.segment.preprocessingRules") }}
                 </h5>
                 <div class="space-y-2">
                     <UCheckbox
                         v-model="indexingConfig.preprocessingRules!.replaceConsecutiveWhitespace!"
                         size="sm"
-                        :label="$t('datasets.create.segment.replaceConsecutiveWhitespace')"
+                        :label="$t('console-ai-datasets.create.segment.replaceConsecutiveWhitespace')"
                     />
                     <UCheckbox
                         v-model="indexingConfig.preprocessingRules!.removeUrlsAndEmails!"
                         size="sm"
-                        :label="$t('datasets.create.segment.removeUrlsAndEmails')"
+                        :label="$t('console-ai-datasets.create.segment.removeUrlsAndEmails')"
                     />
                 </div>
             </div>
@@ -74,7 +74,7 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                     :loading="isPreviewing"
                     @click.stop="onPreviewSegments"
                 >
-                    {{ $t("datasets.create.segment.preview") }}
+                    {{ $t("console-ai-datasets.create.segment.preview") }}
                 </UButton>
             </div>
         </div>
@@ -86,7 +86,7 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                 <div class="mb-3 flex items-center gap-2">
                     <UIcon name="i-heroicons-document-text" class="text-primary h-4 w-4" />
                     <span class="text-xs font-medium">
-                        {{ $t("datasets.create.segment.parentContext") }}
+                        {{ $t("console-ai-datasets.create.segment.parentContext") }}
                     </span>
                 </div>
 
@@ -103,24 +103,24 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                     <div class="mb-2 flex items-center gap-2">
                         <UIcon name="i-heroicons-document-text" class="text-primary h-4 w-4" />
                         <span class="text-xs font-medium">
-                            {{ $t("datasets.create.segment.paragraph") }}
+                            {{ $t("console-ai-datasets.create.segment.paragraph") }}
                         </span>
                     </div>
                     <p class="text-muted-foreground mb-3 text-xs">
-                        {{ $t("datasets.create.segment.parentContextDesc") }}
+                        {{ $t("console-ai-datasets.create.segment.parentContextDesc") }}
                     </p>
                     <div
                         v-if="indexingConfig.parentContextMode === 'paragraph'"
                         class="grid grid-cols-2 gap-8"
                     >
-                        <UFormField :label="$t('datasets.create.segment.segmentIdentifier')">
+                        <UFormField :label="$t('console-ai-datasets.create.segment.segmentIdentifier')">
                             <UInput
                                 v-model="indexingConfig.segmentation!.segmentIdentifier"
                                 placeholder="\n\n"
                                 size="sm"
                             />
                         </UFormField>
-                        <UFormField :label="$t('datasets.create.segment.maxSegmentLength')">
+                        <UFormField :label="$t('console-ai-datasets.create.segment.maxSegmentLength')">
                             <UInput
                                 v-model.number="indexingConfig.segmentation!.maxSegmentLength"
                                 type="number"
@@ -146,11 +146,11 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                     <div class="mb-2 flex items-center gap-2">
                         <UIcon name="i-heroicons-document" class="text-primary h-4 w-4" />
                         <span class="text-xs font-medium">
-                            {{ $t("datasets.create.segment.fullText") }}
+                            {{ $t("console-ai-datasets.create.segment.fullText") }}
                         </span>
                     </div>
                     <p class="text-muted-foreground text-xs">
-                        {{ $t("datasets.create.segment.fullTextDesc") }}
+                        {{ $t("console-ai-datasets.create.segment.fullTextDesc") }}
                     </p>
                 </div>
             </div>
@@ -160,12 +160,12 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                 <div class="mb-3 flex items-center gap-2">
                     <UIcon name="i-heroicons-squares-2x2" class="size-5" />
                     <span class="text-xs font-medium">
-                        {{ $t("datasets.create.segment.subSegmentation") }}
+                        {{ $t("console-ai-datasets.create.segment.subSegmentation") }}
                     </span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-8">
-                    <UFormField :label="$t('datasets.create.segment.segmentIdentifier')">
+                    <UFormField :label="$t('console-ai-datasets.create.segment.segmentIdentifier')">
                         <UInput
                             v-model="indexingConfig.subSegmentation!.segmentIdentifier"
                             placeholder="\n"
@@ -173,7 +173,7 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                         />
                     </UFormField>
 
-                    <UFormField :label="$t('datasets.create.segment.maxSegmentLength')">
+                    <UFormField :label="$t('console-ai-datasets.create.segment.maxSegmentLength')">
                         <UInput
                             v-model.number="indexingConfig.subSegmentation!.maxSegmentLength"
                             type="number"
@@ -189,18 +189,18 @@ const indexingConfig = useVModel(props, "modelValue", emit);
             <!-- 文本预处理规则 -->
             <div>
                 <h5 class="text-foreground mb-2 text-sm font-medium">
-                    {{ $t("datasets.create.segment.preprocessingRules") }}
+                    {{ $t("console-ai-datasets.create.segment.preprocessingRules") }}
                 </h5>
                 <div class="space-y-2">
                     <UCheckbox
                         v-model="indexingConfig.preprocessingRules!.replaceConsecutiveWhitespace"
                         size="sm"
-                        :label="$t('datasets.create.segment.replaceConsecutiveWhitespace')"
+                        :label="$t('console-ai-datasets.create.segment.replaceConsecutiveWhitespace')"
                     />
                     <UCheckbox
                         v-model="indexingConfig.preprocessingRules!.removeUrlsAndEmails"
                         size="sm"
-                        :label="$t('datasets.create.segment.removeUrlsAndEmails')"
+                        :label="$t('console-ai-datasets.create.segment.removeUrlsAndEmails')"
                     />
                 </div>
             </div>
@@ -211,7 +211,7 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                     :loading="isPreviewing"
                     @click.stop="onPreviewSegments"
                 >
-                    {{ $t("datasets.create.segment.preview") }}
+                    {{ $t("console-ai-datasets.create.segment.preview") }}
                 </UButton>
             </div>
         </div>

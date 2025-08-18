@@ -49,16 +49,16 @@ const generateId = () => `file_${Date.now()}_${Math.random().toString(36).slice(
 const validateFile = (file: File) => {
     const ext = file.name.split(".").pop()?.toUpperCase() || "";
     // if (!UPLOAD_CONFIG.supportedTypes.includes(ext)) {
-    //     return { valid: false, error: t("datasets.create.file.unsupportedFileType", { ext }) };
+    //     return { valid: false, error: t("console-ai-datasets.create.file.unsupportedFileType", { ext }) };
     // }
     // 只允许 txt 和 docx 文件
     if (ext !== "TXT" && ext !== "DOCX") {
-        return { valid: false, error: t("datasets.create.file.unsupportedFileType", { ext }) };
+        return { valid: false, error: t("console-ai-datasets.create.file.unsupportedFileType", { ext }) };
     }
     if (file.size > UPLOAD_CONFIG.maxSize * 1024 * 1024) {
         return {
             valid: false,
-            error: t("datasets.create.file.fileTooLarge", { maxSize: UPLOAD_CONFIG.maxSize }),
+            error: t("console-ai-datasets.create.file.fileTooLarge", { maxSize: UPLOAD_CONFIG.maxSize }),
         };
     }
     return { valid: true };
@@ -121,7 +121,7 @@ const uploadFiles = async (items: FileItem[]) => {
             console.error(`上传失败: ${item.file.name}`, err);
             updateFile(item.id, {
                 status: FILE_STATUS.ERROR,
-                error: t("datasets.create.file.uploadFailed"),
+                error: t("console-ai-datasets.create.file.uploadFailed"),
             });
         }
     }
@@ -162,23 +162,23 @@ const handleDropOver = (e: DragEvent) => {
             <div class="flex w-full items-center justify-center">
                 <UIcon name="i-heroicons-cloud-arrow-up" class="text-muted-foreground size-6" />
                 <UButton color="neutral" variant="link">
-                    {{ t("datasets.create.file.dragOrSelectFiles") }}
+                    {{ t("console-ai-datasets.create.file.dragOrSelectFiles") }}
                 </UButton>
                 <UButton color="primary" variant="link" @click="fileInputRef?.click()">
-                    {{ t("datasets.create.file.chooseFile") }}
+                    {{ t("console-ai-datasets.create.file.chooseFile") }}
                 </UButton>
             </div>
             <div class="text-muted-foreground text-sm">
                 <p>
                     {{
-                        t("datasets.create.file.supportedTypes", {
+                        t("console-ai-datasets.create.file.supportedTypes", {
                             types: UPLOAD_CONFIG.supportedTypes.join(", "),
                         })
                     }}
                 </p>
                 <p>
                     {{
-                        t("datasets.create.file.fileSizeLimit", { maxSize: UPLOAD_CONFIG.maxSize })
+                        t("console-ai-datasets.create.file.fileSizeLimit", { maxSize: UPLOAD_CONFIG.maxSize })
                     }}
                 </p>
             </div>
@@ -195,6 +195,6 @@ const handleDropOver = (e: DragEvent) => {
     </div>
 
     <div class="mt-2 text-sm text-muted-foreground">
-        {{ t("datasets.create.file.comingSoon") }}
+        {{ t("console-ai-datasets.create.file.comingSoon") }}
     </div>
 </template>

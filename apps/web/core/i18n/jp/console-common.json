@@ -19,9 +19,9 @@
     "showColumns": "表示列",
     "edit": "編集",
     "empty": "データがありません",
-    "open": "開く",
     "copy": "コピー",
     "now": "現在",
+    "refresh": "更新",
     "error": "エラーメッセージ",
     "batchEnable": "一括有効化",
     "batchDisable": "一括無効化",
@@ -99,6 +99,7 @@
     "reset": "リセット",
     "tips": "ご注意",
     "required": "{ label }を入力してください",
+    "requiredSelect": "選択してください { label }",
     "theme": {
         "dark": "ダーク",
         "light": "ライト",
@@ -141,6 +142,7 @@
     "createAt": "作成日時",
     "updateAt": "更新日時",
     "total": "合計",
+    "open": "開く",
     "items": "件",
     "unit": "件",
     "yuan": "円",
@@ -190,7 +192,8 @@
         "modelSelect": "モデルを選択",
         "searchModel": "モデルを検索...",
         "colorSelect": "色を選択",
-        "mcpSelect": "MCPを選択..."
+        "mcpSelect": "MCPを選択...",
+        "modelsCount": "モデル"
     },
     "colorPicker": {
         "presetColors": "プリセットカラー",
