@@ -77,7 +77,8 @@
         "top": "顶级菜单",
         "catalogue": "目录",
         "menu": "菜单",
-        "button": "按钮"
+        "button": "按钮",
+        "group": "组别"
     },
     "paste": "粘贴",
     "cut": "剪切",
