@@ -14,6 +14,7 @@ import {
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcryptjs from "bcryptjs";
+import { randomUUID } from "crypto";
 import fse from "fs-extra";
 import * as path from "path";
 import { DataSource, Repository } from "typeorm";
@@ -112,10 +113,21 @@ export class DatabaseInitService implements OnModuleInit {
             const menus = {
                 menus: [
                     {
-                        id: `menu_${Date.now()}`,
+                        id: "menu_1755512044425_a2764bd6-6ee5-4134-9844-6f952371e9e3",
                         icon: "i-lucide-message-square-quote",
-                        link: { name: "首页", path: "/", type: "system", query: {} },
+                        link: { name: "menu.chat", path: "/", type: "system", query: {} },
                         title: "对话",
+                    },
+                    {
+                        id: "menu_1755255556893_4574a410-9f08-4c41-b73a-4a07236be704",
+                        icon: "i-lucide-bot-message-square",
+                        link: {
+                            name: "menu.agent",
+                            path: "/public/square",
+                            type: "system",
+                            query: {},
+                        },
+                        title: "智能体",
                     },
                 ],
                 layout: "layout-5",
