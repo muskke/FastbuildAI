@@ -181,6 +181,7 @@ onMounted(() => getLists());
                                 icon="i-lucide-file-input"
                                 size="sm"
                                 label="导入DSL文件"
+                                @click.stop="toast.info('暂未开放')"
                             />
                         </div>
                     </div>

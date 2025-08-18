@@ -20,7 +20,7 @@ const state = useVModel(props, "modelValue", emit);
 </script>
 
 <template>
-    <div class="space-y-4">
+    <div class="space-y-4 overflow-y-auto">
         <!-- 角色设定提示词区域 -->
         <Prompt v-model="state.rolePrompt as string" />
 

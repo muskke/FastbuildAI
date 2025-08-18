@@ -49,7 +49,8 @@ const { lockFn: handleSubmit, isLock } = useLockFn(async () => {
 onMounted(() => {
     (Reflect.ownKeys(formData) as Array<keyof UpdateDatasetParams>).forEach((key) => {
         if (unref(datasets) && Object.prototype.hasOwnProperty.call(unref(datasets), key)) {
-            formData[key] = (unref(datasets)?.[key] as never) ?? formData[key];
+            const value = JSON.parse(JSON.stringify(unref(datasets)?.[key] as never)) ?? formData[key];
+            formData[key] = value;
         }
     });
 });
