@@ -228,17 +228,6 @@ onMounted(() => getLists());
                 @change="getLists"
             />
 
-            <ModelSelect
-                v-model="searchForm.modelId"
-                :default-selected="false"
-                :button-ui="{
-                    variant: 'outline',
-                    color: 'neutral',
-                    class: 'bg-background',
-                }"
-                @change="getLists"
-            />
-
             <ProDateRangePicker
                 v-model:start="searchForm.startDate"
                 v-model:end="searchForm.endDate"
