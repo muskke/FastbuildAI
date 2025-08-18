@@ -23,8 +23,8 @@ const indexingConfig = useVModel(props, "modelValue", emit);
     <div class="space-y-3">
         <!-- 通用分段 -->
         <OptionCard
-            :title="$t('datasets.create.segment.general')"
-            :description="$t('datasets.create.segment.generalDesc')"
+            :title="$t('console-ai-datasets.create.segment.general')"
+            :description="$t('console-ai-datasets.create.segment.generalDesc')"
             icon="i-heroicons-squares-2x2"
             :selected="indexingConfig.documentMode === 'normal'"
             @click="indexingConfig.documentMode = 'normal'"
@@ -38,8 +38,8 @@ const indexingConfig = useVModel(props, "modelValue", emit);
 
         <!-- 父子分段 -->
         <OptionCard
-            :title="$t('datasets.create.segment.hierarchical')"
-            :description="$t('datasets.create.segment.hierarchicalDesc')"
+            :title="$t('console-ai-datasets.create.segment.hierarchical')"
+            :description="$t('console-ai-datasets.create.segment.hierarchicalDesc')"
             icon="i-heroicons-document-duplicate"
             :selected="indexingConfig.documentMode === 'hierarchical'"
             @click="indexingConfig.documentMode = 'hierarchical'"

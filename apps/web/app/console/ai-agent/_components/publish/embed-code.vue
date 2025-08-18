@@ -93,14 +93,14 @@ const copyCode = (code: string) => {
 <template>
     <div class="space-y-4">
         <div>
-            <h3 class="mb-2 text-lg font-medium">嵌入代码</h3>
-            <p class="text-muted-foreground text-sm">将智能体嵌入到您的网站或应用中</p>
+            <h3 class="mb-2 text-lg font-medium">{{ $t("console-ai-agent.publish.embedCode") }}</h3>
+            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.embedCodeDesc") }}</p>
         </div>
 
         <div v-if="!agent?.isPublished" class="border-border rounded-lg border p-6 text-center">
             <UIcon name="i-lucide-lock" class="text-muted-foreground mx-auto mb-3 size-12" />
-            <h4 class="mb-2 font-medium">智能体未发布</h4>
-            <p class="text-muted-foreground text-sm">请先发布智能体才能获取嵌入代码</p>
+            <h4 class="mb-2 font-medium">{{ $t("console-ai-agent.publish.unpublished") }}</h4>
+            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.unpublishedDesc2") }}</p>
         </div>
 
         <div v-else class="space-y-4">
@@ -127,14 +127,14 @@ const copyCode = (code: string) => {
                 <!-- iframe 嵌入 -->
                 <div v-if="activeTab === 'iframe'" class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <h4 class="font-medium">iframe 嵌入代码</h4>
+                        <h4 class="font-medium">{{ $t("console-ai-agent.publish.iframeCode") }}</h4>
                         <UButton
                             icon="i-lucide-copy"
                             variant="outline"
                             size="sm"
                             @click="copyCode(iframeCode)"
                         >
-                            复制代码
+                            {{ $t("console-common.copy") }}
                         </UButton>
                     </div>
                     <div class="relative">
@@ -143,9 +143,9 @@ const copyCode = (code: string) => {
                         ><code>{{ iframeCode }}</code></pre>
                     </div>
                     <div class="text-muted-foreground text-xs">
-                        <p>• 适用于任何支持 HTML 的网站</p>
-                        <p>• 可自定义宽度和高度</p>
-                        <p>• 响应式设计，自动适配移动端</p>
+                        <p>• {{ $t("console-ai-agent.publish.iframeCodeDesc1") }}</p>
+                        <p>• {{ $t("console-ai-agent.publish.iframeCodeDesc2") }}</p>
+                        <p>• {{ $t("console-ai-agent.publish.iframeCodeDesc3") }}</p>
                     </div>
                 </div>
 
@@ -159,7 +159,7 @@ const copyCode = (code: string) => {
                             size="sm"
                             @click="copyCode(jsCode)"
                         >
-                            复制代码
+                            {{ $t("console-common.copy") }}
                         </UButton>
                     </div>
                     <div class="relative">
@@ -168,23 +168,23 @@ const copyCode = (code: string) => {
                         ><code>{{ jsCode }}</code></pre>
                     </div>
                     <div class="text-muted-foreground text-xs">
-                        <p>• 更灵活的集成方式</p>
-                        <p>• 支持动态配置</p>
-                        <p>• 可通过 JavaScript 控制显示和隐藏</p>
+                        <p>• {{ $t("console-ai-agent.publish.javascriptCodeDesc1") }}</p>
+                        <p>• {{ $t("console-ai-agent.publish.javascriptCodeDesc2") }}</p>
+                        <p>• {{ $t("console-ai-agent.publish.javascriptCodeDesc3") }}</p>
                     </div>
                 </div>
 
                 <!-- WordPress -->
                 <div v-if="activeTab === 'wordpress'" class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <h4 class="font-medium">WordPress 集成</h4>
+                        <h4 class="font-medium">{{ $t("console-ai-agent.publish.wordpressCode") }}</h4>
                         <UButton
                             icon="i-lucide-copy"
                             variant="outline"
                             size="sm"
                             @click="copyCode(wordpressCode)"
                         >
-                            复制代码
+                            {{ $t("console-common.copy") }}
                         </UButton>
                     </div>
                     <div class="relative">
@@ -193,16 +193,16 @@ const copyCode = (code: string) => {
                         ><code>{{ wordpressCode }}</code></pre>
                     </div>
                     <div class="text-muted-foreground text-xs">
-                        <p>• 直接在 WordPress 页面或文章中使用</p>
-                        <p>• 支持古腾堡编辑器和经典编辑器</p>
-                        <p>• 可在小工具中使用</p>
+                        <p>• {{ $t("console-ai-agent.publish.wordpressCodeDesc1") }}</p>
+                        <p>• {{ $t("console-ai-agent.publish.wordpressCodeDesc2") }}</p>
+                        <p>• {{ $t("console-ai-agent.publish.wordpressCodeDesc3") }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- 预览 -->
             <div class="space-y-3">
-                <h4 class="font-medium">预览效果</h4>
+                <h4 class="font-medium">{{ $t("console-ai-agent.publish.previewEffect") }}</h4>
                 <div class="border-border flex justify-center rounded-lg border p-6">
                     <div
                         class="border-border overflow-hidden rounded-lg border shadow-lg"

@@ -155,10 +155,10 @@ const handleDelete = async (id: string | string[]) => {
 
         if (Array.isArray(id)) {
             await apiBatchDeleteConversations(id);
-            toast.success(t("console-ai-conversation.delete.batchSuccess"));
+            toast.success(t("common.message.deleteBatchSuccess"));
         } else {
             await apiDeleteConversation(id);
-            toast.success(t("console-ai-conversation.delete.success"));
+            toast.success(t("common.message.deleteSuccess"));
         }
 
         // 清空选中状态
@@ -168,7 +168,7 @@ const handleDelete = async (id: string | string[]) => {
         getLists();
     } catch (error) {
         console.error("Delete failed:", error);
-        toast.error(t("console-ai-conversation.delete.failed"));
+        toast.error(t("common.message.deleteFailed"));
     }
 };
 

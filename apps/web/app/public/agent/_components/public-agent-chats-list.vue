@@ -218,10 +218,10 @@ const deleteConversation = async (conversation: AiConversation) => {
             emit("new-conversation");
         }
 
-        toast.success(t("console.conversation.delete.success"));
+        toast.success(t("common.message.deleteSuccess"));
     } catch (error) {
         console.error("删除对话失败:", error);
-        toast.error(t("console.conversation.delete.error"));
+        toast.error((error as Error).message);
     }
 };
 

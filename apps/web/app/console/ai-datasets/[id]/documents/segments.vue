@@ -216,7 +216,7 @@ definePageMeta({ layout: "full-screen" });
                     color="primary"
                     variant="outline"
                     icon="i-lucide-plus"
-                    :label="t('datasets.segments.createSegment')"
+                    :label="t('console-ai-datasets.segments.createSegment')"
                     @click="handleCreate"
                 />
 
@@ -225,7 +225,7 @@ definePageMeta({ layout: "full-screen" });
                         [
                             hasAccessByCodes(['ai-datasets-documents:rename'])
                                 ? {
-                                      label: t('datasets.segments.rename'),
+                                      label: t('console-ai-datasets.segments.rename'),
                                       icon: 'i-lucide-pen-line',
                                       onClick: () => {
                                           handleRename();
@@ -262,7 +262,7 @@ definePageMeta({ layout: "full-screen" });
                     @update:model-value="toggleAllSelection"
                 />
                 <span class="text-sm font-semibold"
-                    >{{ paging.total }} {{ t("datasets.segments.segment") }}</span
+                    >{{ paging.total }} {{ t("console-ai-datasets.segments.segment") }}</span
                 >
 
                 <UButton
@@ -306,7 +306,7 @@ definePageMeta({ layout: "full-screen" });
 
                 <UInput
                     v-model="searchForm.keyword"
-                    :placeholder="t('datasets.segments.searchPlaceholder')"
+                    :placeholder="t('console-ai-datasets.segments.searchPlaceholder')"
                     class="w-50"
                     icon="i-lucide-search"
                 />
@@ -316,8 +316,8 @@ definePageMeta({ layout: "full-screen" });
                 <UTooltip
                     :text="
                         isCollapsed
-                            ? t('datasets.segments.expandAll')
-                            : t('datasets.segments.collapseAll')
+                            ? t('console-ai-datasets.segments.expandAll')
+                            : t('console-ai-datasets.segments.collapseAll')
                     "
                     :delayDuration="0"
                 >
@@ -341,7 +341,7 @@ definePageMeta({ layout: "full-screen" });
                         class="text-muted-foreground mx-auto mb-4 h-12 w-12"
                     />
                     <p class="text-muted-foreground text-sm">
-                        {{ t("datasets.segments.noData") }}
+                        {{ t("console-ai-datasets.segments.noData") }}
                     </p>
                 </div>
             </div>
@@ -429,8 +429,8 @@ definePageMeta({ layout: "full-screen" });
                                         <span class="mr-2 text-xs">
                                             {{
                                                 segment.enabled === 0
-                                                    ? t("datasets.common.disabled")
-                                                    : t("datasets.common.enabled")
+                                                    ? t("console-ai-datasets.common.disabled")
+                                                    : t("console-ai-datasets.common.enabled")
                                             }}
                                         </span>
                                     </UChip>
@@ -466,7 +466,7 @@ definePageMeta({ layout: "full-screen" });
             <div class="w-100 overflow-hidden px-6" v-if="paging.items.length">
                 <div class="mb-4">
                     <h3 class="text-foreground text-lg font-semibold">
-                        {{ t("datasets.documents.table.fileName") }}
+                        {{ t("console-ai-datasets.documents.table.fileName") }}
                     </h3>
                 </div>
 
@@ -488,7 +488,7 @@ definePageMeta({ layout: "full-screen" });
                         <div class="space-y-4 text-xs">
                             <div class="flex justify-between">
                                 <span class="text-muted-foreground"
-                                    >{{ t("datasets.documents.table.fileSize") }}:</span
+                                    >{{ t("console-ai-datasets.documents.table.fileSize") }}:</span
                                 >
                                 <span class="text-foreground">
                                     {{ formatFileSize(currentDocument.fileSize) }}
@@ -496,13 +496,13 @@ definePageMeta({ layout: "full-screen" });
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-muted-foreground">
-                                    {{ t("datasets.documents.table.fileType") }}:
+                                    {{ t("console-ai-datasets.documents.table.fileType") }}:
                                 </span>
                                 <span class="text-foreground">{{ currentDocument.fileType }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-muted-foreground">
-                                    {{ t("datasets.documents.table.chunkCount") }}:
+                                    {{ t("console-ai-datasets.documents.table.chunkCount") }}:
                                 </span>
                                 <span class="text-foreground">
                                     {{ currentDocument.chunkCount }}
@@ -510,7 +510,7 @@ definePageMeta({ layout: "full-screen" });
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-muted-foreground">
-                                    {{ t("datasets.documents.table.characterCount") }}:
+                                    {{ t("console-ai-datasets.documents.table.characterCount") }}:
                                 </span>
                                 <span class="text-foreground">
                                     {{ formatCompactNumber(currentDocument.characterCount) }}
@@ -518,7 +518,7 @@ definePageMeta({ layout: "full-screen" });
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-muted-foreground">
-                                    {{ t("datasets.documents.table.createdAt") }}:
+                                    {{ t("console-ai-datasets.documents.table.createdAt") }}:
                                 </span>
                                 <span class="text-foreground">
                                     <TimeDisplay

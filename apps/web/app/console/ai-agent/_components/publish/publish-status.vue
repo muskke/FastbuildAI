@@ -35,20 +35,20 @@ const openLink = (url: string) => {
             <div class="flex items-center gap-3">
                 <UIcon
                     :name="isPublished ? 'i-lucide-globe' : 'i-lucide-globe-lock'"
-                    :class="isPublished ? 'text-green-500' : 'text-gray-400'"
+                    :class="isPublished ? 'text-success' : 'text-muted-foreground'"
                     class="size-5"
                 />
                 <div>
                     <h3 class="font-medium">
-                        {{ isPublished ? "已发布" : "未发布" }}
+                        {{ isPublished ? $t("console-ai-agent.publish.published") : $t("console-ai-agent.publish.unpublished") }}
                     </h3>
                     <p class="text-muted-foreground text-sm">
-                        {{ isPublished ? "智能体已公开可访问" : "智能体未公开发布" }}
+                        {{ isPublished ? $t("console-ai-agent.publish.publishedDesc") : $t("console-ai-agent.publish.unpublishedDesc") }}
                     </p>
                 </div>
             </div>
             <UBadge :color="isPublished ? 'success' : 'neutral'" variant="soft">
-                {{ isPublished ? "已发布" : "未发布" }}
+                {{ isPublished ? $t("console-ai-agent.publish.published") : $t("console-ai-agent.publish.unpublished") }}
             </UBadge>
         </div>
 
@@ -57,12 +57,12 @@ const openLink = (url: string) => {
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <!-- 公开链接 -->
                 <div class="space-y-2">
-                    <UFormField label="公开访问链接" :ui="{ container: 'flex items-center gap-2' }">
+                    <UFormField :label="$t('console-ai-agent.publish.publicAccessLink')" :ui="{ container: 'flex items-center gap-2' }">
                         <UInput
                             :value="publishUrl"
                             readonly
                             class="flex-1"
-                            placeholder="未生成链接"
+                            :placeholder="$t('console-ai-agent.publish.publicAccessLinkPlaceholder')"
                         />
                         <UButton
                             v-if="publishUrl"
@@ -81,12 +81,12 @@ const openLink = (url: string) => {
 
                 <!-- API密钥 -->
                 <div class="space-y-2">
-                    <UFormField label="API密钥" :ui="{ container: 'flex items-center gap-2' }">
+                    <UFormField :label="$t('console-ai-agent.publish.apiKey')" :ui="{ container: 'flex items-center gap-2' }">
                         <UInput
                             :value="agent?.apiKey ? '••••••••••••••••' : ''"
                             readonly
                             class="flex-1"
-                            placeholder="未生成密钥"
+                            :placeholder="$t('console-ai-agent.publish.apiKeyPlaceholder')"
                         />
                         <UButton
                             v-if="agent?.apiKey"
@@ -103,15 +103,15 @@ const openLink = (url: string) => {
                 <div class="grid grid-cols-3 gap-4 text-center">
                     <div>
                         <div class="text-2xl font-bold">{{ agent?.userCount || 0 }}</div>
-                        <div class="text-muted-foreground text-sm">访问用户</div>
+                        <div class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.accessUser") }}</div>
                     </div>
                     <div>
                         <div class="text-2xl font-bold">-</div>
-                        <div class="text-muted-foreground text-sm">今日访问</div>
+                        <div class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.todayAccess") }}</div>
                     </div>
                     <div>
                         <div class="text-2xl font-bold">-</div>
-                        <div class="text-muted-foreground text-sm">总对话数</div>
+                        <div class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.totalDialog") }}</div>
                     </div>
                 </div>
             </div>

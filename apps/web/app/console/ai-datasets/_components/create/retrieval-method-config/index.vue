@@ -37,8 +37,8 @@ function handleModeChange(mode: 'vector' | 'fullText' | 'hybrid') {
     <div class="space-y-3">
         <!-- 向量检索 -->
         <OptionCard
-            :title="$t('datasets.retrieval.vector')"
-            :description="$t('datasets.retrieval.vectorDesc')"
+            :title="$t('console-ai-datasets.retrieval.vector')"
+            :description="$t('console-ai-datasets.retrieval.vectorDesc')"
             icon="i-heroicons-squares-2x2"
             icon-class="text-purple-500"
             selected-header-class="!to-muted !from-purple-50"
@@ -50,8 +50,8 @@ function handleModeChange(mode: 'vector' | 'fullText' | 'hybrid') {
 
         <!-- 全文检索 -->
         <OptionCard
-            :title="$t('datasets.retrieval.fullText')"
-            :description="$t('datasets.retrieval.fullTextDesc')"
+            :title="$t('console-ai-datasets.retrieval.fullText')"
+            :description="$t('console-ai-datasets.retrieval.fullTextDesc')"
             icon="i-heroicons-document-text"
             icon-class="text-blue-500"
             selected-header-class="!to-muted !from-blue-50"
@@ -63,8 +63,8 @@ function handleModeChange(mode: 'vector' | 'fullText' | 'hybrid') {
 
         <!-- 混合检索 -->
         <OptionCard
-            :title="$t('datasets.retrieval.hybrid')"
-            :description="$t('datasets.retrieval.hybridDesc')"
+            :title="$t('console-ai-datasets.retrieval.hybrid')"
+            :description="$t('console-ai-datasets.retrieval.hybridDesc')"
             icon="i-heroicons-squares-2x2"
             icon-class="text-indigo-500"
             selected-header-class="!to-muted !from-indigo-50"

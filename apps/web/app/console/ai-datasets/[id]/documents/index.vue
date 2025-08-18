@@ -44,14 +44,14 @@ const searchForm = reactive<QueryDocumentParams>({
 // 列ID到中文名称的映射
 const columnLabels = computed(() => ({
     select: t("console-common.select"),
-    fileName: t("datasets.documents.table.fileName"),
-    fileSize: t("datasets.documents.table.fileSize"),
+    fileName: t("console-ai-datasets.documents.table.fileName"),
+    fileSize: t("console-ai-datasets.documents.table.fileSize"),
     status: t("console-common.status"),
-    process: t("datasets.documents.table.progress"),
+    process: t("console-ai-datasets.documents.table.progress"),
     enabled: t("console-common.status"),
-    characterCount: t("datasets.documents.table.characterCount"),
-    chunkCount: t("datasets.documents.table.chunkCount"),
-    createdAt: t("datasets.documents.table.createdAt"),
+    characterCount: t("console-ai-datasets.documents.table.characterCount"),
+    chunkCount: t("console-ai-datasets.documents.table.chunkCount"),
+    createdAt: t("console-ai-datasets.documents.table.createdAt"),
     actions: t("console-common.operation"),
 }));
 
@@ -95,7 +95,7 @@ const statusMap = {
     completed: { label: t("console-common.completed"), color: "success" as const },
     failed: { label: t("console-common.failed"), color: "error" as const },
     pending: { label: t("console-common.pending"), color: "neutral" as const },
-    error: { label: t("datasets.documents.error"), color: "error" as const },
+    error: { label: t("console-ai-datasets.documents.error"), color: "error" as const },
 } as const;
 
 // 文件类型图标映射
@@ -276,7 +276,7 @@ function getRowItems(row: Row<DatasetDocument>) {
     return [
         hasAccessByCodes(["ai-datasets-segments:list"])
             ? {
-                  label: t("datasets.documents.viewSegments"),
+                  label: t("console-ai-datasets.documents.viewSegments"),
                   icon: "i-lucide-list",
                   onClick: () => {
                       router.push(
@@ -291,7 +291,7 @@ function getRowItems(row: Row<DatasetDocument>) {
             : null,
         hasAccessByCodes(["ai-datasets-documents:rename"])
             ? {
-                  label: t("datasets.documents.renameModal.title"),
+                  label: t("console-ai-datasets.documents.renameModal.title"),
                   icon: "i-lucide-pen-line",
                   onClick: () => handleRename(document),
               }
@@ -299,8 +299,8 @@ function getRowItems(row: Row<DatasetDocument>) {
         hasAccessByCodes(["ai-datasets-documents:set-enabled"])
             ? {
                   label: isEnabled
-                      ? t("datasets.documents.disable.title")
-                      : t("datasets.documents.enable.title"),
+                      ? t("console-ai-datasets.documents.disable.title")
+                      : t("console-ai-datasets.documents.enable.title"),
                   icon: isEnabled ? "i-lucide-eye-off" : "i-lucide-eye",
                   color: isEnabled ? "warning" : "primary",
                   onClick: () => toggleDocumentEnabled(document.id, !isEnabled, getLists),
@@ -308,7 +308,7 @@ function getRowItems(row: Row<DatasetDocument>) {
             : null,
         hasAccessByCodes(["ai-datasets-documents:retry"])
             ? {
-                  label: t("datasets.documents.retry.title"),
+                  label: t("console-ai-datasets.documents.retry.title"),
                   icon: "i-lucide-rotate-ccw",
                   color: "warning",
                   onClick: () => retryDocument(document.id, getLists),
@@ -368,9 +368,9 @@ definePageMeta({ layout: "full-screen" });
 <template>
     <div class="flex h-full w-full flex-col px-6">
         <div class="flex flex-col justify-center gap-1 pt-4">
-            <h1 class="!text-lg font-bold">{{ t("datasets.documents.title") }}</h1>
+            <h1 class="!text-lg font-bold">{{ t("console-ai-datasets.documents.title") }}</h1>
             <p class="text-muted-foreground text-sm">
-                {{ t("datasets.documents.description") }}
+                {{ t("console-ai-datasets.documents.description") }}
             </p>
         </div>
 
@@ -378,7 +378,7 @@ definePageMeta({ layout: "full-screen" });
         <div class="flex w-full justify-between gap-4 py-6 backdrop-blur-sm">
             <UInput
                 v-model="searchForm.keyword"
-                :placeholder="t('datasets.documents.searchPlaceholder')"
+                :placeholder="t('console-ai-datasets.documents.searchPlaceholder')"
                 class="w-80"
                 icon="i-lucide-search"
             />
@@ -420,7 +420,7 @@ definePageMeta({ layout: "full-screen" });
                         :to="useRoutePath('ai-datasets-documents:create', { id: datasetIdSafe })"
                     >
                         <UButton
-                            :label="t('datasets.documents.addFile')"
+                            :label="t('console-ai-datasets.documents.addFile')"
                             leading-icon="i-lucide-plus"
                             color="primary"
                         />

@@ -28,10 +28,7 @@
     },
     "delete": {
         "title": "删除对话",
-        "description": "确定要删除选中的对话吗？此操作不可恢复。",
-        "success": "删除成功",
-        "batchSuccess": "批量删除成功",
-        "failed": "删除失败"
+        "description": "确定要删除选中的对话吗？此操作不可恢复。"
     },
     "fetch": {
         "detailFailed": "获取对话详情失败",

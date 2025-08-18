@@ -38,7 +38,7 @@ const handleViewDetail = () => {
                 class="opacity-70 hover:opacity-100"
                 icon="i-lucide-edit"
                 size="xs"
-                label="编辑"
+                :label="$t('console-common.edit')"
                 color="primary"
                 variant="ghost"
                 @click.stop="emits('edit', agent)"
@@ -47,7 +47,7 @@ const handleViewDetail = () => {
                 class="opacity-70 hover:opacity-100"
                 icon="i-lucide-trash"
                 size="xs"
-                label="删除"
+                :label="$t('console-common.delete')"
                 color="error"
                 variant="ghost"
                 @click.stop="emits('delete', agent)"
@@ -68,7 +68,7 @@ const handleViewDetail = () => {
 
                 <!-- 统计信息 -->
                 <div class="text-muted-foreground mt-1 text-xs">
-                    <span>编辑于</span>
+                    <span>{{ $t("console-ai-agent.create.edit") }}</span>
                     <TimeDisplay :datetime="agent.updatedAt" mode="long" />
                 </div>
             </div>
