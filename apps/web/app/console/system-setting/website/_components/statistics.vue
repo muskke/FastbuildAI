@@ -100,6 +100,17 @@ onMounted(() => getWebsiteConfig());
                     :label="t('console-system.website.statistics.appid.label')"
                     required
                 >
+                    <template #description>
+                        {{ t("console-system.website.statistics.clarity.linkLabel") }}:
+                        <a
+                            href="https://clarity.microsoft.com"
+                            class="text-primary"
+                            target="_blank"
+                        >
+                            Microsoft Clarity
+                            <Icon name="i-lucide-external-link"></Icon>
+                        </a>
+                    </template>
                     <UInput
                         v-model="state.appid"
                         size="xl"
@@ -109,7 +120,7 @@ onMounted(() => getWebsiteConfig());
                 </UFormField>
             </div>
 
-            <div class="mb-6 rounded-lg bg-gray-50 p-4">
+            <!-- <div class="mb-6 rounded-lg bg-gray-50 p-4">
                 <div class="flex items-start">
                     <UIcon
                         name="i-heroicons-information-circle"
@@ -124,7 +135,7 @@ onMounted(() => getWebsiteConfig());
                         </p>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="flex space-x-3">
                 <AccessControl :codes="['system-website:setConfig']">
