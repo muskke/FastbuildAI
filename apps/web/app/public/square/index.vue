@@ -110,7 +110,7 @@ definePageMeta({
 
 <template>
     <div
-        class="flex h-full flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-slate-900"
+        class="dark:to-primary-950 flex h-full flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800"
     >
         <!-- Header -->
         <div class="container mx-auto w-full px-4 pt-16 pb-8">
@@ -132,7 +132,7 @@ definePageMeta({
                         @input="handleSearch"
                     >
                         <template #leading>
-                            <UIcon name="i-lucide-search" class="text-gray-400" />
+                            <UIcon name="i-lucide-search" />
                         </template>
                     </UInput>
                 </div>
@@ -142,12 +142,12 @@ definePageMeta({
         <div class="container mx-auto h-full px-4 py-8">
             <section class="flex h-full flex-col">
                 <div class="mb-6 flex items-center justify-between">
-                    <h2 class="text-xl font-bold text-gray-900">
+                    <h2 class="text-xl font-bold">
                         {{ $t("square.allAgents") }}
                     </h2>
 
                     <!-- 排序选择 -->
-                    <div class="flex gap-2">
+                    <div class="dark:bg-background/30 flex gap-2 rounded-lg bg-neutral-100 p-1">
                         <UButton
                             :color="searchForm.sortBy === 'latest' ? 'primary' : 'neutral'"
                             :variant="searchForm.sortBy === 'latest' ? 'solid' : 'ghost'"

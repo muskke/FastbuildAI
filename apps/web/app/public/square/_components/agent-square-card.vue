@@ -44,7 +44,7 @@ const badgeConfig = computed(() => {
 
 <template>
     <div
-        class="group cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-gray-900/50"
+        class="group cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md dark:border-neutral-700 dark:bg-neutral-800 dark:hover:shadow-neutral-900/50"
         @click="handleClick"
     >
         <!-- 左上角图标和标题 -->
