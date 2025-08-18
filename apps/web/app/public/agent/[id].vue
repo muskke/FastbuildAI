@@ -44,6 +44,15 @@ const currentContext = ref<AiMessage[]>([]);
 const annotationModalOpen = ref(false);
 const editingAnnotationId = ref<string | null>(null);
 const currentMessageId = ref<string | null>(null);
+const annotationFormData = ref<{
+    question: string;
+    answer: string;
+    enabled: boolean;
+}>({
+    question: "",
+    answer: "",
+    enabled: true,
+});
 
 watch(conversationId, (newVal) => {
     currentConversationCookie.value = newVal;
@@ -305,49 +314,58 @@ function openAnnotationModal(annotationId: string, messageId: string | null = nu
 }
 
 /**
- * 直接创建标注
+ * 打开标注创建弹窗
  */
-async function createAnnotationDirectly(message: AiMessage, index: number) {
-    // 直接获取上一条消息作为用户问题
+function openAnnotationCreateModal(message: AiMessage, index: number) {
+    // 获取上一条消息作为用户问题
     const prevMessage = messages.value[index - 1];
     if (!prevMessage || prevMessage.role !== "user") {
         toast.error("找不到对应的用户问题");
         return;
     }
 
-    try {
-        const result = await apiCreatePublicAgentAnnotation(publishToken.value, accessToken.value, {
-            agentId: agent.value?.id,
-            question: prevMessage.content,
-            answer: message.content,
-            enabled: true,
-            messageId: message.id,
-        });
+    // 预填充表单数据
+    annotationFormData.value = {
+        question: prevMessage.content,
+        answer: message.content,
+        enabled: true,
+    };
 
-        // 更新本地消息的标注信息
-        if (result?.id) {
-            messages.value[index]!.metadata!.annotations = {
+    currentMessageId.value = message.id || null;
+    editingAnnotationId.value = null; // 确保是创建模式
+    annotationModalOpen.value = true;
+}
+
+/**
+ * 处理标注模态框关闭
+ */
+function handleAnnotationModalClose(refresh?: boolean, result?: AiMessage) {
+    annotationModalOpen.value = false;
+
+    // 如果是创建标注成功，更新对应消息的元数据
+    if (result?.id && currentMessageId.value) {
+        const messageIndex = messages.value.findIndex((msg) => msg.id === currentMessageId.value);
+        if (messageIndex >= 0) {
+            if (!messages.value[messageIndex]!.metadata) {
+                messages.value[messageIndex]!.metadata = {};
+            }
+            messages.value[messageIndex]!.metadata!.annotations = {
                 annotationId: result.id,
                 createdBy: "",
                 question: "",
                 similarity: 1,
             };
         }
-
-        toast.success("标注创建成功，等待审核");
-    } catch (error) {
-        console.error("创建标注失败:", error);
-        toast.error("创建标注失败");
     }
-}
 
-/**
- * 处理标注模态框关闭
- */
-function handleAnnotationModalClose(refresh?: boolean) {
-    annotationModalOpen.value = false;
     editingAnnotationId.value = null;
     currentMessageId.value = null;
+    // 重置表单数据
+    annotationFormData.value = {
+        question: "",
+        answer: "",
+        enabled: true,
+    };
 }
 
 // 生命周期
@@ -533,8 +551,8 @@ definePageMeta({ layout: "full-screen", auth: false });
                                                 // 有标注ID，打开编辑弹窗
                                                 openAnnotationModal(annotationId, message.id);
                                             } else {
-                                                // 没有标注ID，直接创建标注
-                                                createAnnotationDirectly(message, index);
+                                                // 没有标注ID，打开创建弹窗
+                                                openAnnotationCreateModal(message, index);
                                             }
                                         },
                                     },
@@ -671,6 +689,7 @@ definePageMeta({ layout: "full-screen", auth: false });
             :is-public="true"
             :publish-token="publishToken"
             :access-token="accessToken"
+            :initial-data="editingAnnotationId ? undefined : annotationFormData"
             @close="handleAnnotationModalClose"
         />
     </div>
