@@ -156,7 +156,7 @@ definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
-    <div class="flex h-[calc(100vh-6rem)] flex-1 flex-col px-4 pt-4">
+    <div class="flex h-full flex-1 flex-col px-4 pt-4">
         <!-- 页面头部 -->
         <div class="mb-2">
             <div class="flex items-center justify-between">
