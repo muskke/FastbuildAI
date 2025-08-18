@@ -11,6 +11,7 @@ const ConsoleLayoutSiteLogo = defineAsyncComponent(
 
 interface Props {
     navigationConfig: NavigationConfig;
+    hasPreview?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -140,7 +141,6 @@ const linkItems = computed((): NavigationMenuItem[] => [
                     </span>
                 </UButton>
             </div>
-
             <!-- 底部用户头像 -->
             <UserProfile
                 :size="collapsed ? 'md' : 'lg'"
@@ -155,7 +155,10 @@ const linkItems = computed((): NavigationMenuItem[] => [
         </aside>
 
         <!-- 主要内容区域 -->
-        <main class="bg-background flex min-w-0 flex-1 flex-col overflow-y-scroll rounded-l-xl">
+        <main
+            class="bg-background flex min-w-0 flex-1 flex-col overflow-y-scroll rounded-l-xl"
+            :class="{ 'py-4 pr-2': hasPreview }"
+        >
             <slot />
         </main>
     </div>

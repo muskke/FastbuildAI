@@ -121,7 +121,7 @@ const isActive = (path: string): boolean => {
         <!-- 主要内容区域 -->
         <main
             class="bg-background ml-20 flex h-full flex-1 flex-col rounded-l-xl"
-            :class="{ '!ml-0': hasPreview }"
+            :class="{ '!ml-0 p-4 pl-0': hasPreview }"
         >
             <slot />
         </main>
