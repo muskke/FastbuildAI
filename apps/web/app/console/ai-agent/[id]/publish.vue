@@ -19,9 +19,9 @@ import PublishStatus from "../_components/publish/publish-status.vue";
 // 路由参数
 const { params: URLQueryParams } = useRoute();
 const agentId = computed(() => (URLQueryParams as Record<string, string>).id);
-
 // 消息提示
 const toast = useMessage();
+const { t } = useI18n();
 
 // 状态管理
 const loading = ref(false);
@@ -32,10 +32,10 @@ const agent = ref<Agent>();
 const activeTab = ref("status");
 
 const tabs = [
-    { value: "status", label: "发布状态", icon: "i-lucide-globe" },
-    { value: "settings", label: "发布配置", icon: "i-lucide-settings" },
-    { value: "embed", label: "嵌入代码", icon: "i-lucide-code" },
-    { value: "api", label: "API 调用", icon: "i-lucide-terminal" },
+    { value: "status", label: t("console-ai-agent.publish.status"), icon: "i-lucide-globe" },
+    { value: "settings", label: t("console-ai-agent.publish.settings"), icon: "i-lucide-settings" },
+    { value: "embed", label: t("console-ai-agent.publish.embed"), icon: "i-lucide-code" },
+    { value: "api", label: t("console-ai-agent.publish.api"), icon: "i-lucide-terminal" },
 ];
 
 // 发布配置

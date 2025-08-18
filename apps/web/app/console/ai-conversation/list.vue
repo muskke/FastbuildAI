@@ -107,7 +107,7 @@ function getRowItems(row: Row<AiConversation>) {
     return [
         {
             label: t("console-order-management.recharge.list.viewDetails"),
-            icon: "lucide:eye",
+            icon: "i-lucide-eye",
             color: "info",
             onClick: () => {
                 handleViewDetail(row.original.id);
@@ -228,17 +228,6 @@ onMounted(() => getLists());
                 @change="getLists"
             />
 
-            <ModelSelect
-                v-model="searchForm.modelId"
-                :default-selected="false"
-                :button-ui="{
-                    variant: 'outline',
-                    color: 'neutral',
-                    class: 'bg-background',
-                }"
-                @change="getLists"
-            />
-
             <ProDateRangePicker
                 v-model:start="searchForm.startDate"
                 v-model:end="searchForm.endDate"
@@ -310,7 +299,7 @@ onMounted(() => getLists());
                 <template #title-cell="{ row }">
                     <div class="flex items-center gap-2">
                         <UIcon name="i-lucide-message-circle" class="text-primary size-5" />
-                        {{ row.original.title }}
+                        {{ row.original.title || "new Chat" }}
                     </div>
                 </template>
                 <template #userName-cell="{ row }">

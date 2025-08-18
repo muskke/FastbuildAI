@@ -82,7 +82,7 @@ async function loadMoreIcons() {
                             color="neutral"
                             variant="link"
                             :icon="
-                                props.modelValue ? `${props.modelValue}` : 'i-lucide:chevron-down'
+                                props.modelValue ? `${props.modelValue}` : 'i-i-lucide-chevron-down'
                             "
                             :padded="false"
                             class="text-dimmed flex-none"
@@ -118,7 +118,7 @@ async function loadMoreIcons() {
                                     class="flex w-9 cursor-pointer flex-col items-center justify-center rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
                                     @click="selectIcon(icon)"
                                 >
-                                    <UIcon :name="`lucide:${icon}`" class="size-5" />
+                                    <UIcon :name="`i-lucide-${icon}`" class="size-5" />
                                 </div>
                             </UTooltip>
                         </div>
@@ -144,7 +144,7 @@ async function loadMoreIcons() {
                         class="flex items-center justify-between border-t p-2"
                     >
                         <div class="flex items-center">
-                            <UIcon :name="`lucide:${props.modelValue}`" class="mr-2 size-5" />
+                            <UIcon :name="`i-lucide-${props.modelValue}`" class="mr-2 size-5" />
                             <span class="text-sm">{{ props.modelValue }}</span>
                         </div>
                         <UButton
