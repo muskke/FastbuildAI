@@ -41,12 +41,14 @@ const quickActions = ref<MenuItem[]>([
         id: 2,
         title: "login.userAgreement",
         icon: "i-lucide-file-text",
+        target: "_blank",
         path: "/agreement?type=agreement&item=service",
     },
     {
         id: 3,
         title: "login.privacyPolicy",
         icon: "i-lucide-shield-check",
+        target: "_blank",
         path: "/agreement?type=agreement&item=privacy",
     },
 ]);
