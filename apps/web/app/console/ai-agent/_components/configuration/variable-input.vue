@@ -35,7 +35,9 @@ const formSchema = computed(() => {
         let fieldSchema = string();
 
         if (field.required) {
-            fieldSchema = fieldSchema.required(`${field.label}${t("console-ai-agent.configuration.notEmpty")}`);
+            fieldSchema = fieldSchema.required(
+                `${field.label}${t("console-ai-agent.configuration.notEmpty")}`,
+            );
         }
 
         schema[field.name] = fieldSchema;
@@ -56,7 +58,9 @@ const formSchema = computed(() => {
         <template #content>
             <div class="py-6 pr-6">
                 <div class="mb-6">
-                    <h2 class="text-foreground text-lg font-semibold">{{ $t("console-ai-agent.configuration.variableTitle") }}</h2>
+                    <h2 class="text-foreground text-lg font-semibold">
+                        {{ $t("console-ai-agent.configuration.variableTitle") }}
+                    </h2>
                     <p class="text-muted-foreground mt-1 text-sm">
                         {{ $t("console-ai-agent.configuration.variableDesc") }}
                     </p>

@@ -76,7 +76,7 @@ function moveItemDown(index: number) {
 </script>
 
 <template>
-    <div class="bg-background flex h-full min-h-0 w-60 flex-col space-y-6">
+    <div class="bg-background flex h-full min-h-0 w-60 shrink-0 flex-col space-y-6">
         <!-- 布局风格选择 -->
         <div class="space-y-3 pr-6">
             <UFormField :label="t('console-decorate.layout.property.layoutStyle')">
