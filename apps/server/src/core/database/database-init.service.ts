@@ -669,13 +669,16 @@ export class DatabaseInitService implements OnModuleInit {
             // 1. 更新权限数据
             await this.syncPermissions();
 
-            // 2. 更新菜单配置
+            // 2. 执行版本特定升级逻辑
+            await this.executeVersionSpecificUpgrade(version);
+
+            // 3. 更新菜单配置
             await this.upgradeMenus(version);
 
-            // 3. 更新前台菜单配置
+            // 4. 更新前台菜单配置
             await this.upgradeHomeMenus(version);
 
-            // 升级完成后，创建版本文件
+            // 5. 更新版本文件
             await this.writeVersionFile(version);
 
             this.logger.log(`✅ Upgrade completed: ${version}`);
@@ -684,6 +687,60 @@ export class DatabaseInitService implements OnModuleInit {
             this.logger.error(`❌ Upgrade failed: ${error.message}`);
             TerminalLogger.error("System Upgrade", `Upgrade failed: ${error.message}`);
             throw error;
+        }
+    }
+
+    /**
+     * 执行版本特定的升级逻辑
+     *
+     * @param version 版本号
+     */
+    private async executeVersionSpecificUpgrade(version: string): Promise<void> {
+        try {
+            const upgradePath = path.join(__dirname, "upgrade", version);
+
+            // 检查版本升级目录是否存在
+            if (!fse.existsSync(upgradePath)) {
+                this.logger.log(`📁 No specific upgrade logic found for version: ${version}`);
+                return;
+            }
+
+            const indexPath = path.join(upgradePath, "index.ts");
+
+            // 检查 index.ts 文件是否存在
+            if (!fse.existsSync(indexPath)) {
+                this.logger.log(
+                    `📄 No index.ts found in upgrade directory for version: ${version}`,
+                );
+                return;
+            }
+
+            this.logger.log(`🔧 Executing version-specific upgrade logic for: ${version}`);
+
+            // 动态导入升级模块
+            const upgradeModule = await import(indexPath);
+
+            if (upgradeModule.Upgrade) {
+                const upgradeInstance = new upgradeModule.Upgrade();
+
+                if (typeof upgradeInstance.execute === "function") {
+                    await upgradeInstance.execute();
+                    this.logger.log(`✅ Version-specific upgrade completed for: ${version}`);
+                } else {
+                    this.logger.warn(
+                        `⚠️ Upgrade class does not have execute method for version: ${version}`,
+                    );
+                }
+            } else {
+                this.logger.warn(
+                    `⚠️ No Upgrade class found in upgrade module for version: ${version}`,
+                );
+            }
+        } catch (error) {
+            this.logger.error(
+                `❌ Version-specific upgrade failed for ${version}: ${error.message}`,
+            );
+            // 不抛出错误，允许其他升级步骤继续执行
         }
     }
 
