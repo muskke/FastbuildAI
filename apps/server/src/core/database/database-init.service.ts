@@ -705,11 +705,11 @@ export class DatabaseInitService implements OnModuleInit {
                 return;
             }
 
-            const indexPath = path.join(upgradePath, "index.ts");
+            const indexPath = path.join(upgradePath, "index.js");
 
             // 检查 index.ts 文件是否存在
             if (!fse.existsSync(indexPath)) {
-                this.logger.log(
+                this.logger.debug(
                     `📄 No index.ts found in upgrade directory for version: ${version}`,
                 );
                 return;
