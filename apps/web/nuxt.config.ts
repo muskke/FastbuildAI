@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { PluginOption } from "vite";
 
+import icons from "./assets/icons/icons.json";
 import { pwa } from "./common/config/pwa";
 import localesI18n from "./core/modules/locales-i18n";
 
@@ -107,7 +108,7 @@ export default defineNuxtConfig({
             colors: ["primary", "secondary", "success", "info", "warning", "error"],
         },
     },
-    spaLoadingTemplate: "./app/spa-loading-template.html",
+    spaLoadingTemplate: "./public/spa-loading-template.html",
 
     dir: {
         plugins: "core/plugins",
@@ -266,7 +267,12 @@ export default defineNuxtConfig({
     },
 
     icon: {
-        serverBundle: "remote",
+        serverBundle: "local",
+        clientBundle: {
+            scan: true,
+            icons,
+            sizeLimitKb: 10 * 1024,
+        },
     },
     // // pwa,
 });
