@@ -46,7 +46,7 @@ export class ErrorHandler {
                     title: t("console-common.request.401"),
                 });
                 useUserStore().toLogin();
-                break;
+                throw new Error(`Unauthorized: ${errorMessage}${errorPath}`);
 
             case 403:
                 useMessage().error(`Forbidden: ${errorMessage}${errorPath}`, {
