@@ -18,7 +18,7 @@ const activeFileData = computed(() => props.results.fileResults[activeFileIndex.
         <!-- 预览头部 -->
         <div class="mb-2 flex items-center justify-between">
             <div class="flex items-center gap-1">
-                <h5 class="text-foreground text-sm font-medium">
+                <h5 class="text-foreground flex-none text-sm font-medium">
                     {{ $t("datasets.create.segmentPreview.title") }}
                 </h5>
 
@@ -37,7 +37,7 @@ const activeFileData = computed(() => props.results.fileResults[activeFileIndex.
                         label-key="label"
                         value-key="value"
                         variant="none"
-                        :ui="{ content: 'w-48' }"
+                        :ui="{ base: 'w-48 flex-1 truncate' }"
                     />
 
                     <UBadge
@@ -47,7 +47,7 @@ const activeFileData = computed(() => props.results.fileResults[activeFileIndex.
                     />
                 </template>
             </div>
-            <p class="text-muted-foreground text-xs">
+            <p class="text-muted-foreground flex-none text-xs">
                 {{ $t("datasets.create.segmentPreview.clickLeftPreviewBlock") }}
             </p>
         </div>
