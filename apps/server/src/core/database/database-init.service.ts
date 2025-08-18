@@ -673,10 +673,10 @@ export class DatabaseInitService implements OnModuleInit {
             await this.executeVersionSpecificUpgrade(version);
 
             // 3. 更新菜单配置
-            await this.upgradeMenus(version);
+            // await this.upgradeMenus(version);
 
-            // 4. 更新前台菜单配置
-            await this.upgradeHomeMenus(version);
+            // 4. 更新前台菜单配置 (已移动到版本特定升级逻辑中)
+            // await this.upgradeHomeMenus(version);
 
             // 5. 更新版本文件
             await this.writeVersionFile(version);
@@ -721,7 +721,11 @@ export class DatabaseInitService implements OnModuleInit {
             const upgradeModule = await import(indexPath);
 
             if (upgradeModule.Upgrade) {
-                const upgradeInstance = new upgradeModule.Upgrade();
+                const upgradeInstance = new upgradeModule.Upgrade(
+                    this.dataSource,
+                    this.permissionService,
+                    this.pageService,
+                );
 
                 if (typeof upgradeInstance.execute === "function") {
                     await upgradeInstance.execute();
@@ -894,100 +898,6 @@ export class DatabaseInitService implements OnModuleInit {
             if (children && children.length > 0) {
                 await this.upgradeMenuTree(children, savedMenu.id);
             }
-        }
-    }
-
-    /**
-     * 升级前台菜单配置
-     *
-     * 读取 data/upgrade/{version}/home-menu.json 文件并更新前台菜单数据
-     *
-     * @param version 目标版本号
-     */
-    private async upgradeHomeMenus(version: string): Promise<void> {
-        this.logger.log("开始升级前台菜单配置...");
-        TerminalLogger.log("Home Menu Upgrade", "开始升级前台菜单配置...");
-
-        try {
-            // 查找升级前台菜单配置文件
-            const upgradeHomeMenuPath = this.getUpgradeHomeMenuFilePath(version);
-            if (!upgradeHomeMenuPath) {
-                this.logger.log(`未找到版本 ${version} 的升级前台菜单配置文件，跳过前台菜单升级`);
-                return;
-            }
-
-            // 读取升级前台菜单配置
-            const upgradeHomeMenus = await fse.readJson(upgradeHomeMenuPath);
-            if (!Array.isArray(upgradeHomeMenus)) {
-                throw new Error("升级前台菜单配置格式不正确，应为数组格式");
-            }
-
-            this.logger.log(`读取到 ${upgradeHomeMenus.length} 个升级前台菜单项`);
-
-            // 更新或创建前台菜单配置（增量更新）
-            try {
-                // 先查找是否已存在 web 页面配置
-                const existingPage = await this.pageService.findOne({
-                    where: { name: "web" },
-                });
-
-                if (existingPage && existingPage.data) {
-                    // 如果存在，进行增量更新且查重
-                    const existingData = existingPage.data as any;
-                    const existingMenus = existingData.menus || [];
-
-                    // 获取现有菜单的ID集合
-                    const existingMenuIds = new Set(existingMenus.map((menu: any) => menu.id));
-
-                    // 过滤出不重复的新菜单项
-                    const newMenus = upgradeHomeMenus.filter(
-                        (menu: any) => !existingMenuIds.has(menu.id),
-                    );
-
-                    if (newMenus.length > 0) {
-                        // 合并菜单：现有菜单 + 新增菜单
-                        const mergedMenus = [...existingMenus, ...newMenus];
-
-                        const updatedData = {
-                            ...existingData,
-                            menus: mergedMenus,
-                            layout: existingData.layout || "layout-5", // 保持现有布局或使用默认值
-                        };
-
-                        await this.pageService.updateById(existingPage.id, {
-                            data: updatedData,
-                        });
-                        this.logger.log(
-                            `增量更新前台菜单配置成功，新增 ${newMenus.length} 个菜单项`,
-                        );
-                    } else {
-                        this.logger.log("所有菜单项已存在，跳过更新");
-                    }
-                } else {
-                    // 如果不存在，创建新的配置
-                    const homeMenuData = {
-                        menus: upgradeHomeMenus,
-                        layout: "layout-5",
-                    };
-
-                    await this.pageService.create({
-                        name: "web",
-                        data: homeMenuData,
-                    });
-                    this.logger.log(
-                        `创建前台菜单配置成功，包含 ${upgradeHomeMenus.length} 个菜单项`,
-                    );
-                }
-            } catch (error) {
-                throw new Error(`前台菜单配置操作失败: ${error.message}`);
-            }
-
-            TerminalLogger.success("Home Menu Upgrade", "前台菜单配置升级完成");
-            this.logger.log("✅ 前台菜单配置升级完成");
-        } catch (error) {
-            TerminalLogger.error("Home Menu Upgrade", `前台菜单配置升级失败: ${error.message}`);
-            this.logger.error(`❌ 前台菜单配置升级失败: ${error.message}`);
-            throw error;
         }
     }
 
