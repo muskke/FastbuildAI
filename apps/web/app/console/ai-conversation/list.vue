@@ -299,7 +299,7 @@ onMounted(() => getLists());
                 <template #title-cell="{ row }">
                     <div class="flex items-center gap-2">
                         <UIcon name="i-lucide-message-circle" class="text-primary size-5" />
-                        {{ row.original.title }}
+                        {{ row.original.title || "new Chat" }}
                     </div>
                 </template>
                 <template #userName-cell="{ row }">
