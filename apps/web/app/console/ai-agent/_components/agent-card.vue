@@ -34,16 +34,16 @@ const handleViewDetail = () => {
             class="absolute right-3 bottom-3.5 z-10 flex gap-1 opacity-100 transition-opacity duration-200 group-hover:opacity-0"
             @click.stop
         >
-            <UBadge
-                :color="agent.isPublic ? 'success' : 'neutral'"
-                variant="soft"
-                size="sm"
-            >
+            <UBadge :color="agent.isPublic ? 'success' : 'neutral'" variant="soft" size="sm">
                 <UIcon
                     :name="agent.isPublic ? 'i-lucide-globe' : 'i-lucide-globe-lock'"
-                    class="size-3 mr-1"
+                    class="mr-1 size-3"
                 />
-                {{ agent.isPublic ? $t("console-ai-agent.configuration.public") : $t("console-ai-agent.configuration.private") }}
+                {{
+                    agent.isPublic
+                        ? $t("console-ai-agent.configuration.public")
+                        : $t("console-ai-agent.configuration.private")
+                }}
             </UBadge>
         </div>
 

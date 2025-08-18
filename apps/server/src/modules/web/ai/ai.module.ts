@@ -2,6 +2,7 @@ import { DictModule } from "@common/modules/dict/dict.module";
 import { AiConsoleModule } from "@modules/console/ai/ai.module";
 import { AiMcpServer } from "@modules/console/ai/entities/ai-mcp-server.entity";
 import { AiUserMcpServer } from "@modules/console/ai/entities/ai-user-mcp-server.entity";
+import { AiAgentModule } from "@modules/web/ai-agent/ai-agent.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
@@ -21,6 +22,7 @@ import { UserMcpServerService } from "./services/user-mcp-server.service";
 @Module({
     imports: [
         AiConsoleModule,
+        AiAgentModule,
         DictModule,
         TypeOrmModule.forFeature([AiMcpServer, AiUserMcpServer]),
     ],

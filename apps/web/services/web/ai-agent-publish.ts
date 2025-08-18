@@ -100,6 +100,7 @@ export function apiGetPublicAgentInfo(publishToken: string, accessToken: string)
             headers: {
                 "X-Public-Access-Token": accessToken,
             },
+            requireAuth: false,
         },
     );
 }
@@ -134,6 +135,7 @@ export function apiGetPublicAgentConversations(
         headers: {
             "X-Public-Access-Token": accessToken,
         },
+        requireAuth: false,
     });
 }
 
@@ -158,6 +160,7 @@ export function apiGetPublicAgentMessages(
             headers: {
                 "X-Public-Access-Token": accessToken,
             },
+            requireAuth: false,
         },
     );
 }
@@ -181,6 +184,7 @@ export function apiDeletePublicAgentConversation(
             headers: {
                 "X-Public-Access-Token": accessToken,
             },
+            requireAuth: false,
         },
     );
 }
@@ -206,6 +210,7 @@ export function apiUpdatePublicAgentConversation(
             headers: {
                 "X-Public-Access-Token": accessToken,
             },
+            requireAuth: false,
         },
     );
 }
@@ -228,6 +233,7 @@ export function apiCreatePublicAgentAnnotation(
         headers: {
             "X-Public-Access-Token": accessToken,
         },
+        requireAuth: false,
     });
 }
 
@@ -250,6 +256,7 @@ export function apiGetPublicAgentAnnotationDetail(
             headers: {
                 "X-Public-Access-Token": accessToken,
             },
+            requireAuth: false,
         },
     );
 }
@@ -272,6 +279,7 @@ export function apiUpdatePublicAgentAnnotation(
         headers: {
             "X-Public-Access-Token": accessToken,
         },
+        requireAuth: false,
     });
 }
 
