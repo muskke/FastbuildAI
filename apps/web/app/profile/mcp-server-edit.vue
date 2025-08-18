@@ -292,7 +292,7 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                 }"
             >
                 <div class="flex items-center gap-2 text-base">
-                    <Icon name="lucide:settings-2" />
+                    <Icon name="i-lucide-settings-2" />
                     {{ t("console-ai-mcp-server.form.advancedArgs") }}
                 </div>
                 <template #body>
