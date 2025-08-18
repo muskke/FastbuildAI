@@ -110,8 +110,13 @@ export const useUserStore = defineStore("auth", () => {
 
     /** 获取用户信息 */
     const getUser = async () => {
-        userInfo.value = await apiGetCurrentUserInfo();
-        return userInfo.value;
+        try {
+            userInfo.value = await apiGetCurrentUserInfo();
+            return userInfo.value;
+        } catch (error) {
+            console.error("获取用户信息失败:", error);
+            return null;
+        }
     };
 
     /** 设置token到cookie */
