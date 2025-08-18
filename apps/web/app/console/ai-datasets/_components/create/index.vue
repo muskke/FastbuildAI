@@ -90,6 +90,7 @@ const { lockFn: handleCreate } = useLockFn(async () => {
         nextStep();
     } catch (error) {
         console.log("创建错误 => ", error);
+        toast.error((error as Error).message);
     }
 });
 
@@ -134,7 +135,7 @@ onMounted(() => {
 
 <template>
     <div class="create-dataset-container flex h-full flex-col">
-        <div class="sticky top-0 z-10 flex bg-background">
+        <div class="bg-background sticky top-0 z-10 flex">
             <UButton
                 class="absolute top-1/2 -translate-y-[50%]"
                 variant="link"
