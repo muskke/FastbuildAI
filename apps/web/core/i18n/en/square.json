@@ -1,0 +1,33 @@
+{
+    "title": "Agent Square",
+    "subtitle": "Discover amazing AI agents and build smarter applications",
+    "searchPlaceholder": "Search agent names or descriptions...",
+    "hotAgents": "🔥 Hot Agents",
+    "latestAgents": "✨ Latest Agents",
+    "allAgents": "All Agents",
+    "sortByLatest": "Latest",
+    "sortByPopular": "Popular",
+    "users": "users",
+    "new": "New",
+    "public": "Public",
+    "published": "Published",
+    "featured": "Featured",
+    "loadMore": "Load More",
+    "noResults": "No agents found",
+    "noDescription": "No description",
+    "searchResults": "Search Results",
+    "categories": {
+        "all": "All Categories",
+        "business": "Business",
+        "education": "Education",
+        "entertainment": "Entertainment",
+        "tools": "Tools",
+        "creative": "Creative",
+        "technology": "Technology"
+    },
+    "stats": {
+        "conversations": "Conversations",
+        "rating": "Rating",
+        "created": "Created"
+    }
+}

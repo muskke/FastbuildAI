@@ -5,5 +5,7 @@
     "general": "通用设置",
     "mcpServerSetting": "MCP服务设置",
     "buyRecord": "购买记录",
-    "powerDetail": "算力明细"
+    "powerDetail": "算力明细",
+    "agent": "智能体",
+    "chat": "对话"
 }

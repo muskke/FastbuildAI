@@ -1,13 +1,13 @@
 [
     {
-        "id": "menu_1755255556893",
+        "id": "menu_1755255556893_4574a410-9f08-4c41-b73a-4a07236be704",
         "icon": "i-lucide-bot-message-square",
         "link": {
-            "name": "menu.general",
-            "path": "/profile/general-settings",
+            "name": "menu.agent",
+            "path": "/public/square",
             "type": "system",
             "query": {}
         },
-        "title": "智能体"
+        "title": "menu.agent"
     }
 ]

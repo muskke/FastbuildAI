@@ -13,7 +13,7 @@ const prompt = useVModel(props, "modelValue", emit);
 <template>
     <ChatPrompt
         v-model="prompt"
-        :rows="3"
+        :rows="2"
         :placeholder="
             $t('console-ai-agent.configuration.rolePromptPlaceholder', { label: '{{label}}' })
         "

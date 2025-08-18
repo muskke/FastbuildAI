@@ -1,4 +1,6 @@
 {
+    "workspace": "Workspace",
+    "system": "System",
     "functionMenu": "Menu",
     "dashboard": "Dashboard",
     "common": {
