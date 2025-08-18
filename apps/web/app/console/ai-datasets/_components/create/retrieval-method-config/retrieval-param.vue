@@ -179,7 +179,7 @@ function handleKeywordChange(val: number) {
                 <UButton
                     :variant="retrievalConfig.strategy === 'rerank' ? 'solid' : 'outline'"
                     size="sm"
-                    @click="retrievalConfig.strategy = 'rerank'"
+                    @click="retrievalConfig.strategy = 'rerank'; retrievalConfig.rerankConfig!.enabled = true"
                 >
                     <UIcon name="i-heroicons-cpu-chip" class="mr-1 h-4 w-4" />
                     {{ $t("datasets.retrieval.rerank") }}
