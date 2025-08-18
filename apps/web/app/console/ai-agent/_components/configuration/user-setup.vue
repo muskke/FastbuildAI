@@ -23,7 +23,7 @@ const state = useVModel(props, "modelValue", emit);
 </script>
 
 <template>
-    <div class="space-y-4">
+    <div class="space-y-4 overflow-y-auto">
         <!-- 开场白区域 -->
         <Prologue v-model="state.openingStatement as string" />
 

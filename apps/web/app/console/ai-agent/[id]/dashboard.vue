@@ -210,7 +210,7 @@ definePageMeta({ layout: "full-screen" });
 </script>
 
 <template>
-    <div class="flex h-[calc(100vh-6rem)] w-full flex-col">
+    <div class="flex h-full w-full flex-col">
         <!-- 标题和时间选择器 -->
         <div class="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
