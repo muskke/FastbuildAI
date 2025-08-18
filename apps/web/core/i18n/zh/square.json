@@ -1,0 +1,33 @@
+{
+    "title": "智能体广场",
+    "subtitle": "发现优秀的AI智能体，构建更智能的应用",
+    "searchPlaceholder": "搜索智能体名称或描述...",
+    "hotAgents": "🔥 热门智能体",
+    "latestAgents": "✨ 最新智能体",
+    "allAgents": "所有智能体",
+    "sortByLatest": "最新发布",
+    "sortByPopular": "最受欢迎",
+    "users": "用户",
+    "new": "新",
+    "public": "公开",
+    "published": "已发布",
+    "featured": "精选",
+    "loadMore": "加载更多",
+    "noResults": "暂无智能体",
+    "noDescription": "暂无描述",
+    "searchResults": "搜索结果",
+    "categories": {
+        "all": "全部分类",
+        "business": "商务办公",
+        "education": "教育学习",
+        "entertainment": "娱乐休闲",
+        "tools": "工具助手",
+        "creative": "创意设计",
+        "technology": "科技编程"
+    },
+    "stats": {
+        "conversations": "对话次数",
+        "rating": "评分",
+        "created": "创建时间"
+    }
+}
