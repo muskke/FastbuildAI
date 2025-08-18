@@ -4,6 +4,7 @@ import { onMounted, ref } from "vue";
 import { boolean, object, string } from "yup";
 
 import type { CreateAgentAnnotationParams, UpdateAgentAnnotationParams } from "@/models/ai-agent";
+import type { AiMessage } from "@/models/ai-conversation";
 import {
     apiCreateAgentAnnotation,
     apiGetAgentAnnotationDetail,
@@ -30,10 +31,16 @@ const props = defineProps<{
     publishToken?: string;
     /** 访问令牌（公开访问模式需要） */
     accessToken?: string;
+    /** 初始数据（创建模式时使用） */
+    initialData?: {
+        question: string;
+        answer: string;
+        enabled: boolean;
+    };
 }>();
 
 const emits = defineEmits<{
-    (e: "close", refresh?: boolean): void;
+    (e: "close", refresh?: boolean, result?: AiMessage): void;
 }>();
 
 const { t } = useI18n();
@@ -107,22 +114,30 @@ const { lockFn: submitForm, isLock: submitting } = useLockFn(async () => {
             toast.success(t("console-ai-agent.logs.success"));
         } else {
             // 创建标注
+            let result;
             if (props.isPublic && props.publishToken && props.accessToken) {
                 // 公开访问模式
-                await apiCreatePublicAgentAnnotation(props.publishToken, props.accessToken, {
-                    ...formData.value,
-                    agentId: props.agentId,
-                    messageId: props.messageId || undefined,
-                });
+                result = await apiCreatePublicAgentAnnotation(
+                    props.publishToken,
+                    props.accessToken,
+                    {
+                        ...formData.value,
+                        agentId: props.agentId,
+                        messageId: props.messageId || undefined,
+                    },
+                );
             } else {
                 // 管理后台模式
-                await apiCreateAgentAnnotation(props.agentId, {
+                result = await apiCreateAgentAnnotation(props.agentId, {
                     ...formData.value,
                     agentId: props.agentId,
                     messageId: props.messageId || undefined,
                 });
             }
             toast.success(t("console-ai-agent.logs.createAnnotationSuccess"));
+            // 传递创建结果给父组件
+            emits("close", true, result);
+            return;
         }
         emits("close", true);
     } catch (error) {
@@ -138,15 +153,28 @@ const handleClose = () => {
 
 // 组件挂载时初始化数据
 onMounted(async () => {
-    // 如果有标注ID，则获取详情数据（编辑模式）
-    props.annotationId && fetchDetail();
+    if (props.annotationId) {
+        // 如果有标注ID，则获取详情数据（编辑模式）
+        fetchDetail();
+    } else if (props.initialData) {
+        // 如果有初始数据，则预填充表单（创建模式）
+        formData.value = {
+            question: props.initialData.question,
+            answer: props.initialData.answer,
+            enabled: props.initialData.enabled,
+        };
+    }
 });
 </script>
 
 <template>
     <ProModal
         v-model="isOpen"
-        :title="props.annotationId ? t('console-ai-agent.logs.updateAnnotation') : t('console-ai-agent.logs.addAnnotation')"
+        :title="
+            props.annotationId
+                ? t('console-ai-agent.logs.updateAnnotation')
+                : t('console-ai-agent.logs.addAnnotation')
+        "
         :description="
             props.annotationId
                 ? t('console-ai-agent.logs.updateAnnotationDesc')
@@ -170,32 +198,38 @@ onMounted(async () => {
                         :rows="5"
                         :ui="{ root: 'w-full' }"
                     />
-                    <template #hint> {{ t('console-ai-agent.logs.questionHint') }} </template>
+                    <template #hint> {{ t("console-ai-agent.logs.questionHint") }} </template>
                 </UFormField>
 
                 <UFormField :label="t('console-ai-agent.logs.answer')" name="answer" required>
                     <ProEditor v-model="formData.answer" custom-class="!h-70" />
-                    <template #hint> {{ t('console-ai-agent.logs.answerHint') }} </template>
+                    <template #hint> {{ t("console-ai-agent.logs.answerHint") }} </template>
                 </UFormField>
 
                 <UFormField :label="t('console-ai-agent.logs.enabled')" name="enabled">
                     <div class="flex items-center gap-3">
                         <USwitch v-model="formData.enabled" color="primary" />
                         <span class="text-muted-foreground text-sm">
-                            {{ formData.enabled ? t('console-common.enabled') : t('console-common.disabled') }}
+                            {{
+                                formData.enabled
+                                    ? t("console-common.enabled")
+                                    : t("console-common.disabled")
+                            }}
                         </span>
                     </div>
-                    <template #hint> {{ t('console-ai-agent.logs.enabledHint') }} </template>
+                    <template #hint> {{ t("console-ai-agent.logs.enabledHint") }} </template>
                 </UFormField>
             </div>
 
             <!-- 底部按钮 -->
             <div class="mt-6 flex justify-end gap-2">
                 <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
-                    {{ t('console-common.cancel') }}
+                    {{ t("console-common.cancel") }}
                 </UButton>
                 <UButton color="primary" size="lg" :loading="submitting" type="submit">
-                    {{ props.annotationId ? t('console-common.update') : t('console-common.create') }}
+                    {{
+                        props.annotationId ? t("console-common.update") : t("console-common.create")
+                    }}
                 </UButton>
             </div>
         </UForm>
