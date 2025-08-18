@@ -244,10 +244,9 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
 
 <template>
     <!-- Sidebar模式的容器 -->
-    <div :class="collapsed ? 'px-1' : 'px-1.5'">
+    <div class="flex flex-col gap-1" :class="collapsed ? 'px-1' : 'px-1.5'">
         <div
             class="hover:bg-secondary dark:hover:bg-surface-800 flex cursor-pointer flex-col rounded-lg select-none"
-            :class="{ 'bg-secondary dark:bg-surface-800': open }"
         >
             <div class="flex h-10 items-center justify-between px-3 py-2 text-sm font-medium">
                 <a
