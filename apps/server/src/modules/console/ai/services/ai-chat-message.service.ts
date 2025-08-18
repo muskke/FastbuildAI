@@ -122,7 +122,7 @@ export class AiChatMessageService extends BaseService<AiChatMessage> {
         // Token统计仍需要使用QueryBuilder，因为涉及JSON字段聚合
         const tokenStats = await this.repository
             .createQueryBuilder("message")
-            .select("COALESCE(SUM((tokens->>'total')::int), 0)", "totalTokens")
+            .select("COALESCE(SUM((tokens->>'total_tokens')::int), 0)", "totalTokens")
             .where("message.conversationId = :conversationId", { conversationId })
             .getRawOne();
 

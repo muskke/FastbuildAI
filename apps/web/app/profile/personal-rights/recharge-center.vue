@@ -391,7 +391,7 @@ definePageMeta({
         <div v-else class="h-full">
             <div class="flex justify-center p-20">
                 <div class="w-full max-w-md p-8 text-center">
-                    <UIcon name="lucide:lock" class="text-primary mx-auto mb-4 text-4xl" />
+                    <UIcon name="i-lucide-lock" class="text-primary mx-auto mb-4 text-4xl" />
                     <h1 class="mb-2 text-2xl font-bold">
                         {{ t("web-personal-rights.rechargeCenter.notOpen") }}
                     </h1>
