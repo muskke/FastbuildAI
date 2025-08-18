@@ -78,7 +78,8 @@
         "top": "Top Menu",
         "catalogue": "Catalog",
         "menu": "Menu",
-        "button": "Button"
+        "button": "Button",
+        "group": "Constituencies"
     },
     "paste": "Paste",
     "cut": "Cut",
