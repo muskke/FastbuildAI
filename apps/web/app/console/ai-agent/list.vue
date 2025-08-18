@@ -17,6 +17,7 @@ const searchForm = reactive<QueryAgentParams>({
     keyword: "",
     page: 1,
     pageSize: 15,
+    isPublic: undefined,
 });
 
 // 无限滚动状态管理
@@ -132,6 +133,21 @@ onMounted(() => getLists());
                 v-model="searchForm.keyword"
                 :placeholder="$t('console-ai-agent.search.placeholder')"
                 class="w-80"
+                @change="getLists"
+            />
+
+            <!-- 公开状态筛选 -->
+            <USelect
+                v-model="searchForm.isPublic"
+                :items="[
+                    { label: $t('console-ai-agent.search.allStatus'), value: undefined },
+                    { label: $t('console-ai-agent.configuration.public'), value: true },
+                    { label: $t('console-ai-agent.configuration.private'), value: false }
+                ]"
+                :placeholder="$t('console-ai-agent.search.filterByStatus')"
+                label-key="label"
+                value-key="value"
+                class="w-48"
                 @change="getLists"
             />
         </div>

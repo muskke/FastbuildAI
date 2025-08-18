@@ -95,6 +95,8 @@ export interface Agent extends BaseEntity {
     createdBy: string;
     /** 是否已发布 */
     isPublished?: boolean;
+    /** 是否公开 */
+    isPublic?: boolean;
     /** 公开访问令牌 */
     publishToken?: string;
     /** API调用密钥 */
@@ -262,6 +264,8 @@ export interface UpdateAgentConfigParams {
     formFields?: FormFieldConfig[];
     /** 表单字段输入值（用于预览和测试） */
     formFieldsInputs?: Record<string, any>;
+    /** 是否公开 */
+    isPublic?: boolean;
 }
 
 /**
@@ -270,6 +274,8 @@ export interface UpdateAgentConfigParams {
 export interface QueryAgentParams extends Pagination {
     /** 关键词搜索 */
     keyword?: string;
+    /** 是否公开筛选 */
+    isPublic?: boolean;
 }
 
 /**

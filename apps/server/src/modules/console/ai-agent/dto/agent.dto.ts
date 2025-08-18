@@ -336,6 +336,13 @@ export class UpdateAgentConfigDto extends AgentConfigBaseDto {
     @IsOptional()
     @IsObject({ message: "表单字段输入值必须是对象" })
     formFieldsInputs?: Record<string, any>;
+
+    /**
+     * 是否公开
+     */
+    @IsOptional()
+    @IsBoolean({ message: "是否公开必须是布尔值" })
+    isPublic?: boolean;
 }
 
 /**
@@ -348,6 +355,13 @@ export class QueryAgentDto extends PaginationDto {
     @IsOptional()
     @IsString({ message: "搜索关键词必须是字符串" })
     keyword?: string;
+
+    /**
+     * 是否公开筛选
+     */
+    @IsOptional()
+    @IsBoolean({ message: "是否公开必须是布尔值" })
+    isPublic?: boolean;
 }
 
 /**

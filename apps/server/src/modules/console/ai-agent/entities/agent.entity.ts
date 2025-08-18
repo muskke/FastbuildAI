@@ -206,6 +206,13 @@ export class Agent {
     isPublished: boolean;
 
     /**
+     * 是否公开
+     * 控制智能体是否在公开列表中可见
+     */
+    @Column({ type: "boolean", default: false, comment: "是否公开" })
+    isPublic: boolean;
+
+    /**
      * 公开访问令牌
      * 用于生成公开访问链接，未发布时为空
      */

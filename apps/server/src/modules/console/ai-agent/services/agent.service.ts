@@ -51,6 +51,7 @@ export class AgentService extends BaseService<Agent> {
                 enableFeedback: false,
                 enableWebSearch: false,
                 userCount: 0,
+                isPublic: false,
             });
             this.logger.log(`[+] 智能体创建成功: ${agent.id} - ${name}`);
             return agent as Agent;
@@ -86,13 +87,20 @@ export class AgentService extends BaseService<Agent> {
         }, "智能体配置更新失败");
     }
 
-    // 获取智能体列表，支持关键字过滤和分页
+    // 获取智能体列表，支持关键字过滤、公开状态筛选和分页
     async getAgentList(dto: QueryAgentDto, user: UserPlayground) {
         const queryBuilder = this.agentRepository.createQueryBuilder("agent");
 
         if (dto.keyword) {
             queryBuilder.where("agent.name ILIKE :keyword OR agent.description ILIKE :keyword", {
                 keyword: `%${dto.keyword}%`,
+            });
+        }
+
+        // 添加公开状态筛选
+        if (dto.isPublic !== undefined) {
+            queryBuilder.andWhere("agent.isPublic = :isPublic", {
+                isPublic: dto.isPublic,
             });
         }
 
@@ -396,6 +404,24 @@ export class AgentService extends BaseService<Agent> {
         const embedCode = this.generateEmbedCode(agent.publishToken, publishUrl);
 
         return { embedCode, publishUrl };
+    }
+
+    /**
+     * 获取公开智能体列表
+     */
+    async getPublicAgentList(dto: QueryAgentDto) {
+        const queryBuilder = this.agentRepository.createQueryBuilder("agent");
+
+        // 只查询公开的智能体
+        queryBuilder.where("agent.isPublic = true");
+
+        if (dto.keyword) {
+            queryBuilder.andWhere("agent.name ILIKE :keyword OR agent.description ILIKE :keyword", {
+                keyword: `%${dto.keyword}%`,
+            });
+        }
+
+        return this.paginateQueryBuilder(queryBuilder.orderBy("agent.createdAt", "DESC"), dto);
     }
 
     /**

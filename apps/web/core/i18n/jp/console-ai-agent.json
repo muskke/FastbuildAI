@@ -6,7 +6,9 @@
         }
     },
     "search": {
-        "placeholder": "エージェント名、説明、またはIDで検索"
+        "placeholder": "エージェント名、説明、またはIDで検索",
+        "allStatus": "全ステータス",
+        "filterByStatus": "ステータスでフィルター"
     },
     "create": {
         "title": "エージェント作成",
@@ -83,6 +85,9 @@
         "referenceDesc": "回答がドキュメントを参照する場合、元ドキュメントを表示",
         "feedback": "Q&A注釈",
         "feedbackDesc": "管理者/ユーザーによる質問・回答の注釈機能",
+        "public": "公開エージェント",
+        "publicDesc": "有効にすると、エージェントが公開リストに表示され、他のユーザーが発見して使用できます",
+        "private": "プライベートエージェント",
         "prologue": "オープニングメッセージ",
         "prologueDesc": "ツールが隠れた場合、左右にドラッグして表示",
         "problem": "開始質問",
