@@ -409,19 +409,34 @@ export class AgentService extends BaseService<Agent> {
     /**
      * 获取公开智能体列表
      */
-    async getPublicAgentList(dto: QueryAgentDto) {
+    async getPublicAgentList(dto: any) {
         const queryBuilder = this.agentRepository.createQueryBuilder("agent");
 
         // 只查询公开的智能体
         queryBuilder.where("agent.isPublic = true");
 
-        if (dto.keyword) {
-            queryBuilder.andWhere("agent.name ILIKE :keyword OR agent.description ILIKE :keyword", {
-                keyword: `%${dto.keyword}%`,
-            });
+        // 添加发布状态筛选
+        if (dto.publishedOnly) {
+            queryBuilder.andWhere("agent.isPublished = true");
         }
 
-        return this.paginateQueryBuilder(queryBuilder.orderBy("agent.createdAt", "DESC"), dto);
+        // 添加关键词搜索
+        if (dto.keyword) {
+            queryBuilder.andWhere(
+                "(agent.name ILIKE :keyword OR agent.description ILIKE :keyword)",
+                { keyword: `%${dto.keyword}%` },
+            );
+        }
+
+        // 添加排序
+        if (dto.sortBy === "popular") {
+            queryBuilder.orderBy("agent.userCount", "DESC");
+            queryBuilder.addOrderBy("agent.createdAt", "DESC");
+        } else {
+            queryBuilder.orderBy("agent.createdAt", "DESC");
+        }
+
+        return this.paginateQueryBuilder(queryBuilder, dto);
     }
 
     /**
