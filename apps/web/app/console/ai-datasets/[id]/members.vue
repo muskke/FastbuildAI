@@ -48,11 +48,11 @@ const showAddMemberModal = ref(false);
 
 // 列ID到中文名称的映射
 const columnLabels = computed(() => ({
-    user: t("datasets.members.table.user"),
-    role: t("datasets.members.table.role"),
+    user: t("console-ai-datasets.members.table.user"),
+    role: t("console-ai-datasets.members.table.role"),
     status: t("console-common.status"),
-    joinedAt: t("datasets.members.table.joinedAt"),
-    lastActiveAt: t("datasets.members.table.lastActiveAt"),
+    joinedAt: t("console-ai-datasets.members.table.joinedAt"),
+    lastActiveAt: t("console-ai-datasets.members.table.lastActiveAt"),
     actions: t("console-common.operation"),
 }));
 
@@ -63,10 +63,10 @@ const { paging, getLists } = usePaging<TeamMember>({
 
 // 角色映射
 const roleMap = {
-    owner: { label: t("datasets.members.role.owner"), color: "error" as const },
-    manager: { label: t("datasets.members.role.manager"), color: "warning" as const },
-    editor: { label: t("datasets.members.role.editor"), color: "primary" as const },
-    viewer: { label: t("datasets.members.role.viewer"), color: "neutral" as const },
+    owner: { label: t("console-ai-datasets.members.role.owner"), color: "error" as const },
+    manager: { label: t("console-ai-datasets.members.role.manager"), color: "warning" as const },
+    editor: { label: t("console-ai-datasets.members.role.editor"), color: "primary" as const },
+    viewer: { label: t("console-ai-datasets.members.role.viewer"), color: "neutral" as const },
 };
 
 // 定义表格列
@@ -93,7 +93,7 @@ const columns: TableColumn<TeamMember>[] = [
                         // 添加"自己"标识
                         row.original.oneself
                             ? h(UBadge, { color: "primary", variant: "subtle", size: "xs" }, () =>
-                                  t("datasets.members.self"),
+                                  t("console-ai-datasets.members.self"),
                               )
                             : null,
                     ]),
@@ -108,7 +108,7 @@ const columns: TableColumn<TeamMember>[] = [
                         ? h(
                               "p",
                               { class: "text-sm text-muted-foreground mt-1" },
-                              `${t("datasets.members.note")}: ${row.original.note}`,
+                              `${t("console-ai-datasets.members.note")}: ${row.original.note}`,
                           )
                         : null,
                 ]),
@@ -202,7 +202,7 @@ function getRowItems(row: Row<TeamMember>) {
     return [
         row.original.isCurrentUserOwner && row.original.role !== "owner"
             ? {
-                  label: t("datasets.members.transferOwnership"),
+                  label: t("console-ai-datasets.members.transferOwnership"),
                   icon: "i-lucide-crown",
                   onClick: () => {
                       handleTransferOwnership(row.original);
@@ -211,7 +211,7 @@ function getRowItems(row: Row<TeamMember>) {
             : null,
         row.original.canOperate && !row.original.oneself
             ? {
-                  label: t("datasets.members.updateRole"),
+                  label: t("console-ai-datasets.members.updateRole"),
                   icon: "i-lucide-pen-line",
                   onClick: () => {
                       handleUpdateRole(row.original);
@@ -221,8 +221,8 @@ function getRowItems(row: Row<TeamMember>) {
         row.original.canOperate
             ? {
                   label: !row.original.oneself
-                      ? t("datasets.members.removeMember")
-                      : t("datasets.members.exit"),
+                      ? t("console-ai-datasets.members.removeMember")
+                      : t("console-ai-datasets.members.exit"),
                   icon: !row.original.oneself ? "i-lucide-trash" : "i-lucide-log-out",
                   color: "error",
                   onSelect() {
@@ -262,9 +262,9 @@ const handleUpdateRole = async (member: TeamMember) => {
         const newRole = ref(member.role);
 
         const roleOptions = [
-            { label: t("datasets.members.role.manager"), value: "manager" },
-            { label: t("datasets.members.role.editor"), value: "editor" },
-            { label: t("datasets.members.role.viewer"), value: "viewer" },
+            { label: t("console-ai-datasets.members.role.manager"), value: "manager" },
+            { label: t("console-ai-datasets.members.role.editor"), value: "editor" },
+            { label: t("console-ai-datasets.members.role.viewer"), value: "viewer" },
         ];
 
         const UpdateRoleForm = markRaw({
@@ -278,13 +278,13 @@ const handleUpdateRole = async (member: TeamMember) => {
                                 { class: "text-red-500" },
                                 member.user?.username || member.userId,
                             ),
-                            t("datasets.members.roleTip"),
+                            t("console-ai-datasets.members.roleTip"),
                         ]),
                         h("div", {}, [
                             h(
                                 "label",
                                 { class: "block text-sm font-medium mb-2" },
-                                `${t("datasets.members.newRole")}:`,
+                                `${t("console-ai-datasets.members.newRole")}:`,
                             ),
                             h(resolveComponent("USelectMenu"), {
                                 modelValue: newRole.value,
@@ -300,7 +300,7 @@ const handleUpdateRole = async (member: TeamMember) => {
         });
 
         await useModal({
-            title: t("datasets.members.updateRoleModal"),
+            title: t("console-ai-datasets.members.updateRoleModal"),
             content: UpdateRoleForm,
             confirmText: t("console-common.update"),
             cancelText: t("console-common.cancel"),
@@ -312,12 +312,12 @@ const handleUpdateRole = async (member: TeamMember) => {
                 memberId: member.id,
                 role: newRole.value,
             });
-            toast.success(t("datasets.members.updateRoleSuccess"));
+            toast.success(t("console-ai-datasets.members.updateRoleSuccess"));
             getLists();
         }
     } catch (error) {
         console.error("更新角色失败:", error);
-        toast.error(t("datasets.members.updateRoleFailed"));
+        toast.error(t("console-ai-datasets.members.updateRoleFailed"));
     }
 };
 
@@ -329,11 +329,11 @@ const handleRemoveMember = async (row: Row<TeamMember>) => {
         await useModal({
             color: "error",
             title: row.original.oneself
-                ? t("datasets.members.confirmExit")
-                : t("datasets.members.confirmRemove"),
+                ? t("console-ai-datasets.members.confirmExit")
+                : t("console-ai-datasets.members.confirmRemove"),
             content: row.original.oneself
-                ? t("datasets.members.confirmExitContent")
-                : t("datasets.members.confirmRemoveContent"),
+                ? t("console-ai-datasets.members.confirmExitContent")
+                : t("console-ai-datasets.members.confirmRemoveContent"),
             confirmText: row.original.oneself
                 ? t("console-common.exit")
                 : t("console-common.remove"),
@@ -343,14 +343,14 @@ const handleRemoveMember = async (row: Row<TeamMember>) => {
         await apiRemoveTeamMember({ memberId: row.original.id });
         if (row.original.oneself) {
             router.push(useRoutePath("ai-datasets:list"));
-            toast.success(t("datasets.members.exitSuccess"));
+            toast.success(t("console-ai-datasets.members.exitSuccess"));
             return;
         }
-        toast.success(t("datasets.members.removeSuccess"));
+        toast.success(t("console-ai-datasets.members.removeSuccess"));
         getLists();
     } catch (error) {
         console.error("移除失败:", error);
-        toast.error(t("datasets.members.removeFailed"));
+        toast.error(t("console-ai-datasets.members.removeFailed"));
     }
 };
 
@@ -361,16 +361,16 @@ const handleTransferOwnership = async (member: TeamMember) => {
     try {
         await useModal({
             color: "warning",
-            title: t("datasets.members.transferOwnership"),
+            title: t("console-ai-datasets.members.transferOwnership"),
             content: h("div", { class: "text-sm text-gray-600" }, [
                 h("p", { class: "mb-2" }, [
-                    t("datasets.members.confirmTransferContent"),
+                    t("console-ai-datasets.members.confirmTransferContent"),
                     h("span", { class: "text-red-500" }, member.user?.username || member.userId),
                     " ？",
                 ]),
-                h("p", { class: "text-red-500" }, t("datasets.members.confirmTransferContent2")),
+                h("p", { class: "text-red-500" }, t("console-ai-datasets.members.confirmTransferContent2")),
             ]),
-            confirmText: t("datasets.members.confirmTransfer"),
+            confirmText: t("console-ai-datasets.members.confirmTransfer"),
             ui: { content: "!w-sm" },
         });
 
@@ -378,11 +378,11 @@ const handleTransferOwnership = async (member: TeamMember) => {
             datasetId: datasetId.value || "",
             newOwnerId: member.userId,
         });
-        toast.success(t("datasets.members.confirmTransferSuccess"));
+        toast.success(t("console-ai-datasets.members.confirmTransferSuccess"));
         getLists();
     } catch (error) {
         console.error("转移所有权失败:", error);
-        toast.error(t("datasets.members.confirmTransferFailed"));
+        toast.error(t("console-ai-datasets.members.confirmTransferFailed"));
     }
 };
 
@@ -394,9 +394,9 @@ definePageMeta({ layout: "full-screen" });
 <template>
     <div class="flex h-full w-full flex-col px-6">
         <div class="flex flex-col justify-center gap-1 pt-4">
-            <h1 class="!text-lg font-bold">{{ t("datasets.members.title") }}</h1>
+            <h1 class="!text-lg font-bold">{{ t("console-ai-datasets.members.title") }}</h1>
             <p class="text-muted-foreground text-sm">
-                {{ t("datasets.members.description") }}
+                {{ t("console-ai-datasets.members.description") }}
             </p>
         </div>
 
@@ -404,7 +404,7 @@ definePageMeta({ layout: "full-screen" });
         <div class="flex w-full justify-between gap-4 py-6 backdrop-blur-sm">
             <UInput
                 v-model="searchForm.username"
-                :placeholder="$t('datasets.members.searchPlaceholder')"
+                :placeholder="$t('console-ai-datasets.members.searchPlaceholder')"
                 class="w-80"
                 icon="i-lucide-search"
             />
@@ -442,7 +442,7 @@ definePageMeta({ layout: "full-screen" });
                 </UDropdownMenu>
 
                 <UButton
-                    :label="$t('datasets.members.addMember')"
+                    :label="$t('console-ai-datasets.members.addMember')"
                     leading-icon="i-lucide-plus"
                     color="primary"
                     @click="handleAddMember"

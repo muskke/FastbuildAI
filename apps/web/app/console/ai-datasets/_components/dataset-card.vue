@@ -23,9 +23,9 @@ const { hasAccessByCodes } = useAccessControl();
 
 // 检索模式标签
 const retrievalModeLabels = {
-    vector: { value: t("datasets.retrieval.vector"), color: "primary" },
-    fullText: { value: t("datasets.retrieval.fullText"), color: "success" },
-    hybrid: { value: t("datasets.retrieval.hybrid"), color: "warning" },
+    vector: { value: t("console-ai-datasets.retrieval.vector"), color: "primary" },
+    fullText: { value: t("console-ai-datasets.retrieval.fullText"), color: "success" },
+    hybrid: { value: t("console-ai-datasets.retrieval.hybrid"), color: "warning" },
 } as const;
 type RetrievalMode = keyof typeof retrievalModeLabels;
 
@@ -38,7 +38,7 @@ const handleViewDetail = () => {
 const menuItems: DropdownMenuItem[] = [
     hasAccessByCodes(["ai-datasets:update"])
         ? {
-              label: t("datasets.menu.settings"),
+              label: t("console-ai-datasets.menu.settings"),
               color: "primary",
               onSelect: () => emit("settings", props.dataset),
           }
@@ -52,7 +52,7 @@ const menuItems: DropdownMenuItem[] = [
         : null,
     hasAccessByCodes(["ai-datasets:retry"])
         ? {
-              label: t("datasets.dataset.retry.title"),
+              label: t("console-ai-datasets.dataset.retry.title"),
               color: "warning",
               onSelect: () => emit("retry", props.dataset),
           }
@@ -96,9 +96,9 @@ const menuItems: DropdownMenuItem[] = [
 
                 <!-- 统计信息 -->
                 <div class="text-muted-foreground mt-1 text-xs">
-                    {{ dataset.documentCount }} {{ t("datasets.menu.documents") }} ·
-                    {{ dataset.chunkCount }} {{ t("datasets.menu.segments") }} · 0
-                    {{ t("datasets.menu.relatedApplications") }}
+                    {{ dataset.documentCount }} {{ t("console-ai-datasets.menu.documents") }} ·
+                    {{ dataset.chunkCount }} {{ t("console-ai-datasets.menu.segments") }} · 0
+                    {{ t("console-ai-datasets.menu.relatedApplications") }}
                 </div>
             </div>
         </div>
@@ -115,7 +115,7 @@ const menuItems: DropdownMenuItem[] = [
 
         <!-- 状态标签 -->
         <div class="text-muted-foreground mt-1 flex gap-6 text-xs">
-            <UTooltip :text="t('datasets.dataset.retrievalMode')" :delay-duration="0">
+            <UTooltip :text="t('console-ai-datasets.dataset.retrievalMode')" :delay-duration="0">
                 <div class="flex items-center">
                     <UChip
                         :color="retrievalModeLabels[dataset.retrievalMode as RetrievalMode].color"
@@ -127,11 +127,11 @@ const menuItems: DropdownMenuItem[] = [
                 </div>
             </UTooltip>
 
-            <UTooltip :text="t('datasets.dataset.table.storageSize')" :delay-duration="0">
+            <UTooltip :text="t('console-ai-datasets.dataset.table.storageSize')" :delay-duration="0">
                 <div class="flex items-center">
                     <UChip color="neutral" size="sm" />
                     <span class="ml-3 text-xs">
-                        {{ t("datasets.dataset.table.storageSize") }}：
+                        {{ t("console-ai-datasets.dataset.table.storageSize") }}：
                         {{ formatFileSize(dataset.storageSize * 1) }}
                     </span>
                 </div>

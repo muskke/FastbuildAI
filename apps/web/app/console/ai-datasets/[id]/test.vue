@@ -60,7 +60,7 @@ const openRetrievalConfig = () => {
     });
 
     useModal({
-        title: t("datasets.retrieval.retrievalConfig"),
+        title: t("console-ai-datasets.retrieval.retrievalConfig"),
         content: markRaw({
             setup() {
                 return () =>
@@ -88,7 +88,7 @@ const openRetrievalConfig = () => {
 // 执行召回测试
 const { lockFn: handleRetrievalTest, isLock: loading } = useLockFn(async () => {
     if (!query.value.trim()) {
-        toast.error(t("datasets.test.placeholder"));
+        toast.error(t("console-ai-datasets.test.placeholder"));
         return;
     }
 
@@ -111,7 +111,7 @@ const { lockFn: handleRetrievalTest, isLock: loading } = useLockFn(async () => {
             success: true,
         });
 
-        toast.success(t("datasets.test.success"));
+        toast.success(t("console-ai-datasets.test.success"));
     } catch (error) {
         console.error("召回测试失败:", error);
 
@@ -124,7 +124,7 @@ const { lockFn: handleRetrievalTest, isLock: loading } = useLockFn(async () => {
             error: error instanceof Error ? error.message : "未知错误",
         });
 
-        toast.error(t("datasets.test.failed"));
+        toast.error(t("console-ai-datasets.test.failed"));
     }
 });
 
@@ -150,18 +150,18 @@ const getRetrievalModeIcon = (mode: string) => {
 const getRetrievalModeName = (mode: string) => {
     switch (mode) {
         case "vector":
-            return t("datasets.retrieval.vector");
+            return t("console-ai-datasets.retrieval.vector");
         case "fullText":
-            return t("datasets.retrieval.fullText");
+            return t("console-ai-datasets.retrieval.fullText");
         case "hybrid":
-            return t("datasets.retrieval.hybrid");
+            return t("console-ai-datasets.retrieval.hybrid");
     }
 };
 
 // 展示 chunk 详情弹窗
 function showChunkDetail(chunk: DatasetChunk) {
     useModal({
-        title: `${t("datasets.segments.chunkDetail")} ${chunk.chunkIndex !== undefined ? ` #${chunk.chunkIndex}` : ""}`,
+        title: `${t("console-ai-datasets.segments.chunkDetail")} ${chunk.chunkIndex !== undefined ? ` #${chunk.chunkIndex}` : ""}`,
         content: () =>
             h("div", { class: "space-y-3" }, [
                 // 头部信息，两端对齐
@@ -205,7 +205,7 @@ function showChunkDetail(chunk: DatasetChunk) {
                           h(
                               "span",
                               { class: "font-medium" },
-                              `${t("datasets.segments.sourceFile")}:`,
+                              `${t("console-ai-datasets.segments.sourceFile")}:`,
                           ),
                           ` ${chunk.fileName}`,
                       ])
@@ -223,9 +223,9 @@ definePageMeta({ layout: "full-screen" });
 <template>
     <div class="flex h-full w-full flex-col px-6">
         <div class="flex flex-col justify-center gap-1 pt-4">
-            <h1 class="!text-lg font-bold">{{ t("datasets.test.title") }}</h1>
+            <h1 class="!text-lg font-bold">{{ t("console-ai-datasets.test.title") }}</h1>
             <p class="text-muted-foreground text-sm">
-                {{ t("datasets.test.description") }}
+                {{ t("console-ai-datasets.test.description") }}
             </p>
         </div>
 
@@ -237,13 +237,13 @@ definePageMeta({ layout: "full-screen" });
                     :is-loading="loading"
                     v-model="query"
                     :rows="6"
-                    :placeholder="$t('datasets.test.placeholder')"
+                    :placeholder="$t('console-ai-datasets.test.placeholder')"
                     @submit="handleRetrievalTest"
                 >
                     <template #panel-top>
                         <div class="flex w-full items-center justify-between p-2">
                             <span class="text-muted-foreground text-sm">
-                                {{ t("datasets.test.retrievalConfig") }}
+                                {{ t("console-ai-datasets.test.retrievalConfig") }}
                             </span>
                             <UButton
                                 variant="outline"
@@ -258,7 +258,7 @@ definePageMeta({ layout: "full-screen" });
                                 {{
                                     useCustomConfig
                                         ? getRetrievalModeName(retrievalConfig.retrievalMode)
-                                        : t("datasets.retrieval.hybrid")
+                                        : t("console-ai-datasets.retrieval.hybrid")
                                 }}
                             </UButton>
                         </div>
@@ -274,7 +274,7 @@ definePageMeta({ layout: "full-screen" });
                             size="md"
                             @click.stop="handleRetrievalTest"
                         >
-                            {{ t("datasets.test.test") }}
+                            {{ t("console-ai-datasets.test.test") }}
                         </UButton>
                     </template>
                 </ChatPrompt>
@@ -282,7 +282,7 @@ definePageMeta({ layout: "full-screen" });
                 <!-- 历史记录 -->
                 <div class="flex h-full flex-col min-h-0">
                     <h3 class="mb-2 text-base font-medium">
-                        {{ t("datasets.test.record") }}
+                        {{ t("console-ai-datasets.test.record") }}
                     </h3>
                     <ProScrollArea class="grid h-full w-full" :shadow="false">
                         <div
@@ -327,8 +327,8 @@ definePageMeta({ layout: "full-screen" });
                     <h3 class="mb-4 text-base font-medium">
                         {{
                             result
-                                ? `${result.chunks.length} ${t("datasets.test.recallParagraph")}`
-                                : t("datasets.test.recallResult")
+                                ? `${result.chunks.length} ${t("console-ai-datasets.test.recallParagraph")}`
+                                : t("console-ai-datasets.test.recallResult")
                         }}
                         <UBadge
                             v-if="result?.totalTime"
@@ -341,7 +341,7 @@ definePageMeta({ layout: "full-screen" });
                         v-if="!result"
                         class="text-muted-foreground flex flex-1 items-center justify-center py-8 text-center"
                     >
-                        {{ t("datasets.test.tip") }}
+                        {{ t("console-ai-datasets.test.tip") }}
                     </div>
                     <div v-else class="flex-1 space-y-4 overflow-auto">
                         <!-- 召回结果 -->
@@ -387,7 +387,7 @@ definePageMeta({ layout: "full-screen" });
                                     class="text-muted-foreground border-default border-t pt-3 text-xs"
                                 >
                                     <span class="font-medium">
-                                        {{ t("datasets.segments.sourceFile") }}:
+                                        {{ t("console-ai-datasets.segments.sourceFile") }}:
                                     </span>
                                     {{ chunk.fileName }}
                                 </div>

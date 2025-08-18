@@ -74,8 +74,8 @@ const loadMore = async () => {
 const handleDelete = async (agent: Agent) => {
     try {
         await useModal({
-            title: t("datasets.list.delete.title"),
-            description: t("datasets.list.delete.desc"),
+            title: t("console-ai-agent.list.delete.title"),
+            description: t("console-ai-agent.list.delete.desc"),
             color: "error",
         });
 
@@ -88,9 +88,10 @@ const handleDelete = async (agent: Agent) => {
 
         searchForm.page = originalPage;
         searchForm.pageSize = 15;
-        toast.success(t("datasets.list.delete.success"));
+        toast.success(t("common.message.deleteSuccess"));
     } catch (error) {
         console.error("删除失败:", error);
+        toast.error((error as Error).message);
     }
 };
 
@@ -129,7 +130,7 @@ onMounted(() => getLists());
         <div class="bg-background sticky top-0 z-10 flex w-full flex-wrap gap-4 pb-2">
             <UInput
                 v-model="searchForm.keyword"
-                :placeholder="$t('datasets.dataset.searchPlaceholder')"
+                :placeholder="$t('console-ai-agent.search.placeholder')"
                 class="w-80"
                 @change="getLists"
             />
@@ -163,13 +164,15 @@ onMounted(() => getLists());
                                 <UIcon name="i-lucide-plus" class="h-6 w-6" />
                             </div>
 
-                            <h3 class="truncate text-sm font-medium">创建智能体</h3>
+                            <h3 class="truncate text-sm font-medium">
+                                {{ $t("console-ai-agent.create.title") }}
+                            </h3>
                         </div>
 
                         <!-- 描述文字 -->
                         <div class="text-muted-foreground mb-6 pr-8 text-xs">
                             <p class="line-clamp-2 overflow-hidden">
-                                创建具备自主工具调用能力，以及知识库能力的应用
+                                {{ $t("console-ai-agent.create.desc") }}
                             </p>
                         </div>
 
@@ -180,8 +183,8 @@ onMounted(() => getLists());
                                 class="w-full"
                                 icon="i-lucide-file-input"
                                 size="sm"
-                                label="导入DSL文件"
-                                @click.stop="toast.info('暂未开放')"
+                                :label="$t('console-ai-agent.create.importDsl')"
+                                @click.stop="toast.info($t('console-ai-agent.create.importDslDesc'))"
                             />
                         </div>
                     </div>

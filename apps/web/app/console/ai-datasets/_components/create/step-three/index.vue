@@ -27,22 +27,22 @@ const isAddDocumentMode = computed(() => props.isAddDocument && !!props.datasets
 /** 页面标题 */
 const pageTitle = computed(() =>
     isAddDocumentMode.value
-        ? t("datasets.create.stepThree.dataTitle")
-        : t("datasets.create.stepThree.createTitle"),
+        ? t("console-ai-datasets.create.stepThree.dataTitle")
+        : t("console-ai-datasets.create.stepThree.createTitle"),
 );
 
 /** 页面描述 */
 const pageDescription = computed(() =>
     isAddDocumentMode.value
-        ? t("datasets.create.stepThree.dataDesc")
-        : t("datasets.create.stepThree.createDesc"),
+        ? t("console-ai-datasets.create.stepThree.dataDesc")
+        : t("console-ai-datasets.create.stepThree.createDesc"),
 );
 
 /** 文档状态标题 */
 const documentStatusTitle = computed(() =>
     paging.needPolling
-        ? t("datasets.create.stepThree.documentEmbedding")
-        : t("datasets.create.stepThree.documentEmbeddingSuccess"),
+        ? t("console-ai-datasets.create.stepThree.documentEmbedding")
+        : t("console-ai-datasets.create.stepThree.documentEmbeddingSuccess"),
 );
 
 /** 查询参数 */
@@ -100,36 +100,36 @@ const getStatusIcon = (status: string): string => {
 const segmentModeText = computed(() => {
     const { documentMode } = props.createData.indexingConfig;
     const modeMap = {
-        normal: t("datasets.create.segment.general"),
-        hierarchical: t("datasets.create.segment.hierarchical"),
+        normal: t("console-ai-datasets.create.segment.general"),
+        hierarchical: t("console-ai-datasets.create.segment.hierarchical"),
     };
-    return modeMap[documentMode as keyof typeof modeMap] || t("datasets.create.segment.general");
+    return modeMap[documentMode as keyof typeof modeMap] || t("console-ai-datasets.create.segment.general");
 });
 
 /** 获取文本预处理规则的显示文本 */
 const preprocessingRulesText = computed(() => {
     const { preprocessingRules } = props.createData.indexingConfig;
-    if (!preprocessingRules) return t("datasets.create.stepThree.no");
+    if (!preprocessingRules) return t("console-ai-datasets.create.stepThree.no");
 
     const rules = [];
     if (preprocessingRules.replaceConsecutiveWhitespace) {
-        rules.push(t("datasets.create.segment.replaceConsecutiveWhitespace"));
+        rules.push(t("console-ai-datasets.create.segment.replaceConsecutiveWhitespace"));
     }
     if (preprocessingRules.removeUrlsAndEmails) {
-        rules.push(t("datasets.create.segment.removeUrlsAndEmails"));
+        rules.push(t("console-ai-datasets.create.segment.removeUrlsAndEmails"));
     }
-    return rules.length > 0 ? rules.join("、") : t("datasets.create.stepThree.no");
+    return rules.length > 0 ? rules.join("、") : t("console-ai-datasets.create.stepThree.no");
 });
 
 /** 获取检索模式的显示文本 */
 const retrievalModeText = computed(() => {
     const { retrievalMode } = props.createData.retrievalConfig;
     const modeMap = {
-        vector: t("datasets.retrieval.vector"),
-        fullText: t("datasets.retrieval.fullText"),
-        hybrid: t("datasets.retrieval.hybrid"),
+        vector: t("console-ai-datasets.retrieval.vector"),
+        fullText: t("console-ai-datasets.retrieval.fullText"),
+        hybrid: t("console-ai-datasets.retrieval.hybrid"),
     };
-    return modeMap[retrievalMode as keyof typeof modeMap] || t("datasets.retrieval.vector");
+    return modeMap[retrievalMode as keyof typeof modeMap] || t("console-ai-datasets.retrieval.vector");
 });
 
 /** 获取检索设置的显示文本 */
@@ -137,31 +137,31 @@ const retrievalSettingsText = computed(() => {
     const { retrievalConfig } = props.createData;
     const { weightConfig } = retrievalConfig;
 
-    if (!weightConfig) return t("datasets.create.stepThree.default");
+    if (!weightConfig) return t("console-ai-datasets.create.stepThree.default");
 
     const settings = [];
     if (retrievalConfig.topK) {
-        settings.push(`${t("datasets.create.stepThree.returnCount")}: ${retrievalConfig.topK}`);
+        settings.push(`${t("console-ai-datasets.create.stepThree.returnCount")}: ${retrievalConfig.topK}`);
     }
     if (retrievalConfig.scoreThreshold) {
         settings.push(
-            `${t("datasets.retrieval.scoreThreshold")}: ${retrievalConfig.scoreThreshold}`,
+            `${t("console-ai-datasets.retrieval.scoreThreshold")}: ${retrievalConfig.scoreThreshold}`,
         );
     }
     if (retrievalConfig.retrievalMode === "hybrid") {
         if (weightConfig.semanticWeight) {
             settings.push(
-                `${t("datasets.retrieval.semanticWeight")}: ${weightConfig.semanticWeight}`,
+                `${t("console-ai-datasets.retrieval.semanticWeight")}: ${weightConfig.semanticWeight}`,
             );
         }
         if (weightConfig.keywordWeight) {
             settings.push(
-                `${t("datasets.retrieval.keywordWeight")}: ${weightConfig.keywordWeight}`,
+                `${t("console-ai-datasets.retrieval.keywordWeight")}: ${weightConfig.keywordWeight}`,
             );
         }
     }
 
-    return settings.length > 0 ? settings.join("、") : t("datasets.create.stepThree.default");
+    return settings.length > 0 ? settings.join("、") : t("console-ai-datasets.create.stepThree.default");
 });
 
 /** 监听 datasetsId 变化，重新获取文档列表 */
@@ -256,7 +256,7 @@ onUnmounted(() => {
             <!-- 分段模式 -->
             <div class="flex justify-between py-2">
                 <span class="text-muted-foreground">{{
-                    $t("datasets.create.stepThree.segmentMode")
+                    $t("console-ai-datasets.create.stepThree.segmentMode")
                 }}</span>
                 <span class="text-foreground text-sm font-medium">{{ segmentModeText }}</span>
             </div>
@@ -264,7 +264,7 @@ onUnmounted(() => {
             <!-- 最大分段长度 -->
             <div class="flex justify-between py-2">
                 <span class="text-muted-foreground">{{
-                    $t("datasets.create.segment.maxSegmentLength")
+                    $t("console-ai-datasets.create.segment.maxSegmentLength")
                 }}</span>
                 <span class="text-foreground text-sm font-medium">
                     {{ createData.indexingConfig.segmentation?.maxSegmentLength || "默认" }}
@@ -274,7 +274,7 @@ onUnmounted(() => {
             <!-- 文本预处理规则 -->
             <div class="flex justify-between py-2">
                 <span class="text-muted-foreground">{{
-                    $t("datasets.create.segment.preprocessingRules")
+                    $t("console-ai-datasets.create.segment.preprocessingRules")
                 }}</span>
                 <span class="text-foreground text-sm font-medium">
                     {{ preprocessingRulesText }}
@@ -283,7 +283,7 @@ onUnmounted(() => {
 
             <!-- 检索模式 -->
             <div class="flex justify-between py-2">
-                <span class="text-muted-foreground">{{ $t("datasets.common.retrievalMode") }}</span>
+                <span class="text-muted-foreground">{{ $t("console-ai-datasets.common.retrievalMode") }}</span>
                 <div class="flex items-center gap-2">
                     <UIcon name="i-heroicons-sparkles" class="h-4 w-4 text-purple-500" />
                     <span class="text-foreground text-sm font-medium">{{ retrievalModeText }}</span>
@@ -293,7 +293,7 @@ onUnmounted(() => {
             <!-- 检索设置 -->
             <div class="flex justify-between py-2">
                 <span class="text-muted-foreground">{{
-                    $t("datasets.settings.retrievalMethod")
+                    $t("console-ai-datasets.settings.retrievalMethod")
                 }}</span>
                 <div class="flex items-center gap-2">
                     <UIcon name="i-heroicons-adjustments-horizontal" class="text-primary h-4 w-4" />
@@ -306,7 +306,7 @@ onUnmounted(() => {
             <div class="flex justify-end">
                 <UButton
                     trailing-icon="i-lucide-arrow-right"
-                    :label="$t('datasets.create.goToDetail')"
+                    :label="$t('console-ai-datasets.create.goToDetail')"
                     size="lg"
                     @click="router.replace(`/console/ai-datasets/${datasetsId}/documents`)"
                 />

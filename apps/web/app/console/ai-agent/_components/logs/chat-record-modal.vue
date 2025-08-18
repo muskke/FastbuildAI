@@ -152,7 +152,7 @@ onMounted(() => {
                     <div class="flex items-center justify-between p-4">
                         <div class="flex items-center gap-3">
                             <UIcon name="i-lucide-message-circle" class="text-primary size-5" />
-                            <h2 class="text-lg font-semibold">对话消息</h2>
+                            <h2 class="text-lg font-semibold">{{ t('console-ai-agent.logs.dialogMessage') }}</h2>
                         </div>
                         <UButton
                             icon="i-lucide-x"
@@ -171,7 +171,7 @@ onMounted(() => {
                         >
                             <div class="text-muted-foreground flex items-center gap-2 text-sm">
                                 <UIcon name="i-lucide-loader-2" class="size-4 animate-spin" />
-                                正在加载消息...
+                                {{ t('console-ai-agent.logs.loadingMessages') }}
                             </div>
                         </div>
 
@@ -185,7 +185,7 @@ onMounted(() => {
                                     name="i-lucide-message-circle-x"
                                     class="mx-auto mb-2 size-12"
                                 />
-                                <p>暂无消息记录</p>
+                                <p>{{ t('console-ai-agent.logs.noMessages') }}</p>
                             </div>
                         </div>
                         <!-- 消息 -->
@@ -209,14 +209,14 @@ onMounted(() => {
                                     :assistant="{
                                         actions: [
                                             {
-                                                label: '对话上下文',
+                                                label: t('console-ai-agent.configuration.dialogContext'),
                                                 icon: 'i-lucide-file-type',
                                                 show: !agents.showContext,
                                                 onClick: (message) => {
                                                     if (message?.metadata?.context) {
                                                         openContextModal(message.metadata.context);
                                                     } else {
-                                                        toast.error('暂无对话上下文');
+                                                        toast.error(t('console-ai-agent.configuration.noDialogContext'));
                                                     }
                                                 },
                                             },
@@ -258,7 +258,7 @@ onMounted(() => {
                                                         <span
                                                             class="text-muted-foreground flex-none text-xs"
                                                         >
-                                                            引用
+                                                            {{ t('console-ai-agent.configuration.referenceTitle') }}
                                                         </span>
                                                         <USeparator
                                                             size="xs"
@@ -290,7 +290,7 @@ onMounted(() => {
                                                         {{
                                                             message.metadata?.annotations?.createdBy
                                                         }}
-                                                        编辑的答案
+                                                        {{ t('console-ai-agent.configuration.editedAnswer') }}
                                                     </span>
                                                     <USeparator size="xs" type="dashed" />
                                                 </div>

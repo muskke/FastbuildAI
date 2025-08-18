@@ -99,11 +99,11 @@ const toast = useMessage();
 // 创建空知识库
 const handleCreateEmpty = async () => {
     if (!datasets.name || !datasets.name.trim()) {
-        toast.error(t("datasets.settings.nameInput"));
+        toast.error(t("console-ai-datasets.settings.nameInput"));
         return;
     }
     if (!datasets.description || !datasets.description.trim()) {
-        toast.error(t("datasets.settings.descriptionInput"));
+        toast.error(t("console-ai-datasets.settings.descriptionInput"));
         return;
     }
     try {
@@ -140,7 +140,7 @@ onMounted(() => {
                 class="absolute top-1/2 -translate-y-[50%]"
                 variant="link"
                 color="neutral"
-                :label="$t('datasets.dataset.title')"
+                :label="$t('console-ai-datasets.dataset.title')"
                 leading-icon="i-lucide-chevron-left"
                 @click="
                     router.replace(
@@ -157,9 +157,9 @@ onMounted(() => {
             <!-- 步骤1 选择知识库数据 -->
             <div v-show="step === 1" class="flex h-full min-h-0 w-full">
                 <StepOne
-                    v-model:fileIds="datasets.indexingConfig.fileIds"
-                    v-model:name="datasets.name"
-                    v-model:description="datasets.description"
+                    v-model:fileIds="console-ai-datasets.indexingConfig.fileIds"
+                    v-model:name="console-ai-datasets.name"
+                    v-model:description="console-ai-datasets.description"
                     :disabled="!!props.id"
                     @onStepChange="nextStep"
                     @createEmpty="handleCreateEmpty"
@@ -168,9 +168,9 @@ onMounted(() => {
             <!-- 步骤2 分段与配置模型 -->
             <div v-show="step === 2" class="flex h-full min-h-0 w-full">
                 <StepTwo
-                    v-model:indexingConfig="datasets.indexingConfig"
-                    v-model:embeddingModelId="datasets.embeddingModelId"
-                    v-model:retrievalConfig="datasets.retrievalConfig"
+                    v-model:indexingConfig="console-ai-datasets.indexingConfig"
+                    v-model:embeddingModelId="console-ai-datasets.embeddingModelId"
+                    v-model:retrievalConfig="console-ai-datasets.retrievalConfig"
                     :disabled="!!props.id"
                     @onStepChange="changeStep"
                     @onCreate="handleCreate"
@@ -182,7 +182,7 @@ onMounted(() => {
                     :datasetsId="datasetsId"
                     :createData="datasets"
                     :isAddDocument="!!props.id"
-                    :fileIds="datasets.indexingConfig.fileIds"
+                    :fileIds="console-ai-datasets.indexingConfig.fileIds"
                 />
             </div>
         </div>

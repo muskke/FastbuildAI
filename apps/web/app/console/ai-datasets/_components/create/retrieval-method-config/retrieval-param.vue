@@ -44,7 +44,7 @@ function handleKeywordChange(val: number) {
         <div v-if="retrievalConfig.retrievalMode === 'vector'" class="space-y-4">
             <USwitch
                 v-model="retrievalConfig.rerankConfig!.enabled"
-                :label="$t('datasets.retrieval.rerank')"
+                :label="$t('console-ai-datasets.retrieval.rerank')"
             />
 
             <!-- 重排模型选择（向量检索） -->
@@ -72,18 +72,18 @@ function handleKeywordChange(val: number) {
                         :max="10"
                         :step="1"
                         :min="1"
-                        :placeholder="$t('datasets.retrieval.topKPlaceholder')"
+                        :placeholder="$t('console-ai-datasets.retrieval.topKPlaceholder')"
                     />
                 </UFormField>
                 <UFormField label="">
                     <template #label>
                         <UTooltip
-                            :text="$t('datasets.retrieval.scoreThreshold')"
+                            :text="$t('console-ai-datasets.retrieval.scoreThreshold')"
                             :delay-duration="0"
                         >
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center gap-1">
-                                    <span>{{ $t("datasets.retrieval.scoreThreshold") }}</span>
+                                    <span>{{ $t("console-ai-datasets.retrieval.scoreThreshold") }}</span>
                                     <UIcon name="i-lucide-circle-help" class="size-4" />
                                 </div>
                                 <USwitch v-model="retrievalConfig.scoreThresholdEnabled" />
@@ -97,7 +97,7 @@ function handleKeywordChange(val: number) {
                         :max="1"
                         :min="0"
                         :disabled="!retrievalConfig.scoreThresholdEnabled"
-                        :placeholder="$t('datasets.retrieval.scoreThresholdPlaceholder')"
+                        :placeholder="$t('console-ai-datasets.retrieval.scoreThresholdPlaceholder')"
                     />
                 </UFormField>
             </div>
@@ -106,7 +106,7 @@ function handleKeywordChange(val: number) {
         <div v-if="retrievalConfig.retrievalMode === 'fullText'" class="space-y-4">
             <USwitch
                 v-model="retrievalConfig.rerankConfig!.enabled"
-                :label="$t('datasets.retrieval.rerank')"
+                :label="$t('console-ai-datasets.retrieval.rerank')"
             />
 
             <!-- 重排模型选择（全文检索） -->
@@ -131,7 +131,7 @@ function handleKeywordChange(val: number) {
                     <ProSlider
                         v-model.number="retrievalConfig.topK"
                         type="number"
-                        :placeholder="$t('datasets.retrieval.topKPlaceholder')"
+                        :placeholder="$t('console-ai-datasets.retrieval.topKPlaceholder')"
                         :max="10"
                         :step="1"
                         :min="1"
@@ -140,12 +140,12 @@ function handleKeywordChange(val: number) {
                 <UFormField label="" v-if="retrievalConfig.rerankConfig!.enabled">
                     <template #label>
                         <UTooltip
-                            :text="$t('datasets.retrieval.scoreThreshold')"
+                            :text="$t('console-ai-datasets.retrieval.scoreThreshold')"
                             :delay-duration="0"
                         >
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center gap-1">
-                                    <span>{{ $t("datasets.retrieval.scoreThreshold") }}</span>
+                                    <span>{{ $t("console-ai-datasets.retrieval.scoreThreshold") }}</span>
                                     <UIcon name="i-lucide-circle-help" class="size-4" />
                                 </div>
                                 <USwitch v-model="retrievalConfig.scoreThresholdEnabled" />
@@ -159,7 +159,7 @@ function handleKeywordChange(val: number) {
                         :max="1"
                         :min="0"
                         :disabled="!retrievalConfig.scoreThresholdEnabled"
-                        :placeholder="$t('datasets.retrieval.scoreThresholdPlaceholder')"
+                        :placeholder="$t('console-ai-datasets.retrieval.scoreThresholdPlaceholder')"
                     />
                 </UFormField>
             </div>
@@ -174,7 +174,7 @@ function handleKeywordChange(val: number) {
                     @click="retrievalConfig.strategy = 'weighted_score'"
                 >
                     <UIcon name="i-heroicons-scale" class="mr-1 h-4 w-4" />
-                    {{ $t("datasets.retrieval.weightSetting") }}
+                    {{ $t("console-ai-datasets.retrieval.weightSetting") }}
                 </UButton>
                 <UButton
                     :variant="retrievalConfig.strategy === 'rerank' ? 'solid' : 'outline'"
@@ -182,16 +182,16 @@ function handleKeywordChange(val: number) {
                     @click="retrievalConfig.strategy = 'rerank'; retrievalConfig.rerankConfig!.enabled = true"
                 >
                     <UIcon name="i-heroicons-cpu-chip" class="mr-1 h-4 w-4" />
-                    {{ $t("datasets.retrieval.rerank") }}
+                    {{ $t("console-ai-datasets.retrieval.rerank") }}
                 </UButton>
             </div>
             <!-- 权重设置 -->
             <div v-if="retrievalConfig.strategy === 'weighted_score'" class="space-y-4">
                 <p class="text-muted-foreground text-sm">
-                    {{ $t("datasets.retrieval.weightSettingDesc") }}
+                    {{ $t("console-ai-datasets.retrieval.weightSettingDesc") }}
                 </p>
                 <div class="grid grid-cols-2 gap-4">
-                    <UFormField :label="$t('datasets.retrieval.semantic')">
+                    <UFormField :label="$t('console-ai-datasets.retrieval.semantic')">
                         <ProSlider
                             v-model.number="retrievalConfig.weightConfig!.semanticWeight"
                             type="number"
@@ -202,7 +202,7 @@ function handleKeywordChange(val: number) {
                             @update:modelValue="handleSemanticChange"
                         />
                     </UFormField>
-                    <UFormField :label="$t('datasets.retrieval.keyword')">
+                    <UFormField :label="$t('console-ai-datasets.retrieval.keyword')">
                         <ProSlider
                             v-model.number="retrievalConfig.weightConfig!.keywordWeight"
                             type="number"
@@ -228,12 +228,12 @@ function handleKeywordChange(val: number) {
                     <UFormField label="">
                         <template #label>
                             <UTooltip
-                                :text="$t('datasets.retrieval.scoreThreshold')"
+                                :text="$t('console-ai-datasets.retrieval.scoreThreshold')"
                                 :delay-duration="0"
                             >
                                 <div class="flex items-center gap-2">
                                     <div class="flex items-center gap-1">
-                                        <span>{{ $t("datasets.retrieval.scoreThreshold") }}</span>
+                                        <span>{{ $t("console-ai-datasets.retrieval.scoreThreshold") }}</span>
                                         <UIcon name="i-lucide-circle-help" class="size-4" />
                                     </div>
                                     <USwitch v-model="retrievalConfig.scoreThresholdEnabled" />
@@ -247,7 +247,7 @@ function handleKeywordChange(val: number) {
                             :max="1"
                             :min="0"
                             :disabled="!retrievalConfig.scoreThresholdEnabled"
-                            :placeholder="$t('datasets.retrieval.scoreThresholdPlaceholder')"
+                            :placeholder="$t('console-ai-datasets.retrieval.scoreThresholdPlaceholder')"
                         />
                     </UFormField>
                 </div>
@@ -255,7 +255,7 @@ function handleKeywordChange(val: number) {
             <!-- Rerank 设置 -->
             <div v-if="retrievalConfig.strategy === 'rerank'" class="space-y-4">
                 <p class="text-muted-foreground text-sm">
-                    {{ $t("datasets.retrieval.rerankDesc") }}
+                    {{ $t("console-ai-datasets.retrieval.rerankDesc") }}
                 </p>
 
                 <!-- 重排模型选择（混合检索 - Rerank 策略） -->
@@ -291,7 +291,7 @@ function handleKeywordChange(val: number) {
                             <UTooltip text="Score阈值" :delay-duration="0">
                                 <div class="flex items-center gap-2">
                                     <div class="flex items-center gap-1">
-                                        <span>{{ $t("datasets.retrieval.scoreThreshold") }}</span>
+                                        <span>{{ $t("console-ai-datasets.retrieval.scoreThreshold") }}</span>
                                         <UIcon name="i-lucide-circle-help" class="size-4" />
                                     </div>
                                     <USwitch v-model="retrievalConfig.scoreThresholdEnabled" />
@@ -305,7 +305,7 @@ function handleKeywordChange(val: number) {
                             :max="1"
                             :min="0"
                             :disabled="!retrievalConfig.scoreThresholdEnabled"
-                            :placeholder="$t('datasets.retrieval.scoreThresholdPlaceholder')"
+                            :placeholder="$t('console-ai-datasets.retrieval.scoreThresholdPlaceholder')"
                         />
                     </UFormField>
                 </div>

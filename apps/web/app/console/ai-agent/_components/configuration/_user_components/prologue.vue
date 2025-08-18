@@ -14,12 +14,12 @@ const content = useVModel(props, "modelValue", emit);
 <template>
     <div class="bg-muted rounded-lg p-3">
         <div class="text-foreground mb-2 flex items-center gap-1 text-sm font-medium">
-            开场白
+            {{ $t("console-ai-agent.configuration.prologue") }}
             <UTooltip :delay-duration="0" :ui="{ content: 'w-xs h-auto' }">
                 <UIcon name="i-lucide-circle-help" />
                 <template #content>
                     <div class="text-background py-1 text-xs">
-                        编辑器工具如果被遮住则使用鼠标按住左右拖地即可查看剩余工具
+                        {{ $t("console-ai-agent.configuration.prologueDesc") }}
                     </div>
                 </template>
             </UTooltip>

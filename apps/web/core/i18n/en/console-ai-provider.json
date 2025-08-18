@@ -2,7 +2,6 @@
     "addTitle": "Custom",
     "editTitle": "Edit AI Provider",
     "detailTitle": "Manage AI Providers",
-
     "form": {
         "basicInfo": "Basic Info",
         "name": "Provider Name",
@@ -33,9 +32,9 @@
         "addDescription": "Configure new AI provider",
         "editDescription": "Edit AI provider",
         "modelType": "Model Types",
-        "modelTypePlaceholder": "Enter model types"
+        "modelTypePlaceholder": "Enter model types",
+        "supportedModelTypesRequired": "Please enter the supported model type"
     },
-
     "search": {
         "placeholder": "Search providers by name/ID/description",
         "status": "Status",
@@ -46,7 +45,6 @@
         "failed": "Failed",
         "unknown": "Unknown"
     },
-
     "actions": {
         "edit": "Edit",
         "delete": "Delete",
@@ -55,31 +53,36 @@
         "add": "Add Provider",
         "batchDelete": "Batch Delete"
     },
-
     "modelConfig": {
         "title": "Advanced",
         "temperature": {
             "title": "Temperature",
+            "label": "temperature",
             "description": "Controls randomness (0-2, default 1)"
         },
         "top_p": {
             "title": "Top-p",
+            "label": "Top P",
             "description": "Nucleus sampling threshold (default 1)"
         },
         "max_tokens": {
             "title": "Max Tokens",
+            "label": "Maximum number of tokens",
             "description": "Output length limit (default 16)"
         },
         "top_k": {
             "title": "Top-k",
+            "label": "Number of samples",
             "description": "Sample from top k tokens (default 50)"
         },
         "frequency_penalty": {
             "title": "Frequency Penalty",
+            "label": "Repeated punishment",
             "description": "Reduce repetition (default 0)"
         },
         "presence_penalty": {
             "title": "Presence Penalty",
+            "label": "There is a penalty",
             "description": "Encourage new topics (default 0)"
         },
         "stop": {
@@ -99,7 +102,6 @@
             "valuePlaceholder": "Value"
         }
     },
-
     "messages": {
         "createSuccess": "Provider created",
         "createFailed": "Create failed",
@@ -109,14 +111,12 @@
         "deleteFailed": "Delete failed",
         "getDetailFailed": "Failed to load details"
     },
-
     "confirm": {
         "deleteTitle": "Delete Provider",
         "deleteMessage": "Permanently delete selected provider(s)?",
         "batchDeleteTitle": "Batch Delete",
         "batchDeleteMessage": "Delete {count} selected provider(s)?"
     },
-
     "model": {
         "title": "Model Management",
         "list": "Model List",
@@ -130,7 +130,6 @@
         "noModels": "No models",
         "setDefault": "Set Default",
         "modelTypeFilter": "Filter by type",
-
         "form": {
             "name": "Model Name",
             "namePlaceholder": "Enter model name",
@@ -160,13 +159,11 @@
             "basicInfoDescription": "Configure model identification",
             "modelType": "Model Type"
         },
-
         "currency": {
             "USD": "USD",
             "CNY": "CNY",
             "EUR": "EUR"
         },
-
         "validation": {
             "nameRequired": "Name required",
             "nameMaxLength": "Max 100 chars",
@@ -177,7 +174,6 @@
             "maxContextMin": "Min 1 turn",
             "descriptionMaxLength": "Max 500 chars"
         },
-
         "config": {
             "title": "Parameters",
             "description": "Configure model behavior",
@@ -229,7 +225,6 @@
                 "presencePenaltyRange": "0-2"
             }
         },
-
         "messages": {
             "createSuccess": "Model created",
             "createFailed": "Create failed",

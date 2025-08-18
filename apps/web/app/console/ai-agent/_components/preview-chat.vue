@@ -124,7 +124,7 @@ async function scrollToBottom(animate = true) {
 
 async function handleSubmitMessage(content: string) {
     if (!content.trim() || isLoading.value) return;
-    if (!props.agent.modelConfig?.id) return toast.warning("智能体未配置模型");
+    if (!props.agent.modelConfig?.id) return toast.warning(t("console-ai-agent.modelNotConfigured"));
 
     // 验证表单字段必填项
     const formFields = props.agent.formFields || [];
@@ -137,13 +137,13 @@ async function handleSubmitMessage(content: string) {
             if (field.required) {
                 const value = formFieldsInputs[field.name];
                 if (!value || (typeof value === "string" && value.trim() === "")) {
-                    validationErrors.push(`${field.label}是必填字段`);
+                    validationErrors.push(`${field.label}${t("console-ai-agent.configuration.notEmpty")}`);
                 }
             }
         });
 
         if (validationErrors.length > 0) {
-            toast.error(`表单验证失败: ${validationErrors.join(", ")}`);
+            toast.error(`${t("console-ai-agent.configuration.formVariableTitle")}: ${validationErrors.join(", ")}`);
             return;
         }
     }
@@ -176,7 +176,7 @@ async function createAnnotationDirectly(message: AiMessage, index: number) {
     // 直接获取上一条消息作为用户问题
     const prevMessage = messages.value[index - 1];
     if (!prevMessage || prevMessage.role !== "user") {
-        toast.error("找不到对应的用户问题");
+        toast.error(t("console-ai-agent.configuration.noUserQuestion"));
         return;
     }
 
@@ -200,11 +200,9 @@ async function createAnnotationDirectly(message: AiMessage, index: number) {
             question: data.question,
             similarity: 1,
         };
-
-        toast.success("标注创建成功");
     } catch (error) {
         console.error("创建标注失败:", error);
-        toast.error("创建标注失败");
+        toast.error((error as Error).message);
     }
 }
 
@@ -305,7 +303,7 @@ onUnmounted(() => {
                         <ProMarkdown :content="message.content" class="mb-2" />
 
                         <div class="flex flex-col gap-2">
-                            <div class="text-muted-foreground text-sm">你可以这样问我</div>
+                            <div class="text-muted-foreground text-sm">{{ t("console-ai-agent.configuration.youCanAskMe") }}</div>
 
                             <div v-for="question in agent.openingQuestions" :key="question">
                                 <UButton
@@ -332,19 +330,19 @@ onUnmounted(() => {
                                 onClick: () => reload(),
                             },
                             {
-                                label: '对话上下文',
+                                label: t('console-ai-agent.configuration.chatContext'),
                                 icon: 'i-lucide-file-type',
                                 show: !agent.showContext,
                                 onClick: (message) => {
                                     if (message?.metadata?.context) {
                                         openContextModal(message.metadata.context);
                                     } else {
-                                        toast.error('暂无对话上下文');
+                                        toast.error(t('console-ai-agent.configuration.noChatContext'));
                                     }
                                 },
                             },
                             {
-                                label: '标注',
+                                label: t('console-ai-agent.configuration.feedback'),
                                 icon: 'i-lucide-wrap-text',
                                 show: !agent.enableFeedback,
                                 onClick: (message, index) => {
@@ -404,7 +402,7 @@ onUnmounted(() => {
                                     <!-- 知识库引用来源 -->
                                     <div class="my-2 flex items-center gap-1">
                                         <span class="text-muted-foreground flex-none text-xs">
-                                            引用
+                                            {{ t("console-ai-agent.configuration.referenceTitle") }}
                                         </span>
                                         <USeparator
                                             size="xs"
@@ -432,7 +430,7 @@ onUnmounted(() => {
                                 >
                                     <span class="text-muted-foreground flex-none text-xs">
                                         {{ message.metadata?.annotations?.createdBy }}
-                                        编辑的答案
+                                        {{ t("console-ai-agent.configuration.editedAnswer") }}
                                     </span>
                                     <USeparator size="xs" type="dashed" />
                                 </div>

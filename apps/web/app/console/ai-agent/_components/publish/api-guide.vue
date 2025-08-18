@@ -3,12 +3,11 @@ import { computed, ref } from "vue";
 
 import type { Agent } from "@/models/ai-agent";
 
-interface Props {
+const props = defineProps<{
     agent?: Agent;
-}
+}>();
 
-const props = defineProps<Props>();
-
+const { t } = useI18n();
 const activeTab = ref("overview");
 
 const baseUrl = computed(() => window.location.origin);
@@ -103,11 +102,11 @@ while (true) {
 });
 
 const tabs = [
-    { value: "overview", label: "API概述", icon: "i-lucide-book-open" },
+    { value: "overview", label: t("console-ai-agent.publish.apiOverview"), icon: "i-lucide-book-open" },
     { value: "curl", label: "cURL", icon: "i-lucide-terminal" },
     { value: "javascript", label: "JavaScript", icon: "i-lucide-braces" },
     { value: "python", label: "Python", icon: "i-lucide-snake" },
-    { value: "stream", label: "流式对话", icon: "i-lucide-zap" },
+    { value: "stream", label: t("console-ai-agent.publish.streamChat"), icon: "i-lucide-zap" },
 ];
 
 const copyCode = (code: string) => {
@@ -118,20 +117,20 @@ const copyCode = (code: string) => {
 <template>
     <div class="space-y-4">
         <div>
-            <h3 class="mb-2 text-lg font-medium">API 使用指南</h3>
-            <p class="text-muted-foreground text-sm">通过程序化方式调用智能体</p>
+            <h3 class="mb-2 text-lg font-medium">{{ $t("console-ai-agent.publish.apiGuide") }}</h3>
+            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.apiGuideDesc") }}</p>
         </div>
 
         <div v-if="!agent?.isPublished" class="border-border rounded-lg border p-6 text-center">
             <UIcon name="i-lucide-lock" class="text-muted-foreground mx-auto mb-3 size-12" />
-            <h4 class="mb-2 font-medium">智能体未发布</h4>
-            <p class="text-muted-foreground text-sm">请先发布智能体才能使用API</p>
+            <h4 class="mb-2 font-medium">{{ $t("console-ai-agent.publish.unpublished") }}</h4>
+            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.unpublishedDesc3") }}</p>
         </div>
 
         <div v-else-if="!agent?.apiKey" class="border-border rounded-lg border p-6 text-center">
             <UIcon name="i-lucide-key" class="text-muted-foreground mx-auto mb-3 size-12" />
-            <h4 class="mb-2 font-medium">API密钥未生成</h4>
-            <p class="text-muted-foreground text-sm">请重新发布智能体以生成API密钥</p>
+            <h4 class="mb-2 font-medium">{{ $t("console-ai-agent.publish.apiKeyNotGenerated") }}</h4>
+            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.apiKeyNotGeneratedDesc") }}</p>
         </div>
 
         <div v-else class="space-y-4">
@@ -156,7 +155,7 @@ const copyCode = (code: string) => {
             <!-- API概述 -->
             <div v-if="activeTab === 'overview'" class="space-y-6">
                 <div class="space-y-4">
-                    <h4 class="font-medium">基本信息</h4>
+                    <h4 class="font-medium">{{ $t("console-ai-agent.publish.basicInfo") }}</h4>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div class="space-y-2">
                             <label class="text-sm font-medium">API Base URL</label>
@@ -181,14 +180,14 @@ const copyCode = (code: string) => {
                             </div>
                         </div>
                         <div class="space-y-2">
-                            <div class="text-sm font-medium">API 端点</div>
+                            <div class="text-sm font-medium">{{ $t("console-ai-agent.publish.apiEndpoints") }}</div>
                             <div class="space-y-1 text-xs">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-muted-foreground">普通对话：</span>
+                                    <span class="text-muted-foreground">{{ $t("console-ai-agent.publish.normalChat") }}</span>
                                     <code class="text-sm">/api/public-agent/chat</code>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-muted-foreground">流式对话：</span>
+                                    <span class="text-muted-foreground">{{ $t("console-ai-agent.publish.streamChat") }}</span>
                                     <code class="text-sm">/api/public-agent/chat/stream</code>
                                 </div>
                             </div>
@@ -197,7 +196,7 @@ const copyCode = (code: string) => {
                 </div>
 
                 <div class="space-y-4">
-                    <h4 class="font-medium">可用端点</h4>
+                    <h4 class="font-medium">{{ $t("console-ai-agent.publish.availableEndpoints") }}</h4>
                     <div class="space-y-3">
                         <div class="border-border rounded-lg border p-4">
                             <div class="mb-2 flex items-center gap-2">
@@ -205,7 +204,7 @@ const copyCode = (code: string) => {
                                 <code class="text-sm">/api/public-agent/chat</code>
                             </div>
                             <p class="text-muted-foreground text-sm">
-                                普通对话接口，返回完整的响应结果
+                                {{ $t("console-ai-agent.publish.normalChatDesc") }}
                             </p>
                         </div>
                         <div class="border-border rounded-lg border p-4">
@@ -214,19 +213,18 @@ const copyCode = (code: string) => {
                                 <code class="text-sm">/api/public-agent/chat/stream</code>
                             </div>
                             <p class="text-muted-foreground text-sm">
-                                流式对话接口，实时返回生成的文本
+                                {{ $t("console-ai-agent.publish.streamChatDesc") }}
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-4">
-                    <h4 class="font-medium">认证方式</h4>
+                    <h4 class="font-medium">{{ $t("console-ai-agent.publish.authenticationMethod") }}</h4>
                     <div class="border-border rounded-lg border p-4">
                         <p class="text-sm">
-                            通过查询参数传递API密钥：<code class="bg-muted px-1"
-                                >?apiKey=your_api_key</code
-                            >
+                            {{ $t("console-ai-agent.publish.authenticationMethodDesc") }}
+                            <code class="bg-muted px-1">?apiKey=your_api_key</code>
                         </p>
                     </div>
                 </div>
@@ -236,7 +234,7 @@ const copyCode = (code: string) => {
             <div v-else class="space-y-4">
                 <div class="flex items-center justify-between">
                     <h4 class="font-medium">
-                        {{ tabs.find((t) => t.value === activeTab)?.label }} 示例
+                        {{ tabs.find((t) => t.value === activeTab)?.label }} {{ $t("console-ai-agent.publish.example") }}
                     </h4>
                     <UButton
                         icon="i-lucide-copy"
@@ -256,7 +254,7 @@ const copyCode = (code: string) => {
                             )
                         "
                     >
-                        复制代码
+                        {{ $t("console-common.copy") }}
                     </UButton>
                 </div>
                 <div class="relative">
@@ -271,7 +269,7 @@ const copyCode = (code: string) => {
 
             <!-- 响应格式说明 -->
             <div class="space-y-4">
-                <h4 class="font-medium">响应格式</h4>
+                <h4 class="font-medium">{{ $t("console-ai-agent.publish.responseFormat") }}</h4>
                 <div class="border-border rounded-lg border p-4">
                     <pre class="text-muted-foreground text-sm">
 {
