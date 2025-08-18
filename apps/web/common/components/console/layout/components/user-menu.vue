@@ -244,92 +244,70 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
 
 <template>
     <!-- Sidebar模式的容器 -->
-    <div
-        class="hover:bg-secondary dark:hover:bg-surface-800 flex flex-col rounded-xl p-2 select-none"
-        :class="{ 'bg-secondary dark:bg-surface-800': open }"
-    >
-        <UDropdownMenu
-            v-model:open="open"
-            :items="menuItems"
-            :content="
-                mode === 'mixture'
-                    ? { sideOffset: 4, collisionPadding: 14 }
-                    : {
-                          align: 'start',
-                          side: mobileMenu ? 'top' : 'right',
-                          sideOffset: 10,
-                          collisionPadding: 10,
-                      }
-            "
-            :ui="{
-                content:
-                    collapsed || mode === 'mixture'
-                        ? 'w-54'
-                        : 'w-(--reka-dropdown-menu-trigger-width)',
-            }"
+    <div class="px-1.5">
+        <div
+            class="hover:bg-secondary dark:hover:bg-surface-800 flex cursor-pointer flex-col rounded-lg select-none"
+            :class="{ 'bg-secondary dark:bg-surface-800': open }"
         >
-            <!-- 通用插槽模板 -->
-            <template #chip-leading="{ item }">
-                <span
-                    :style="{ backgroundColor: (item as any).chip }"
-                    class="ms-0.5 size-2 rounded-full"
-                />
-            </template>
-            <template #chip-trailing="{ item }">
-                <UIcon
-                    v-if="(item as any).children"
-                    name="i-lucide-chevron-right"
-                    class="text-muted-foreground text-lg"
-                />
-            </template>
-            <template #lang-leading="{ item }">
-                {{ (item as DropdownMenuItem).icon }}
-            </template>
-            <template #item="{ item }">
-                <RouterLink v-if="item?.label === 'profile'" class="flex px-1 pt-1.5" to="/profile">
-                    <UAvatar
-                        :src="userStore.userInfo?.avatar"
-                        :alt="userStore.userInfo?.nickname"
-                        :icon="userStore.userInfo?.nickname ? 'tabler:user' : undefined"
-                        size="lg"
-                        :ui="{ root: 'rounded-lg' }"
-                    />
-                    <div class="ml-2 flex flex-col text-left">
-                        <span class="block w-35 truncate text-sm font-medium">{{
-                            userStore.userInfo?.nickname
-                        }}</span>
-                        <span class="text-muted-foreground text-xs">
-                            {{ userStore.userInfo?.username }}
-                        </span>
-                    </div>
-                </RouterLink>
-                <div
-                    v-else
-                    class="text-foreground flex h-full w-full cursor-pointer items-center gap-2 px-1 py-1"
+            <div class="flex h-10 items-center justify-between px-3 py-2 text-sm font-medium">
+                <a
+                    class="flex items-center gap-1.5"
+                    href="https://www.fastbuildai.com"
+                    target="_blank"
                 >
-                    <UIcon :name="item.icon!" class="text-muted-foreground text-lg" />
-                    <span class="text-sm">{{ item.label }}</span>
-                </div>
-                <UIcon
-                    v-if="item.children"
-                    name="i-lucide-chevron-right"
-                    class="text-muted-foreground text-lg"
-                />
-                <UIcon
-                    v-if="item.checked"
-                    name="i-lucide-check"
-                    class="text-muted-foreground text-lg"
-                />
-            </template>
+                    <Icon name="i-lucide-external-link" />
+                    <span>{{ t("console-common.officeLink") }}</span>
+                </a>
+            </div>
+        </div>
 
-            <!-- Sidebar特有的触发器 -->
-            <div
-                v-if="mode === 'sidebar'"
-                class="flex flex-1 items-center justify-center gap-2 select-none"
-                :class="{ 'flex-col': value }"
+        <div
+            class="hover:bg-secondary dark:hover:bg-surface-800 flex cursor-pointer flex-col rounded-lg px-3 py-2 select-none"
+            :class="{ 'bg-secondary dark:bg-surface-800': open }"
+        >
+            <UDropdownMenu
+                v-model:open="open"
+                :items="menuItems"
+                :content="
+                    mode === 'mixture'
+                        ? { sideOffset: 4, collisionPadding: 14 }
+                        : {
+                              align: 'start',
+                              side: mobileMenu ? 'top' : 'right',
+                              sideOffset: 10,
+                              collisionPadding: 10,
+                          }
+                "
+                :ui="{
+                    content:
+                        collapsed || mode === 'mixture'
+                            ? 'w-54'
+                            : 'w-(--reka-dropdown-menu-trigger-width)',
+                }"
             >
-                <div class="flex flex-1 items-center gap-2">
-                    <UChip color="success" inset>
+                <!-- 通用插槽模板 -->
+                <template #chip-leading="{ item }">
+                    <span
+                        :style="{ backgroundColor: (item as any).chip }"
+                        class="ms-0.5 size-2 rounded-full"
+                    />
+                </template>
+                <template #chip-trailing="{ item }">
+                    <UIcon
+                        v-if="(item as any).children"
+                        name="i-lucide-chevron-right"
+                        class="text-muted-foreground text-lg"
+                    />
+                </template>
+                <template #lang-leading="{ item }">
+                    {{ (item as DropdownMenuItem).icon }}
+                </template>
+                <template #item="{ item }">
+                    <RouterLink
+                        v-if="item?.label === 'profile'"
+                        class="flex px-1 pt-1.5"
+                        to="/profile"
+                    >
                         <UAvatar
                             :src="userStore.userInfo?.avatar"
                             :alt="userStore.userInfo?.nickname"
@@ -337,36 +315,81 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
                             size="lg"
                             :ui="{ root: 'rounded-lg' }"
                         />
-                    </UChip>
-                    <div v-if="!value" class="flex w-[100px] flex-col">
-                        <span class="truncate text-sm font-medium">
-                            {{ userStore.userInfo?.nickname }}
-                        </span>
-                        <span class="text-secondary-foreground truncate text-xs">
-                            {{ userStore.userInfo?.username }}
-                        </span>
+                        <div class="ml-2 flex flex-col text-left">
+                            <span class="block w-35 truncate text-sm font-medium">{{
+                                userStore.userInfo?.nickname
+                            }}</span>
+                            <span class="text-muted-foreground text-xs">
+                                {{ userStore.userInfo?.username }}
+                            </span>
+                        </div>
+                    </RouterLink>
+                    <div
+                        v-else
+                        class="text-foreground flex h-full w-full cursor-pointer items-center gap-2 px-1 py-1"
+                    >
+                        <UIcon :name="item.icon!" class="text-muted-foreground text-lg" />
+                        <span class="text-sm">{{ item.label }}</span>
+                    </div>
+                    <UIcon
+                        v-if="item.children"
+                        name="i-lucide-chevron-right"
+                        class="text-muted-foreground text-lg"
+                    />
+                    <UIcon
+                        v-if="item.checked"
+                        name="i-lucide-check"
+                        class="text-muted-foreground text-lg"
+                    />
+                </template>
+
+                <!-- Sidebar特有的触发器 -->
+                <div
+                    v-if="mode === 'sidebar'"
+                    class="flex flex-1 items-center justify-center gap-2 select-none"
+                    :class="{ 'flex-col': value }"
+                >
+                    <div class="flex flex-1 items-center gap-2">
+                        <UChip color="success" inset>
+                            <UAvatar
+                                :src="userStore.userInfo?.avatar"
+                                :alt="userStore.userInfo?.nickname"
+                                :icon="userStore.userInfo?.nickname ? 'tabler:user' : undefined"
+                                size="lg"
+                                :ui="{ root: 'rounded-lg' }"
+                            />
+                        </UChip>
+                        <div v-if="!value" class="flex w-[100px] flex-col">
+                            <span class="truncate text-sm font-medium">
+                                {{ userStore.userInfo?.nickname }}
+                            </span>
+                            <span class="text-secondary-foreground truncate text-xs">
+                                {{ userStore.userInfo?.username }}
+                            </span>
+                        </div>
+                    </div>
+                    <div v-if="!value" class="flex items-center">
+                        <!-- <UButton
+                            icon="i-lucide-chevrons-up-down"
+                            color="neutral"
+                            variant="link"
+                            :ui="{ leadingIcon: 'size-4' }"
+                        /> -->
+                        <Icon name="i-lucide-chevrons-up-down" class="text-muted" />
                     </div>
                 </div>
-                <div v-if="!value">
-                    <UButton
-                        icon="i-lucide-chevrons-up-down"
-                        color="neutral"
-                        variant="link"
-                        :ui="{ leadingIcon: 'size-4' }"
-                    />
-                </div>
-            </div>
 
-            <!-- Mixed模式的触发器 -->
-            <UChip inset v-else-if="mode === 'mixture'">
-                <UAvatar
-                    :src="userStore.userInfo?.avatar"
-                    :alt="userStore.userInfo?.nickname"
-                    :icon="userStore.userInfo?.nickname ? 'tabler:user' : undefined"
-                    size="lg"
-                    :ui="{ root: 'rounded-lg' }"
-                />
-            </UChip>
-        </UDropdownMenu>
+                <!-- Mixed模式的触发器 -->
+                <UChip inset v-else-if="mode === 'mixture'">
+                    <UAvatar
+                        :src="userStore.userInfo?.avatar"
+                        :alt="userStore.userInfo?.nickname"
+                        :icon="userStore.userInfo?.nickname ? 'tabler:user' : undefined"
+                        size="lg"
+                        :ui="{ root: 'rounded-lg' }"
+                    />
+                </UChip>
+            </UDropdownMenu>
+        </div>
     </div>
 </template>
