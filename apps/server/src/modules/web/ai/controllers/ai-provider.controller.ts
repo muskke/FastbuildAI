@@ -50,29 +50,34 @@ export class AiProviderController extends BaseController {
                 excludeFields: ["apiKey"],
             });
 
-            // 如果指定了supportedModelTypes，则筛选符合条件的模型
-            if (queryDto.supportedModelTypes && queryDto.supportedModelTypes.length > 0) {
-                // 对每个供应商进行处理
-                return providers
-                    .filter((item) => item.models.length > 0)
-                    .map((provider) => {
-                        // 筛选模型，只保留modelType在supportedModelTypes中的模型
-                        const filteredModels = provider.models.filter((model) => {
-                            return (
-                                queryDto.supportedModelTypes.includes(model.modelType) &&
-                                model.isActive
-                            );
-                        });
+            // 先过滤掉没有模型的供应商
+            const validProviders = providers.filter(
+                (provider) => provider.models && provider.models.length > 0,
+            );
 
-                        // 返回处理后的供应商数据，替换原有的models
+            // 如果没有有效供应商，直接返回空数组
+            if (validProviders.length === 0) {
+                return [];
+            }
+
+            if (queryDto.supportedModelTypes && queryDto.supportedModelTypes.length > 0) {
+                return validProviders
+                    .map((provider) => {
+                        const filteredModels = provider.models.filter(
+                            (model) =>
+                                queryDto.supportedModelTypes.includes(model.modelType) &&
+                                model.isActive,
+                        );
+
                         return {
                             ...provider,
                             models: filteredModels,
                         };
-                    });
+                    })
+                    .filter((provider) => provider.models.length > 0);
             }
 
-            return providers.filter((item) => item.models.length > 0);
+            return validProviders;
         } catch (error) {
             this.logger.error(`获取供应商列表失败: ${error.message}`, error.stack);
             throw error;
