@@ -29,7 +29,7 @@ const openMobileMenu = () => {
             <LayoutSidebar :collapsed="collapsed" v-model:mobile-menu="mobileMenu" />
         </div>
         <div
-            class="bg-background my-2 mr-2 flex min-w-0 flex-1 flex-col items-center rounded-xl shadow-lg"
+            class="bg-background m-0 flex min-w-0 flex-1 flex-col items-center shadow-lg md:m-2 md:ml-0 md:rounded-xl"
         >
             <LayoutSidebarNavbar
                 :collapsed="collapsed"

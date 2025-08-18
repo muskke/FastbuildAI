@@ -30,7 +30,7 @@ const formData = reactive<Omit<MenuFormData, "id">>({
     name: "",
     path: "",
     icon: "",
-    type: 1,
+    type: 0,
     parentId: props.parentId || null,
     permissionCode: "",
     sort: 0,
@@ -145,6 +145,7 @@ onMounted(async () => {
                         :placeholder="t('console-system-perms.menu.typeSelect')"
                         value-key="value"
                         :items="[
+                            { label: t('console-common.menuType.group'), value: 0 },
                             { label: t('console-common.menuType.catalogue'), value: 1 },
                             { label: t('console-common.menuType.menu'), value: 2 },
                             { label: t('console-common.menuType.button'), value: 3 },
@@ -153,7 +154,11 @@ onMounted(async () => {
                     />
                 </UFormField>
 
-                <UFormField :label="t('console-system-perms.menu.parentMenu')" name="parentId">
+                <UFormField
+                    v-if="formData.type !== 0"
+                    :label="t('console-system-perms.menu.parentMenu')"
+                    name="parentId"
+                >
                     <USelect
                         v-model="formData.parentId"
                         :placeholder="t('console-system-perms.menu.parentMenuSelect')"
@@ -184,7 +189,11 @@ onMounted(async () => {
                     </USelect>
                 </UFormField>
 
-                <UFormField :label="t('console-system-perms.menu.icon')" name="icon">
+                <UFormField
+                    v-if="formData.type !== 0"
+                    :label="t('console-system-perms.menu.icon')"
+                    name="icon"
+                >
                     <ConsoleIconPicker
                         v-model="formData.icon"
                         :placeholder="t('console-system-perms.menu.iconInput')"
@@ -193,7 +202,7 @@ onMounted(async () => {
 
                 <!-- 菜单路径字段 - 目录和菜单类型显示 -->
                 <UFormField
-                    v-if="formData.type !== 3"
+                    v-if="formData.type !== 3 && formData.type !== 0"
                     :label="t('console-system-perms.menu.path')"
                     name="path"
                     :required="formData.type === 1"
@@ -221,7 +230,7 @@ onMounted(async () => {
 
                 <!-- 权限编码字段 - 菜单和按钮类型显示 -->
                 <UFormField
-                    v-if="formData.type !== 1"
+                    v-if="formData.type !== 1 && formData.type !== 0"
                     :label="t('console-system-perms.menu.permissionCode')"
                     name="permissionCode"
                 >
