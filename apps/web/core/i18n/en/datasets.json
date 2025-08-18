@@ -33,7 +33,7 @@
             "title": "Create Knowledge Base",
             "desc": "Import text data or upload files to create"
         },
-        "allDatasets": "All Knowledge Bases",
+        "allDatasets": "My Created",
         "retry": {
             "title": "Retry Vectorization",
             "desc": "Retry vectorization for all failed documents?",
