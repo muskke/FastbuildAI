@@ -5,7 +5,11 @@ import { useI18n } from "vue-i18n";
 import { object, string } from "yup";
 
 import type { Agent, UpdateAgentConfigParams } from "@/models/ai-agent";
-import { apiCreateAgent, apiGetAgentDetail, apiUpdateAgentConfig } from "@/services/console/ai-agent";
+import {
+    apiCreateAgent,
+    apiGetAgentDetail,
+    apiUpdateAgentConfig,
+} from "@/services/console/ai-agent";
 
 const { t } = useI18n();
 const toast = useMessage();
@@ -57,7 +61,11 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
                 formData.value.avatar = null;
             }
             // 编辑模式：调用更新接口
-            await apiUpdateAgentConfig(props.id, formData.value);
+            await apiUpdateAgentConfig(props.id, {
+                name: formData.value.name,
+                description: formData.value.description,
+                avatar: formData.value.avatar,
+            });
             toast.success(t("common.message.updateSuccess"));
         } else {
             // 创建模式：调用创建接口
@@ -86,11 +94,11 @@ onMounted(async () => {
 <template>
     <ProModal
         v-model="isOpen"
-        :title="props.id ? $t('console-ai-agent.create.editTitle') : $t('console-ai-agent.create.title')"
+        :title="
+            props.id ? $t('console-ai-agent.create.editTitle') : $t('console-ai-agent.create.title')
+        "
         :description="
-            props.id
-                ? $t('console-ai-agent.create.editDesc')
-                : $t('console-ai-agent.create.desc')
+            props.id ? $t('console-ai-agent.create.editDesc') : $t('console-ai-agent.create.desc')
         "
         :ui="{ content: 'max-w-lg' }"
         @close="handleClose"
@@ -125,7 +133,11 @@ onMounted(async () => {
                     />
                 </UFormField>
 
-                <UFormField :label="$t('console-ai-agent.create.description')" name="description" required>
+                <UFormField
+                    :label="$t('console-ai-agent.create.description')"
+                    name="description"
+                    required
+                >
                     <UTextarea
                         v-model="formData.description"
                         :placeholder="$t('console-ai-agent.create.descriptionPlaceholder')"

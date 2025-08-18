@@ -13,8 +13,10 @@ const prompt = useVModel(props, "modelValue", emit);
 <template>
     <ChatPrompt
         v-model="prompt"
-        :rows="5"
-        :placeholder="$t('console-ai-agent.configuration.rolePromptPlaceholder', { label: '{{label}}' })"
+        :rows="3"
+        :placeholder="
+            $t('console-ai-agent.configuration.rolePromptPlaceholder', { label: '{{label}}' })
+        "
     >
         <template #panel-top>
             <div class="bg-muted flex w-full items-center justify-between rounded-lg p-2">
@@ -30,14 +32,25 @@ const prompt = useVModel(props, "modelValue", emit);
                                     {{ $t("console-ai-agent.configuration.rolePromptSupport") }}
                                     <br />
                                     <span
-                                        v-text="$t('console-ai-agent.configuration.rolePromptExampleTitle', { label: '{{userName}}、{{userType}}、{{company}}' })"
+                                        v-text="
+                                            $t(
+                                                'console-ai-agent.configuration.rolePromptExampleTitle',
+                                                {
+                                                    label: '{{userName}}、{{userType}}、{{company}}',
+                                                },
+                                            )
+                                        "
                                     ></span>
                                     <br />
-                                    {{ $t("console-ai-agent.configuration.rolePromptExampleTitle2") }}
+                                    {{
+                                        $t("console-ai-agent.configuration.rolePromptExampleTitle2")
+                                    }}
                                     <br />
                                     <span
                                         v-text="
-                                            $t('console-ai-agent.configuration.rolePromptExample', { label: '{{domain}}' })
+                                            $t('console-ai-agent.configuration.rolePromptExample', {
+                                                label: '{{domain}}',
+                                            })
                                         "
                                     ></span>
                                 </div>

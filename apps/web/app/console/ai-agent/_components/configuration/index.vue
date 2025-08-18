@@ -85,7 +85,9 @@ onMounted(() => {
 <template>
     <div class="flex h-full min-h-0 flex-1 flex-col p-4">
         <div class="flex items-center justify-between">
-            <h1 class="text-foreground text-lg font-medium">{{ $t("console-ai-agent.menu.arrange") }}</h1>
+            <h1 class="text-foreground text-lg font-medium">
+                {{ $t("console-ai-agent.menu.arrange") }}
+            </h1>
         </div>
         <div class="flex h-full min-h-0 flex-1 gap-4 pt-4 pr-4">
             <div class="flex h-full min-h-0 w-1/2 flex-none flex-col">

@@ -55,7 +55,9 @@ onMounted(() => layoutStore.loadLayoutFromServer());
             <PropertyPanel />
 
             <!-- 右侧预览面板 -->
-            <PreviewPanel />
+            <SafariMockup :use-slot="true" url="www.fastbuildai.com" :height="'100%'">
+                <PreviewPanel />
+            </SafariMockup>
         </div>
     </div>
 </template>
