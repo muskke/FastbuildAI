@@ -53,7 +53,7 @@ const formData = reactive<UserCreateRequest>({
     phoneAreaCode: getDefaultAreaCode(), // 自动检测当前地区区号
     avatar: "",
     password: "",
-    roleId: "",
+    roleId: undefined,
     status: 1,
     source: 0,
     ...filteredInitialData,
@@ -115,7 +115,7 @@ const getRoleList = async () => {
     try {
         const response = await apiGetAllRoleList();
         roleOptions.value = [
-            { label: t("console-user.form.noRole"), value: null }, // 添加无角色选项，使用空字符串
+            { label: t("console-user.form.noRole"), value: "null" }, // 添加无角色选项，使用空字符串
             ...response.map((role: any) => ({
                 label: role.name,
                 value: role.id,
@@ -143,6 +143,9 @@ const resetForm = () => {
 /** 提交表单 */
 const { isLock, lockFn: submitForm } = useLockFn(async () => {
     try {
+        if (formData.roleId === "null") {
+            formData.roleId = undefined;
+        }
         // 发送事件，由父组件处理提交逻辑
         emit("submit-success", { ...formData });
     } catch (error) {
@@ -331,6 +334,8 @@ onMounted(() => getRoleList());
                         <UFormField :label="t('console-user.form.role')" name="roleId">
                             <USelect
                                 v-model="formData.roleId"
+                                label-key="label"
+                                value-key="value"
                                 :items="roleOptions"
                                 :placeholder="t('console-user.form.roleSelect')"
                                 size="xl"

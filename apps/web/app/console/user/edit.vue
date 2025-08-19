@@ -38,7 +38,7 @@ const { lockFn: getUserDetail, isLock } = useLockFn(async () => {
         // 转换数据格式以适配表单
         initialData.value = {
             ...response,
-            roleId: role?.id || "",
+            roleId: role?.id || undefined,
         };
     } catch (error) {
         console.error("Get user detail failed:", error);

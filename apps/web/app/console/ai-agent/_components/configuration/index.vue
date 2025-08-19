@@ -72,6 +72,7 @@ function handleVariableModalOpen() {
 const { lockFn: handleUpdate, isLock } = useLockFn(async () => {
     await apiUpdateAgentConfig(agentId as string, state);
     useMessage().success(t("common.message.updateSuccess"));
+    refreshNuxtData(`agent-detail-${agentId as string}`);
 });
 
 onMounted(() => {
