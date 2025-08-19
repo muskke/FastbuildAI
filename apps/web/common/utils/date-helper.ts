@@ -48,6 +48,7 @@ export function getDateGroup(date: string | Date): DateGroup | string {
  * @param t 国际化函数
  * @returns 标签文本
  */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function getGroupLabel(groupKey: DateGroup | string, t?: Function): string {
     // 如果没有传入国际化函数，使用默认中文
     if (!t) {
@@ -79,10 +80,10 @@ export function getGroupLabel(groupKey: DateGroup | string, t?: Function): strin
                         "12月",
                     ];
                     const currentYear = new Date().getFullYear();
-                    if (parseInt(year) === currentYear) {
-                        return monthNames[parseInt(month) - 1];
+                    if (parseInt(year || "0") === currentYear) {
+                        return monthNames[parseInt(month || "0") - 1] || "";
                     } else {
-                        return `${year}年${monthNames[parseInt(month) - 1]}`;
+                        return `${year}年${monthNames[parseInt(month || "0") - 1]}`;
                     }
                 }
                 return groupKey;
@@ -118,9 +119,11 @@ export function getGroupLabel(groupKey: DateGroup | string, t?: Function): strin
                     "december",
                 ];
                 const currentYear = new Date().getFullYear();
-                const monthName = t(`common.dateGroup.months.${monthKeys[parseInt(month) - 1]}`);
+                const monthName = t(
+                    `common.dateGroup.months.${monthKeys[parseInt(month || "0") - 1]}`,
+                );
 
-                if (parseInt(year) === currentYear) {
+                if (parseInt(year || "0") === currentYear) {
                     return monthName;
                 } else {
                     return `${year}年${monthName}`;
@@ -149,7 +152,7 @@ export function getGroupWeight(groupKey: DateGroup | string): number {
             // 年月格式的分组，按时间倒序
             if (typeof groupKey === "string" && groupKey.includes("-")) {
                 const [year, month] = groupKey.split("-");
-                return 1000 + parseInt(year) * 100 + parseInt(month);
+                return 1000 + parseInt(year || "0") * 100 + parseInt(month || "0");
             }
             return 9999;
     }
@@ -165,6 +168,7 @@ export function getGroupWeight(groupKey: DateGroup | string): number {
 export function groupConversationsByDate<T extends Record<string, any>>(
     conversations: T[],
     dateField: keyof T = "updatedAt",
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     t?: Function,
 ): GroupedConversations<T>[] {
     // 先按日期分组
@@ -202,6 +206,7 @@ export function groupConversationsByDate<T extends Record<string, any>>(
  * @param t 国际化函数
  * @returns 格式化后的时间字符串
  */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function formatRelativeTime(date: string | Date, t?: Function): string {
     const targetDate = new Date(date);
     const now = new Date();

@@ -154,54 +154,56 @@ const handleDropOver = (e: DragEvent) => {
 </script>
 
 <template>
-    <div
-        class="bg-muted rounded-lg border border-dashed p-6 text-center transition-all duration-200"
-        :class="[
-            isDragging ? 'border-primary bg-primary-50' : 'border-default hover:border-primary',
-        ]"
-        @drop="handleDrop"
-        @dragover="handleDropOver"
-        @dragleave="isDragging = false"
-    >
-        <div class="flex flex-col items-center space-y-2">
-            <div class="flex w-full items-center justify-center">
-                <UIcon name="i-heroicons-cloud-arrow-up" class="text-muted-foreground size-6" />
-                <UButton color="neutral" variant="link">
-                    {{ t("console-ai-datasets.create.file.dragOrSelectFiles") }}
-                </UButton>
-                <UButton color="primary" variant="link" @click="fileInputRef?.click()">
-                    {{ t("console-ai-datasets.create.file.chooseFile") }}
-                </UButton>
+    <div>
+        <div
+            class="bg-muted rounded-lg border border-dashed p-6 text-center transition-all duration-200"
+            :class="[
+                isDragging ? 'border-primary bg-primary-50' : 'border-default hover:border-primary',
+            ]"
+            @drop="handleDrop"
+            @dragover="handleDropOver"
+            @dragleave="isDragging = false"
+        >
+            <div class="flex flex-col items-center space-y-2">
+                <div class="flex w-full items-center justify-center">
+                    <UIcon name="i-heroicons-cloud-arrow-up" class="text-muted-foreground size-6" />
+                    <UButton color="neutral" variant="link">
+                        {{ t("console-ai-datasets.create.file.dragOrSelectFiles") }}
+                    </UButton>
+                    <UButton color="primary" variant="link" @click="fileInputRef?.click()">
+                        {{ t("console-ai-datasets.create.file.chooseFile") }}
+                    </UButton>
+                </div>
+                <div class="text-muted-foreground text-sm">
+                    <p>
+                        {{
+                            t("console-ai-datasets.create.file.supportedTypes", {
+                                types: UPLOAD_CONFIG.supportedTypes.join(", "),
+                            })
+                        }}
+                    </p>
+                    <p>
+                        {{
+                            t("console-ai-datasets.create.file.fileSizeLimit", {
+                                maxSize: UPLOAD_CONFIG.maxSize,
+                            })
+                        }}
+                    </p>
+                </div>
             </div>
-            <div class="text-muted-foreground text-sm">
-                <p>
-                    {{
-                        t("console-ai-datasets.create.file.supportedTypes", {
-                            types: UPLOAD_CONFIG.supportedTypes.join(", "),
-                        })
-                    }}
-                </p>
-                <p>
-                    {{
-                        t("console-ai-datasets.create.file.fileSizeLimit", {
-                            maxSize: UPLOAD_CONFIG.maxSize,
-                        })
-                    }}
-                </p>
-            </div>
+
+            <input
+                ref="fileInputRef"
+                type="file"
+                multiple
+                class="hidden"
+                :accept="UPLOAD_CONFIG.accept"
+                @change="handleFileSelect"
+            />
         </div>
 
-        <input
-            ref="fileInputRef"
-            type="file"
-            multiple
-            class="hidden"
-            :accept="UPLOAD_CONFIG.accept"
-            @change="handleFileSelect"
-        />
-    </div>
-
-    <div class="text-muted-foreground mt-2 text-sm">
-        {{ t("console-ai-datasets.create.file.comingSoon") }}
+        <div class="text-muted-foreground mt-2 text-sm">
+            {{ t("console-ai-datasets.create.file.comingSoon") }}
+        </div>
     </div>
 </template>
