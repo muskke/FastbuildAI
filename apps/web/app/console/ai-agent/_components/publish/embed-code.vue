@@ -57,7 +57,7 @@ const jsCode = computed(() => {
     width: '400px',
     height: '600px'
   });
-<\/script>`;
+<\\/script>`;
 });
 
 const wordpressCode = computed(() => {

@@ -57,9 +57,7 @@ const providerSchema = object({
             if (!value) return false;
             // 允许本地地址（localhost或127.0.0.1开头的URL）
             if (
-                /^(https?\:\/\/)?[\w\d\-]+(\.[\w\d\-]+)+([\w\d\-.,@?^=%&:/~+#]*[\w\d=#])?$/.test(
-                    value,
-                )
+                /^(https?:\/\/)?[\w\d-]+(\.[\w\d-]+)+([\w\d\-.,@?^=%&:/~+#]*[\w\d=#])?$/.test(value)
             ) {
                 return true;
             }

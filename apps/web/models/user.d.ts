@@ -72,39 +72,6 @@ export interface LoginResponse {
     user: UserInfo;
 }
 
-/** 微信登录二维码 */
-export interface WechatLoginCode {
-    expire_seconds: number;
-    key: string;
-    ticket: string;
-    url: string;
-}
-
-/** 微信登录查询状态 */
-export interface WechatLoginTicket {
-    is_scan: boolean;
-    user: LoginResponse;
-}
-
-/** 登录账号/手机号请求 */
-export interface SystemLoginAccountParams {
-    terminal?: number;
-    scene?: number;
-    account?: string;
-    code?: string;
-    username: string;
-    password?: string;
-    password_confirm?: string;
-}
-
-/** 注册账号请求 */
-export interface SystemRegisrerAccountParams {
-    terminal: number;
-    username: string;
-    password?: string;
-    confirmPassword?: string;
-}
-
 // 用户列表请求参数 - 使用扩展的基础查询参数
 export interface UserQueryRequest extends ExtendedBaseQueryParams {
     // 所有常用的查询字段（keyword, startDate, endDate, startTime, endTime, status 等）都已在父接口中定义
