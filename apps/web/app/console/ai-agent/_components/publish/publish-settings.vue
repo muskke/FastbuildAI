@@ -57,14 +57,20 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
 <template>
     <div class="space-y-6">
         <div>
-            <h3 class="mb-2 text-lg font-medium">{{ $t("console-ai-agent.publish.publishConfig") }}</h3>
-            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.publishConfigDesc") }}</p>
+            <h3 class="mb-2 text-lg font-medium">
+                {{ $t("console-ai-agent.publish.publishConfig") }}
+            </h3>
+            <p class="text-muted-foreground text-sm">
+                {{ $t("console-ai-agent.publish.publishConfigDesc") }}
+            </p>
         </div>
 
         <div v-if="!agent?.isPublished" class="border-border rounded-lg border p-6 text-center">
             <UIcon name="i-lucide-lock" class="text-muted-foreground mx-auto mb-3 size-12" />
             <h4 class="mb-2 font-medium">{{ $t("console-ai-agent.publish.unpublished") }}</h4>
-            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.unpublishedDesc4") }}</p>
+            <p class="text-muted-foreground text-sm">
+                {{ $t("console-ai-agent.publish.unpublishedDesc4") }}
+            </p>
         </div>
 
         <template v-else>
@@ -72,7 +78,9 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
             <div class="space-y-4">
                 <!-- 允许的域名 -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">{{ $t("console-ai-agent.publish.allowedDomains") }}</label>
+                    <label class="text-sm font-medium">{{
+                        $t("console-ai-agent.publish.allowedDomains")
+                    }}</label>
                     <p class="text-muted-foreground text-xs">
                         {{ $t("console-ai-agent.publish.allowedDomainsDesc") }}
                     </p>
@@ -108,7 +116,9 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
 
                 <!-- 频率限制 -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">{{ $t("console-ai-agent.publish.rateLimit") }}</label>
+                    <label class="text-sm font-medium">{{
+                        $t("console-ai-agent.publish.rateLimit")
+                    }}</label>
                     <p class="text-muted-foreground text-xs">
                         {{ $t("console-ai-agent.publish.rateLimitDesc") }}
                     </p>
@@ -121,17 +131,19 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
                         class="w-32"
                     />
                 </div>
-                </div>
+            </div>
 
-                <!-- 功能设置 -->
-                <div class="space-y-4">
+            <!-- 功能设置 -->
+            <div class="space-y-4">
                 <h4 class="font-medium">{{ $t("console-ai-agent.publish.featureSettings") }}</h4>
 
                 <div class="space-y-3">
                     <!-- 显示品牌信息 -->
                     <div class="flex items-center justify-between">
                         <div>
-                            <div class="text-sm font-medium">{{ $t("console-ai-agent.publish.showBranding") }}</div>
+                            <div class="text-sm font-medium">
+                                {{ $t("console-ai-agent.publish.showBranding") }}
+                            </div>
                             <div class="text-muted-foreground text-xs">
                                 {{ $t("console-ai-agent.publish.showBrandingDesc") }}
                             </div>
@@ -142,21 +154,25 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
                     <!-- 允许下载历史记录 -->
                     <div class="flex items-center justify-between">
                         <div>
-                            <div class="text-sm font-medium">{{ $t("console-ai-agent.publish.allowDownloadHistory") }}</div>
-                            <div class="text-muted-foreground text-xs">{{ $t("console-ai-agent.publish.allowDownloadHistoryDesc") }}</div>
+                            <div class="text-sm font-medium">
+                                {{ $t("console-ai-agent.publish.allowDownloadHistory") }}
+                            </div>
+                            <div class="text-muted-foreground text-xs">
+                                {{ $t("console-ai-agent.publish.allowDownloadHistoryDesc") }}
+                            </div>
                         </div>
                         <USwitch v-model="config.allowDownloadHistory" />
                     </div>
                 </div>
-                </div>
+            </div>
 
-                <!-- 配置预览 -->
-                <div class="border-border rounded-lg border p-4">
+            <!-- 配置预览 -->
+            <div class="border-border rounded-lg border p-4">
                 <h4 class="mb-3 font-medium">{{ $t("console-ai-agent.publish.previewConfig") }}</h4>
                 <pre class="text-muted-foreground overflow-auto text-xs">{{
                     JSON.stringify(config, null, 2)
                 }}</pre>
-                </div>
+            </div>
         </template>
     </div>
 </template>

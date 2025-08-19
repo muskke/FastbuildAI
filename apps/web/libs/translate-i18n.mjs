@@ -57,7 +57,7 @@ if (!optionsMatch) process.exit(1);
 const Language = eval('(' + languageMatch[1] + ')');
 console.log(JSON.stringify({
     language: Language,
-    options: eval('(' + optionsMatch[1].replace(/\\b(code|name|icon|translationCode):/g, '\"$1\":') + ')')
+    options: eval('(' + optionsMatch[1].replace(/\\b(code|name|icon|translationCode):/g, '"$1":') + ')')
 }));
         `,
             "utf8",
@@ -110,8 +110,12 @@ function reorderObjectBySource(sourceObj, targetObj) {
 
     // 按照源对象的键顺序遍历
     for (const key of Object.keys(sourceObj)) {
-        if (targetObj.hasOwnProperty(key)) {
-            if (typeof sourceObj[key] === "object" && sourceObj[key] !== null && !Array.isArray(sourceObj[key])) {
+        if (Object.prototype.hasOwnProperty.call(targetObj, key)) {
+            if (
+                typeof sourceObj[key] === "object" &&
+                sourceObj[key] !== null &&
+                !Array.isArray(sourceObj[key])
+            ) {
                 // 递归处理嵌套对象
                 result[key] = reorderObjectBySource(sourceObj[key], targetObj[key]);
             } else {

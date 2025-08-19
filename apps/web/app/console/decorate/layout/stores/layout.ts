@@ -1,7 +1,9 @@
 import { defineStore } from "pinia";
+
+import { apiGetLayoutConfig, apiSaveLayoutConfig } from "~/services/console/decorate";
+
+import { defaultMenuItems, layoutStyles } from "../data/layouts";
 import type { LayoutConfig, MenuItem, NavigationConfig } from "../types";
-import { layoutStyles, defaultMenuItems } from "../data/layouts";
-import { apiSaveLayoutConfig, apiGetLayoutConfig } from "~/services/console/decorate";
 
 /**
  * 布局设计器状态管理

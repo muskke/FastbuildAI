@@ -102,7 +102,11 @@ while (true) {
 });
 
 const tabs = [
-    { value: "overview", label: t("console-ai-agent.publish.apiOverview"), icon: "i-lucide-book-open" },
+    {
+        value: "overview",
+        label: t("console-ai-agent.publish.apiOverview"),
+        icon: "i-lucide-book-open",
+    },
     { value: "curl", label: "cURL", icon: "i-lucide-terminal" },
     { value: "javascript", label: "JavaScript", icon: "i-lucide-braces" },
     { value: "python", label: "Python", icon: "i-lucide-snake" },
@@ -118,19 +122,27 @@ const copyCode = (code: string) => {
     <div class="space-y-4">
         <div>
             <h3 class="mb-2 text-lg font-medium">{{ $t("console-ai-agent.publish.apiGuide") }}</h3>
-            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.apiGuideDesc") }}</p>
+            <p class="text-muted-foreground text-sm">
+                {{ $t("console-ai-agent.publish.apiGuideDesc") }}
+            </p>
         </div>
 
         <div v-if="!agent?.isPublished" class="border-border rounded-lg border p-6 text-center">
             <UIcon name="i-lucide-lock" class="text-muted-foreground mx-auto mb-3 size-12" />
             <h4 class="mb-2 font-medium">{{ $t("console-ai-agent.publish.unpublished") }}</h4>
-            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.unpublishedDesc3") }}</p>
+            <p class="text-muted-foreground text-sm">
+                {{ $t("console-ai-agent.publish.unpublishedDesc3") }}
+            </p>
         </div>
 
         <div v-else-if="!agent?.apiKey" class="border-border rounded-lg border p-6 text-center">
             <UIcon name="i-lucide-key" class="text-muted-foreground mx-auto mb-3 size-12" />
-            <h4 class="mb-2 font-medium">{{ $t("console-ai-agent.publish.apiKeyNotGenerated") }}</h4>
-            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.apiKeyNotGeneratedDesc") }}</p>
+            <h4 class="mb-2 font-medium">
+                {{ $t("console-ai-agent.publish.apiKeyNotGenerated") }}
+            </h4>
+            <p class="text-muted-foreground text-sm">
+                {{ $t("console-ai-agent.publish.apiKeyNotGeneratedDesc") }}
+            </p>
         </div>
 
         <div v-else class="space-y-4">
@@ -180,14 +192,20 @@ const copyCode = (code: string) => {
                             </div>
                         </div>
                         <div class="space-y-2">
-                            <div class="text-sm font-medium">{{ $t("console-ai-agent.publish.apiEndpoints") }}</div>
+                            <div class="text-sm font-medium">
+                                {{ $t("console-ai-agent.publish.apiEndpoints") }}
+                            </div>
                             <div class="space-y-1 text-xs">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-muted-foreground">{{ $t("console-ai-agent.publish.normalChat") }}</span>
+                                    <span class="text-muted-foreground">{{
+                                        $t("console-ai-agent.publish.normalChat")
+                                    }}</span>
                                     <code class="text-sm">/api/public-agent/chat</code>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-muted-foreground">{{ $t("console-ai-agent.publish.streamChat") }}</span>
+                                    <span class="text-muted-foreground">{{
+                                        $t("console-ai-agent.publish.streamChat")
+                                    }}</span>
                                     <code class="text-sm">/api/public-agent/chat/stream</code>
                                 </div>
                             </div>
@@ -196,7 +214,9 @@ const copyCode = (code: string) => {
                 </div>
 
                 <div class="space-y-4">
-                    <h4 class="font-medium">{{ $t("console-ai-agent.publish.availableEndpoints") }}</h4>
+                    <h4 class="font-medium">
+                        {{ $t("console-ai-agent.publish.availableEndpoints") }}
+                    </h4>
                     <div class="space-y-3">
                         <div class="border-border rounded-lg border p-4">
                             <div class="mb-2 flex items-center gap-2">
@@ -220,7 +240,9 @@ const copyCode = (code: string) => {
                 </div>
 
                 <div class="space-y-4">
-                    <h4 class="font-medium">{{ $t("console-ai-agent.publish.authenticationMethod") }}</h4>
+                    <h4 class="font-medium">
+                        {{ $t("console-ai-agent.publish.authenticationMethod") }}
+                    </h4>
                     <div class="border-border rounded-lg border p-4">
                         <p class="text-sm">
                             {{ $t("console-ai-agent.publish.authenticationMethodDesc") }}
@@ -234,7 +256,8 @@ const copyCode = (code: string) => {
             <div v-else class="space-y-4">
                 <div class="flex items-center justify-between">
                     <h4 class="font-medium">
-                        {{ tabs.find((t) => t.value === activeTab)?.label }} {{ $t("console-ai-agent.publish.example") }}
+                        {{ tabs.find((t) => t.value === activeTab)?.label }}
+                        {{ $t("console-ai-agent.publish.example") }}
                     </h4>
                     <UButton
                         icon="i-lucide-copy"
