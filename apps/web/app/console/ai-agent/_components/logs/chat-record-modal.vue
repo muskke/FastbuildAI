@@ -152,7 +152,9 @@ onMounted(() => {
                     <div class="flex items-center justify-between p-4">
                         <div class="flex items-center gap-3">
                             <UIcon name="i-lucide-message-circle" class="text-primary size-5" />
-                            <h2 class="text-lg font-semibold">{{ t('console-ai-agent.logs.dialogMessage') }}</h2>
+                            <h2 class="text-lg font-semibold">
+                                {{ t("console-ai-agent.logs.dialogMessage") }}
+                            </h2>
                         </div>
                         <UButton
                             icon="i-lucide-x"
@@ -171,7 +173,7 @@ onMounted(() => {
                         >
                             <div class="text-muted-foreground flex items-center gap-2 text-sm">
                                 <UIcon name="i-lucide-loader-2" class="size-4 animate-spin" />
-                                {{ t('console-ai-agent.logs.loadingMessages') }}
+                                {{ t("console-ai-agent.logs.loadingMessages") }}
                             </div>
                         </div>
 
@@ -185,7 +187,7 @@ onMounted(() => {
                                     name="i-lucide-message-circle-x"
                                     class="mx-auto mb-2 size-12"
                                 />
-                                <p>{{ t('console-ai-agent.logs.noMessages') }}</p>
+                                <p>{{ t("console-ai-agent.logs.noMessages") }}</p>
                             </div>
                         </div>
                         <!-- 消息 -->
@@ -209,14 +211,20 @@ onMounted(() => {
                                     :assistant="{
                                         actions: [
                                             {
-                                                label: t('console-ai-agent.configuration.chatContext'),
+                                                label: t(
+                                                    'console-ai-agent.configuration.chatContext',
+                                                ),
                                                 icon: 'i-lucide-file-type',
                                                 show: !agents.showContext,
                                                 onClick: (message) => {
                                                     if (message?.metadata?.context) {
                                                         openContextModal(message.metadata.context);
                                                     } else {
-                                                        toast.error(t('console-ai-agent.configuration.noChatContext'));
+                                                        toast.error(
+                                                            t(
+                                                                'console-ai-agent.configuration.noChatContext',
+                                                            ),
+                                                        );
                                                     }
                                                 },
                                             },
@@ -258,7 +266,11 @@ onMounted(() => {
                                                         <span
                                                             class="text-muted-foreground flex-none text-xs"
                                                         >
-                                                            {{ t('console-ai-agent.configuration.referenceTitle') }}
+                                                            {{
+                                                                t(
+                                                                    "console-ai-agent.configuration.referenceTitle",
+                                                                )
+                                                            }}
                                                         </span>
                                                         <USeparator
                                                             size="xs"
@@ -290,7 +302,11 @@ onMounted(() => {
                                                         {{
                                                             message.metadata?.annotations?.createdBy
                                                         }}
-                                                        {{ t('console-ai-agent.configuration.editedAnswer') }}
+                                                        {{
+                                                            t(
+                                                                "console-ai-agent.configuration.editedAnswer",
+                                                            )
+                                                        }}
                                                     </span>
                                                     <USeparator size="xs" type="dashed" />
                                                 </div>

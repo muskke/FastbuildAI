@@ -2,7 +2,11 @@
 import { usePaging, usePollingTask } from "@fastbuildai/ui";
 import { computed, onMounted, watch } from "vue";
 
-import type { CreateDatasetParams, DatasetDocument, QueryDocumentParams } from "@/models/ai-datasets";
+import type {
+    CreateDatasetParams,
+    DatasetDocument,
+    QueryDocumentParams,
+} from "@/models/ai-datasets";
 import { apiGetDocumentList } from "@/services/console/ai-datasets";
 
 /** 组件属性定义 */
@@ -103,7 +107,10 @@ const segmentModeText = computed(() => {
         normal: t("console-ai-datasets.create.segment.general"),
         hierarchical: t("console-ai-datasets.create.segment.hierarchical"),
     };
-    return modeMap[documentMode as keyof typeof modeMap] || t("console-ai-datasets.create.segment.general");
+    return (
+        modeMap[documentMode as keyof typeof modeMap] ||
+        t("console-ai-datasets.create.segment.general")
+    );
 });
 
 /** 获取文本预处理规则的显示文本 */
@@ -129,7 +136,9 @@ const retrievalModeText = computed(() => {
         fullText: t("console-ai-datasets.retrieval.fullText"),
         hybrid: t("console-ai-datasets.retrieval.hybrid"),
     };
-    return modeMap[retrievalMode as keyof typeof modeMap] || t("console-ai-datasets.retrieval.vector");
+    return (
+        modeMap[retrievalMode as keyof typeof modeMap] || t("console-ai-datasets.retrieval.vector")
+    );
 });
 
 /** 获取检索设置的显示文本 */
@@ -141,7 +150,9 @@ const retrievalSettingsText = computed(() => {
 
     const settings = [];
     if (retrievalConfig.topK) {
-        settings.push(`${t("console-ai-datasets.create.stepThree.returnCount")}: ${retrievalConfig.topK}`);
+        settings.push(
+            `${t("console-ai-datasets.create.stepThree.returnCount")}: ${retrievalConfig.topK}`,
+        );
     }
     if (retrievalConfig.scoreThreshold) {
         settings.push(
@@ -161,7 +172,9 @@ const retrievalSettingsText = computed(() => {
         }
     }
 
-    return settings.length > 0 ? settings.join("、") : t("console-ai-datasets.create.stepThree.default");
+    return settings.length > 0
+        ? settings.join("、")
+        : t("console-ai-datasets.create.stepThree.default");
 });
 
 /** 监听 datasetsId 变化，重新获取文档列表 */
@@ -283,7 +296,9 @@ onUnmounted(() => {
 
             <!-- 检索模式 -->
             <div class="flex justify-between py-2">
-                <span class="text-muted-foreground">{{ $t("console-ai-datasets.common.retrievalMode") }}</span>
+                <span class="text-muted-foreground">{{
+                    $t("console-ai-datasets.common.retrievalMode")
+                }}</span>
                 <div class="flex items-center gap-2">
                     <UIcon name="i-heroicons-sparkles" class="h-4 w-4 text-purple-500" />
                     <span class="text-foreground text-sm font-medium">{{ retrievalModeText }}</span>

@@ -124,7 +124,8 @@ async function scrollToBottom(animate = true) {
 
 async function handleSubmitMessage(content: string) {
     if (!content.trim() || isLoading.value) return;
-    if (!props.agent.modelConfig?.id) return toast.warning(t("console-ai-agent.modelNotConfigured"));
+    if (!props.agent.modelConfig?.id)
+        return toast.warning(t("console-ai-agent.modelNotConfigured"));
 
     // 验证表单字段必填项
     const formFields = props.agent.formFields || [];
@@ -137,13 +138,17 @@ async function handleSubmitMessage(content: string) {
             if (field.required) {
                 const value = formFieldsInputs[field.name];
                 if (!value || (typeof value === "string" && value.trim() === "")) {
-                    validationErrors.push(`${field.label}${t("console-ai-agent.configuration.notEmpty")}`);
+                    validationErrors.push(
+                        `${field.label}${t("console-ai-agent.configuration.notEmpty")}`,
+                    );
                 }
             }
         });
 
         if (validationErrors.length > 0) {
-            toast.error(`${t("console-ai-agent.configuration.formVariableTitle")}: ${validationErrors.join(", ")}`);
+            toast.error(
+                `${t("console-ai-agent.configuration.formVariableTitle")}: ${validationErrors.join(", ")}`,
+            );
             return;
         }
     }
@@ -303,7 +308,9 @@ onUnmounted(() => {
                         <ProMarkdown :content="message.content" class="mb-2" />
 
                         <div class="flex flex-col gap-2">
-                            <div class="text-muted-foreground text-sm">{{ t("console-ai-agent.configuration.youCanAskMe") }}</div>
+                            <div class="text-muted-foreground text-sm">
+                                {{ t("console-ai-agent.configuration.youCanAskMe") }}
+                            </div>
 
                             <div v-for="question in agent.openingQuestions" :key="question">
                                 <UButton
@@ -337,7 +344,9 @@ onUnmounted(() => {
                                     if (message?.metadata?.context) {
                                         openContextModal(message.metadata.context);
                                     } else {
-                                        toast.error(t('console-ai-agent.configuration.noChatContext'));
+                                        toast.error(
+                                            t('console-ai-agent.configuration.noChatContext'),
+                                        );
                                     }
                                 },
                             },

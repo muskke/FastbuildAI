@@ -36,6 +36,7 @@
     "configuration": {
         "func": "功能配置",
         "user": "界面配置",
+        "saveConfig": "保存配置",
         "debugPreview": "调试与预览",
         "variableInput": "变量输入",
         "variableInputDesc": "请先配置表单字段",
@@ -86,7 +87,7 @@
         "feedback": "问答标注",
         "feedbackDesc": "支持管理员和用户标注问题和答案",
         "public": "公开智能体",
-        "publicDesc": "开启后智能体将在公开列表中可见，其他用户可以发现并使用",
+        "publicDesc": "在智能体广场列表中可见，其他用户可发现并使用。智能体为已发布的状态下才生效,",
         "private": "私有智能体",
         "prologue": "开场白",
         "prologueDesc": "编辑器工具如果被遮住则使用鼠标按住左右拖地即可查看剩余工具",
