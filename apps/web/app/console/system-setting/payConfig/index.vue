@@ -10,7 +10,7 @@ import type { BooleanNumberType } from "@/models/payconfig.d.ts";
 import { apiGetPayconfigList, apiUpdatePayconfigStatus } from "@/services/console/payconfig";
 
 const message = useMessage();
-const Card = defineAsyncComponent(() => import("./_components/card.vue"));
+// const Card = defineAsyncComponent(() => import("./_components/card.vue"));
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
@@ -34,6 +34,42 @@ const getPayconfigList = async () => {
         logo,
     }));
 };
+
+const columns = computed(() => {
+    return [
+        {
+            accessorKey: "logo",
+            header: t("console-payconfig.logo"),
+        },
+        {
+            accessorKey: "payType",
+            header: t("console-payconfig.payType"),
+        },
+        {
+            accessorKey: "name",
+            header: t("console-payconfig.name"),
+        },
+
+        {
+            accessorKey: "isEnable",
+            header: t("console-payconfig.isEnable"),
+        },
+        {
+            accessorKey: "action",
+            header: t("console-payconfig.action"),
+        },
+    ];
+});
+
+const edit = (id: string) => {
+    router.push({
+        path: useRoutePath("system-payconfig:update"),
+        query: {
+            id,
+        },
+    });
+};
+
 onMounted(() => {
     getPayconfigList();
 });
@@ -47,14 +83,48 @@ onMounted(() => {
                 {{ $t("console-payconfig.title") }}
             </h1>
         </div>
+        <UTable :columns="columns" :data="payconfigList">
+            <template #logo-cell="{ row }">
+                <UAvatar
+                    :src="row.original.logo"
+                    :alt="
+                        row.original.payType === 1
+                            ? t('console-payconfig.wxPay')
+                            : t('console-payconfig.alipayPay')
+                    "
+                    size="md"
+                    :ui="{ root: 'rounded-lg' }"
+                />
+            </template>
+            <template #payType-cell="{ row }">
+                {{
+                    row.original.payType === 1
+                        ? t("console-payconfig.wxPay")
+                        : t("console-payconfig.alipayPay")
+                }}
+            </template>
+            <template #isEnable-cell="{ row }">
+                <USwitch
+                    :model-value="row.original.isEnable === 1"
+                    @update:model-value="updatePayconfigStatus(row.original.id, $event ? 1 : 0)"
+                    size="md"
+                />
+            </template>
+            <template #action-cell="{ row }">
+                <UButton size="md" variant="ghost" color="primary" @click="edit(row.original.id)">
+                    {{ $t("console-common.edit") }}
+                </UButton>
+            </template>
+        </UTable>
+
         <!-- 支付卡片网格 -->
-        <div class="grid grid-cols-1 gap-6 py-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <!-- <div class="grid grid-cols-1 gap-6 py-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <Card
                 v-for="item in payconfigList"
                 :key="item.id"
                 :payconfig="item"
                 @update:isEnable="updatePayconfigStatus(item.id, $event ? 1 : 0)"
             />
-        </div>
+        </div> -->
     </div>
 </template>

@@ -119,6 +119,28 @@ const resetForm = () => {
     }
 };
 
+/** 表单错误处理 */
+const onFormError = () => {
+    if (state.privacyTitle === "") {
+        return message.warning(t("console-system.website.agreement.privacyTitle"));
+    }
+    if (state.privacyContent === "") {
+        return message.warning(t("console-system.website.agreement.privacyContent"));
+    }
+    if (state.serviceTitle === "") {
+        return message.warning(t("console-system.website.agreement.serviceTitle"));
+    }
+    if (state.serviceContent === "") {
+        return message.warning(t("console-system.website.agreement.serviceContent"));
+    }
+    if (state.paymentTitle === "") {
+        return message.warning(t("console-system.website.agreement.paymentTitle"));
+    }
+    if (state.paymentContent === "") {
+        return message.warning(t("console-system.website.agreement.paymentContent"));
+    }
+};
+
 // 组件挂载时获取配置
 onMounted(() => getWebsiteConfig());
 </script>
@@ -137,7 +159,7 @@ onMounted(() => getWebsiteConfig());
             <UTabs v-model="activeTab" :items="items" />
         </div>
 
-        <UForm :schema="schema" :state="state" @submit="onSubmit">
+        <UForm :schema="schema" :state="state" @submit="onSubmit" @error="onFormError">
             <template v-if="activeTab === '0'">
                 <UFormField
                     name="privacyTitle"
