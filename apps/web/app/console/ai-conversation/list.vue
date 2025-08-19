@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProDateRangePicker, ProPaginaction } from "@fastbuildai/ui";
+import { ProDateRangePicker, ProPaginaction, ProScrollArea } from "@fastbuildai/ui";
 import { useMessage, useModal, usePaging } from "@fastbuildai/ui";
 import type { DropdownMenuItem, TableColumn } from "@nuxt/ui";
 import { type Row } from "@tanstack/table-core";
@@ -86,9 +86,9 @@ const columns = ref<TableColumn<AiConversation>[]>([
         accessorKey: "updatedAt",
         header: "更新时间",
         cell: ({ row }) => {
-            const createdAt = row.getValue("createdAt") as string;
+            const updatedAt = row.getValue("updatedAt") as string;
             return h(TimeDisplay, {
-                datetime: createdAt,
+                datetime: updatedAt,
                 mode: "datetime",
             });
         },
@@ -214,6 +214,10 @@ const isIndeterminate = computed(() => {
     return selectedCount > 0 && selectedCount < paging.items.length;
 });
 
+const handleSelect = (row: Row<AiConversation>) => {
+    handleViewDetail(row.original.id);
+};
+
 // 初始化
 onMounted(() => getLists());
 </script>
@@ -283,58 +287,61 @@ onMounted(() => getLists());
 
         <!-- 列表展示 -->
         <template v-if="!paging.loading && paging.items.length > 0 && tab === 1">
-            <UTable
-                ref="table"
-                :data="paging.items"
-                :columns="columns"
-                :ui="{
-                    base: 'table-fixed border-separate border-spacing-0',
-                    thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
-                    tbody: '[&>tr]:last:[&>td]:border-b-0',
-                    th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
-                    td: 'border-b border-default',
-                    tr: '[&:has(>td[colspan])]:hidden',
-                }"
-            >
-                <template #title-cell="{ row }">
-                    <div class="flex items-center gap-2">
-                        <UIcon name="i-lucide-message-circle" class="text-primary size-5" />
-                        {{ row.original.title || "new Chat" }}
-                    </div>
-                </template>
-                <template #userName-cell="{ row }">
-                    <div class="flex items-center gap-2">
-                        <UAvatar
-                            v-if="row.original.user?.avatar"
-                            :src="row.original.user?.avatar"
-                        />
-                        <UAvatar
-                            v-else
-                            icon="i-heroicons-user"
-                            :name="row.original.user?.username"
-                        />
-                        <span>{{ row.original.user?.nickname }}</span>
-                    </div>
-                </template>
-                <template #messageCount-cell="{ row }">
-                    <UBadge color="primary" variant="subtle">
-                        {{ row.original.messageCount }}
-                    </UBadge>
-                </template>
-                <template #totalTokens-cell="{ row }">
-                    <span class="text-primary">{{ row.original.totalTokens }}</span>
-                </template>
-                <template #action-cell="{ row }">
-                    <UDropdownMenu :items="getRowItems(row)">
-                        <UButton
-                            icon="i-lucide-ellipsis-vertical"
-                            color="neutral"
-                            variant="ghost"
-                            aria-label="Actions"
-                        />
-                    </UDropdownMenu>
-                </template>
-            </UTable>
+            <ProScrollArea class="h-[calc(100vh-13rem)]" :shadow="false">
+                <UTable
+                    ref="table"
+                    :data="paging.items"
+                    :columns="columns"
+                    :ui="{
+                        base: 'table-fixed border-separate border-spacing-0',
+                        thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
+                        tbody: '[&>tr]:last:[&>td]:border-b-0',
+                        th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
+                        td: 'border-b border-default',
+                        tr: '[&:has(>td[colspan])]:hidden',
+                    }"
+                    @select="handleSelect"
+                >
+                    <template #title-cell="{ row }">
+                        <div class="flex items-center gap-2">
+                            <UIcon name="i-lucide-message-circle" class="text-primary size-5" />
+                            {{ row.original.title || "new Chat" }}
+                        </div>
+                    </template>
+                    <template #userName-cell="{ row }">
+                        <div class="flex items-center gap-2">
+                            <UAvatar
+                                v-if="row.original.user?.avatar"
+                                :src="row.original.user?.avatar"
+                            />
+                            <UAvatar
+                                v-else
+                                icon="i-heroicons-user"
+                                :name="row.original.user?.username"
+                            />
+                            <span>{{ row.original.user?.nickname }}</span>
+                        </div>
+                    </template>
+                    <template #messageCount-cell="{ row }">
+                        <UBadge color="primary" variant="subtle">
+                            {{ row.original.messageCount }}
+                        </UBadge>
+                    </template>
+                    <template #totalTokens-cell="{ row }">
+                        <span class="text-primary">{{ row.original.totalTokens }}</span>
+                    </template>
+                    <template #action-cell="{ row }">
+                        <UDropdownMenu :items="getRowItems(row)">
+                            <UButton
+                                icon="i-lucide-ellipsis-vertical"
+                                color="neutral"
+                                variant="ghost"
+                                aria-label="Actions"
+                            />
+                        </UDropdownMenu>
+                    </template>
+                </UTable>
+            </ProScrollArea>
         </template>
 
         <!-- 卡片网格 -->
