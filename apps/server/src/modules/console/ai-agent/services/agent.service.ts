@@ -14,6 +14,7 @@ import {
     QueryAgentStatisticsDto,
     UpdateAgentConfigDto,
 } from "../dto/agent.dto";
+import { CreateAgentFromTemplateDto } from "../dto/agent-template.dto";
 import { Agent } from "../entities/agent.entity";
 import { AgentAnnotation } from "../entities/agent-annotation.entity";
 import { AgentChatMessage } from "../entities/agent-chat-message.entity";
@@ -54,6 +55,19 @@ export class AgentService extends BaseService<Agent> {
                 isPublic: false,
             });
             this.logger.log(`[+] 智能体创建成功: ${agent.id} - ${name}`);
+            return agent as Agent;
+        }, "智能体创建失败");
+    }
+
+    // 从模板创建智能体
+    async createAgentFromTemplate(dto: CreateAgentFromTemplateDto): Promise<Agent> {
+        await this.checkNameUniqueness(dto.name);
+
+        return this.withErrorHandling(async () => {
+            const agent = await this.create({
+                ...dto,
+            });
+            this.logger.log(`[+] 智能体创建成功: ${agent.id} - ${dto.name}`);
             return agent as Agent;
         }, "智能体创建失败");
     }
@@ -311,7 +325,6 @@ export class AgentService extends BaseService<Agent> {
     async publishAgent(
         id: string,
         dto: PublishAgentDto,
-        user: UserPlayground,
     ): Promise<{
         publishToken: string;
         apiKey: string;

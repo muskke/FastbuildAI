@@ -15,6 +15,7 @@
         "desc": "创建具备自主工具调用能力，以及知识库能力的应用",
         "importDsl": "导入DSL文件",
         "importDslDesc": "暂未开放",
+        "fromTemplate": "从模板创建",
         "edit": "编辑于",
         "editTitle": "编辑智能体",
         "editDesc": "修改智能体基本信息",
@@ -230,6 +231,26 @@
         "dialogSearchPlaceholder": "搜索对话标题或摘要...",
         "loadingMessages": "正在加载消息...",
         "noMessages": "暂无消息记录"
+    },
+    "template": {
+        "title": "从模板应用创建",
+        "applyFromTemplate": "从模板应用创建",
+        "searchPlaceholder": "搜索模板...",
+        "all": "全部",
+        "recommended": "推荐",
+        "general": "通用",
+        "recommendedTemplates": "推荐模板",
+        "allTemplates": "所有模板",
+        "useTemplate": "使用模板",
+        "noAvailableTemplates": "暂无可用模板",
+        "noMatchingTemplates": "未找到匹配的模板",
+        "loadingFailed": "加载模板失败",
+        "create": {
+            "title": "从 {name} 创建",
+            "description": "自定义智能体信息",
+            "success": "智能体创建成功！",
+            "failed": "创建智能体失败"
+        }
     },
     "dashboard": {
         "title": "数据看板",
