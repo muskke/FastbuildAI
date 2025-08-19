@@ -57,8 +57,8 @@ http://localhost:4090
 - ✅ **MCP Invocation** – Supports Model Context Protocol (MCP).
 - ✅ **User Recharge** – User balance and payment system.
 - ✅ **Model Management** – Manage and deploy AI models.
-- ⬜ **Knowledge Base** – Centralized AI knowledge.
-- ⬜ **Intelligent Agents** – Autonomous agents for tasks.
+- ✅ **Knowledge Base** – Centralized AI knowledge.
+- ✅ **Intelligent Agents** – Autonomous agents for tasks.
 - ⬜ **Workflow** – AI task automation.
 - ⬜ **Plugin System** – Extend functionality with plugins.
 
