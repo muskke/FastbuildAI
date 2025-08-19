@@ -4,20 +4,15 @@ import { onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { object, string } from "yup";
 
-import type { Agent, UpdateAgentConfigParams } from "@/models/ai-agent";
-import {
-    apiCreateAgent,
-    apiGetAgentDetail,
-    apiUpdateAgentConfig,
-} from "@/services/console/ai-agent";
+import type { AgentTemplate } from "@/models/ai-agent";
+import { apiCreateAgentFromTemplate } from "@/services/console/ai-agent";
 
 const { t } = useI18n();
 const toast = useMessage();
 
 const props = defineProps<{
-    /** 智能体ID，如果为null则为创建模式 */
-    id: string | null;
-    datasetId?: string;
+    /** 选中的模板 */
+    template: AgentTemplate;
 }>();
 
 const emits = defineEmits<{
@@ -27,7 +22,7 @@ const emits = defineEmits<{
 const isOpen = ref(true);
 
 // 表单数据
-const formData = ref<UpdateAgentConfigParams>({
+const formData = reactive({
     name: "",
     description: "",
     avatar: "",
@@ -39,43 +34,20 @@ const schema = object({
     description: string().required(t("console-ai-agent.create.descriptionPlaceholder")),
 });
 
-// 获取智能体详情（编辑模式）
-const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
-    try {
-        const { createdAt, userCount, updatedAt, id, ...data } = await apiGetAgentDetail(
-            props.id as string,
-        );
-        // 填充表单数据
-        formData.value = data as UpdateAgentConfigParams;
-    } catch (error) {
-        console.error("获取智能体详情失败:", error);
-        toast.error((error as Error).message);
-    }
-});
-
 // 提交表单
 const { lockFn: submitForm, isLock } = useLockFn(async () => {
     try {
-        if (props.id) {
-            if (formData.value.avatar === undefined) {
-                formData.value.avatar = null;
-            }
-            // 编辑模式：调用更新接口
-            await apiUpdateAgentConfig(props.id, {
-                name: formData.value.name,
-                description: formData.value.description,
-                avatar: formData.value.avatar,
-            });
-            refreshNuxtData(`agent-detail-${props.id}`);
-            toast.success(t("common.message.updateSuccess"));
-        } else {
-            // 创建模式：调用创建接口
-            await apiCreateAgent(formData.value);
-            toast.success(t("common.message.createSuccess"));
-        }
+        await apiCreateAgentFromTemplate({
+            templateId: props.template.id,
+            name: formData.name,
+            description: formData.description,
+            avatar: formData.avatar,
+        });
+
+        toast.success(t("console-ai-agent.template.create.success"));
         emits("close", true);
     } catch (error) {
-        console.error(`${props.id ? "更新" : "创建"}智能体失败:`, error);
+        console.error(t("console-ai-agent.template.create.failed"), error);
         toast.error((error as Error).message);
     }
 });
@@ -86,31 +58,24 @@ const handleClose = () => {
 };
 
 // 组件挂载时初始化数据
-onMounted(async () => {
-    // 如果有ID，则获取详情数据（编辑模式）
-    props.id && fetchDetail();
+onMounted(() => {
+    if (props.template) {
+        formData.name = props.template.name;
+        formData.description = props.template.description || "";
+    }
 });
 </script>
 
 <template>
     <ProModal
         v-model="isOpen"
-        :title="
-            props.id ? $t('console-ai-agent.create.editTitle') : $t('console-ai-agent.create.title')
-        "
-        :description="
-            props.id ? $t('console-ai-agent.create.editDesc') : $t('console-ai-agent.create.desc')
-        "
+        :title="t('console-ai-agent.template.create.title', { name: template?.name })"
+        :description="t('console-ai-agent.template.create.description')"
         :ui="{ content: 'max-w-lg' }"
         @close="handleClose"
     >
-        <!-- 加载状态 -->
-        <div v-if="detailLoading" class="flex items-center justify-center" style="height: 420px">
-            <UIcon name="i-lucide-loader-2" class="size-8 animate-spin" />
-        </div>
-
         <!-- 表单内容 -->
-        <UForm v-else :schema="schema" :state="formData" class="space-y-4" @submit="submitForm">
+        <UForm :schema="schema" :state="formData" class="space-y-4" @submit="submitForm">
             <div class="flex flex-col gap-4">
                 <UFormField :label="$t('console-ai-agent.create.avatar')" name="avatar">
                     <ProUploader
@@ -154,7 +119,7 @@ onMounted(async () => {
                     {{ $t("console-common.cancel") }}
                 </UButton>
                 <UButton color="primary" size="lg" :loading="isLock" type="submit">
-                    {{ props.id ? $t("console-common.update") : $t("console-common.create") }}
+                    {{ $t("console-common.create") }}
                 </UButton>
             </div>
         </UForm>

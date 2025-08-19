@@ -7,6 +7,7 @@ import { apiDeleteAgent, apiGetAgentList } from "@/services/console/ai-agent";
 
 import AgentCard from "./_components/agent-card.vue";
 const AgentModal = defineAsyncComponent(() => import("./_components/agent-modal.vue"));
+const TemplateDrawer = defineAsyncComponent(() => import("./_components/template-drawer.vue"));
 
 // 路由实例
 const toast = useMessage();
@@ -28,6 +29,9 @@ const agents = ref<Agent[]>([]);
 // 编辑弹窗状态
 const showModal = ref(false);
 const editAgentId = ref<string | null>(null);
+
+// 模板选择弹窗状态
+const showTemplateDrawer = ref(false);
 
 /** 获取智能体列表（第一页或重新加载） */
 const getLists = async () => {
@@ -108,10 +112,27 @@ const handleCreateAgent = () => {
     showModal.value = true;
 };
 
+/** 从模板创建智能体 */
+const handleCreateFromTemplate = () => {
+    showTemplateDrawer.value = true;
+};
+
 /** 处理编辑弹窗关闭 */
 const handleEditModalClose = async (refresh?: boolean) => {
     showModal.value = false;
     editAgentId.value = null;
+
+    // 如果需要刷新列表
+    if (refresh) {
+        searchForm.page = 1;
+        searchForm.pageSize = 15;
+        await getLists();
+    }
+};
+
+/** 处理模板弹窗关闭 */
+const handleTemplateDrawerClose = async (refresh?: boolean) => {
+    showTemplateDrawer.value = false;
 
     // 如果需要刷新列表
     if (refresh) {
@@ -194,6 +215,15 @@ onMounted(() => getLists());
 
                         <div class="flex items-center gap-2">
                             <UButton
+                                color="primary"
+                                variant="ghost"
+                                class="w-full"
+                                icon="i-lucide-package"
+                                size="sm"
+                                :label="$t('console-ai-agent.create.fromTemplate')"
+                                @click.stop="handleCreateFromTemplate"
+                            />
+                            <UButton
                                 color="neutral"
                                 variant="ghost"
                                 class="w-full"
@@ -221,5 +251,8 @@ onMounted(() => getLists());
 
         <!-- 编辑智能体弹窗 -->
         <AgentModal v-if="showModal" :id="editAgentId" @close="handleEditModalClose" />
+
+        <!-- 模板选择弹窗 -->
+        <TemplateDrawer v-if="showTemplateDrawer" @close="handleTemplateDrawerClose" />
     </div>
 </template>
