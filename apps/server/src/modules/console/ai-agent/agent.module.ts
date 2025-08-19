@@ -20,6 +20,7 @@ import { AgentChatService } from "./services/agent-chat.service";
 import { AgentChatMessageService } from "./services/agent-chat-message.service";
 import { AgentChatRecordService } from "./services/agent-chat-record.service";
 import { PublicAgentChatService } from "./services/public-agent-chat.service";
+import { AgentTemplateService } from "./services/agent-template.service";
 
 /**
  * 智能体模块
@@ -45,6 +46,7 @@ import { PublicAgentChatService } from "./services/public-agent-chat.service";
         AgentChatService,
         AgentChatMessageService,
         PublicAgentChatService,
+        AgentTemplateService,
     ],
     exports: [
         AgentService,
@@ -52,6 +54,7 @@ import { PublicAgentChatService } from "./services/public-agent-chat.service";
         AgentChatRecordService,
         AgentChatService,
         AgentChatMessageService,
+        AgentTemplateService,
     ],
 })
 export class AiAgentModule {}

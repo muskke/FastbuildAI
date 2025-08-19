@@ -15,9 +15,11 @@ import type {
     AgentChatResponse,
     AgentChatTestParams,
     AgentStatistics,
+    AgentTemplate,
     AnnotationMatchResult,
     BatchDeleteChatRecordParams,
     CreateAgentAnnotationParams,
+    CreateAgentFromTemplateParams,
     CreateChatRecordParams,
     FormFieldConfig,
     ModelConfig,
@@ -25,6 +27,7 @@ import type {
     QueryAgentChatRecordParams,
     QueryAgentParams,
     QueryAgentStatisticsParams,
+    QueryTemplateParams,
     ReviewAnnotationParams,
     UpdateAgentAnnotationParams,
     UpdateAgentConfigParams,
@@ -268,4 +271,34 @@ export function apiGetAgentStatistics(
     params?: QueryAgentStatisticsParams,
 ): Promise<AgentStatistics> {
     return useConsoleGet(`/ai-agent/${agentId}/statistics`, params);
+}
+
+// ==================== 智能体模板相关 API ====================
+
+/**
+ * 获取智能体模板列表
+ */
+export function apiGetAgentTemplates(params?: QueryTemplateParams): Promise<AgentTemplate[]> {
+    return useConsoleGet("/ai-agent/templates", params);
+}
+
+/**
+ * 获取模板分类列表
+ */
+export function apiGetAgentTemplateCategories(): Promise<string[]> {
+    return useConsoleGet("/ai-agent/templates/categories");
+}
+
+/**
+ * 获取推荐模板
+ */
+export function apiGetRecommendedTemplates(): Promise<AgentTemplate[]> {
+    return useConsoleGet("/ai-agent/templates/recommended");
+}
+
+/**
+ * 从模板创建智能体
+ */
+export function apiCreateAgentFromTemplate(data: CreateAgentFromTemplateParams): Promise<Agent> {
+    return useConsolePost("/ai-agent/templates/create", data);
 }
