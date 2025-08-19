@@ -83,7 +83,9 @@ function handleKeywordChange(val: number) {
                         >
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center gap-1">
-                                    <span>{{ $t("console-ai-datasets.retrieval.scoreThreshold") }}</span>
+                                    <span>{{
+                                        $t("console-ai-datasets.retrieval.scoreThreshold")
+                                    }}</span>
                                     <UIcon name="i-lucide-circle-help" class="size-4" />
                                 </div>
                                 <USwitch v-model="retrievalConfig.scoreThresholdEnabled" />
@@ -145,7 +147,9 @@ function handleKeywordChange(val: number) {
                         >
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center gap-1">
-                                    <span>{{ $t("console-ai-datasets.retrieval.scoreThreshold") }}</span>
+                                    <span>{{
+                                        $t("console-ai-datasets.retrieval.scoreThreshold")
+                                    }}</span>
                                     <UIcon name="i-lucide-circle-help" class="size-4" />
                                 </div>
                                 <USwitch v-model="retrievalConfig.scoreThresholdEnabled" />
@@ -179,7 +183,10 @@ function handleKeywordChange(val: number) {
                 <UButton
                     :variant="retrievalConfig.strategy === 'rerank' ? 'solid' : 'outline'"
                     size="sm"
-                    @click="retrievalConfig.strategy = 'rerank'; retrievalConfig.rerankConfig!.enabled = true"
+                    @click="
+                        retrievalConfig.strategy = 'rerank';
+                        retrievalConfig.rerankConfig!.enabled = true;
+                    "
                 >
                     <UIcon name="i-heroicons-cpu-chip" class="mr-1 h-4 w-4" />
                     {{ $t("console-ai-datasets.retrieval.rerank") }}
@@ -233,7 +240,9 @@ function handleKeywordChange(val: number) {
                             >
                                 <div class="flex items-center gap-2">
                                     <div class="flex items-center gap-1">
-                                        <span>{{ $t("console-ai-datasets.retrieval.scoreThreshold") }}</span>
+                                        <span>{{
+                                            $t("console-ai-datasets.retrieval.scoreThreshold")
+                                        }}</span>
                                         <UIcon name="i-lucide-circle-help" class="size-4" />
                                     </div>
                                     <USwitch v-model="retrievalConfig.scoreThresholdEnabled" />
@@ -247,7 +256,9 @@ function handleKeywordChange(val: number) {
                             :max="1"
                             :min="0"
                             :disabled="!retrievalConfig.scoreThresholdEnabled"
-                            :placeholder="$t('console-ai-datasets.retrieval.scoreThresholdPlaceholder')"
+                            :placeholder="
+                                $t('console-ai-datasets.retrieval.scoreThresholdPlaceholder')
+                            "
                         />
                     </UFormField>
                 </div>
@@ -291,7 +302,9 @@ function handleKeywordChange(val: number) {
                             <UTooltip text="Score阈值" :delay-duration="0">
                                 <div class="flex items-center gap-2">
                                     <div class="flex items-center gap-1">
-                                        <span>{{ $t("console-ai-datasets.retrieval.scoreThreshold") }}</span>
+                                        <span>{{
+                                            $t("console-ai-datasets.retrieval.scoreThreshold")
+                                        }}</span>
                                         <UIcon name="i-lucide-circle-help" class="size-4" />
                                     </div>
                                     <USwitch v-model="retrievalConfig.scoreThresholdEnabled" />
@@ -305,7 +318,9 @@ function handleKeywordChange(val: number) {
                             :max="1"
                             :min="0"
                             :disabled="!retrievalConfig.scoreThresholdEnabled"
-                            :placeholder="$t('console-ai-datasets.retrieval.scoreThresholdPlaceholder')"
+                            :placeholder="
+                                $t('console-ai-datasets.retrieval.scoreThresholdPlaceholder')
+                            "
                         />
                     </UFormField>
                 </div>

@@ -218,7 +218,7 @@ definePageMeta({
                                 <TimeDisplay
                                     v-if="userStore.userInfo?.createdAt"
                                     :datetime="userStore.userInfo.createdAt as unknown as Date"
-                                    mode="long"
+                                    mode="datetime"
                                 />
                                 <span v-else>-</span>
                             </template>

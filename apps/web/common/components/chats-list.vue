@@ -3,8 +3,8 @@ import { ProScrollArea, useModal } from "@fastbuildai/ui";
 import type { DropdownMenuItem } from "@nuxt/ui";
 import { h, markRaw, ref } from "vue";
 
-import { groupConversationsByDate, type GroupedConversations } from "@/common/utils";
 import { useControlsStore } from "@/common/stores/controls";
+import { groupConversationsByDate, type GroupedConversations } from "@/common/utils";
 import type { AiConversation } from "@/models/ai-conversation";
 import {
     apiDeleteAiConversation,

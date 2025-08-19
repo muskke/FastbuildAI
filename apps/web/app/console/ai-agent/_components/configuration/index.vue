@@ -50,6 +50,7 @@ const state = reactive<UpdateAgentConfigParams>({
         "预算大约2万，能帮我规划一下行程吗？",
         "我对历史文化很感兴趣，有合适的目的地推荐吗？",
     ],
+    isPublic: false,
     quickCommands: [],
     autoQuestions: {
         enabled: false,
@@ -110,7 +111,7 @@ onMounted(() => {
                             :loading="isLock"
                             @click="handleUpdate"
                         >
-                            {{ $t("console-common.update") }}
+                            {{ $t("console-ai-agent.configuration.saveConfig") }}
                         </UButton>
                     </AccessControl>
                 </div>

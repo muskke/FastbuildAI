@@ -53,12 +53,17 @@ const validateFile = (file: File) => {
     // }
     // 只允许 txt 和 docx 文件
     if (ext !== "TXT" && ext !== "DOCX") {
-        return { valid: false, error: t("console-ai-datasets.create.file.unsupportedFileType", { ext }) };
+        return {
+            valid: false,
+            error: t("console-ai-datasets.create.file.unsupportedFileType", { ext }),
+        };
     }
     if (file.size > UPLOAD_CONFIG.maxSize * 1024 * 1024) {
         return {
             valid: false,
-            error: t("console-ai-datasets.create.file.fileTooLarge", { maxSize: UPLOAD_CONFIG.maxSize }),
+            error: t("console-ai-datasets.create.file.fileTooLarge", {
+                maxSize: UPLOAD_CONFIG.maxSize,
+            }),
         };
     }
     return { valid: true };
@@ -178,7 +183,9 @@ const handleDropOver = (e: DragEvent) => {
                 </p>
                 <p>
                     {{
-                        t("console-ai-datasets.create.file.fileSizeLimit", { maxSize: UPLOAD_CONFIG.maxSize })
+                        t("console-ai-datasets.create.file.fileSizeLimit", {
+                            maxSize: UPLOAD_CONFIG.maxSize,
+                        })
                     }}
                 </p>
             </div>
@@ -194,7 +201,7 @@ const handleDropOver = (e: DragEvent) => {
         />
     </div>
 
-    <div class="mt-2 text-sm text-muted-foreground">
+    <div class="text-muted-foreground mt-2 text-sm">
         {{ t("console-ai-datasets.create.file.comingSoon") }}
     </div>
 </template>

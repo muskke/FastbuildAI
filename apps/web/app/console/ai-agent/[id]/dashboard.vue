@@ -347,7 +347,11 @@ definePageMeta({ layout: "full-screen" });
                                             </span>
                                         </div>
                                         <div class="text-muted-foreground text-xs">
-                                            {{ t("console-ai-agent.dashboard.totalTokenConsumption") }}
+                                            {{
+                                                t(
+                                                    "console-ai-agent.dashboard.totalTokenConsumption",
+                                                )
+                                            }}
                                         </div>
                                     </div>
                                     <USeparator orientation="vertical" class="h-6" />
@@ -568,7 +572,7 @@ definePageMeta({ layout: "full-screen" });
 
         <!-- 错误状态 -->
         <div v-else class="py-12 text-center">
-            <UIcon name="i-lucide-alert-circle" class="mx-auto mb-4 h-12 w-12 text-error" />
+            <UIcon name="i-lucide-alert-circle" class="text-error mx-auto mb-4 h-12 w-12" />
             <p class="text-muted-foreground">
                 {{ t("console-ai-agent.dashboard.loadStatisticsFailed") }}
             </p>

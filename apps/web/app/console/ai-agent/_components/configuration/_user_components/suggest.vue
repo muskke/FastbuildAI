@@ -16,7 +16,9 @@ const suggest = useVModel(props, "modelValue", emit);
     <div class="bg-muted rounded-lg p-3">
         <div class="flex items-center justify-between">
             <div class="flex flex-col gap-1">
-                <span class="text-foreground text-sm font-medium">{{ $t("console-ai-agent.configuration.suggest") }}</span>
+                <span class="text-foreground text-sm font-medium">{{
+                    $t("console-ai-agent.configuration.suggest")
+                }}</span>
                 <span class="text-muted-foreground text-xs">
                     {{ $t("console-ai-agent.configuration.suggestDesc") }}
                 </span>
@@ -26,7 +28,10 @@ const suggest = useVModel(props, "modelValue", emit);
         </div>
 
         <div class="mt-4 space-y-2" v-if="suggest.enabled">
-            <UCheckbox v-model="suggest.customRuleEnabled" :label="$t('console-ai-agent.configuration.suggestCustomRule')" />
+            <UCheckbox
+                v-model="suggest.customRuleEnabled"
+                :label="$t('console-ai-agent.configuration.suggestCustomRule')"
+            />
             <UTextarea
                 v-if="suggest.customRuleEnabled"
                 v-model="suggest.customRule"

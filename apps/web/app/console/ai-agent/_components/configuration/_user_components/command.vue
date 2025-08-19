@@ -151,7 +151,11 @@ const removeCommand = (index: number) => {
 
                     <div class="block group-hover:hidden">
                         <UBadge v-if="item.replyType" color="neutral" variant="outline" size="sm">
-                            {{ item.replyType === "custom" ? $t("console-ai-agent.configuration.commandReplyTypeCustom") : $t("console-ai-agent.configuration.commandReplyTypeModel") }}
+                            {{
+                                item.replyType === "custom"
+                                    ? $t("console-ai-agent.configuration.commandReplyTypeCustom")
+                                    : $t("console-ai-agent.configuration.commandReplyTypeModel")
+                            }}
                         </UBadge>
                     </div>
                     <div class="hidden items-center group-hover:flex">
@@ -177,13 +181,20 @@ const removeCommand = (index: number) => {
         <!-- 添加变量弹窗 -->
         <ProModal
             v-model="isOpen"
-            :title="isEdit ? $t('console-ai-agent.configuration.commandEditTitle') : $t('console-ai-agent.configuration.commandAddTitle')"
+            :title="
+                isEdit
+                    ? $t('console-ai-agent.configuration.commandEditTitle')
+                    : $t('console-ai-agent.configuration.commandAddTitle')
+            "
             :description="t('console-ai-agent.configuration.commandDesc')"
             :ui="{ content: 'max-w-md' }"
             @close="modalClose"
         >
             <UForm :state="state" :schema="formSchema" class="space-y-4" @submit="submitForm">
-                <UFormField :label="$t('console-ai-agent.configuration.commandUploadIcon')" name="avatar">
+                <UFormField
+                    :label="$t('console-ai-agent.configuration.commandUploadIcon')"
+                    name="avatar"
+                >
                     <ProUploader
                         v-model="state.avatar"
                         class="h-16 w-16"
@@ -196,20 +207,38 @@ const removeCommand = (index: number) => {
                     />
                 </UFormField>
 
-                <UFormField :label="$t('console-ai-agent.configuration.commandName')" name="name" required>
-                    <UInput v-model="state.name" :placeholder="$t('console-ai-agent.configuration.commandNamePlaceholder')" :ui="{ root: 'w-full' }" />
+                <UFormField
+                    :label="$t('console-ai-agent.configuration.commandName')"
+                    name="name"
+                    required
+                >
+                    <UInput
+                        v-model="state.name"
+                        :placeholder="$t('console-ai-agent.configuration.commandNamePlaceholder')"
+                        :ui="{ root: 'w-full' }"
+                    />
                 </UFormField>
 
-                <UFormField :label="$t('console-ai-agent.configuration.commandContent')" name="content" required>
+                <UFormField
+                    :label="$t('console-ai-agent.configuration.commandContent')"
+                    name="content"
+                    required
+                >
                     <UTextarea
                         v-model="state.content"
-                        :placeholder="$t('console-ai-agent.configuration.commandContentPlaceholder')"
+                        :placeholder="
+                            $t('console-ai-agent.configuration.commandContentPlaceholder')
+                        "
                         :ui="{ root: 'w-full' }"
                         :rows="3"
                     />
                 </UFormField>
 
-                <UFormField :label="$t('console-ai-agent.configuration.commandReplyType')" name="type" required>
+                <UFormField
+                    :label="$t('console-ai-agent.configuration.commandReplyType')"
+                    name="type"
+                    required
+                >
                     <div class="flex items-center gap-2">
                         <UCheckbox
                             :model-value="state.replyType === 'custom'"
@@ -243,7 +272,9 @@ const removeCommand = (index: number) => {
                     <UButton color="neutral" variant="soft" size="lg" @click="modalClose">
                         {{ $t("console-common.cancel") }}
                     </UButton>
-                    <UButton color="primary" size="lg" type="submit"> {{ $t("console-common.save") }} </UButton>
+                    <UButton color="primary" size="lg" type="submit">
+                        {{ $t("console-common.save") }}
+                    </UButton>
                 </div>
             </UForm>
         </ProModal>

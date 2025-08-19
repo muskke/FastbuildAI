@@ -110,7 +110,7 @@ onMounted(() => props.code && fetchDetail());
                         <TimeDisplay
                             v-if="permissionData.createdAt"
                             :datetime="permissionData.createdAt as string"
-                            mode="long"
+                            mode="datetime"
                         />
                         <span v-else>-</span>
                     </div>
@@ -123,7 +123,7 @@ onMounted(() => props.code && fetchDetail());
                         <TimeDisplay
                             v-if="permissionData.updatedAt"
                             :datetime="permissionData.updatedAt as string"
-                            mode="long"
+                            mode="datetime"
                         />
                         <span v-else>-</span>
                     </div>
