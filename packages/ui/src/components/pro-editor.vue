@@ -9,12 +9,15 @@ import Underline from "@tiptap/extension-underline";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent } from "@tiptap/vue-3";
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
+import { useI18n } from "vue-i18n";
 
 import { apiUploadFile } from "@/services/common";
 
 const emits = defineEmits<{
     (event: "update:modelValue", value: string): void;
 }>();
+
+const { t } = useI18n();
 
 const props = withDefaults(
     defineProps<{
@@ -33,9 +36,10 @@ const props = withDefaults(
     }>(),
     {
         customClass: "",
-        placeholder: "请输入内容...",
+        placeholder: "console-common.proEditor.placeholder",
     },
 );
+
 
 const content = computed<string>({
     get: () => props.modelValue,
@@ -52,7 +56,7 @@ onMounted(() => {
             Underline,
             Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
             Image,
-            Placeholder.configure({ placeholder: props.placeholder }),
+            Placeholder.configure({ placeholder: t(props.placeholder) }),
             Color.configure({ types: [TextStyle.name, ListItem.name] }),
             TextStyle,
         ],
@@ -326,13 +330,13 @@ function redo() {
 
             <!-- 图片与清理 -->
             <UButton size="xs" color="neutral" variant="soft" @click="handlePickAndInsertImage"
-                >Img</UButton
+                >{{ t("console-common.proEditor.img") }}</UButton
             >
             <UButton size="xs" color="neutral" variant="ghost" @click="clearMarks"
-                >Clear marks</UButton
+                >{{ t("console-common.proEditor.clearMarks") }}</UButton
             >
             <UButton size="xs" color="neutral" variant="ghost" @click="clearNodes"
-                >Clear nodes</UButton
+                >{{ t("console-common.proEditor.clearNodes") }}</UButton
             >
             <span class="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700"></span>
 
@@ -343,7 +347,7 @@ function redo() {
                 :variant="'ghost'"
                 :disabled="!editor?.can().chain().focus().undo().run()"
                 @click="undo"
-                >Undo</UButton
+                >{{ t("console-common.proEditor.undo") }}</UButton
             >
             <UButton
                 color="neutral"
@@ -351,7 +355,7 @@ function redo() {
                 :variant="'ghost'"
                 :disabled="!editor?.can().chain().focus().redo().run()"
                 @click="redo"
-                >Redo</UButton
+                >{{ t("console-common.proEditor.redo") }}</UButton
             >
             <span class="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700"></span>
 
@@ -367,7 +371,7 @@ function redo() {
                 size="xs"
                 :variant="editor?.isActive('textStyle', { color: '#958DF1' }) ? 'soft' : 'ghost'"
                 @click="setTextColor('#958DF1')"
-                >Purple</UButton
+                >{{ t("console-common.proEditor.purple") }}</UButton
             >
         </div>
 
