@@ -16,7 +16,7 @@ services:
     restart: always
     environment:
       TZ: Asia/Shanghai
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
       QUICK_START_MODE: ${QUICK_START_MODE:-false}
     ports:
       - "${REDIS_EXTERNAL_PORT}${REDIS_EXTERNAL_PORT:+:}6379"
@@ -38,9 +38,9 @@ services:
     restart: always
     environment:
       TZ: Asia/Shanghai
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_DATABASE:-fastbuildai}
     ports:
       - "${POSTGRES_EXTERNAL_PORT}${POSTGRES_EXTERNAL_PORT:+:}5432"
     volumes:
@@ -49,7 +49,7 @@ services:
       - fastbuildai-network
     <<: *resource-config
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -63,19 +63,19 @@ services:
     volumes:
       - ../:/fastbuildai
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+      - "${SERVER_PORT:-4090}:${SERVER_PORT:-4090}"
     environment:
       TZ: Asia/Shanghai
-      SERVER_PORT: ${SERVER_PORT}
+      SERVER_PORT: ${SERVER_PORT:-4090}
       QUICK_START_MODE: ${QUICK_START_MODE:-false}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_DATABASE: ${DB_DATABASE:-fastbuildai}
       DB_HOST: postgres
       DB_PORT: 5432
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
     command: |
       sh -c '
       set -e
