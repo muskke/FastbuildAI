@@ -66,6 +66,7 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
                 description: formData.value.description,
                 avatar: formData.value.avatar,
             });
+            refreshNuxtData(`agent-detail-${props.id}`);
             toast.success(t("common.message.updateSuccess"));
         } else {
             // 创建模式：调用创建接口
