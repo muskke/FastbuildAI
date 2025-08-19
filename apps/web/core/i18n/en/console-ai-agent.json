@@ -13,8 +13,9 @@
     "create": {
         "title": "Create Agent",
         "desc": "Create applications with autonomous tool-calling and knowledge base capabilities",
-        "importDsl": "Import DSL File",
-        "importDslDesc": "Not yet available",
+        "importJson": "Import JSON",
+        "importJsonDesc": "Import agent configuration from JSON",
+        "fromTemplate": "Create from a template",
         "edit": "Edited on",
         "editTitle": "Edit Agent",
         "editDesc": "Modify basic agent information",

@@ -8,6 +8,7 @@ import { FindOptions, FindOptionsOrder, FindOptionsWhere, Like, Repository } fro
 
 import {
     CreateAgentDto,
+    ImportAgentDto,
     PublicAgentInfoDto,
     PublishAgentDto,
     QueryAgentDto,
@@ -60,7 +61,9 @@ export class AgentService extends BaseService<Agent> {
     }
 
     // 从模板创建智能体
-    async createAgentFromTemplate(dto: CreateAgentFromTemplateDto): Promise<Agent> {
+    async createAgentFromTemplate(
+        dto: CreateAgentFromTemplateDto | ImportAgentDto,
+    ): Promise<Agent> {
         await this.checkNameUniqueness(dto.name);
 
         return this.withErrorHandling(async () => {

@@ -10,6 +10,7 @@ interface Props {
 interface Emits {
     (e: "delete", agent: Agent): void;
     (e: "edit", agent: Agent): void;
+    (e: "export", agent: Agent): void;
 }
 
 const props = defineProps<Props>();
@@ -52,6 +53,15 @@ const handleViewDetail = () => {
             class="absolute right-3 bottom-3 z-10 flex gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
             @click.stop
         >
+            <UButton
+                class="opacity-70 hover:opacity-100"
+                icon="i-lucide-download"
+                size="xs"
+                :label="$t('console-common.export')"
+                color="primary"
+                variant="ghost"
+                @click.stop="emits('export', agent)"
+            />
             <UButton
                 class="opacity-70 hover:opacity-100"
                 icon="i-lucide-edit"
