@@ -12,7 +12,7 @@ services:
   # Redis 缓存服务
   redis:
     image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/redis:8.0.2
-    container_name: fastbuildai-redis${DOCKER_CONTAINER_SUFFIX}
+    container_name: fastbuildai-redis${DOCKER_CONTAINER_SUFFIX:-}
     restart: always
     environment:
       TZ: Asia/Shanghai
@@ -34,7 +34,7 @@ services:
   # PostgreSQL 数据库服务 (with pgvector)
   postgres:
     image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/postgres:17.5-amd64
-    container_name: fastbuildai-postgres${DOCKER_CONTAINER_SUFFIX}
+    container_name: fastbuildai-postgres${DOCKER_CONTAINER_SUFFIX:-}
     restart: always
     environment:
       TZ: Asia/Shanghai
@@ -57,7 +57,7 @@ services:
   # Node.js 开发环境
   nodejs:
     image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/node:22.14.0-alpine
-    container_name: fastbuildai-nodejs${DOCKER_CONTAINER_SUFFIX}
+    container_name: fastbuildai-nodejs${DOCKER_CONTAINER_SUFFIX:-}
     restart: on-failure:3
     working_dir: /fastbuildai
     volumes:
