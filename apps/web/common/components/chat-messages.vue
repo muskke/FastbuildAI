@@ -224,7 +224,7 @@ const getMessageName = (message: AiMessage) => {
                             message.status !== 'active' &&
                             message.status !== 'loading'
                         "
-                        class="action flex items-center justify-between"
+                        class="action flex items-center justify-between pl-4"
                     >
                         <div class="flex items-center gap-1">
                             <ProButtonCopy
