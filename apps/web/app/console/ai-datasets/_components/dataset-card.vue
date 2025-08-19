@@ -127,7 +127,10 @@ const menuItems: DropdownMenuItem[] = [
                 </div>
             </UTooltip>
 
-            <UTooltip :text="t('console-ai-datasets.dataset.table.storageSize')" :delay-duration="0">
+            <UTooltip
+                :text="t('console-ai-datasets.dataset.table.storageSize')"
+                :delay-duration="0"
+            >
                 <div class="flex items-center">
                     <UChip color="neutral" size="sm" />
                     <span class="ml-3 text-xs">

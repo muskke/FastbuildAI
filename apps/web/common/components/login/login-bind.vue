@@ -98,7 +98,7 @@ onMounted(() => {
             }"
         >
             <h2 class="mb-2 text-2xl font-bold">绑定手机号</h2>
-            <p class="mb-2 text-sm text-muted-foreground">请输入手机号码，我们将向您发送验证码</p>
+            <p class="text-muted-foreground mb-2 text-sm">请输入手机号码，我们将向您发送验证码</p>
         </Motion>
 
         <Motion

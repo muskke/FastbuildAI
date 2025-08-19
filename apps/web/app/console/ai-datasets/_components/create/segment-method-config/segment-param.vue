@@ -59,7 +59,9 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                     <UCheckbox
                         v-model="indexingConfig.preprocessingRules!.replaceConsecutiveWhitespace!"
                         size="sm"
-                        :label="$t('console-ai-datasets.create.segment.replaceConsecutiveWhitespace')"
+                        :label="
+                            $t('console-ai-datasets.create.segment.replaceConsecutiveWhitespace')
+                        "
                     />
                     <UCheckbox
                         v-model="indexingConfig.preprocessingRules!.removeUrlsAndEmails!"
@@ -113,14 +115,18 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                         v-if="indexingConfig.parentContextMode === 'paragraph'"
                         class="grid grid-cols-2 gap-8"
                     >
-                        <UFormField :label="$t('console-ai-datasets.create.segment.segmentIdentifier')">
+                        <UFormField
+                            :label="$t('console-ai-datasets.create.segment.segmentIdentifier')"
+                        >
                             <UInput
                                 v-model="indexingConfig.segmentation!.segmentIdentifier"
                                 placeholder="\n\n"
                                 size="sm"
                             />
                         </UFormField>
-                        <UFormField :label="$t('console-ai-datasets.create.segment.maxSegmentLength')">
+                        <UFormField
+                            :label="$t('console-ai-datasets.create.segment.maxSegmentLength')"
+                        >
                             <UInput
                                 v-model.number="indexingConfig.segmentation!.maxSegmentLength"
                                 type="number"
@@ -195,7 +201,9 @@ const indexingConfig = useVModel(props, "modelValue", emit);
                     <UCheckbox
                         v-model="indexingConfig.preprocessingRules!.replaceConsecutiveWhitespace"
                         size="sm"
-                        :label="$t('console-ai-datasets.create.segment.replaceConsecutiveWhitespace')"
+                        :label="
+                            $t('console-ai-datasets.create.segment.replaceConsecutiveWhitespace')
+                        "
                     />
                     <UCheckbox
                         v-model="indexingConfig.preprocessingRules!.removeUrlsAndEmails"

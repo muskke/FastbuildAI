@@ -87,7 +87,7 @@ const handleViewDetail = () => {
                 <!-- 统计信息 -->
                 <div class="text-muted-foreground mt-1 text-xs">
                     <span>{{ $t("console-ai-agent.create.edit") }}</span>
-                    <TimeDisplay :datetime="agent.updatedAt" mode="long" />
+                    <TimeDisplay :datetime="agent.updatedAt" mode="datetime" />
                 </div>
             </div>
         </div>
