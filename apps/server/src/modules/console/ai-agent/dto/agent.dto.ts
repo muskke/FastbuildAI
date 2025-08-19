@@ -785,3 +785,8 @@ export class PublicAgentChatDto {
     @IsBoolean({ message: "包含引用来源必须是布尔值" })
     includeReferences?: boolean;
 }
+
+/**
+ * 导入智能体DTO
+ */
+export class ImportAgentDto extends UpdateAgentConfigDto {}
