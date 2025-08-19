@@ -142,7 +142,7 @@ onMounted(() => getLists());
                 :items="[
                     { label: $t('console-ai-agent.search.allStatus'), value: undefined },
                     { label: $t('console-ai-agent.configuration.public'), value: true },
-                    { label: $t('console-ai-agent.configuration.private'), value: false }
+                    { label: $t('console-ai-agent.configuration.private'), value: false },
                 ]"
                 :placeholder="$t('console-ai-agent.search.filterByStatus')"
                 label-key="label"
@@ -200,7 +200,9 @@ onMounted(() => getLists());
                                 icon="i-lucide-file-input"
                                 size="sm"
                                 :label="$t('console-ai-agent.create.importDsl')"
-                                @click.stop="toast.info($t('console-ai-agent.create.importDslDesc'))"
+                                @click.stop="
+                                    toast.info($t('console-ai-agent.create.importDslDesc'))
+                                "
                             />
                         </div>
                     </div>

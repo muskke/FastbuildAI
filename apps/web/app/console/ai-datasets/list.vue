@@ -148,7 +148,10 @@ onMounted(() => getLists());
                 @change="getLists"
             />
 
-            <UCheckbox v-model="searchForm.showAll" :label="$t('console-ai-datasets.dataset.allDatasets')" />
+            <UCheckbox
+                v-model="searchForm.showAll"
+                :label="$t('console-ai-datasets.dataset.allDatasets')"
+            />
         </div>
 
         <!-- 使用无限滚动 -->

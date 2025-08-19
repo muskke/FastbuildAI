@@ -3,7 +3,7 @@ import { ConsoleController } from "@common/decorators/controller.decorator";
 import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { Permissions } from "@common/decorators/permissions.decorator";
 import { UserPlayground } from "@common/interfaces/context.interface";
-import { Body, Delete, Get, Param, Patch, Post, Query, Res } from "@nestjs/common";
+import { Body, Delete, Get, Logger, Param, Patch, Post, Query, Res } from "@nestjs/common";
 import { Response } from "express";
 
 import {
@@ -23,6 +23,8 @@ import { AgentChatService } from "../services/agent-chat.service";
  */
 @ConsoleController("ai-agent", "智能体")
 export class AgentController {
+    private readonly logger = new Logger(AgentController.name);
+
     constructor(
         private readonly agentService: AgentService,
         private readonly agentChatService: AgentChatService,
@@ -41,7 +43,22 @@ export class AgentController {
         name: "创建智能体",
     })
     async create(@Body() dto: CreateAgentDto, @Playground() user: UserPlayground) {
-        return this.agentService.createAgent(dto, user);
+        // 创建智能体
+        const agent = await this.agentService.createAgent(dto, user);
+
+        // 自动发布智能体（使用默认配置）
+        const publishDto: PublishAgentDto = {
+            publishConfig: {
+                allowOrigins: [], // 允许所有域名访问
+                rateLimitPerMinute: 60, // 每分钟60次请求限制
+                showBranding: true, // 显示品牌信息
+                allowDownloadHistory: false, // 不允许下载历史记录
+            },
+        };
+
+        await this.agentService.publishAgent(agent.id, publishDto, user);
+
+        return agent;
     }
 
     /**

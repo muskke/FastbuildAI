@@ -368,7 +368,11 @@ const handleTransferOwnership = async (member: TeamMember) => {
                     h("span", { class: "text-red-500" }, member.user?.username || member.userId),
                     " ？",
                 ]),
-                h("p", { class: "text-red-500" }, t("console-ai-datasets.members.confirmTransferContent2")),
+                h(
+                    "p",
+                    { class: "text-red-500" },
+                    t("console-ai-datasets.members.confirmTransferContent2"),
+                ),
             ]),
             confirmText: t("console-ai-datasets.members.confirmTransfer"),
             ui: { content: "!w-sm" },

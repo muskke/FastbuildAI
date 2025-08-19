@@ -134,7 +134,7 @@ onMounted(async () => await Promise.all([fetchDetail(), fetchMessages()]));
                             $t("console-ai-conversation.detail.createdAt")
                         }}</label>
                         <p class="text-secondary-foreground mt-1 text-sm">
-                            <TimeDisplay :datetime="conversation.createdAt" mode="long" />
+                            <TimeDisplay :datetime="conversation.createdAt" mode="datetime" />
                         </p>
                     </div>
                 </div>

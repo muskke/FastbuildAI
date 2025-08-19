@@ -280,7 +280,7 @@ definePageMeta({ layout: "full-screen" });
                 </ChatPrompt>
 
                 <!-- 历史记录 -->
-                <div class="flex h-full flex-col min-h-0">
+                <div class="flex h-full min-h-0 flex-col">
                     <h3 class="mb-2 text-base font-medium">
                         {{ t("console-ai-datasets.test.record") }}
                     </h3>
