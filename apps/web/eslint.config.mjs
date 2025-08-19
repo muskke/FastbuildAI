@@ -2,14 +2,30 @@ import { config as baseConfig } from "@fastbuildai/config/eslint/base";
 import { config as httpConfig } from "@fastbuildai/config/eslint/http";
 import { defineConfig } from "eslint/config";
 import vuePlugin from "eslint-plugin-vue";
+import { dirname } from "path";
 import tseslint from "typescript-eslint";
+import { fileURLToPath } from "url";
 import vueParser from "vue-eslint-parser";
 
 import withNuxt from "./.nuxt/eslint.config.mjs";
 
-const nuxtFlagEslintConfig = await withNuxt({}).toConfigs();
+const nuxtFlagEslintConfig = await withNuxt({
+    plugins: {
+        vue: vuePlugin,
+    },
+}).toConfigs();
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig([
+    // 全局设置 TS 解析根目录，避免多候选 tsconfigRootDir 报错
+    {
+        languageOptions: {
+            parserOptions: {
+                tsconfigRootDir: __dirname,
+            },
+        },
+    },
     // nuxt 相关配置
     ...nuxtFlagEslintConfig,
 

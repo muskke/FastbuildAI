@@ -49,7 +49,7 @@ export function useModal(options: ModalOptions = {}) {
         confirmText: "确认",
         cancelText: "取消",
         dismissible: false,
-        ui: { content: "!w-sm", },
+        ui: { content: "!w-sm" },
         contentId: "",
     };
 
