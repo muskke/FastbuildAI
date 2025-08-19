@@ -19,7 +19,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-}
       QUICK_START_MODE: ${QUICK_START_MODE:-false}
     ports:
-      - "${REDIS_EXTERNAL_PORT:+${REDIS_EXTERNAL_PORT}:}6379"
+      - "${REDIS_EXTERNAL_PORT:-}${REDIS_EXTERNAL_PORT:+:}6379"
     volumes:
       - ./data/redis:/data
     networks:
@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: ${DB_DATABASE:-fastbuildai}
     ports:
-      - "${POSTGRES_EXTERNAL_PORT:+${POSTGRES_EXTERNAL_PORT}:}5432"
+      - "${POSTGRES_EXTERNAL_PORT:-}${POSTGRES_EXTERNAL_PORT:+:}5432"
     volumes:
       - ./data/postgres/postgres_data:/var/lib/postgresql/data
     networks:
