@@ -44,7 +44,13 @@
             "titleLabel": "标题",
             "contentLabel": "内容",
             "titleRequired": "请输入标题",
-            "contentRequired": "请输入内容"
+            "contentRequired": "请输入内容",
+            "privacyTitle": "请输入隐私政策标题",
+            "privacyContent": "请输入隐私政策内容",
+            "serviceTitle": "请输入服务条款标题",
+            "serviceContent": "请输入服务条款内容",
+            "paymentTitle": "请输入支付协议标题",
+            "paymentContent": "请输入支付协议内容"
         },
         "copyright": {
             "title": "版权备案信息设置",
