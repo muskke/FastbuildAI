@@ -16,7 +16,9 @@ const showAvatar = ref<boolean>(!!avatar.value);
     <div class="bg-muted rounded-lg p-3">
         <div class="flex items-center justify-between gap-2">
             <div class="flex flex-col gap-1">
-                <span class="text-foreground text-sm font-medium">{{ $t("console-ai-agent.configuration.chatAvatar") }}</span>
+                <span class="text-foreground text-sm font-medium">{{
+                    $t("console-ai-agent.configuration.chatAvatar")
+                }}</span>
                 <span class="text-muted-foreground text-xs">
                     {{ $t("console-ai-agent.configuration.chatAvatarDesc") }}
                 </span>

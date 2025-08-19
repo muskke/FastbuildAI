@@ -57,7 +57,7 @@ const jsCode = computed(() => {
     width: '400px',
     height: '600px'
   });
-<\/script>`;
+<\\/script>`;
 });
 
 const wordpressCode = computed(() => {
@@ -94,13 +94,17 @@ const copyCode = (code: string) => {
     <div class="space-y-4">
         <div>
             <h3 class="mb-2 text-lg font-medium">{{ $t("console-ai-agent.publish.embedCode") }}</h3>
-            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.embedCodeDesc") }}</p>
+            <p class="text-muted-foreground text-sm">
+                {{ $t("console-ai-agent.publish.embedCodeDesc") }}
+            </p>
         </div>
 
         <div v-if="!agent?.isPublished" class="border-border rounded-lg border p-6 text-center">
             <UIcon name="i-lucide-lock" class="text-muted-foreground mx-auto mb-3 size-12" />
             <h4 class="mb-2 font-medium">{{ $t("console-ai-agent.publish.unpublished") }}</h4>
-            <p class="text-muted-foreground text-sm">{{ $t("console-ai-agent.publish.unpublishedDesc2") }}</p>
+            <p class="text-muted-foreground text-sm">
+                {{ $t("console-ai-agent.publish.unpublishedDesc2") }}
+            </p>
         </div>
 
         <div v-else class="space-y-4">
@@ -177,7 +181,9 @@ const copyCode = (code: string) => {
                 <!-- WordPress -->
                 <div v-if="activeTab === 'wordpress'" class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <h4 class="font-medium">{{ $t("console-ai-agent.publish.wordpressCode") }}</h4>
+                        <h4 class="font-medium">
+                            {{ $t("console-ai-agent.publish.wordpressCode") }}
+                        </h4>
                         <UButton
                             icon="i-lucide-copy"
                             variant="outline"

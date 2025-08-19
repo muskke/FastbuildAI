@@ -24,7 +24,9 @@ const editingIndex = ref<number>(-1);
 const formSchema = object({
     name: string().required(t("console-ai-agent.configuration.formVariableNameEmpty")),
     label: string().required(t("console-ai-agent.configuration.formVariableLabelEmpty")),
-    type: string().required(t("console-ai-agent.configuration.formVariableTypeEmpty")).oneOf(["text", "textarea", "select"]),
+    type: string()
+        .required(t("console-ai-agent.configuration.formVariableTypeEmpty"))
+        .oneOf(["text", "textarea", "select"]),
     required: boolean().optional(),
 });
 
@@ -191,13 +193,21 @@ const removeVariable = (index: number) => {
         <!-- 添加变量弹窗 -->
         <ProModal
             v-model="isOpen"
-            :title="isEdit ? $t('console-ai-agent.configuration.formVariableEditTitle') : $t('console-ai-agent.configuration.formVariableAddTitle')"
+            :title="
+                isEdit
+                    ? $t('console-ai-agent.configuration.formVariableEditTitle')
+                    : $t('console-ai-agent.configuration.formVariableAddTitle')
+            "
             :description="t('console-ai-agent.configuration.formVariableTitleDesc')"
             :ui="{ content: 'max-w-md' }"
             @close="handleClose"
         >
             <UForm :state="state" :schema="formSchema" class="space-y-4" @submit="submitForm">
-                <UFormField :label="t('console-ai-agent.configuration.formVariableType')" name="type" required>
+                <UFormField
+                    :label="t('console-ai-agent.configuration.formVariableType')"
+                    name="type"
+                    required
+                >
                     <div class="flex items-center gap-2">
                         <UCheckbox
                             :model-value="state.type === 'text'"
@@ -226,18 +236,40 @@ const removeVariable = (index: number) => {
                     </div>
                 </UFormField>
 
-                <UFormField :label="t('console-ai-agent.configuration.formVariableName')" name="name" required>
-                    <UInput v-model="state.name" :placeholder="t('console-ai-agent.configuration.formVariableNamePlaceholder')" :ui="{ root: 'w-full' }" />
+                <UFormField
+                    :label="t('console-ai-agent.configuration.formVariableName')"
+                    name="name"
+                    required
+                >
+                    <UInput
+                        v-model="state.name"
+                        :placeholder="
+                            t('console-ai-agent.configuration.formVariableNamePlaceholder')
+                        "
+                        :ui="{ root: 'w-full' }"
+                    />
                 </UFormField>
 
-                <UFormField :label="t('console-ai-agent.configuration.formVariableLabel')" name="label" required>
-                    <UInput v-model="state.label" :placeholder="t('console-ai-agent.configuration.formVariableLabelPlaceholder')" :ui="{ root: 'w-full' }" />
+                <UFormField
+                    :label="t('console-ai-agent.configuration.formVariableLabel')"
+                    name="label"
+                    required
+                >
+                    <UInput
+                        v-model="state.label"
+                        :placeholder="
+                            t('console-ai-agent.configuration.formVariableLabelPlaceholder')
+                        "
+                        :ui="{ root: 'w-full' }"
+                    />
                 </UFormField>
 
                 <!-- 选项配置（仅当类型为select时显示） -->
                 <div v-if="showOptions" class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <label class="text-sm font-medium">{{ $t("console-ai-agent.configuration.formVariableOptions") }}</label>
+                        <label class="text-sm font-medium">{{
+                            $t("console-ai-agent.configuration.formVariableOptions")
+                        }}</label>
                         <UButton size="xs" color="primary" variant="ghost" @click="addOption">
                             <UIcon name="i-lucide-plus" />
                             {{ $t("console-ai-agent.configuration.formVariableOptionsAdd") }}
@@ -257,7 +289,11 @@ const removeVariable = (index: number) => {
                                     <UInput
                                         icon="i-lucide-grip-vertical"
                                         v-model="state.options[index]"
-                                        :placeholder="t('console-ai-agent.configuration.formVariableOptionsLabel')"
+                                        :placeholder="
+                                            t(
+                                                'console-ai-agent.configuration.formVariableOptionsLabel',
+                                            )
+                                        "
                                         :ui="{ root: 'flex-1', leadingIcon: 'drag-move' }"
                                     />
                                     <UButton
@@ -274,14 +310,19 @@ const removeVariable = (index: number) => {
                 </div>
 
                 <UFormField label=" " name="required">
-                    <UCheckbox v-model="state.required" :label="t('console-ai-agent.configuration.required')" />
+                    <UCheckbox
+                        v-model="state.required"
+                        :label="t('console-ai-agent.configuration.required')"
+                    />
                 </UFormField>
 
                 <div class="mt-6 flex justify-end gap-2">
                     <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
                         {{ $t("console-common.cancel") }}
                     </UButton>
-                    <UButton color="primary" size="lg" type="submit"> {{ $t("console-common.save") }} </UButton>
+                    <UButton color="primary" size="lg" type="submit">
+                        {{ $t("console-common.save") }}
+                    </UButton>
                 </div>
             </UForm>
         </ProModal>

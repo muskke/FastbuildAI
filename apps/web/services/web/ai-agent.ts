@@ -1,6 +1,6 @@
+import { useWebGet } from "@/common/composables/useRequest";
 import type { Agent } from "@/models/ai-agent";
 import type { PaginationResult } from "@/models/global";
-import { useWebGet } from "@/common/composables/useRequest";
 
 // ==================== 公开智能体相关 API ====================
 

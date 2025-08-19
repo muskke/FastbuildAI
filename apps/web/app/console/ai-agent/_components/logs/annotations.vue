@@ -48,7 +48,10 @@ const searchForm = reactive<QueryAgentAnnotationParams>({
 
 // 审核状态映射
 const reviewStatusOptions = [
-    { value: undefined as AnnotationReviewStatus | undefined, label: t("console-ai-agent.logs.allStatus") },
+    {
+        value: undefined as AnnotationReviewStatus | undefined,
+        label: t("console-ai-agent.logs.allStatus"),
+    },
     { value: "pending" as AnnotationReviewStatus, label: t("console-ai-agent.logs.pending") },
     { value: "approved" as AnnotationReviewStatus, label: t("console-ai-agent.logs.approved") },
     { value: "rejected" as AnnotationReviewStatus, label: t("console-ai-agent.logs.rejected") },
@@ -91,7 +94,9 @@ const { lockFn: reviewAnnotation } = useLockFn(
     async (id: string, reviewStatus: AnnotationReviewStatus) => {
         try {
             await apiReviewAgentAnnotation(id, { reviewStatus });
-            toast.success(`${t("console-ai-agent.logs.annotation")}${reviewStatus === "approved" ? t("console-ai-agent.logs.approved") : t("console-ai-agent.logs.rejected")}${t("console-ai-agent.logs.success")}`);
+            toast.success(
+                `${t("console-ai-agent.logs.annotation")}${reviewStatus === "approved" ? t("console-ai-agent.logs.approved") : t("console-ai-agent.logs.rejected")}${t("console-ai-agent.logs.success")}`,
+            );
             getLists();
         } catch (error) {
             console.error("审核标注失败:", error);
@@ -176,7 +181,10 @@ const columns: TableColumn<AgentAnnotation>[] = [
                         color: row.original.enabled ? "success" : "neutral",
                         variant: "subtle",
                     },
-                    () => (row.original.enabled ? t("console-common.enabled") : t("console-common.disabled")),
+                    () =>
+                        row.original.enabled
+                            ? t("console-common.enabled")
+                            : t("console-common.disabled"),
                 ),
             );
         },
@@ -209,7 +217,11 @@ const columns: TableColumn<AgentAnnotation>[] = [
                 return h(
                     "div",
                     { class: "flex items-center flex-none" },
-                    h("span", { class: "text-muted-foreground text-sm" }, t("console-ai-agent.logs.unreviewed")),
+                    h(
+                        "span",
+                        { class: "text-muted-foreground text-sm" },
+                        t("console-ai-agent.logs.unreviewed"),
+                    ),
                 );
             }
             return h(

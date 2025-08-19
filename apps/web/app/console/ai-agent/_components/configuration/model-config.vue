@@ -159,7 +159,9 @@ defineShortcuts({ o: () => (open.value = !open.value) });
         <template #content>
             <div class="bg-background w-84 overflow-hidden rounded-lg p-4 shadow-lg">
                 <div class="mb-4">
-                    <h3 class="mb-1 text-sm font-medium">{{ $t("console-ai-agent.configuration.model") }}</h3>
+                    <h3 class="mb-1 text-sm font-medium">
+                        {{ $t("console-ai-agent.configuration.model") }}
+                    </h3>
                     <ModelSelect
                         :model-value="modelId"
                         :disabled="props.disabled"
@@ -177,7 +179,9 @@ defineShortcuts({ o: () => (open.value = !open.value) });
 
                 <div class="space-y-2">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-medium">{{ $t("console-ai-agent.configuration.parameters") }}</h3>
+                        <h3 class="text-sm font-medium">
+                            {{ $t("console-ai-agent.configuration.parameters") }}
+                        </h3>
                         <UButton size="xs" variant="soft" color="primary" icon="i-lucide-plus">
                             {{ $t("console-ai-agent.configuration.preset") }}
                         </UButton>

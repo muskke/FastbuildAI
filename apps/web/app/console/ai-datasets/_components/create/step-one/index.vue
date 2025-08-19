@@ -221,17 +221,16 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
                     @click="emits('onStepChange')"
                 />
 
-
                 <UButton
-                 v-if="!disabled"
-                        leading-icon="i-lucide-folder"
-                        color="primary"
-                        variant="link"
-                        size="lg"
-                        @click="emits('createEmpty')"
-                    >
-                        {{ $t("console-ai-datasets.create.createEmpty") }}
-                    </UButton>
+                    v-if="!disabled"
+                    leading-icon="i-lucide-folder"
+                    color="primary"
+                    variant="link"
+                    size="lg"
+                    @click="emits('createEmpty')"
+                >
+                    {{ $t("console-ai-datasets.create.createEmpty") }}
+                </UButton>
             </UFormField>
 
             <template>

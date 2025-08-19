@@ -273,7 +273,7 @@ watch(
                         <TimeDisplay
                             v-if="currentAgreement?.updateAt"
                             :datetime="currentAgreement.updateAt"
-                            mode="long"
+                            mode="datetime"
                         />
                         <span v-else>-</span>
                     </p>

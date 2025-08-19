@@ -40,15 +40,27 @@ const openLink = (url: string) => {
                 />
                 <div>
                     <h3 class="font-medium">
-                        {{ isPublished ? $t("console-ai-agent.publish.published") : $t("console-ai-agent.publish.unpublished") }}
+                        {{
+                            isPublished
+                                ? $t("console-ai-agent.publish.published")
+                                : $t("console-ai-agent.publish.unpublished")
+                        }}
                     </h3>
                     <p class="text-muted-foreground text-sm">
-                        {{ isPublished ? $t("console-ai-agent.publish.publishedDesc") : $t("console-ai-agent.publish.unpublishedDesc") }}
+                        {{
+                            isPublished
+                                ? $t("console-ai-agent.publish.publishedDesc")
+                                : $t("console-ai-agent.publish.unpublishedDesc")
+                        }}
                     </p>
                 </div>
             </div>
             <UBadge :color="isPublished ? 'success' : 'neutral'" variant="soft">
-                {{ isPublished ? $t("console-ai-agent.publish.published") : $t("console-ai-agent.publish.unpublished") }}
+                {{
+                    isPublished
+                        ? $t("console-ai-agent.publish.published")
+                        : $t("console-ai-agent.publish.unpublished")
+                }}
             </UBadge>
         </div>
 
@@ -57,12 +69,17 @@ const openLink = (url: string) => {
             <div class="flex flex-col gap-4">
                 <!-- 公开链接 -->
                 <div class="space-y-2">
-                    <UFormField :label="$t('console-ai-agent.publish.publicAccessLink')" :ui="{ container: 'flex items-center gap-2' }">
+                    <UFormField
+                        :label="$t('console-ai-agent.publish.publicAccessLink')"
+                        :ui="{ container: 'flex items-center gap-2' }"
+                    >
                         <UInput
                             :value="publishUrl"
                             readonly
                             class="flex-1"
-                            :placeholder="$t('console-ai-agent.publish.publicAccessLinkPlaceholder')"
+                            :placeholder="
+                                $t('console-ai-agent.publish.publicAccessLinkPlaceholder')
+                            "
                         />
                         <UButton
                             v-if="publishUrl"
@@ -81,7 +98,10 @@ const openLink = (url: string) => {
 
                 <!-- API密钥 -->
                 <div class="space-y-2">
-                    <UFormField :label="$t('console-ai-agent.publish.apiKey')" :ui="{ container: 'flex items-center gap-2' }">
+                    <UFormField
+                        :label="$t('console-ai-agent.publish.apiKey')"
+                        :ui="{ container: 'flex items-center gap-2' }"
+                    >
                         <UInput
                             :value="agent?.apiKey ? '••••••••••••••••' : ''"
                             readonly

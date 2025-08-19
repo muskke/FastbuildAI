@@ -54,7 +54,9 @@ const removeProblem = (index: number) => {
                         <UInput
                             icon="i-lucide-grip-vertical"
                             v-model="problem[index]"
-                            :placeholder="$t('console-ai-agent.configuration.formVariableOptionsLabel')"
+                            :placeholder="
+                                $t('console-ai-agent.configuration.formVariableOptionsLabel')
+                            "
                             :ui="{ root: 'flex-1', leadingIcon: 'drag-move' }"
                         />
                         <UButton

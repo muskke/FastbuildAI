@@ -1,15 +1,16 @@
 import { useMessage, useModal } from "@fastbuildai/ui";
-import { h, markRaw, ref, resolveComponent, computed, type Ref } from "vue";
+import { computed, h, markRaw, type Ref, ref, resolveComponent } from "vue";
+
 import type { DatasetDocument, DatasetSegment } from "@/models/ai-datasets";
 import {
-    apiDeleteDocument,
-    apiRenameDocument,
     apiBatchDeleteSegments,
     apiCreateSegment,
+    apiDeleteDocument,
     apiDeleteSegment,
-    apiUpdateSegment,
+    apiRenameDocument,
     apiRetryDocument,
     apiSetDocumentEnabled,
+    apiUpdateSegment,
 } from "@/services/console/ai-datasets";
 
 const UTextarea = defineAsyncComponent(
