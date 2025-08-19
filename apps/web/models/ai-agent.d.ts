@@ -538,3 +538,95 @@ export interface AgentStatistics {
         activeUsers: Array<{ date: string; count: number }>;
     };
 }
+
+/**
+ * 智能体模板配置接口
+ */
+export interface AgentTemplateConfig {
+    /** 角色设定 */
+    rolePrompt?: string;
+    /** 是否显示对话上下文 */
+    showContext?: boolean;
+    /** 是否显示引用来源 */
+    showReference?: boolean;
+    /** 是否允许反馈 */
+    enableFeedback?: boolean;
+    /** 是否开启联网搜索 */
+    enableWebSearch?: boolean;
+    /** 开场白 */
+    openingStatement?: string;
+    /** 开场问题 */
+    openingQuestions?: string[];
+    /** 快捷指令配置 */
+    quickCommands?: Array<{ command: string; description: string }>;
+    /** 自动追问配置 */
+    autoQuestions?: Record<string, unknown>;
+    /** 表单字段配置 */
+    formFields?: Record<string, unknown>[];
+    /** 模型配置 */
+    modelConfig?: Record<string, unknown>;
+    /** 知识库ID列表 */
+    datasetIds?: string[];
+}
+
+/**
+ * 智能体模板信息
+ */
+export interface AgentTemplate {
+    /** 模板ID */
+    id: string;
+    /** 模板名称 */
+    name: string;
+    /** 模板描述 */
+    description?: string;
+    /** 模板分类 */
+    category?: string;
+    /** 模板标签 */
+    tags?: string[];
+    /** 模板图标 */
+    icon?: string;
+    /** 模板预览图 */
+    previewImage?: string;
+    /** 模板配置 */
+    config?: AgentTemplateConfig;
+    /** 使用次数 */
+    usageCount?: number;
+    /** 评分 */
+    rating?: number;
+    /** 是否推荐 */
+    isRecommended?: boolean;
+}
+
+/**
+ * 从模板创建智能体的参数
+ */
+export interface CreateAgentFromTemplateParams {
+    /** 模板ID */
+    templateId: string;
+    /** 智能体名称 */
+    name: string;
+    /** 智能体描述 */
+    description?: string;
+    /** 智能体头像 */
+    avatar?: string;
+    /** 自定义配置覆盖 */
+    customConfig?: Partial<AgentTemplateConfig>;
+}
+
+/**
+ * 查询模板列表的参数
+ */
+export interface QueryTemplateParams {
+    /** 搜索关键词 */
+    keyword?: string;
+    /** 分类筛选 */
+    category?: string;
+    /** 标签筛选 */
+    tags?: string[];
+    /** 是否只显示推荐模板 */
+    recommended?: boolean;
+    /** 排序方式 */
+    sortBy?: "name" | "usageCount" | "rating" | "createdAt";
+    /** 排序顺序 */
+    sortOrder?: "asc" | "desc";
+}

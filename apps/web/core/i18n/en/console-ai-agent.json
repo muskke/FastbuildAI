@@ -231,6 +231,26 @@
         "loadingMessages": "Loading messages...",
         "noMessages": "No message history"
     },
+    "template": {
+        "title": "Create from Template",
+        "applyFromTemplate": "Create from Template",
+        "searchPlaceholder": "Search templates...",
+        "all": "All",
+        "recommended": "Recommended",
+        "general": "General",
+        "recommendedTemplates": "Recommended Templates",
+        "allTemplates": "All Templates",
+        "useTemplate": "Use Template",
+        "noAvailableTemplates": "No available templates",
+        "noMatchingTemplates": "No matching templates found",
+        "loadingFailed": "Failed to load templates",
+        "create": {
+            "title": "Create from {name}",
+            "description": "Customize agent information",
+            "success": "Agent created successfully!",
+            "failed": "Failed to create agent"
+        }
+    },
     "dashboard": {
         "title": "Dashboard",
         "desc": "Agent usage statistics and analysis",

@@ -14,8 +14,14 @@ import {
     QueryAgentStatisticsDto,
     UpdateAgentConfigDto,
 } from "../dto/agent.dto";
+import {
+    AgentTemplateDto,
+    CreateAgentFromTemplateDto,
+    QueryTemplateDto,
+} from "../dto/agent-template.dto";
 import { AgentService } from "../services/agent.service";
 import { AgentChatService } from "../services/agent-chat.service";
+import { AgentTemplateService } from "../services/agent-template.service";
 
 /**
  * 智能体控制器
@@ -28,7 +34,77 @@ export class AgentController {
     constructor(
         private readonly agentService: AgentService,
         private readonly agentChatService: AgentChatService,
+        private readonly agentTemplateService: AgentTemplateService,
     ) {}
+
+    // ========== 模板管理相关接口 ==========
+
+    /**
+     * 获取智能体模板列表
+     */
+    @Get("templates")
+    @Permissions({
+        code: "list-templates",
+        name: "查询智能体模板",
+    })
+    async getTemplates(@Query() query: QueryTemplateDto): Promise<AgentTemplateDto[]> {
+        return this.agentTemplateService.getTemplateList(query);
+    }
+
+    /**
+     * 获取模板分类列表
+     */
+    @Get("templates/categories")
+    @Permissions({
+        code: "list-template-categories",
+        name: "查询模板分类",
+    })
+    async getTemplateCategories(): Promise<string[]> {
+        return this.agentTemplateService.getTemplateCategories();
+    }
+
+    /**
+     * 获取推荐模板
+     */
+    @Get("templates/recommended")
+    @Permissions({
+        code: "list-recommended-templates",
+        name: "查询推荐模板",
+    })
+    async getRecommendedTemplates(): Promise<AgentTemplateDto[]> {
+        return this.agentTemplateService.getRecommendedTemplates();
+    }
+
+    /**
+     * 从模板创建智能体
+     */
+    @Post("templates/create")
+    @Permissions({
+        code: "create-from-template",
+        name: "从模板创建智能体",
+    })
+    async createFromTemplate(@Body() dto: CreateAgentFromTemplateDto) {
+        const createAgentDto = await this.agentTemplateService.createAgentFromTemplate(dto);
+
+        this.logger.debug(`[+] 从模板创建智能体: ${JSON.stringify(createAgentDto)}`);
+        const agent = await this.agentService.createAgentFromTemplate(
+            createAgentDto as CreateAgentFromTemplateDto,
+        );
+
+        // 自动发布智能体
+        await this.agentService.publishAgent(agent.id, {
+            publishConfig: {
+                allowOrigins: [],
+                rateLimitPerMinute: 60,
+                showBranding: true,
+                allowDownloadHistory: false,
+            },
+        });
+
+        return agent;
+    }
+
+    // ========== 智能体管理相关接口 ==========
 
     /**
      * 创建智能体
@@ -46,17 +122,14 @@ export class AgentController {
         // 创建智能体
         const agent = await this.agentService.createAgent(dto, user);
 
-        // 自动发布智能体（使用默认配置）
-        const publishDto: PublishAgentDto = {
+        await this.agentService.publishAgent(agent.id, {
             publishConfig: {
-                allowOrigins: [], // 允许所有域名访问
-                rateLimitPerMinute: 60, // 每分钟60次请求限制
-                showBranding: true, // 显示品牌信息
-                allowDownloadHistory: false, // 不允许下载历史记录
+                allowOrigins: [],
+                rateLimitPerMinute: 60,
+                showBranding: true,
+                allowDownloadHistory: false,
             },
-        };
-
-        await this.agentService.publishAgent(agent.id, publishDto, user);
+        });
 
         return agent;
     }
@@ -219,12 +292,8 @@ export class AgentController {
         code: "publish",
         name: "发布智能体",
     })
-    async publish(
-        @Param("id") id: string,
-        @Body() dto: PublishAgentDto,
-        @Playground() user: UserPlayground,
-    ) {
-        return this.agentService.publishAgent(id, dto, user);
+    async publish(@Param("id") id: string, @Body() dto: PublishAgentDto) {
+        return this.agentService.publishAgent(id, dto);
     }
 
     /**
