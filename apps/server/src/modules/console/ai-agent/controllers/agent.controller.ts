@@ -72,6 +72,7 @@ export class AgentController {
         name: "导入智能体配置",
     })
     async importAgent(@Body() dto: ImportAgentDto) {
+        dto.avatar = dto.avatar || "/static/images/agent.png";
         const agent = await this.agentService.createAgentFromTemplate(dto as ImportAgentDto);
 
         // 自动发布智能体
