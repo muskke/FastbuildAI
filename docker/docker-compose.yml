@@ -19,7 +19,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-}
       QUICK_START_MODE: ${QUICK_START_MODE:-false}
     ports:
-      - "${REDIS_EXTERNAL_PORT}${REDIS_EXTERNAL_PORT:+:}6379"
+      - "${REDIS_EXTERNAL_PORT:+${REDIS_EXTERNAL_PORT}:}6379"
     volumes:
       - ./data/redis:/data
     networks:
@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: ${DB_DATABASE:-fastbuildai}
     ports:
-      - "${POSTGRES_EXTERNAL_PORT}${POSTGRES_EXTERNAL_PORT:+:}5432"
+      - "${POSTGRES_EXTERNAL_PORT:+${POSTGRES_EXTERNAL_PORT}:}5432"
     volumes:
       - ./data/postgres/postgres_data:/var/lib/postgresql/data
     networks:
@@ -81,12 +81,12 @@ services:
       set -e
       echo "🚀 Starting FastbuildAI container..."
       
-      if [ -z "$QUICK_START_MODE" ]; then
+      if [ -z "$$QUICK_START_MODE" ]; then
         QUICK_START_MODE="false"
-        echo "⚠️  QUICK_START_MODE is empty, setting default value: true"
+        echo "⚠️  QUICK_START_MODE is empty, setting default value: false"
       fi      
       
-      echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
+      echo "🔍 Debug: QUICK_START_MODE = [$$QUICK_START_MODE]"
       
       if ! command -v pnpm >/dev/null 2>&1; then
         echo "📦 Installing pnpm..."
@@ -95,25 +95,25 @@ services:
         pnpm config set registry https://registry.npmmirror.com
       fi
       
-      if [ ! -d "/fastbuildai/node_modules" ] || [ "$QUICK_START_MODE" = "false" ]; then
+      if [ ! -d "/fastbuildai/node_modules" ] || [ "$$QUICK_START_MODE" = "false" ]; then
         echo "🧹 Cleaning node_modules (QUICK_START_MODE=false)..."
         rm -rf ./node_modules
         echo "📦 Installing dependencies..."
         pnpm i
       fi
   
-      if [ ! -f "/fastbuildai/public/index.html" ] || [ "$QUICK_START_MODE" = "false" ]; then
+      if [ ! -f "/fastbuildai/public/index.html" ] || [ "$$QUICK_START_MODE" = "false" ]; then
         NODE_OPTIONS="--max-old-space-size=1550" NUXT_BUILD_SSR=false NUXT_BUILD_ENV=production
         echo "🌐 Building web application..."
         pnpm --filter ./apps/web run generate
       fi
       
-      if [ ! -d "/fastbuildai/apps/server/dist" ] || [ "$QUICK_START_MODE" = "false" ]; then
+      if [ ! -d "/fastbuildai/apps/server/dist" ] || [ "$$QUICK_START_MODE" = "false" ]; then
         echo "🔧 Building server application..."
         pnpm --filter ./apps/server run build
       fi
       
-      echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
+      echo "🔍 Debug: QUICK_START_MODE = [$$QUICK_START_MODE]"
       echo "🎯 Starting production server..."
       exec pnpm --filter ./apps/server run start:prod
       '
