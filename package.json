@@ -2,13 +2,37 @@
     "name": "fastbuildai",
     "private": true,
     "version": "1.0.0-beta.3",
-    "description": "A fast build ai framework.",
+    "description": "A next-generation rapid development platform for AI applications.",
     "keywords": [
         "fastbuild",
         "ai",
         "fastbuildai",
-        "ai framework"
+        "ai framework",
+        "artificial intelligence",
+        "machine learning",
+        "deep learning",
+        "nlp",
+        "natural language processing",
+        "computer vision",
+        "neural networks",
+        "javascript ai",
+        "typescript ai",
+        "vue ai",
+        "ai development",
+        "ai tools"
     ],
+    "homepage": "https://fastbuildai.com",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/FastbuildAI/FastbuildAI.git"
+    },
+    "author": {
+        "name": "FastbuildAI Team"
+    },
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/FastbuildAI/FastbuildAI/issues"
+    },
     "scripts": {
         "build": "turbo run build",
         "dev": "turbo run dev",
