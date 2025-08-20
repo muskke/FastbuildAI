@@ -112,6 +112,7 @@ export const useUserStore = defineStore("auth", () => {
     const getUser = async () => {
         try {
             userInfo.value = await apiGetCurrentUserInfo();
+            console.log(userInfo.value);
             return userInfo.value;
         } catch (error) {
             console.error("获取用户信息失败:", error);

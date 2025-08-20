@@ -9,7 +9,7 @@ import { In, Like, Repository } from "typeorm";
 
 import { initJsonMenu, installJsonConfig } from "../plugin/utils/plugin.util";
 import { CreateMenuDto, QueryMenuDto, UpdateMenuDto } from "./dto";
-import { Menu, MenuSourceType } from "./entities/menu.entity";
+import { Menu, MenuSourceType, MenuType } from "./entities/menu.entity";
 
 /**
  * 菜单服务
@@ -230,6 +230,110 @@ export class MenuService extends BaseService<Menu> {
 
         // 构建菜单树
         return this.buildMenuTree(menus);
+    }
+
+    /**
+     * 根据用户权限获取菜单树
+     *
+     * @param permissionCodes 用户权限码列表，空数组表示超级管理员，返回全部菜单
+     * @param sourceType 菜单来源类型，可选
+     * @returns 根据权限筛选后的菜单树
+     */
+    async getMenuTreeByPermissions(
+        permissionCodes: string[],
+        sourceType?: MenuSourceType,
+    ): Promise<Menu[]> {
+        // 构建查询条件
+        const where: any = {};
+
+        if (sourceType !== undefined) {
+            where.sourceType = sourceType;
+        }
+
+        // 查询所有菜单
+        const allMenus = await this.menuRepository.find({
+            where,
+            order: { sort: "ASC", createdAt: "DESC" },
+        });
+
+        // 如果权限码列表为空，表示超级管理员，返回全部菜单
+        if (permissionCodes.length === 0) {
+            return this.buildMenuTree(allMenus);
+        }
+
+        // 根据权限筛选菜单
+        const filteredMenus = allMenus.filter((menu) => {
+            // 如果菜单没有权限要求，或者用户有该菜单的权限，则保留
+            return !menu.permissionCode || permissionCodes.includes(menu.permissionCode);
+        });
+
+        // 收集所有筛选后的菜单ID，用于后续找出父菜单
+        const filteredMenuIds = new Set(filteredMenus.map((menu) => menu.id));
+
+        // 找出所有筛选菜单的父菜单，确保菜单树结构完整
+        const menuIdsWithParents = new Set(filteredMenuIds);
+
+        // 递归添加所有父菜单ID
+        const addParentMenuIds = (menuId: string) => {
+            const menu = allMenus.find((m) => m.id === menuId);
+            if (menu && menu.parentId) {
+                menuIdsWithParents.add(menu.parentId);
+                addParentMenuIds(menu.parentId);
+            }
+        };
+
+        // 对每个筛选出的菜单，添加其父菜单
+        filteredMenus.forEach((menu) => {
+            if (menu.parentId) {
+                addParentMenuIds(menu.parentId);
+            }
+        });
+
+        // 根据收集到的所有菜单ID（包括父菜单）筛选菜单
+        const menusWithParents = allMenus.filter((menu) => menuIdsWithParents.has(menu.id));
+
+        // 构建菜单树
+        const menuTree = this.buildMenuTree(menusWithParents);
+
+        // 递归检查并过滤没有菜单类型子项的组别或目录
+        const filterEmptyGroupsAndDirectories = (menus: Menu[]): Menu[] => {
+            return menus.filter((menu) => {
+                // 如果是菜单或按钮类型，直接保留
+                if (menu.type === MenuType.MENU || menu.type === MenuType.BUTTON) {
+                    return true;
+                }
+
+                // 如果是组别或目录类型
+                if (menu.type === MenuType.GROUP || menu.type === MenuType.DIRECTORY) {
+                    // 如果有子菜单，递归过滤
+                    if (menu.children && menu.children.length > 0) {
+                        // 递归过滤子菜单
+                        const filteredChildren = filterEmptyGroupsAndDirectories(menu.children);
+                        menu.children = filteredChildren;
+
+                        // 如果过滤后还有子菜单，或者至少有一个子菜单是菜单类型，则保留该组别或目录
+                        return (
+                            filteredChildren.length > 0 &&
+                            filteredChildren.some(
+                                (child) =>
+                                    child.type === MenuType.MENU ||
+                                    (child.children &&
+                                        child.children.some(
+                                            (grandChild) => grandChild.type === MenuType.MENU,
+                                        )),
+                            )
+                        );
+                    }
+                    // 没有子菜单，则过滤掉
+                    return false;
+                }
+
+                return true;
+            });
+        };
+
+        // 过滤没有菜单类型子项的组别或目录
+        return filterEmptyGroupsAndDirectories(menuTree);
     }
 
     /**
