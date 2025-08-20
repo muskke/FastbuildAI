@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ProInfiniteScroll, ProScrollArea, useMessage, useModal } from "@fastbuildai/ui";
+import { useClipboard } from "@vueuse/core";
 import { onMounted, reactive, ref } from "vue";
 
 import type { Agent, QueryAgentParams } from "@/models/ai-agent";
-import { apiDeleteAgent, apiGetAgentList } from "@/services/console/ai-agent";
+import { apiDeleteAgent, apiGetAgentList, apiImportAgent } from "@/services/console/ai-agent";
 
 import AgentCard from "./_components/agent-card.vue";
 const AgentModal = defineAsyncComponent(() => import("./_components/agent-modal.vue"));
@@ -12,6 +13,8 @@ const TemplateDrawer = defineAsyncComponent(() => import("./_components/template
 // 路由实例
 const toast = useMessage();
 const { t } = useI18n();
+const { copy } = useClipboard();
+const UTextarea = resolveComponent("UTextarea");
 
 // 列表查询参数
 const searchForm = reactive<QueryAgentParams>({
@@ -58,6 +61,7 @@ const loadMore = async () => {
     if (loading.value || !hasMore.value) return;
 
     loading.value = true;
+    searchForm.page!++;
 
     try {
         const res = await apiGetAgentList(searchForm);
@@ -69,6 +73,7 @@ const loadMore = async () => {
             hasMore.value = false;
         }
     } catch (error) {
+        searchForm.page!--;
         console.error("加载更多数据失败:", error);
     } finally {
         loading.value = false;
@@ -139,6 +144,84 @@ const handleTemplateDrawerClose = async (refresh?: boolean) => {
         searchForm.page = 1;
         searchForm.pageSize = 15;
         await getLists();
+    }
+};
+
+/** 导出智能体 */
+const handleExport = (agent: Agent) => {
+    const {
+        id,
+        createdBy,
+        createdAt,
+        updatedAt,
+        avatar,
+        chatAvatar,
+        apiKey,
+        datasetIds,
+        publishToken,
+        userCount,
+        isPublished,
+        publishConfig,
+        ...rest
+    } = agent;
+
+    copy(JSON.stringify(rest));
+    toast.success(t("console-common.messages.copySuccess"));
+};
+
+/** 导入智能体 */
+const handleImportAgent = async () => {
+    try {
+        const newContent = ref("");
+
+        const CreateForm = markRaw({
+            setup() {
+                return () =>
+                    h("div", { class: "py-2" }, [
+                        h(
+                            "div",
+                            { class: "text-sm text-gray-600 mb-3" },
+                            "请粘贴智能体配置的JSON内容",
+                        ),
+                        h(UTextarea, {
+                            modelValue: newContent.value,
+                            "onUpdate:modelValue": (value: string) => (newContent.value = value),
+                            placeholder: "粘贴智能体配置JSON...",
+                            class: "w-full",
+                            size: "md",
+                            rows: 10,
+                        }),
+                    ]);
+            },
+        });
+
+        await useModal({
+            title: "导入智能体配置",
+            content: CreateForm,
+            confirmText: t("console-common.create"),
+            cancelText: t("console-common.cancel"),
+            ui: { content: "!w-lg" },
+        });
+
+        if (newContent.value.trim()) {
+            try {
+                // 解析JSON内容
+                const agentData = JSON.parse(newContent.value.trim());
+
+                // 调用导入API
+                await apiImportAgent(agentData);
+                toast.success("智能体导入成功！");
+
+                // 刷新列表
+                await getLists();
+            } catch (parseError) {
+                toast.error("JSON格式错误，请检查内容");
+                console.error("JSON解析失败:", parseError);
+            }
+        }
+    } catch (error) {
+        console.error("导入失败:", error);
+        toast.error("导入失败");
     }
 };
 
@@ -229,10 +312,8 @@ onMounted(() => getLists());
                                 class="w-full"
                                 icon="i-lucide-file-input"
                                 size="sm"
-                                :label="$t('console-ai-agent.create.importDsl')"
-                                @click.stop="
-                                    toast.info($t('console-ai-agent.create.importDslDesc'))
-                                "
+                                :label="$t('console-ai-agent.create.importJson')"
+                                @click.stop="handleImportAgent"
                             />
                         </div>
                     </div>
@@ -244,6 +325,7 @@ onMounted(() => getLists());
                         :agent="agent"
                         @delete="handleDelete"
                         @edit="handleEdit"
+                        @export="handleExport"
                     />
                 </div>
             </ProInfiniteScroll>

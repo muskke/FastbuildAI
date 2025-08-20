@@ -193,12 +193,10 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
 
     /**
      * 检查是否是匿名用户
+     * 通过用户名格式判断：匿名用户的用户名以 "anonymous_" 或 "access_" 开头
      */
     protected isAnonymousUser(user: UserPlayground): boolean {
-        return (
-            user.id.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-8[a-f0-9]{3}-[a-f0-9]{12}$/) !==
-            null
-        );
+        return user.username.startsWith("anonymous_") || user.username.startsWith("access_");
     }
 
     protected async initializeChat(
@@ -254,17 +252,19 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         anonymousIdentifier?: string,
     ): Promise<void> {
         try {
-            await this.chatMessageRepository.save({
+            const messageData = {
                 conversationId,
                 agentId,
                 userId: anonymousIdentifier ? null : userId,
                 anonymousIdentifier: anonymousIdentifier || null,
-                role: "user",
+                role: "user" as const,
                 content,
                 messageType: "text",
                 formVariables,
                 formFieldsInputs,
-            });
+            };
+
+            await this.chatMessageRepository.save(messageData);
         } catch (err) {
             this.logger.error(`[!] 保存用户消息失败: ${err.message}`, err.stack);
         }
@@ -281,18 +281,20 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         anonymousIdentifier?: string,
     ): Promise<void> {
         try {
-            await this.chatMessageRepository.save({
+            const messageData = {
                 conversationId,
                 agentId,
                 userId: anonymousIdentifier ? null : userId,
                 anonymousIdentifier: anonymousIdentifier || null,
-                role: "assistant",
+                role: "assistant" as const,
                 content,
                 messageType: "text",
                 tokens: tokenUsage,
                 rawResponse,
                 metadata,
-            });
+            };
+
+            await this.chatMessageRepository.save(messageData);
         } catch (err) {
             this.logger.error(`[!] 保存AI响应消息失败: ${err.message}`, err.stack);
         }

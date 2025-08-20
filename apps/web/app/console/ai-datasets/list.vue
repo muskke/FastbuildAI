@@ -59,6 +59,7 @@ const loadMore = async () => {
     if (loading.value || !hasMore.value) return;
 
     loading.value = true;
+    searchForm.page!++;
 
     try {
         const res = await apiGetDatasetList(searchForm);
@@ -71,6 +72,7 @@ const loadMore = async () => {
             hasMore.value = false;
         }
     } catch (error) {
+        searchForm.page!--;
         console.error("加载更多数据失败:", error);
     } finally {
         loading.value = false;
