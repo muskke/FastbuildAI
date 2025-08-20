@@ -47,10 +47,6 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
 
         // 查询该智能体的所有对话记录：包括注册用户的记录和游客的记录
         queryBuilder.where("record.agentId = :agentId", { agentId: dto.agentId });
-        queryBuilder.andWhere(
-            "(record.userId = :userId OR (record.userId IS NULL AND record.anonymousIdentifier IS NOT NULL))",
-            { userId: user.id },
-        );
         queryBuilder.andWhere("record.isDeleted = :isDeleted", { isDeleted: false });
 
         if (dto.keyword) {
@@ -73,10 +69,9 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
      * @returns 对话记录详情
      */
     async getChatRecordDetail(id: string, user: UserPlayground): Promise<AgentChatRecord> {
-        // 检查是否是匿名用户（通过用户ID格式判断）
+        // 检查是否是匿名用户（通过用户名格式判断）
         const isAnonymousUser =
-            user.id.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-8[a-f0-9]{3}-[a-f0-9]{12}$/) !==
-            null;
+            user.username.startsWith("anonymous_") || user.username.startsWith("access_");
 
         const where = isAnonymousUser
             ? {
