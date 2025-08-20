@@ -4,7 +4,7 @@ import {
     useConsolePost,
     useConsolePut,
 } from "@/common/composables/useRequest";
-import type { AiMessage } from "@/models";
+import type { AiMessage, PaginationResult } from "@/models";
 import type { CreateAgentAnnotationParams, UpdateAgentAnnotationParams } from "@/models/ai-agent";
 
 /**
@@ -158,7 +158,7 @@ export function apiGetPublicAgentMessages(
     accessToken: string,
     conversationId: string,
     params: { page?: number; pageSize?: number } = {},
-): Promise<any> {
+): Promise<PaginationResult<AiMessage>> {
     return useConsoleGet(
         `/public-agent/${publishToken}/conversations/${conversationId}/messages`,
         params,
