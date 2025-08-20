@@ -1,166 +1,161 @@
 {
-  "templates": [
-    {
-      "id": "customer-service",
-      "name": "客服助手",
-      "description": "专业的客服助手，能够友好、专业地回答用户问题",
-      "category": "客服",
-      "tags": ["客服", "助手", "专业"],
-      "icon": "i-lucide-headphones",
-      "previewImage": "/static/images/templates/customer-service.png",
-      "config": {
-        "rolePrompt": "你是一位专业的客服助手，请用友好、专业的态度回答用户问题。始终保持耐心和礼貌，提供准确、有用的信息。",
-        "showContext": true,
-        "showReference": false,
-        "enableFeedback": true,
-        "enableWebSearch": false,
-        "openingStatement": "您好！我是您的专属客服助手，有什么可以帮助您的吗？",
-        "openingQuestions": [
-          "如何修改账户信息？",
-          "订单查询和跟踪",
-          "退换货政策",
-          "支付方式说明"
-        ],
-        "quickCommands": [
-          { "command": "账户", "description": "账户相关问题" },
-          { "command": "订单", "description": "订单相关问题" },
-          { "command": "支付", "description": "支付相关问题" }
-        ]
-      },
-      "usageCount": 1250,
-      "rating": 4.8,
-      "isRecommended": true
-    },
-    {
-      "id": "sales-assistant",
-      "name": "销售助手",
-      "description": "专业的销售助手，帮助客户了解产品特性和价值",
-      "category": "销售",
-      "tags": ["销售", "产品", "营销"],
-      "icon": "i-lucide-trending-up",
-      "previewImage": "/static/images/templates/sales-assistant.png",
-      "config": {
-        "rolePrompt": "你是一位专业的销售助手，擅长介绍产品特性和价值，能够根据客户需求推荐合适的产品。请用热情、专业的态度与客户交流。",
-        "showContext": true,
-        "showReference": false,
-        "enableFeedback": true,
-        "enableWebSearch": false,
-        "openingStatement": "您好！我是您的专属销售助手，很高兴为您介绍我们的产品和服务！",
-        "openingQuestions": [
-          "产品特性介绍",
-          "价格和优惠信息",
-          "客户案例分享",
-          "购买流程说明"
-        ],
-        "quickCommands": [
-          { "command": "产品", "description": "产品介绍" },
-          { "command": "价格", "description": "价格信息" },
-          { "command": "案例", "description": "客户案例" }
-        ]
-      },
-      "usageCount": 890,
-      "rating": 4.6,
-      "isRecommended": true
-    },
-    {
-      "id": "technical-support",
-      "name": "技术支持",
-      "description": "专业的技术支持助手，解决技术问题和故障排除",
-      "category": "技术",
-      "tags": ["技术", "支持", "故障排除"],
-      "icon": "i-lucide-wrench",
-      "previewImage": "/static/images/templates/technical-support.png",
-      "config": {
-        "rolePrompt": "你是一位专业的技术支持工程师，拥有丰富的技术经验和专业知识。请用清晰、易懂的语言帮助用户解决技术问题。",
-        "showContext": true,
-        "showReference": true,
-        "enableFeedback": true,
-        "enableWebSearch": false,
-        "openingStatement": "您好！我是您的技术支持工程师，请详细描述您遇到的技术问题，我会尽力帮助您解决。",
-        "openingQuestions": [
-          "系统故障排除",
-          "软件安装配置",
-          "网络连接问题",
-          "性能优化建议"
-        ],
-        "quickCommands": [
-          { "command": "故障", "description": "故障排除" },
-          { "command": "安装", "description": "安装配置" },
-          { "command": "网络", "description": "网络问题" }
-        ]
-      },
-      "usageCount": 650,
-      "rating": 4.7,
-      "isRecommended": false
-    },
-    {
-      "id": "learning-tutor",
-      "name": "学习导师",
-      "description": "专业的学习导师，提供个性化的学习指导和答疑解惑",
-      "category": "教育",
-      "tags": ["教育", "学习", "导师"],
-      "icon": "i-lucide-graduation-cap",
-      "previewImage": "/static/images/templates/learning-tutor.png",
-      "config": {
-        "rolePrompt": "你是一位专业的学习导师，拥有丰富的教学经验和专业知识。请根据学生的学习水平和需求，提供个性化的学习指导和答疑解惑。",
-        "showContext": true,
-        "showReference": true,
-        "enableFeedback": true,
-        "enableWebSearch": false,
-        "openingStatement": "你好！我是你的学习导师，很高兴能帮助你学习！请告诉我你想学习什么，或者有什么问题需要解答？",
-        "openingQuestions": [
-          "学习方法指导",
-          "知识点讲解",
-          "练习题解答",
-          "学习计划制定"
-        ],
-        "quickCommands": [
-          { "command": "方法", "description": "学习方法" },
-          { "command": "讲解", "description": "知识点讲解" },
-          { "command": "练习", "description": "练习题解答" }
-        ]
-      },
-      "usageCount": 420,
-      "rating": 4.9,
-      "isRecommended": true
-    },
-    {
-      "id": "creative-writer",
-      "name": "创意写作",
-      "description": "专业的创意写作助手，帮助激发灵感和创作内容",
-      "category": "创作",
-      "tags": ["创作", "写作", "灵感"],
-      "icon": "i-lucide-pen-tool",
-      "previewImage": "/static/images/templates/creative-writer.png",
-      "config": {
-        "rolePrompt": "你是一位专业的创意写作助手，擅长激发创作灵感、提供写作建议和帮助完善内容。请用富有创意和启发性的方式与用户交流。",
-        "showContext": true,
-        "showReference": false,
-        "enableFeedback": true,
-        "enableWebSearch": false,
-        "openingStatement": "你好！我是你的创意写作助手，让我们一起探索创作的无限可能！请告诉我你的创作需求或想法。",
-        "openingQuestions": [
-          "写作灵感激发",
-          "故事结构设计",
-          "角色塑造建议",
-          "文案创作指导"
-        ],
-        "quickCommands": [
-          { "command": "灵感", "description": "激发灵感" },
-          { "command": "故事", "description": "故事创作" },
-          { "command": "文案", "description": "文案创作" }
-        ]
-      },
-      "usageCount": 380,
-      "rating": 4.5,
-      "isRecommended": false
+    "templates": [
+        {
+            "id": "customer-service",
+            "name": "客服助手",
+            "description": "专业的客服助手，能够友好、专业地回答用户问题",
+            "category": "客服",
+            "tags": ["客服", "助手", "专业"],
+            "icon": "i-lucide-headphones",
+            "previewImage": "/static/images/templates/customer-service.png",
+            "config": {
+                "rolePrompt": "你是一位专业的客服助手，请用友好、专业的态度回答用户问题。始终保持耐心和礼貌，提供准确、有用的信息。",
+                "showContext": true,
+                "showReference": false,
+                "enableFeedback": true,
+                "enableWebSearch": false,
+                "openingStatement": "您好！我是您的专属客服助手，有什么可以帮助您的吗？",
+                "openingQuestions": [
+                    "如何修改账户信息？",
+                    "订单查询和跟踪",
+                    "退换货政策",
+                    "支付方式说明"
+                ],
+                "quickCommands": [
+                    { "name": "账户", "content": "账户相关问题", "replyType": "model" },
+                    { "name": "订单", "content": "订单相关问题", "replyType": "model" },
+                    { "name": "支付", "content": "支付相关问题", "replyType": "model" }
+                ]
+            },
+            "usageCount": 1250,
+            "rating": 4.8,
+            "isRecommended": true
+        },
+        {
+            "id": "sales-assistant",
+            "name": "销售助手",
+            "description": "专业的销售助手，帮助客户了解产品特性和价值",
+            "category": "销售",
+            "tags": ["销售", "产品", "营销"],
+            "icon": "i-lucide-trending-up",
+            "previewImage": "/static/images/templates/sales-assistant.png",
+            "config": {
+                "rolePrompt": "你是一位专业的销售助手，擅长介绍产品特性和价值，能够根据客户需求推荐合适的产品。请用热情、专业的态度与客户交流。",
+                "showContext": true,
+                "showReference": false,
+                "enableFeedback": true,
+                "enableWebSearch": false,
+                "openingStatement": "您好！我是您的专属销售助手，很高兴为您介绍我们的产品和服务！",
+                "openingQuestions": [
+                    "产品特性介绍",
+                    "价格和优惠信息",
+                    "客户案例分享",
+                    "购买流程说明"
+                ],
+                "quickCommands": [
+                    { "name": "产品", "content": "产品介绍", "replyType": "model" },
+                    { "name": "价格", "content": "价格信息", "replyType": "model" },
+                    { "name": "案例", "content": "客户案例", "replyType": "model" }
+                ]
+            },
+            "usageCount": 890,
+            "rating": 4.6,
+            "isRecommended": true
+        },
+        {
+            "id": "technical-support",
+            "name": "技术支持",
+            "description": "专业的技术支持助手，解决技术问题和故障排除",
+            "category": "技术",
+            "tags": ["技术", "支持", "故障排除"],
+            "icon": "i-lucide-wrench",
+            "previewImage": "/static/images/templates/technical-support.png",
+            "config": {
+                "rolePrompt": "你是一位专业的技术支持工程师，拥有丰富的技术经验和专业知识。请用清晰、易懂的语言帮助用户解决技术问题。",
+                "showContext": true,
+                "showReference": true,
+                "enableFeedback": true,
+                "enableWebSearch": false,
+                "openingStatement": "您好！我是您的技术支持工程师，请详细描述您遇到的技术问题，我会尽力帮助您解决。",
+                "openingQuestions": [
+                    "系统故障排除",
+                    "软件安装配置",
+                    "网络连接问题",
+                    "性能优化建议"
+                ],
+                "quickCommands": [
+                    { "name": "故障", "content": "故障排除", "replyType": "model" },
+                    { "name": "安装", "content": "安装配置", "replyType": "model" },
+                    { "name": "网络", "content": "网络问题", "replyType": "model" }
+                ]
+            },
+            "usageCount": 650,
+            "rating": 4.7,
+            "isRecommended": false
+        },
+        {
+            "id": "learning-tutor",
+            "name": "学习导师",
+            "description": "专业的学习导师，提供个性化的学习指导和答疑解惑",
+            "category": "教育",
+            "tags": ["教育", "学习", "导师"],
+            "icon": "i-lucide-graduation-cap",
+            "previewImage": "/static/images/templates/learning-tutor.png",
+            "config": {
+                "rolePrompt": "你是一位专业的学习导师，拥有丰富的教学经验和专业知识。请根据学生的学习水平和需求，提供个性化的学习指导和答疑解惑。",
+                "showContext": true,
+                "showReference": true,
+                "enableFeedback": true,
+                "enableWebSearch": false,
+                "openingStatement": "你好！我是你的学习导师，很高兴能帮助你学习！请告诉我你想学习什么，或者有什么问题需要解答？",
+                "openingQuestions": ["学习方法指导", "知识点讲解", "练习题解答", "学习计划制定"],
+                "quickCommands": [
+                    { "name": "方法", "content": "学习方法", "replyType": "model" },
+                    { "name": "讲解", "content": "知识点讲解", "replyType": "model" },
+                    { "name": "练习", "content": "练习题解答", "replyType": "model" }
+                ]
+            },
+            "usageCount": 420,
+            "rating": 4.9,
+            "isRecommended": true
+        },
+        {
+            "id": "creative-writer",
+            "name": "创意写作",
+            "description": "专业的创意写作助手，帮助激发灵感和创作内容",
+            "category": "创作",
+            "tags": ["创作", "写作", "灵感"],
+            "icon": "i-lucide-pen-tool",
+            "previewImage": "/static/images/templates/creative-writer.png",
+            "config": {
+                "rolePrompt": "你是一位专业的创意写作助手，擅长激发创作灵感、提供写作建议和帮助完善内容。请用富有创意和启发性的方式与用户交流。",
+                "showContext": true,
+                "showReference": false,
+                "enableFeedback": true,
+                "enableWebSearch": false,
+                "openingStatement": "你好！我是你的创意写作助手，让我们一起探索创作的无限可能！请告诉我你的创作需求或想法。",
+                "openingQuestions": [
+                    "写作灵感激发",
+                    "故事结构设计",
+                    "角色塑造建议",
+                    "文案创作指导"
+                ],
+                "quickCommands": [
+                    { "name": "灵感", "content": "激发灵感", "replyType": "model" },
+                    { "name": "故事", "content": "故事创作", "replyType": "model" },
+                    { "name": "文案", "content": "文案创作", "replyType": "model" }
+                ]
+            },
+            "usageCount": 380,
+            "rating": 4.5,
+            "isRecommended": false
+        }
+    ],
+    "categories": ["客服", "销售", "技术", "教育", "创作"],
+    "metadata": {
+        "version": "1.0.0",
+        "description": "智能体模板数据，用于快速创建预配置的智能体",
+        "lastUpdated": "2024-01-01",
+        "totalTemplates": 5
     }
-  ],
-  "categories": ["客服", "销售", "技术", "教育", "创作"],
-  "metadata": {
-    "version": "1.0.0",
-    "description": "智能体模板数据，用于快速创建预配置的智能体",
-    "lastUpdated": "2024-01-01",
-    "totalTemplates": 5
-  }
 }
