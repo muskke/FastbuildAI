@@ -232,12 +232,32 @@ export class DatabaseInitService implements OnModuleInit {
 
     /**
      * 初始化菜单数据
+     *
+     * 先检查是否已存在菜单，如果存在则删除所有菜单再重新写入
      */
     private async initMenus(): Promise<void> {
         this.logger.log("开始创建初始菜单...");
         TerminalLogger.log("", "开始创建初始菜单...");
 
         try {
+            // 检查是否已存在菜单数据
+            const existingMenusCount = await this.menuRepository.count();
+
+            // 如果存在菜单数据，先删除所有菜单
+            if (existingMenusCount > 0) {
+                this.logger.log(`发现 ${existingMenusCount} 条现有菜单数据，准备清空重建...`);
+                TerminalLogger.warn(
+                    "",
+                    `发现 ${existingMenusCount} 条现有菜单数据，准备清空重建...`,
+                );
+
+                // 使用清空表的方式删除所有菜单（比逐条删除更高效）
+                await this.menuRepository.clear();
+
+                this.logger.log("✅ 已清空现有菜单数据");
+                TerminalLogger.success("", "已清空现有菜单数据");
+            }
+
             // 从 JSON 文件读取菜单数据
             // 检查多个可能的路径
             let menuFilePath: string;
@@ -666,19 +686,12 @@ export class DatabaseInitService implements OnModuleInit {
             this.logger.log(`🚀 Starting upgrade to version: ${version}`);
             TerminalLogger.log("System Upgrade", `Starting upgrade to version: ${version}`);
 
-            // 1. 更新权限数据
+            // 更新权限数据
             await this.syncPermissions();
 
-            // 2. 执行版本特定升级逻辑
+            // 执行版本特定升级逻辑
             await this.executeVersionSpecificUpgrade(version);
 
-            // 3. 更新菜单配置
-            // await this.upgradeMenus(version);
-
-            // 4. 更新前台菜单配置 (已移动到版本特定升级逻辑中)
-            // await this.upgradeHomeMenus(version);
-
-            // 5. 更新版本文件
             await this.writeVersionFile(version);
 
             this.logger.log(`✅ Upgrade completed: ${version}`);
