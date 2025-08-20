@@ -468,7 +468,7 @@ onUnmounted(() => {
         </ProScrollArea>
 
         <div class="px-4 pb-4">
-            <div class="pb-4">
+            <div class="flex flex-col gap-2 pb-4">
                 <div v-for="item in agent.quickCommands" :key="item.name">
                     <UButton color="neutral" variant="soft" @click="handleSubmitMessage(item.name)">
                         <img v-if="item.avatar" :src="item.avatar" class="h-4 w-4" />
