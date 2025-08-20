@@ -93,6 +93,17 @@ export function apiUpdateAiModel(id: string, data: UpdateAiModelRequest): Promis
 }
 
 /**
+ * 设置AI模型状态
+ * @description 根据AI模型ID设置模型状态
+ * @param {string} id AI模型ID
+ * @param {boolean} isActive 模型状态
+ * @returns {Promise<void>} 设置结果
+ */
+export function apiSetAiModelIsActive(id: string, isActive: boolean): Promise<void> {
+    return useConsolePatch(`/ai-models/${id}/toggle-active`, { isActive });
+}
+
+/**
  * 删除AI模型
  * @description 根据AI模型ID删除指定的AI模型配置
  * @param {string} id AI模型ID

@@ -5,6 +5,7 @@ import { ConsoleController } from "@common/decorators/controller.decorator";
 import { Permissions } from "@common/decorators/permissions.decorator";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { DictService } from "@common/modules/dict/services/dict.service";
+import { isEnabled } from "@common/utils/is.util";
 import { Body, Delete, Get, Param, Patch, Post, Put, Query } from "@nestjs/common";
 import { getModelFeaturesWithDescriptions, getModelTypesWithDescriptions } from "@sdk/ai";
 
@@ -164,6 +165,25 @@ export class AiModelController extends BaseController {
         }
 
         return await this.aiModelService.updateModel(id, dto);
+    }
+
+    /**
+     * 启用/禁用AI模型
+     */
+    @Patch(":id/toggle-active")
+    @Permissions({
+        code: "toggle-active",
+        name: "更新AI模型",
+    })
+    async toggleActive(@Param("id") id: string, @Body("isActive") isActive: boolean) {
+        if (typeof isActive !== "boolean") {
+            throw HttpExceptionFactory.business("参数 isActive 必须是布尔值");
+        }
+        const model = await this.aiModelService.findOneById(id);
+        if (!model) {
+            throw HttpExceptionFactory.business("模型不存在");
+        }
+        return await this.aiModelService.updateModel(id, { isActive });
     }
 
     /**

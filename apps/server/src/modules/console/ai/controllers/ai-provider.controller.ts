@@ -214,15 +214,16 @@ export class AiProviderController extends BaseController {
     })
     async toggleActive(@Param("id") id: string, @Body("isActive") isActive: boolean) {
         // 如果要启用供应商，检查是否已填写 apiKey
-        if (isActive === true) {
-            const provider = await this.aiProviderService.findOneById(id);
-            if (!provider) {
-                throw HttpExceptionFactory.business("AI供应商不存在");
-            }
+        if (typeof isActive !== "boolean") {
+            throw HttpExceptionFactory.business("参数 isActive 必须是布尔值");
+        }
+        const provider = await this.aiProviderService.findOneById(id);
+        if (!provider) {
+            throw HttpExceptionFactory.business("AI供应商不存在");
+        }
 
-            if (!provider.apiKey || provider.apiKey.trim() === "") {
-                throw HttpExceptionFactory.business("请先填写 API Key 后再启用供应商");
-            }
+        if (!provider.apiKey || provider.apiKey.trim() === "") {
+            throw HttpExceptionFactory.business("请先填写 API Key 后再启用供应商");
         }
 
         return await this.aiProviderService.updateProvider(

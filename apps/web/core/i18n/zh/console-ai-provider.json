@@ -269,7 +269,9 @@
             "loadProvidersFailed": "获取供应商列表失败",
             "getProvidersFailed": "获取供应商列表失败",
             "missingModelId": "缺少模型ID",
-            "getModelDetailFailed": "获取模型详情失败"
+            "getModelDetailFailed": "获取模型详情失败",
+            "isActiveEnabled": "模型已启用",
+            "isActiveDisabled": "模型已禁用"
         }
     },
     "viewWebsite": "前往官网",
