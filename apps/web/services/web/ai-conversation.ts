@@ -191,5 +191,5 @@ export function apiGetChatConfig(): Promise<ChatConfig> {
  * @returns {Promise<QuickMenuConfig>} 快捷菜单配置信息
  */
 export function apiGetQuickMenu(): Promise<QuickMenu> {
-    return useWebGet("/ai-mcp-servers/quick-menu", {}, { requireAuth: true });
+    return useWebGet("/ai-mcp-servers/quick-menu", {});
 }
