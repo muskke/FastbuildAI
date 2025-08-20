@@ -231,7 +231,7 @@ function redo() {
                 :disabled="!editor?.can().chain().focus().toggleCode().run()"
                 @click="toggleInlineCode"
             >
-                { }
+                <UIcon name="i-lucide-code" size="16" />
             </UButton>
             <span class="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700"></span>
 
@@ -300,7 +300,7 @@ function redo() {
                 :variant="editor?.isActive('bulletList') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleBulletList().run()"
                 @click="toggleBulletList"
-                >• List</UButton
+                ><UIcon name="i-lucide-list" size="16" /></UButton
             >
             <UButton
                 color="neutral"
@@ -308,7 +308,7 @@ function redo() {
                 :variant="editor?.isActive('orderedList') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleOrderedList().run()"
                 @click="toggleOrderedList"
-                >1. List</UButton
+                ><UIcon name="i-lucide-list-ordered" size="16" /></UButton
             >
             <UButton
                 color="neutral"
@@ -324,7 +324,7 @@ function redo() {
                 :variant="editor?.isActive('codeBlock') ? 'soft' : 'ghost'"
                 :disabled="!editor?.can().chain().focus().toggleCodeBlock().run()"
                 @click="toggleCodeBlock"
-                >{ }</UButton
+                ><UIcon name="i-lucide-code-xml" size="16" /></UButton
             >
             <span class="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700"></span>
 

@@ -77,7 +77,7 @@ onMounted(() => getWebsiteConfig());
 </script>
 
 <template>
-    <div class="statistics-container mx-auto mt-8">
+    <div class="statistics-container mt-8">
         <div class="mb-4 flex flex-col justify-center">
             <h2 class="text-xl font-semibold">
                 {{ t("console-system.website.statistics.title") }}

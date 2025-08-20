@@ -94,7 +94,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="copyright-container mx-auto mt-8">
+    <div class="copyright-container mt-8">
         <div class="mb-4 flex flex-col justify-center">
             <h2 class="text-xl font-semibold">{{ t("console-system.website.copyright.title") }}</h2>
             <p class="text-muted-foreground mt-1 text-sm">
