@@ -50,6 +50,6 @@ const currentComponent = computed(() => {
             />
         </div>
 
-        <component :is="currentComponent" class="mx-auto lg:max-w-2xl xl:max-w-4xl" />
+        <component :is="currentComponent" class="lg:max-w-2xl xl:max-w-4xl" />
     </div>
 </template>
