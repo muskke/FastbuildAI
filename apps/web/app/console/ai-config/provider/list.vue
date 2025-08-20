@@ -3,7 +3,7 @@ import { ProPaginaction, ProScrollArea, useMessage, useModal, usePaging } from "
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import type { AiProviderInfo } from "@/models/ai-provider";
+import type { AiProviderInfo, AiProviderQueryParams } from "@/models/ai-provider";
 import {
     apiBatchDeleteAiProviders,
     apiDeleteAiProvider,
@@ -20,9 +20,9 @@ const toast = useMessage();
 const { t } = useI18n();
 
 // 列表查询参数（匹配后端支持的参数）
-const searchForm = reactive({
+const searchForm: AiProviderQueryParams = reactive({
     keyword: "",
-    isActive: null,
+    isActive: undefined,
 });
 
 // 选中的供应商
@@ -31,6 +31,10 @@ const selectedProviders = ref<Set<string>>(new Set());
 // 弹窗状态
 const showProviderModal = ref(false);
 const editingProviderId = ref("");
+/**
+ * 筛选状态
+ */
+const searchIsActive = ref();
 
 const { paging, getLists } = usePaging({
     fetchFun: apiGetAiProviderList,
@@ -179,6 +183,18 @@ const isIndeterminate = computed(() => {
     return selectedCount > 0 && selectedCount < paging.items.length;
 });
 
+/**
+ * 处理状态筛选变化
+ */
+const handleIsActiveChange = () => {
+    if (searchIsActive.value === "all") {
+        searchForm.isActive = undefined;
+    } else {
+        searchForm.isActive = searchIsActive.value === true;
+    }
+    getLists();
+};
+
 // 初始化
 onMounted(() => getLists());
 </script>
@@ -194,17 +210,17 @@ onMounted(() => getLists());
             />
 
             <USelect
-                v-model="searchForm.isActive"
+                v-model="searchIsActive"
                 :items="[
-                    { label: t('console-ai-provider.search.all'), value: null },
+                    { label: t('console-ai-provider.search.all'), value: 'all' },
                     { label: t('console-ai-provider.search.enabled'), value: true },
                     { label: t('console-ai-provider.search.disabled'), value: false },
                 ]"
-                class="w-20"
+                class="w-fit"
                 label-key="label"
                 value-key="value"
                 :placeholder="t('console-ai-provider.search.status')"
-                @change="getLists"
+                @change="handleIsActiveChange"
             />
 
             <div class="flex items-center gap-2 md:ml-auto">
