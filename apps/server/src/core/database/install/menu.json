@@ -5,7 +5,7 @@
         "path": "dashboard",
         "icon": "i-lucide-chart-line",
         "component": "/console/dashboard",
-        "permissionCode": null,
+        "permissionCode": "",
         "sort": 0,
         "isHidden": 0,
         "type": 2,
@@ -752,7 +752,7 @@
                         "path": "micropage",
                         "icon": "",
                         "component": "/console/decorate/micropage/list",
-                        "permissionCode": null,
+                        "permissionCode": "decorate-micropage:list",
                         "sort": 0,
                         "isHidden": 0,
                         "type": 2,
@@ -810,19 +810,6 @@
                                 "type": 3,
                                 "sourceType": 1,
                                 "pluginPackName": null
-                            },
-                            {
-                                "name": "console-common.preview",
-                                "code": "diy-preview",
-                                "path": "preview",
-                                "icon": "",
-                                "component": "/console/decorate/designer/view",
-                                "permissionCode": null,
-                                "sort": 0,
-                                "isHidden": 1,
-                                "type": 2,
-                                "sourceType": 1,
-                                "pluginPackName": null
                             }
                         ]
                     },
@@ -832,7 +819,7 @@
                         "path": "layout",
                         "icon": "",
                         "component": "/console/decorate/layout/index",
-                        "permissionCode": null,
+                        "permissionCode": "decorate-page:get-layout",
                         "sort": 1,
                         "isHidden": 0,
                         "type": 2,

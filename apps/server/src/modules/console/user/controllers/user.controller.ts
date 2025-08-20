@@ -65,8 +65,10 @@ export class UserController extends BaseController {
         // 获取用户的所有权限码
         const permissionCodes = await this.rolePermissionService.getUserPermissions(user.id);
 
-        // 获取菜单树
-        const menuTree = await this.menuService.getMenuTree();
+        // 获取菜单树（根据用户权限筛选）
+        const menuTree = await this.menuService.getMenuTreeByPermissions(
+            userInfo.isRoot ? [] : permissionCodes,
+        );
 
         return {
             user: {
