@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ProPaginaction, ProScrollArea, useMessage, useModal, usePaging } from "@fastbuildai/ui";
-import { computed, onMounted, reactive, ref } from "vue";
+import type { TableColumn } from "@nuxt/ui";
+import { type Row } from "@tanstack/table-core";
+import { computed, onMounted, reactive, ref, resolveComponent } from "vue";
 import { useRouter } from "vue-router";
 
 import type { AiModelInfo, AiModelQueryRequest, ModelType } from "@/models/ai-provider";
@@ -19,6 +21,11 @@ const router = useRouter();
 const toast = useMessage();
 const { t } = useI18n();
 const { query: URLQueryParams } = useRoute();
+const UDropdownMenu = resolveComponent("UDropdownMenu");
+const UButton = resolveComponent("UButton");
+const UCheckbox = resolveComponent("UCheckbox");
+const { hasAccessByCodes } = useAccessControl();
+const table = useTemplateRef("table");
 
 // 列表查询参数
 const searchForm = reactive<AiModelQueryRequest>({
@@ -32,6 +39,129 @@ const searchForm = reactive<AiModelQueryRequest>({
 const selectedModels = ref<Set<string>>(new Set());
 
 const modelTypes = ref<ModelType[]>([]);
+
+const tab = ref(1);
+const tabs = [
+    { value: 1, icon: "i-lucide-list" },
+    { value: 2, icon: "i-tabler-layout-grid" },
+];
+
+const columns = ref<TableColumn<AiModelInfo>[]>([
+    {
+        id: "select",
+        header: ({ table }) =>
+            h(UCheckbox, {
+                modelValue: table.getIsSomePageRowsSelected()
+                    ? "indeterminate"
+                    : table.getIsAllPageRowsSelected(),
+                "onUpdate:modelValue": (value: boolean | "indeterminate") => {
+                    table.toggleAllPageRowsSelected(!!value);
+                    handleSelectAll(value);
+                },
+                "aria-label": "Select all",
+            }),
+        cell: ({ row }) =>
+            h(UCheckbox, {
+                modelValue: row.getIsSelected(),
+                "onUpdate:modelValue": (value: boolean | "indeterminate") => {
+                    row.toggleSelected(!!value);
+                    handleModelSelect(row.original, value);
+                },
+                "aria-label": "Select row",
+            }),
+    },
+    {
+        accessorKey: "icon",
+        header: t("console-ai-provider.model.table.icon"),
+    },
+    {
+        accessorKey: "name",
+        header: t("console-ai-provider.model.table.name"),
+    },
+    {
+        accessorKey: "model",
+        header: t("console-ai-provider.model.table.model"),
+    },
+    {
+        accessorKey: "modelType",
+        header: t("console-ai-provider.model.table.modelType"),
+    },
+    {
+        accessorKey: "isActive",
+        header: t("console-ai-provider.model.table.isActive"),
+    },
+    {
+        accessorKey: "isDefault",
+        header: t("console-ai-provider.model.table.isDefault"),
+    },
+    {
+        accessorKey: "sortOrder",
+        header: t("console-ai-provider.model.table.sortOrder"),
+    },
+    {
+        accessorKey: "action",
+        header: t("console-ai-provider.model.table.action"),
+        size: 40, // 固定宽度
+        enableSorting: false,
+        enableHiding: false,
+        cell: ({ row }) => {
+            return h(UDropdownMenu, { items: getRowItems(row) }, () => {
+                return h(
+                    UButton,
+                    {
+                        icon: "i-lucide-ellipsis-vertical",
+                        color: "neutral",
+                        variant: "ghost",
+                        class: "ml-auto",
+                    },
+                    () => "",
+                );
+            });
+        },
+    },
+]);
+
+const getRowItems = (row: Row<AiModelInfo>) => {
+    const items = [];
+
+    if (hasAccessByCodes(["ai-models:update"])) {
+        items.push({
+            label: t("console-common.edit"),
+            icon: "i-lucide-edit",
+            onSelect: () =>
+                router.push({
+                    path: useRoutePath("ai-models:update"),
+                    query: { id: row.original.id, providerId: row.original.providerId },
+                }),
+        });
+    }
+
+    if (hasAccessByCodes(["ai-models:update"]) && !row.original.isDefault) {
+        items.push({
+            label: t("console-ai-provider.model.setDefault"),
+            icon: "i-lucide-star",
+            onSelect: () => handleSetDefault(row.original),
+        });
+    }
+
+    if (hasAccessByCodes(["ai-models:delete"])) {
+        if (items.length > 0) {
+            items.push({
+                type: "separator" as const,
+                label: "",
+                onSelect: () => {},
+            });
+        }
+        items.push({
+            label: t("console-common.delete"),
+            icon: "i-lucide-trash-2",
+            color: "error" as const,
+            onSelect: () => handleDeleteModel(row.original),
+        });
+    }
+
+    return items;
+};
 
 const { paging, getLists } = usePaging({
     fetchFun: apiGetAiModelList,
@@ -69,6 +199,7 @@ const handleModelSelect = (model: AiModelInfo, selected: boolean | "indeterminat
  */
 const handleSelectAll = (value: boolean | "indeterminate") => {
     const isSelected = value === true;
+    table.value?.tableApi.toggleAllPageRowsSelected(!!value);
     if (isSelected) {
         paging.items.forEach((model: AiModelInfo) => {
             if (model.id) {
@@ -251,11 +382,58 @@ onMounted(async () => getLists());
                         {{ t("console-ai-provider.model.add") }}
                     </UButton>
                 </AccessControl>
+                <UTabs
+                    v-model="tab"
+                    :items="tabs"
+                    size="xs"
+                    :ui="{
+                        root: 'gap-0',
+                        indicator: 'bg-background dark:bg-primary',
+                        leadingIcon: 'bg-black dark:bg-white',
+                    }"
+                    @update:model-value="selectedModels.clear()"
+                ></UTabs>
             </div>
         </div>
 
+        <!-- 列表网格 -->
+        <template v-if="!paging.loading && paging.items.length > 0 && tab === 1">
+            <ProScrollArea class="h-[calc(100vh-17rem)]" :shadow="false">
+                <UTable
+                    ref="table"
+                    :columns="columns"
+                    :data="paging.items"
+                    :loading="paging.loading"
+                    @page-change="getLists"
+                    @page-size-change="getLists"
+                >
+                    <template #icon-cell="{ row }">
+                        <div
+                            class="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white"
+                        >
+                            <UIcon name="i-lucide-brain" class="h-5 w-5" />
+                        </div>
+                    </template>
+                    <template #modelType-cell="{ row }">
+                        <UBadge variant="soft" color="neutral">
+                            {{ row.getValue("modelType") }}
+                        </UBadge>
+                    </template>
+                    <template #isActive-cell="{ row }">
+                        <USwitch v-model="row.original.isActive" @update:model-value="" />
+                    </template>
+                    <template #isDefault-cell="{ row }">
+                        <UBadge v-if="row.getValue('isDefault')" variant="soft" color="success">
+                            {{ t("console-common.default") }}
+                        </UBadge>
+                        <div v-else>-</div>
+                    </template>
+                </UTable>
+            </ProScrollArea>
+        </template>
+
         <!-- 卡片网格 -->
-        <template v-if="!paging.loading && paging.items.length > 0">
+        <template v-else-if="!paging.loading && paging.items.length > 0 && tab === 2">
             <ProScrollArea class="h-[calc(100vh-17rem)]" :shadow="false">
                 <div
                     class="mt-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"

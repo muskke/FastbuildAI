@@ -107,7 +107,7 @@ const formData = reactive({
     isDefault: false,
     description: "",
     sortOrder: 0,
-    modelType: "",
+    modelType: undefined,
 });
 
 // 表单验证规则
@@ -408,6 +408,9 @@ defineExpose({ resetForm });
                                     <USelect
                                         v-model="formData.modelType"
                                         :items="modelTypes"
+                                        :placeholder="
+                                            t('console-ai-provider.model.form.modelTypePlaceholder')
+                                        "
                                         class="w-full"
                                     />
                                 </UFormField>

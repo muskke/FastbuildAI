@@ -146,7 +146,7 @@ onMounted(() => getWebsiteConfig());
 </script>
 
 <template>
-    <div class="agreement-container relative mx-auto mt-8">
+    <div class="agreement-container relative mt-8">
         <div class="mb-4 flex flex-col justify-center">
             <h2 class="text-xl font-semibold">{{ t("console-system.website.agreement.title") }}</h2>
             <p class="text-muted-foreground mt-1 text-sm">

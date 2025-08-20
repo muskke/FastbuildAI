@@ -5,6 +5,14 @@
     "actions": {
         "viewDetail": "查看详情"
     },
+    "list": {
+        "title": "对话标题",
+        "userName": "用户名称",
+        "messageCount": "对话次数",
+        "totalTokens": "Token消耗",
+        "updatedAt": "更新时间",
+        "action": "操作"
+    },
     "detail": {
         "title": "对话详情",
         "description": "查看AI对话记录详细信息",

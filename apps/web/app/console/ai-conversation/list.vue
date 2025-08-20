@@ -68,23 +68,23 @@ const handleConversationSelect = (
 const columns = ref<TableColumn<AiConversation>[]>([
     {
         accessorKey: "title",
-        header: "对话标题",
+        header: t("console-ai-conversation.list.title"),
     },
     {
         accessorKey: "userName",
-        header: "用户名称",
+        header: t("console-ai-conversation.list.userName"),
     },
     {
         accessorKey: "messageCount",
-        header: "对话次数",
+        header: t("console-ai-conversation.list.messageCount"),
     },
     {
         accessorKey: "totalTokens",
-        header: "Token消耗",
+        header: t("console-ai-conversation.list.totalTokens"),
     },
     {
         accessorKey: "updatedAt",
-        header: "更新时间",
+        header: t("console-ai-conversation.list.updatedAt"),
         cell: ({ row }) => {
             const updatedAt = row.getValue("updatedAt") as string;
             return h(TimeDisplay, {
@@ -95,7 +95,7 @@ const columns = ref<TableColumn<AiConversation>[]>([
     },
     {
         accessorKey: "action",
-        header: "操作",
+        header: t("console-ai-conversation.list.action"),
         size: 40, // 固定宽度
         enableSorting: false,
         enableHiding: false,

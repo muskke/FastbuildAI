@@ -165,7 +165,18 @@
             "sortOrderHelp": "数值越大，在列表中的排序越靠前",
             "basicInfoTitle": "模型基本信息",
             "basicInfoDescription": "配置模型的基本信息和识别参数",
-            "modelType": "模型类型"
+            "modelType": "模型类型",
+            "modelTypePlaceholder": "请输入模型类型"
+        },
+        "table": {
+            "icon": "图标",
+            "name": "名称",
+            "model": "模型标识",
+            "modelType": "模型类型",
+            "isActive": "状态",
+            "isDefault": "默认模型",
+            "sortOrder": "排序",
+            "action": "操作"
         },
 
         "currency": {
