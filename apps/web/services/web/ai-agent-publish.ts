@@ -116,7 +116,13 @@ export function apiGeneratePublicAgentAccessToken(publishToken: string): Promise
     agentName: string;
     description: string;
 }> {
-    return useConsolePost(`/public-agent/${publishToken}/generate-access-token`);
+    return useConsolePost(
+        `/public-agent/${publishToken}/generate-access-token`,
+        {},
+        {
+            requireAuth: false,
+        },
+    );
 }
 
 /**
