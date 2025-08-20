@@ -10,6 +10,7 @@ import {
     apiBatchDeleteAiModel,
     apiDeleteAiModel,
     apiGetAiModelList,
+    apiSetAiModelIsActive,
     apiSetDefaultModel,
 } from "@/services/console/ai-model";
 import { apiGetAiProviderModelTypes } from "@/services/console/ai-provider";
@@ -281,6 +282,25 @@ const isAllSelected = computed(() => {
     );
 });
 
+/**
+ * 处理状态筛选变化
+ */
+const handleIsActiveChange = async (modelId: string, isActive: boolean) => {
+    try {
+        await apiSetAiModelIsActive(modelId, isActive);
+        toast.success(
+            isActive
+                ? t("console-ai-provider.model.messages.isActiveEnabled")
+                : t("console-ai-provider.model.messages.isActiveDisabled"),
+        );
+
+        // 刷新列表
+        getLists();
+    } catch (error) {
+        console.error("Toggle model active failed:", error);
+    }
+};
+
 const isIndeterminate = computed(() => {
     const selectedCount = paging.items.filter(
         (model: AiModelInfo) => model.id && selectedModels.value.has(model.id as string),
@@ -420,7 +440,12 @@ onMounted(async () => getLists());
                         </UBadge>
                     </template>
                     <template #isActive-cell="{ row }">
-                        <USwitch v-model="row.original.isActive" @update:model-value="" />
+                        <USwitch
+                            v-model="row.original.isActive"
+                            @update:model-value="
+                                handleIsActiveChange(row.original.id, row.original.isActive)
+                            "
+                        />
                     </template>
                     <template #isDefault-cell="{ row }">
                         <UBadge v-if="row.getValue('isDefault')" variant="soft" color="success">
