@@ -1,5 +1,6 @@
 import { BaseController } from "@common/base/controllers/base.controller";
 import { AI_DEFAULT_MODEL } from "@common/constants";
+import { Public } from "@common/decorators";
 import { WebController } from "@common/decorators/controller.decorator";
 import { Playground } from "@common/decorators/playground.decorator";
 import { UserPlayground } from "@common/interfaces/context.interface";
@@ -49,6 +50,7 @@ export class AiModelController extends BaseController {
     /**
      * 获取默认模型
      */
+    @Public()
     @Get("default/current")
     async getDefaultModel() {
         const model_id = await this.dictService.get(AI_DEFAULT_MODEL);
