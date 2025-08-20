@@ -17,7 +17,7 @@ import type { ModelType, Pagination, PaginationResult, QuickMenu } from "@/model
  * @returns 供应商列表（包含模型信息）
  */
 export function apiGetAiProviders(params?: { supportedModelTypes?: ModelType[] }): Promise<any[]> {
-    return useWebGet("/ai-providers", params, { requireAuth: true, dedupe: false });
+    return useWebGet("/ai-providers", params, { dedupe: false });
 }
 
 /**
