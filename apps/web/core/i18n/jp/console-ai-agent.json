@@ -13,8 +13,9 @@
     "create": {
         "title": "エージェント作成",
         "desc": "自律的なツール呼び出しとナレッジベース機能を持つアプリケーションを作成",
-        "importDsl": "DSLファイルをインポート",
-        "importDslDesc": "未公開",
+        "importJson": "JSONをインポート",
+        "importJsonDesc": "JSONからエージェント設定をインポート",
+        "fromTemplate": "テンプレートから作成する",
         "edit": "編集日",
         "editTitle": "エージェント編集",
         "editDesc": "エージェントの基本情報を変更",

@@ -66,7 +66,7 @@ export function apiGetAvailableModels(): Promise<AiModelInfo[]> {
  * @returns {Promise<AiModelInfo>} 默认模型
  */
 export function apiGetDefaultModel(): Promise<AiModelInfo> {
-    return useConsoleGet("/ai-models/default/current");
+    return useConsoleGet("/ai-models/default/current", { requireAuth: true });
 }
 
 // ==================== AI模型管理相关 API ====================

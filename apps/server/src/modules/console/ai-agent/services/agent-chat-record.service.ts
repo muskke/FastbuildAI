@@ -47,10 +47,6 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
 
         // 查询该智能体的所有对话记录：包括注册用户的记录和游客的记录
         queryBuilder.where("record.agentId = :agentId", { agentId: dto.agentId });
-        queryBuilder.andWhere(
-            "(record.userId = :userId OR (record.userId IS NULL AND record.anonymousIdentifier IS NOT NULL))",
-            { userId: user.id },
-        );
         queryBuilder.andWhere("record.isDeleted = :isDeleted", { isDeleted: false });
 
         if (dto.keyword) {
@@ -73,39 +69,11 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
      * @returns 对话记录详情
      */
     async getChatRecordDetail(id: string, user: UserPlayground): Promise<AgentChatRecord> {
-        // 检查是否是匿名用户（通过用户ID格式判断）
-        const isAnonymousUser =
-            user.id.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-8[a-f0-9]{3}-[a-f0-9]{12}$/) !==
-            null;
-
-        const where = isAnonymousUser
-            ? {
-                  id,
-                  anonymousIdentifier: user.id,
-                  isDeleted: false,
-              }
-            : {
-                  id,
-                  userId: user.id,
-                  isDeleted: false,
-              };
-
-        let record = await this.chatRecordRepository.findOne({
-            where,
+        const whereConditions = this.buildUserWhereConditions(user, { id, isDeleted: false });
+        const record = await this.chatRecordRepository.findOne({
+            where: whereConditions,
             relations: ["agent"],
         });
-
-        // 如果没找到且是匿名用户，尝试用旧的userId字段查找
-        if (!record && isAnonymousUser) {
-            record = await this.chatRecordRepository.findOne({
-                where: {
-                    id,
-                    userId: user.id,
-                    isDeleted: false,
-                },
-                relations: ["agent"],
-            });
-        }
 
         if (!record) {
             throw HttpExceptionFactory.notFound("对话记录不存在");
@@ -126,44 +94,23 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
     ): Promise<{ deletedCount: number }> {
         const { recordIds } = dto;
 
-        if (!recordIds || recordIds.length === 0) {
+        if (!recordIds?.length) {
             throw HttpExceptionFactory.badRequest("请选择要删除的对话记录");
         }
 
-        try {
-            // 查询用户的对话记录
-            const records = await this.chatRecordRepository.find({
-                where: {
-                    id: In(recordIds),
-                    userId: user.id,
-                    isDeleted: false,
-                },
-            });
+        const records = await this.findUserRecords(user, { id: In(recordIds), isDeleted: false });
 
-            if (records.length === 0) {
-                throw HttpExceptionFactory.badRequest("没有找到可删除的对话记录");
-            }
-
-            // 软删除：更新 isDeleted 字段
-            const result = await this.chatRecordRepository.update(
-                {
-                    id: In(records.map((r) => r.id)),
-                    userId: user.id,
-                },
-                {
-                    isDeleted: true,
-                },
-            );
-
-            this.logger.log(`[+] 批量删除对话记录成功: ${records.length} 条记录`);
-
-            return {
-                deletedCount: result.affected || 0,
-            };
-        } catch (err) {
-            this.logger.error(`[!] 批量删除对话记录失败: ${err.message}`, err.stack);
-            throw HttpExceptionFactory.business("批量删除对话记录失败");
+        if (!records.length) {
+            throw HttpExceptionFactory.badRequest("没有找到可删除的对话记录");
         }
+
+        const result = await this.softDeleteRecords(
+            records.map((r) => r.id),
+            user,
+        );
+        this.logger.log(`[+] 批量删除对话记录成功: ${records.length} 条记录`);
+
+        return { deletedCount: result.affected || 0 };
     }
 
     /**
@@ -173,39 +120,14 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
      * @returns 删除结果
      */
     async deleteChatRecord(id: string, user: UserPlayground): Promise<void> {
-        try {
-            // 查询用户的对话记录
-            const record = await this.chatRecordRepository.findOne({
-                where: {
-                    id,
-                    userId: user.id,
-                    isDeleted: false,
-                },
-            });
+        const records = await this.findUserRecords(user, { id, isDeleted: false });
 
-            if (!record) {
-                throw HttpExceptionFactory.notFound("对话记录不存在或已被删除");
-            }
-
-            // 软删除：更新 isDeleted 字段
-            await this.chatRecordRepository.update(
-                {
-                    id,
-                    userId: user.id,
-                },
-                {
-                    isDeleted: true,
-                },
-            );
-
-            this.logger.log(`[+] 删除对话记录成功: ${id}`);
-        } catch (err) {
-            this.logger.error(`[!] 删除对话记录失败: ${err.message}`, err.stack);
-            if (err instanceof Error && err.message.includes("不存在")) {
-                throw err;
-            }
-            throw HttpExceptionFactory.business("删除对话记录失败");
+        if (!records.length) {
+            throw HttpExceptionFactory.notFound("对话记录不存在或已被删除");
         }
+
+        await this.softDeleteRecords([id], user);
+        this.logger.log(`[+] 删除对话记录成功: ${id}`);
     }
 
     /**
@@ -222,25 +144,21 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
         title?: string,
         anonymousIdentifier?: string,
     ): Promise<AgentChatRecord> {
-        try {
-            const result = await this.create({
-                agentId,
-                userId: userId || null,
-                anonymousIdentifier: anonymousIdentifier || null,
-                title: title || "新对话",
-                messageCount: 0,
-                totalTokens: 0,
-                isDeleted: false,
-            });
+        const recordData = {
+            agentId,
+            userId: userId || null,
+            anonymousIdentifier: anonymousIdentifier || null,
+            title: title || "新对话",
+            messageCount: 0,
+            totalTokens: 0,
+            isDeleted: false,
+        };
 
-            this.logger.log(
-                `[+] 对话记录创建成功: ${result.id} - ${userId ? `用户:${userId}` : `匿名:${anonymousIdentifier}`}`,
-            );
-            return result as AgentChatRecord;
-        } catch (err) {
-            this.logger.error(`[!] 对话记录创建失败: ${err.message}`, err.stack);
-            throw HttpExceptionFactory.business("对话记录创建失败");
-        }
+        const result = await this.create(recordData);
+        const userInfo = userId ? `用户:${userId}` : `匿名:${anonymousIdentifier}`;
+        this.logger.log(`[+] 对话记录创建成功: ${result.id} - ${userInfo}`);
+
+        return result as AgentChatRecord;
     }
 
     /**
@@ -254,17 +172,12 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
         messageCount: number,
         totalTokens: number,
     ): Promise<void> {
-        try {
-            await this.chatRecordRepository.update(id, {
-                messageCount,
-                totalTokens,
-                updatedAt: new Date(),
-            });
-
-            this.logger.log(`[+] 对话记录统计更新成功: ${id}`);
-        } catch (err) {
-            this.logger.error(`[!] 对话记录统计更新失败: ${err.message}`, err.stack);
-        }
+        await this.chatRecordRepository.update(id, {
+            messageCount,
+            totalTokens,
+            updatedAt: new Date(),
+        });
+        this.logger.log(`[+] 对话记录统计更新成功: ${id}`);
     }
 
     /**
@@ -284,5 +197,64 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
             paginationDto,
             user,
         );
+    }
+
+    // ==================== 辅助方法 ====================
+
+    /**
+     * 检查是否是匿名用户
+     */
+    private isAnonymousUser(user: UserPlayground): boolean {
+        return user.username.startsWith("anonymous_") || user.username.startsWith("access_");
+    }
+
+    /**
+     * 构建用户相关的查询条件
+     */
+    private buildUserWhereConditions(user: UserPlayground, baseCondition: any = {}) {
+        const whereConditions = [];
+        const isAnonymous = this.isAnonymousUser(user);
+
+        if (isAnonymous) {
+            whereConditions.push({
+                ...baseCondition,
+                anonymousIdentifier: user.id,
+            });
+        } else {
+            whereConditions.push({
+                ...baseCondition,
+                userId: user.id,
+            });
+
+            // 支持跨状态访问（登录用户访问之前的匿名记录）
+            if ((user as any).anonymousIdentifier) {
+                whereConditions.push({
+                    ...baseCondition,
+                    anonymousIdentifier: (user as any).anonymousIdentifier,
+                });
+            }
+        }
+
+        return whereConditions;
+    }
+
+    /**
+     * 查找用户的对话记录
+     */
+    private async findUserRecords(user: UserPlayground, additionalConditions: any = {}) {
+        const whereConditions = this.buildUserWhereConditions(user, additionalConditions);
+        return await this.chatRecordRepository.find({ where: whereConditions });
+    }
+
+    /**
+     * 软删除对话记录
+     */
+    private async softDeleteRecords(recordIds: string[], user: UserPlayground) {
+        const isAnonymous = this.isAnonymousUser(user);
+        const whereCondition = isAnonymous
+            ? { id: In(recordIds), anonymousIdentifier: user.id }
+            : { id: In(recordIds), userId: user.id };
+
+        return await this.chatRecordRepository.update(whereCondition, { isDeleted: true });
     }
 }

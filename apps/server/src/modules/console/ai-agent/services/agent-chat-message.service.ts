@@ -30,16 +30,12 @@ export class AgentChatMessageService extends BaseService<AgentChatMessage> {
      * @param queryDto 查询条件
      */
     async findMessages(paginationDto: PaginationDto, queryDto?: { conversationId?: string }) {
-        // 构建查询选项
         const options = {
             relations: ["conversation", "user", "agent"],
             order: { createdAt: "DESC" as const },
-            ...(queryDto?.conversationId && {
-                where: { conversationId: queryDto.conversationId },
-            }),
+            ...(queryDto?.conversationId && { where: { conversationId: queryDto.conversationId } }),
         };
 
-        // 使用 BaseService 的 paginate 方法
         return this.paginate(paginationDto, options);
     }
 
@@ -54,18 +50,23 @@ export class AgentChatMessageService extends BaseService<AgentChatMessage> {
         paginationDto: PaginationDto,
         user: UserPlayground,
     ) {
-        // 首先验证对话记录是否属于当前用户
+        await this.validateConversationExists(conversationId);
+        return await this.findMessages(paginationDto, { conversationId });
+    }
+
+    // ==================== 辅助方法 ====================
+
+    /**
+     * 验证对话记录是否存在
+     * @param conversationId 对话记录ID
+     */
+    private async validateConversationExists(conversationId: string): Promise<void> {
         const record = await this.chatRecordRepository.findOne({
-            where: {
-                id: conversationId,
-                isDeleted: false,
-            },
+            where: { id: conversationId, isDeleted: false },
         });
 
         if (!record) {
             throw HttpExceptionFactory.notFound("对话记录不存在");
         }
-
-        return await this.findMessages(paginationDto, { conversationId });
     }
 }

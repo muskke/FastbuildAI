@@ -302,3 +302,23 @@ export function apiGetRecommendedTemplates(): Promise<AgentTemplate[]> {
 export function apiCreateAgentFromTemplate(data: CreateAgentFromTemplateParams): Promise<Agent> {
     return useConsolePost("/ai-agent/templates/create", data);
 }
+
+// ==================== 智能体导入导出相关 API ====================
+
+/**
+ * 导出智能体配置
+ * @param id 智能体ID
+ * @returns 智能体配置JSON数据
+ */
+export function apiExportAgent(id: string): Promise<Agent> {
+    return useConsoleGet(`/ai-agent/export`, { id });
+}
+
+/**
+ * 导入智能体配置
+ * @param data 导入数据
+ * @returns 导入后的智能体信息
+ */
+export function apiImportAgent(data: CreateAgentFromTemplateParams): Promise<Agent> {
+    return useConsolePost("/ai-agent/import", data);
+}

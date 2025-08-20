@@ -13,8 +13,8 @@
     "create": {
         "title": "创建智能体",
         "desc": "创建具备自主工具调用能力，以及知识库能力的应用",
-        "importDsl": "导入DSL文件",
-        "importDslDesc": "暂未开放",
+        "importJson": "导入JSON",
+        "importJsonDesc": "从JSON导入智能体配置",
         "fromTemplate": "从模板创建",
         "edit": "编辑于",
         "editTitle": "编辑智能体",

@@ -9,6 +9,7 @@ import { Response } from "express";
 import {
     AgentChatDto,
     CreateAgentDto,
+    ImportAgentDto,
     PublishAgentDto,
     QueryAgentDto,
     QueryAgentStatisticsDto,
@@ -36,6 +37,56 @@ export class AgentController {
         private readonly agentChatService: AgentChatService,
         private readonly agentTemplateService: AgentTemplateService,
     ) {}
+
+    // ========== 智能体导入导出相关接口 ==========
+
+    /**
+     * 导出智能体配置
+     *
+     * @param id 智能体ID
+     * @param user 当前用户信息
+     * @returns 智能体配置JSON数据
+     */
+    @Get("export")
+    @Permissions({
+        code: "export",
+        name: "导出智能体配置",
+    })
+    async exportAgent(@Query("id") id: string, @Playground() user: UserPlayground) {
+        if (!id) {
+            throw new Error("智能体ID不能为空");
+        }
+        return this.agentService.getAgentDetail(id);
+    }
+
+    /**
+     * 导入智能体配置
+     *
+     * @param dto 导入智能体配置DTO
+     * @param user 当前用户信息
+     * @returns 导入结果
+     */
+    @Post("import")
+    @Permissions({
+        code: "import",
+        name: "导入智能体配置",
+    })
+    async importAgent(@Body() dto: ImportAgentDto) {
+        dto.avatar = dto.avatar || "/static/images/agent.png";
+        const agent = await this.agentService.createAgentFromTemplate(dto as ImportAgentDto);
+
+        // 自动发布智能体
+        await this.agentService.publishAgent(agent.id, {
+            publishConfig: {
+                allowOrigins: [],
+                rateLimitPerMinute: 60,
+                showBranding: true,
+                allowDownloadHistory: false,
+            },
+        });
+
+        return agent;
+    }
 
     // ========== 模板管理相关接口 ==========
 
