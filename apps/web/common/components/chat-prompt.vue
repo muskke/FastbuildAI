@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useFocus } from "@vueuse/core";
 
+import { useUserStore } from "@/common/stores/user";
+
 interface TextareaInstance {
     textareaRef: HTMLTextAreaElement | null;
 }
@@ -12,6 +14,7 @@ const emits = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const userStore = useUserStore();
 
 const props = withDefaults(
     defineProps<{
@@ -37,6 +40,9 @@ const { focused: isFocused } = useFocus(textareaElement, { initialValue: false }
 // 点击其他地方也聚焦输入框
 function handleFocus() {
     uTextareaRefs.value?.textareaRef?.focus();
+    if (!userStore.isAgreed) {
+        navigateTo("/login");
+    }
 }
 
 // 处理回车事件
@@ -69,7 +75,13 @@ function handleSubmit() {
     }
 }
 
-onMounted(() => nextTick(() => handleFocus()));
+onMounted(() =>
+    nextTick(() => {
+        if (userStore.isAgreed) {
+            handleFocus();
+        }
+    }),
+);
 </script>
 
 <template>
@@ -88,7 +100,6 @@ onMounted(() => nextTick(() => handleFocus()));
             class="custom-textarea-wrapper w-full"
             style="--ui-bg-elevated: var(--color-background)"
             variant="ghost"
-            :auto-focus="true"
             :rows="rows"
             :maxrows="8"
             :highlight="false"
