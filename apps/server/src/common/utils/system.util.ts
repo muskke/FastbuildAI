@@ -47,12 +47,12 @@ export const startLog = (currentPort?: number, startTime?: number) => {
 
     if (duration < 1000) {
         TerminalLogger.success("Startup Time", `${duration} ms`);
-    } else if (duration < 2000) {
+    } else if (duration < 5000) {
         TerminalLogger.info("Startup Time", `${duration} ms`);
-    } else if (duration < 3000) {
+    } else if (duration < 10000) {
         TerminalLogger.warn("Startup Time", `${duration} ms`);
     } else {
-        TerminalLogger.error("Startup Time", `${duration} ms`);
+        TerminalLogger.error("Startup Time", `${duration} ms`, { icon: "⚠️" });
     }
 };
 
