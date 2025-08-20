@@ -158,6 +158,7 @@ export class PublicAgentController {
             publishToken,
             req.accessToken!,
             query,
+            req.user,
         );
     }
 
@@ -184,6 +185,7 @@ export class PublicAgentController {
             req.accessToken!,
             conversationId,
             query,
+            req.user,
         );
     }
 
@@ -207,6 +209,7 @@ export class PublicAgentController {
             publishToken,
             req.accessToken!,
             conversationId,
+            req.user,
         );
     }
 
@@ -233,6 +236,7 @@ export class PublicAgentController {
             req.accessToken!,
             conversationId,
             body,
+            req.user,
         );
     }
 
@@ -258,6 +262,7 @@ export class PublicAgentController {
             req.accessToken!,
             dto,
             res,
+            req.user,
         );
     }
 

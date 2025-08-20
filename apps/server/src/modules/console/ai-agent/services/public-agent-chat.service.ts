@@ -88,22 +88,37 @@ export class PublicAgentChatService {
         publishToken: string,
         accessToken: string,
         query: { page?: number; pageSize?: number },
+        loggedInUser?: UserPlayground, // 可选的登录用户信息
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
-        const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
 
         const paginationDto: PaginationDto = {
             page: query.page || 1,
             pageSize: query.pageSize || 10,
         };
 
-        // 先尝试用anonymousIdentifier查询对话记录
-        let options = {
-            where: {
+        // 简化的跨用户状态对话记录查询
+        const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
+
+        const whereConditions = [];
+
+        if (loggedInUser) {
+            // 登录用户：查询自己的用户记录 + 对应访问令牌的匿名记录
+            whereConditions.push(
+                { agentId: agent.id, userId: loggedInUser.id, isDeleted: false },
+                { agentId: agent.id, anonymousIdentifier: anonymousIdentifier, isDeleted: false },
+            );
+        } else {
+            // 匿名用户：只查询对应访问令牌的匿名记录
+            whereConditions.push({
                 agentId: agent.id,
                 anonymousIdentifier: anonymousIdentifier,
                 isDeleted: false,
-            },
+            });
+        }
+
+        const options = {
+            where: whereConditions,
             order: {
                 updatedAt: "DESC" as const,
                 createdAt: "DESC" as const,
@@ -122,30 +137,45 @@ export class PublicAgentChatService {
         accessToken: string,
         conversationId: string,
         query: { page?: number; pageSize?: number },
+        loggedInUser?: UserPlayground, // 可选的登录用户信息
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
+
+        // 简化的对话记录验证
         const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
 
-        // 验证对话记录所有权
-        let chatRecord = await this.chatRecordRepository.findOne({
-            where: {
+        // 构建查询条件
+        const whereConditions = [];
+
+        if (loggedInUser) {
+            // 登录用户：查找用户记录或匿名记录
+            whereConditions.push(
+                {
+                    id: conversationId,
+                    agentId: agent.id,
+                    userId: loggedInUser.id,
+                    isDeleted: false,
+                },
+                {
+                    id: conversationId,
+                    agentId: agent.id,
+                    anonymousIdentifier: anonymousIdentifier,
+                    isDeleted: false,
+                },
+            );
+        } else {
+            // 匿名用户：只查找匿名记录
+            whereConditions.push({
                 id: conversationId,
                 agentId: agent.id,
                 anonymousIdentifier: anonymousIdentifier,
                 isDeleted: false,
-            },
-        });
-
-        if (!chatRecord) {
-            chatRecord = await this.chatRecordRepository.findOne({
-                where: {
-                    id: conversationId,
-                    agentId: agent.id,
-                    userId: anonymousIdentifier,
-                    isDeleted: false,
-                },
             });
         }
+
+        const chatRecord = await this.chatRecordRepository.findOne({
+            where: whereConditions,
+        });
 
         if (!chatRecord) {
             throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
@@ -156,21 +186,17 @@ export class PublicAgentChatService {
             pageSize: query.pageSize || 10,
         };
 
-        // 先尝试用anonymousIdentifier查询消息
-        let options = {
+        const messageOptions = {
             where: {
                 conversationId: conversationId,
                 agentId: agent.id,
-                anonymousIdentifier: anonymousIdentifier,
             },
             order: {
                 createdAt: "ASC" as const,
             },
         };
 
-        let result = await this.chatMessageService.paginate(paginationDto, options);
-
-        return result;
+        return await this.chatMessageService.paginate(paginationDto, messageOptions);
     }
 
     /**
@@ -180,30 +206,41 @@ export class PublicAgentChatService {
         publishToken: string,
         accessToken: string,
         conversationId: string,
+        loggedInUser?: UserPlayground, // 可选的登录用户信息
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
         const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
 
-        // 验证对话记录所有权
-        let chatRecord = await this.chatRecordRepository.findOne({
-            where: {
+        // 构建查询条件
+        const whereConditions = [];
+
+        if (loggedInUser) {
+            whereConditions.push(
+                {
+                    id: conversationId,
+                    agentId: agent.id,
+                    userId: loggedInUser.id,
+                    isDeleted: false,
+                },
+                {
+                    id: conversationId,
+                    agentId: agent.id,
+                    anonymousIdentifier: anonymousIdentifier,
+                    isDeleted: false,
+                },
+            );
+        } else {
+            whereConditions.push({
                 id: conversationId,
                 agentId: agent.id,
                 anonymousIdentifier: anonymousIdentifier,
                 isDeleted: false,
-            },
-        });
-
-        if (!chatRecord) {
-            chatRecord = await this.chatRecordRepository.findOne({
-                where: {
-                    id: conversationId,
-                    agentId: agent.id,
-                    userId: anonymousIdentifier,
-                    isDeleted: false,
-                },
             });
         }
+
+        const chatRecord = await this.chatRecordRepository.findOne({
+            where: whereConditions,
+        });
 
         if (!chatRecord) {
             throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
@@ -215,9 +252,10 @@ export class PublicAgentChatService {
         // 删除对话消息
         await this.chatMessageRepository.delete({ conversationId: conversationId });
 
-        this.logger.log(
-            `[+] 删除访问令牌对话记录: ${agent.id} - ${accessToken.substring(0, 8)}... - ${conversationId}`,
-        );
+        const userInfo = loggedInUser
+            ? `登录用户(${loggedInUser.username})`
+            : `匿名用户(${accessToken.substring(0, 8)}...)`;
+        this.logger.log(`[+] 删除对话记录: ${agent.id} - ${userInfo} - ${conversationId}`);
 
         return { message: "对话记录删除成功" };
     }
@@ -230,45 +268,56 @@ export class PublicAgentChatService {
         accessToken: string,
         conversationId: string,
         updateData: { title?: string },
+        loggedInUser?: UserPlayground, // 可选的登录用户信息
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
         const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
 
-        // 验证对话记录所有权
-        let chatRecord = await this.chatRecordRepository.findOne({
-            where: {
+        // 构建查询条件
+        const whereConditions = [];
+
+        if (loggedInUser) {
+            whereConditions.push(
+                {
+                    id: conversationId,
+                    agentId: agent.id,
+                    userId: loggedInUser.id,
+                    isDeleted: false,
+                },
+                {
+                    id: conversationId,
+                    agentId: agent.id,
+                    anonymousIdentifier: anonymousIdentifier,
+                    isDeleted: false,
+                },
+            );
+        } else {
+            whereConditions.push({
                 id: conversationId,
                 agentId: agent.id,
                 anonymousIdentifier: anonymousIdentifier,
                 isDeleted: false,
-            },
-        });
-
-        if (!chatRecord) {
-            chatRecord = await this.chatRecordRepository.findOne({
-                where: {
-                    id: conversationId,
-                    agentId: agent.id,
-                    userId: anonymousIdentifier,
-                    isDeleted: false,
-                },
             });
         }
+
+        const chatRecord = await this.chatRecordRepository.findOne({
+            where: whereConditions,
+        });
 
         if (!chatRecord) {
             throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
         }
 
         // 更新对话记录
-        const updateFields: any = {};
         if (updateData.title !== undefined) {
-            updateFields.title = updateData.title;
+            await this.chatRecordRepository.update(conversationId, { title: updateData.title });
         }
 
-        await this.chatRecordRepository.update(conversationId, updateFields);
-
+        const userInfo = loggedInUser
+            ? `登录用户(${loggedInUser.username})`
+            : `匿名用户(${accessToken.substring(0, 8)}...)`;
         this.logger.log(
-            `[+] 更新访问令牌对话记录: ${agent.id} - ${accessToken.substring(0, 8)}... - ${conversationId} - 标题: ${updateData.title}`,
+            `[+] 更新对话记录: ${agent.id} - ${userInfo} - ${conversationId} - 标题: ${updateData.title}`,
         );
 
         return { message: "对话记录更新成功" };
@@ -282,20 +331,24 @@ export class PublicAgentChatService {
         accessToken: string,
         dto: PublicAgentChatDto,
         res: Response,
+        loggedInUser?: UserPlayground, // 可选的登录用户信息
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
         await this.checkRateLimit(agent);
 
         const agentChatDto = this.convertToAgentChatDto(dto, agent);
-        const anonymousUser = this.createAnonymousUserWithAccessToken(accessToken);
+
+        // 如果用户已登录，使用登录用户信息；否则使用基于访问令牌的匿名用户
+        const user = loggedInUser
+            ? loggedInUser
+            : this.createAnonymousUserWithAccessToken(accessToken);
+
+        this.logger.log(
+            `[+] 公开智能体对话用户: ${loggedInUser ? `登录用户(${loggedInUser.username})` : `匿名用户(${accessToken.substring(0, 8)}...)`}`,
+        );
 
         try {
-            return await this.agentChatService.chatStream(
-                agent.id,
-                agentChatDto,
-                anonymousUser,
-                res,
-            );
+            return await this.agentChatService.chatStream(agent.id, agentChatDto, user, res);
         } catch (error) {
             this.logger.error(`[!] 公开智能体流式对话失败: ${error.message}`, error.stack);
             throw HttpExceptionFactory.business("流式对话处理失败");
