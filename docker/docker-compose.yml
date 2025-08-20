@@ -103,7 +103,6 @@ services:
       fi
   
       if [ ! -f "/fastbuildai/public/index.html" ] || [ "$$QUICK_START_MODE" = "false" ]; then
-        NODE_OPTIONS="--max-old-space-size=1550" NUXT_BUILD_SSR=false NUXT_BUILD_ENV=production
         echo "🌐 Building web application..."
         pnpm --filter ./apps/web run generate
       fi
