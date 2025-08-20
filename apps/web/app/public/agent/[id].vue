@@ -10,7 +10,6 @@ import { uuid } from "@/common/utils/helper";
 import type { AiMessage } from "@/models/ai-conversation";
 import type { PaginationResult } from "@/models/global";
 import {
-    apiCreatePublicAgentAnnotation,
     apiGeneratePublicAgentAccessToken,
     apiGetPublicAgentInfo,
     apiGetPublicAgentMessages,
@@ -63,7 +62,7 @@ const queryPaging = reactive({ page: 1, pageSize: 15 });
 const hasMore = ref(false);
 
 // 获取或生成访问令牌
-const { data: accessTokenData } = await useAsyncData(
+const { data: accessTokenData, refresh: refreshAccessToken } = await useAsyncData(
     `access-token-${publishToken.value}`,
     async () => {
         const cookieKey = `public_agent_token_${publishToken.value}`;
@@ -95,7 +94,7 @@ const { data: messagesData, refresh: refreshMessagesData } = await useAsyncData(
                 total: 0,
                 page: queryPaging.page,
                 pageSize: queryPaging.pageSize,
-            } as any;
+            } as unknown as Promise<PaginationResult<AiMessage>>;
         }
         return apiGetPublicAgentMessages(
             publishToken.value,
@@ -112,6 +111,9 @@ const { data: messagesData, refresh: refreshMessagesData } = await useAsyncData(
 // 检查智能体是否存在
 if (!messagesData.value) {
     agentError.value = "智能体不存在或未发布";
+}
+if (!messagesData.value?.items?.length) {
+    conversationId.value = null;
 }
 
 hasMore.value = (messagesData.value?.total as number) > (messagesData.value?.items?.length || 0);
@@ -141,14 +143,13 @@ const createNewConversation = () => {
 };
 
 const switchConversation = async (conv: any) => {
+    console.log("switchConversation", conv.id === conversationId.value, conv);
     if (conv.id === conversationId.value) return;
     conversationId.value = conv.id;
     queryPaging.page = 1;
 
-    if (messagesData.value?.items?.length) {
-        refreshMessagesData();
-        scrollToBottom();
-    }
+    refreshMessagesData();
+    scrollToBottom();
 };
 
 // 聊天功能
