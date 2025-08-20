@@ -184,7 +184,7 @@ onMounted(async () => {
         @close="handleClose"
     >
         <!-- 加载状态 -->
-        <div v-if="detailLoading" class="flex items-center justify-center" style="height: 420px">
+        <div v-if="detailLoading" class="flex items-center justify-center" style="height: 576px">
             <UIcon name="i-lucide-loader-2" class="size-8 animate-spin" />
         </div>
 
@@ -202,7 +202,9 @@ onMounted(async () => {
                 </UFormField>
 
                 <UFormField :label="t('console-ai-agent.logs.answer')" name="answer" required>
-                    <ProEditor v-model="formData.answer" custom-class="!h-70" />
+                    <div class="h-full min-h-70 w-full">
+                        <ProEditor v-model="formData.answer" custom-class="!min-h-70 " />
+                    </div>
                     <template #hint> {{ t("console-ai-agent.logs.answerHint") }} </template>
                 </UFormField>
 
