@@ -80,7 +80,7 @@ export interface AiProviderQueryParams extends Pagination {
     /** 关键词搜索 */
     keyword?: string;
     /** 是否启用 */
-    isActive?: string;
+    isActive?: boolean;
 }
 
 /**
