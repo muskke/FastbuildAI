@@ -40,6 +40,7 @@ export class PublicAgentChatService {
 
     /**
      * 生成访问令牌
+     * @param publishToken 发布令牌
      */
     async generateAccessToken(publishToken: string) {
         const agent = await this.getAgentByPublishToken(publishToken);
@@ -59,6 +60,8 @@ export class PublicAgentChatService {
 
     /**
      * API认证方式对话
+     * @param apiKey API密钥
+     * @param dto 对话请求数据
      */
     async chatWithApiKey(apiKey: string, dto: PublicAgentChatDto) {
         if (!apiKey) {
@@ -71,6 +74,9 @@ export class PublicAgentChatService {
 
     /**
      * API认证方式流式对话
+     * @param apiKey API密钥
+     * @param dto 对话请求数据
+     * @param res 响应对象
      */
     async chatStreamWithApiKey(apiKey: string, dto: PublicAgentChatDto, res: Response) {
         if (!apiKey) {
@@ -83,269 +89,133 @@ export class PublicAgentChatService {
 
     /**
      * 获取公开智能体对话记录列表
+     * @param publishToken 发布令牌
+     * @param accessToken 访问令牌
+     * @param query 分页查询参数
+     * @param loggedInUser 可选的登录用户信息
      */
     async getConversationsByAccessToken(
         publishToken: string,
         accessToken: string,
         query: { page?: number; pageSize?: number },
-        loggedInUser?: UserPlayground, // 可选的登录用户信息
+        loggedInUser?: UserPlayground,
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
-
-        const paginationDto: PaginationDto = {
-            page: query.page || 1,
-            pageSize: query.pageSize || 10,
-        };
-
-        // 简化的跨用户状态对话记录查询
-        const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
-
-        const whereConditions = [];
-
-        if (loggedInUser) {
-            // 登录用户：查询自己的用户记录 + 对应访问令牌的匿名记录
-            whereConditions.push(
-                { agentId: agent.id, userId: loggedInUser.id, isDeleted: false },
-                { agentId: agent.id, anonymousIdentifier: anonymousIdentifier, isDeleted: false },
-            );
-        } else {
-            // 匿名用户：只查询对应访问令牌的匿名记录
-            whereConditions.push({
-                agentId: agent.id,
-                anonymousIdentifier: anonymousIdentifier,
-                isDeleted: false,
-            });
-        }
+        const whereConditions = this.buildConversationWhereConditions(
+            agent.id,
+            accessToken,
+            loggedInUser,
+        );
 
         const options = {
             where: whereConditions,
-            order: {
-                updatedAt: "DESC" as const,
-                createdAt: "DESC" as const,
-            },
+            order: { updatedAt: "DESC" as const, createdAt: "DESC" as const },
         };
 
-        let result = await this.chatRecordService.paginate(paginationDto, options);
-        return result;
+        return await this.chatRecordService.paginate(query, options);
     }
 
     /**
      * 获取公开智能体对话消息
+     * @param publishToken 发布令牌
+     * @param conversationId 对话记录ID
+     * @param query 分页查询参数
      */
     async getMessagesByAccessToken(
         publishToken: string,
-        accessToken: string,
         conversationId: string,
-        query: { page?: number; pageSize?: number },
-        loggedInUser?: UserPlayground, // 可选的登录用户信息
+        query: PaginationDto,
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
-
-        // 简化的对话记录验证
-        const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
-
-        // 构建查询条件
-        const whereConditions = [];
-
-        if (loggedInUser) {
-            // 登录用户：查找用户记录或匿名记录
-            whereConditions.push(
-                {
-                    id: conversationId,
-                    agentId: agent.id,
-                    userId: loggedInUser.id,
-                    isDeleted: false,
-                },
-                {
-                    id: conversationId,
-                    agentId: agent.id,
-                    anonymousIdentifier: anonymousIdentifier,
-                    isDeleted: false,
-                },
-            );
-        } else {
-            // 匿名用户：只查找匿名记录
-            whereConditions.push({
-                id: conversationId,
-                agentId: agent.id,
-                anonymousIdentifier: anonymousIdentifier,
-                isDeleted: false,
-            });
-        }
-
-        const chatRecord = await this.chatRecordRepository.findOne({
-            where: whereConditions,
-        });
-
-        if (!chatRecord) {
-            throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
-        }
-
-        const paginationDto: PaginationDto = {
-            page: query.page || 1,
-            pageSize: query.pageSize || 10,
-        };
-
         const messageOptions = {
-            where: {
-                conversationId: conversationId,
-                agentId: agent.id,
-            },
-            order: {
-                createdAt: "ASC" as const,
-            },
+            where: { conversationId, agentId: agent.id },
+            order: { createdAt: "ASC" as const },
         };
 
-        return await this.chatMessageService.paginate(paginationDto, messageOptions);
+        return await this.chatMessageService.paginate(query, messageOptions);
     }
 
     /**
      * 删除公开智能体对话记录
+     * @param publishToken 发布令牌
+     * @param accessToken 访问令牌
+     * @param conversationId 对话记录ID
+     * @param loggedInUser 可选的登录用户信息
      */
     async deleteConversationByAccessToken(
         publishToken: string,
         accessToken: string,
         conversationId: string,
-        loggedInUser?: UserPlayground, // 可选的登录用户信息
+        loggedInUser?: UserPlayground,
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
-        const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
-
-        // 构建查询条件
-        const whereConditions = [];
-
-        if (loggedInUser) {
-            whereConditions.push(
-                {
-                    id: conversationId,
-                    agentId: agent.id,
-                    userId: loggedInUser.id,
-                    isDeleted: false,
-                },
-                {
-                    id: conversationId,
-                    agentId: agent.id,
-                    anonymousIdentifier: anonymousIdentifier,
-                    isDeleted: false,
-                },
-            );
-        } else {
-            whereConditions.push({
-                id: conversationId,
-                agentId: agent.id,
-                anonymousIdentifier: anonymousIdentifier,
-                isDeleted: false,
-            });
-        }
-
-        const chatRecord = await this.chatRecordRepository.findOne({
-            where: whereConditions,
-        });
-
-        if (!chatRecord) {
-            throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
-        }
+        await this.validateConversationAccess(agent.id, conversationId, accessToken, loggedInUser);
 
         // 软删除对话记录
         await this.chatRecordRepository.update(conversationId, { isDeleted: true });
-
         // 删除对话消息
-        await this.chatMessageRepository.delete({ conversationId: conversationId });
+        await this.chatMessageRepository.delete({ conversationId });
 
-        const userInfo = loggedInUser
-            ? `登录用户(${loggedInUser.username})`
-            : `匿名用户(${accessToken.substring(0, 8)}...)`;
-        this.logger.log(`[+] 删除对话记录: ${agent.id} - ${userInfo} - ${conversationId}`);
-
+        this.logUserAction("删除对话记录", agent.id, conversationId, accessToken, loggedInUser);
         return { message: "对话记录删除成功" };
     }
 
     /**
      * 更新公开智能体对话记录
+     * @param publishToken 发布令牌
+     * @param accessToken 访问令牌
+     * @param conversationId 对话记录ID
+     * @param updateData 更新数据
+     * @param loggedInUser 可选的登录用户信息
      */
     async updateConversationByAccessToken(
         publishToken: string,
         accessToken: string,
         conversationId: string,
         updateData: { title?: string },
-        loggedInUser?: UserPlayground, // 可选的登录用户信息
+        loggedInUser?: UserPlayground,
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
-        const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
-
-        // 构建查询条件
-        const whereConditions = [];
-
-        if (loggedInUser) {
-            whereConditions.push(
-                {
-                    id: conversationId,
-                    agentId: agent.id,
-                    userId: loggedInUser.id,
-                    isDeleted: false,
-                },
-                {
-                    id: conversationId,
-                    agentId: agent.id,
-                    anonymousIdentifier: anonymousIdentifier,
-                    isDeleted: false,
-                },
-            );
-        } else {
-            whereConditions.push({
-                id: conversationId,
-                agentId: agent.id,
-                anonymousIdentifier: anonymousIdentifier,
-                isDeleted: false,
-            });
-        }
-
-        const chatRecord = await this.chatRecordRepository.findOne({
-            where: whereConditions,
-        });
-
-        if (!chatRecord) {
-            throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
-        }
+        await this.validateConversationAccess(agent.id, conversationId, accessToken, loggedInUser);
 
         // 更新对话记录
         if (updateData.title !== undefined) {
             await this.chatRecordRepository.update(conversationId, { title: updateData.title });
         }
 
-        const userInfo = loggedInUser
-            ? `登录用户(${loggedInUser.username})`
-            : `匿名用户(${accessToken.substring(0, 8)}...)`;
-        this.logger.log(
-            `[+] 更新对话记录: ${agent.id} - ${userInfo} - ${conversationId} - 标题: ${updateData.title}`,
+        this.logUserAction(
+            `更新对话记录`,
+            agent.id,
+            conversationId,
+            accessToken,
+            loggedInUser,
+            `标题: ${updateData.title}`,
         );
-
         return { message: "对话记录更新成功" };
     }
 
     /**
      * 公开智能体流式对话
+     * @param publishToken 发布令牌
+     * @param accessToken 访问令牌
+     * @param dto 对话请求数据
+     * @param res 响应对象
+     * @param loggedInUser 可选的登录用户信息
      */
     async chatStreamByAccessToken(
         publishToken: string,
         accessToken: string,
         dto: PublicAgentChatDto,
         res: Response,
-        loggedInUser?: UserPlayground, // 可选的登录用户信息
+        loggedInUser?: UserPlayground,
     ) {
         const agent = await this.getAgentByPublishToken(publishToken);
         await this.checkRateLimit(agent);
 
         const agentChatDto = this.convertToAgentChatDto(dto, agent);
+        const user = this.createEnhancedUser(accessToken, loggedInUser);
 
-        // 如果用户已登录，使用登录用户信息；否则使用基于访问令牌的匿名用户
-        const user = loggedInUser
-            ? loggedInUser
-            : this.createAnonymousUserWithAccessToken(accessToken);
-
-        this.logger.log(
-            `[+] 公开智能体对话用户: ${loggedInUser ? `登录用户(${loggedInUser.username})` : `匿名用户(${accessToken.substring(0, 8)}...)`}`,
-        );
+        this.logger.debug(`[+] 公开智能体对话用户: ${JSON.stringify(agentChatDto)}`);
 
         try {
             return await this.agentChatService.chatStream(agent.id, agentChatDto, user, res);
@@ -357,6 +227,8 @@ export class PublicAgentChatService {
 
     /**
      * 从访问令牌生成用户ID
+     * @param accessToken 访问令牌
+     * @returns 生成的用户ID
      */
     private generateUserIdFromAccessToken(accessToken: string): string {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -377,6 +249,8 @@ export class PublicAgentChatService {
 
     /**
      * 创建基于访问令牌的匿名用户上下文
+     * @param accessToken 访问令牌
+     * @returns 匿名用户对象
      */
     private createAnonymousUserWithAccessToken(accessToken: string): UserPlayground {
         const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
@@ -394,24 +268,7 @@ export class PublicAgentChatService {
      * 转换公开DTO为内部DTO
      */
     private convertToAgentChatDto(dto: PublicAgentChatDto, agent: Agent): AgentChatDto {
-        return {
-            messages: dto.messages,
-            conversationId: dto.conversationId,
-            title: dto.title,
-            formVariables: dto.formVariables,
-            formFieldsInputs: dto.formFieldsInputs,
-            saveConversation: dto.saveConversation !== false,
-            includeReferences: dto.includeReferences,
-            modelConfig: agent.modelConfig,
-            datasetIds: agent.datasetIds,
-            rolePrompt: agent.rolePrompt,
-            showContext: agent.showContext,
-            showReference: agent.showReference,
-            enableFeedback: agent.enableFeedback,
-            enableWebSearch: agent.enableWebSearch,
-            quickCommands: agent.quickCommands,
-            autoQuestions: agent.autoQuestions,
-        };
+        return Object.assign(dto, agent);
     }
 
     /**
@@ -503,5 +360,88 @@ export class PublicAgentChatService {
             role: {} as any,
             permissions: [],
         };
+    }
+
+    // ==================== 辅助方法 ====================
+
+    /**
+     * 创建增强的用户对象
+     */
+    private createEnhancedUser(accessToken: string, loggedInUser?: UserPlayground): UserPlayground {
+        const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
+        return loggedInUser
+            ? ({ ...loggedInUser, anonymousIdentifier } as UserPlayground)
+            : this.createAnonymousUserWithAccessToken(accessToken);
+    }
+
+    /**
+     * 构建对话查询条件
+     */
+    private buildConversationWhereConditions(
+        agentId: string,
+        accessToken: string,
+        loggedInUser?: UserPlayground,
+        conversationId?: string,
+    ) {
+        const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
+        const baseCondition = { agentId, isDeleted: false };
+        const whereConditions = [];
+
+        if (conversationId) {
+            Object.assign(baseCondition, { id: conversationId });
+        }
+
+        if (loggedInUser) {
+            whereConditions.push(
+                { ...baseCondition, userId: loggedInUser.id },
+                { ...baseCondition, anonymousIdentifier },
+            );
+        } else {
+            whereConditions.push({ ...baseCondition, anonymousIdentifier });
+        }
+
+        return whereConditions;
+    }
+
+    /**
+     * 验证对话访问权限
+     */
+    private async validateConversationAccess(
+        agentId: string,
+        conversationId: string,
+        accessToken: string,
+        loggedInUser?: UserPlayground,
+    ) {
+        const whereConditions = this.buildConversationWhereConditions(
+            agentId,
+            accessToken,
+            loggedInUser,
+            conversationId,
+        );
+        const chatRecord = await this.chatRecordRepository.findOne({ where: whereConditions });
+
+        if (!chatRecord) {
+            throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
+        }
+
+        return chatRecord;
+    }
+
+    /**
+     * 记录用户操作日志
+     */
+    private logUserAction(
+        action: string,
+        agentId: string,
+        conversationId: string,
+        accessToken: string,
+        loggedInUser?: UserPlayground,
+        extra?: string,
+    ) {
+        const userInfo = loggedInUser
+            ? `登录用户(${loggedInUser.username})`
+            : `匿名用户(${accessToken.substring(0, 8)}...)`;
+        const extraInfo = extra ? ` - ${extra}` : "";
+        this.logger.log(`[+] ${action}: ${agentId} - ${userInfo} - ${conversationId}${extraInfo}`);
     }
 }

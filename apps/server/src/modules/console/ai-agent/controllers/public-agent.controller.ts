@@ -1,6 +1,7 @@
 import { Public } from "@common/decorators";
 import { ConsoleController } from "@common/decorators/controller.decorator";
 import { BuildFileUrl } from "@common/decorators/file-url.decorator";
+import { PaginationDto } from "@common/dto/pagination.dto";
 import { PublicAccessTokenGuard } from "@common/guards/public-access-token.guard";
 import { Body, Delete, Get, Param, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { Request, Response } from "express";
@@ -177,15 +178,12 @@ export class PublicAgentController {
     async getPublicAgentMessages(
         @Param("publishToken") publishToken: string,
         @Param("conversationId") conversationId: string,
-        @Query() query: { page?: number; pageSize?: number },
-        @Req() req: Request,
+        @Query() query: PaginationDto,
     ) {
         return this.publicAgentChatService.getMessagesByAccessToken(
             publishToken,
-            req.accessToken!,
             conversationId,
             query,
-            req.user,
         );
     }
 
