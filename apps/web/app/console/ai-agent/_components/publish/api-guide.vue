@@ -15,7 +15,7 @@ const baseUrl = computed(() => import.meta.env.VITE_APP_BASE_URL);
 const apiEndpoints = computed(() => [
     {
         method: "POST",
-        url: `/consoleapi/public-agent/${props.agent?.apiKey || "{apiKey}"}/chat`,
+        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/chat`,
         title: t("console-ai-agent.publish.normalChatAPI"),
         description: t("console-ai-agent.publish.normalChatAPIDesc"),
         color: "success",
@@ -49,7 +49,7 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "POST",
-        url: `/consoleapi/public-agent/${props.agent?.apiKey || "{apiKey}"}/chat/stream`,
+        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/chat/stream`,
         title: t("console-ai-agent.publish.streamChatAPI"),
         description: t("console-ai-agent.publish.streamChatAPIDesc"),
         color: "info",
@@ -74,7 +74,7 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "GET",
-        url: `/consoleapi/public-agent/${props.agent?.apiKey || "{apiKey}"}/conversations`,
+        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/conversations`,
         title: t("console-ai-agent.publish.getConversationsAPI"),
         description: t("console-ai-agent.publish.getConversationsAPIDesc"),
         color: "neutral",
@@ -105,7 +105,7 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "GET",
-        url: `/consoleapi/public-agent/${props.agent?.apiKey || "{apiKey}"}/conversations/{id}/messages`,
+        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/conversations/{id}/messages`,
         title: t("console-ai-agent.publish.getMessagesAPI"),
         description: t("console-ai-agent.publish.getMessagesAPIDesc"),
         color: "neutral",
@@ -145,7 +145,7 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "PUT",
-        url: `/consoleapi/public-agent/${props.agent?.apiKey || "{apiKey}"}/conversations/{id}`,
+        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/conversations/{id}`,
         title: t("console-ai-agent.publish.updateConversationAPI"),
         description: t("console-ai-agent.publish.updateConversationAPIDesc"),
         color: "warning",
@@ -163,7 +163,7 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "DELETE",
-        url: `/consoleapi/public-agent/${props.agent?.apiKey || "{apiKey}"}/conversations/{id}`,
+        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/conversations/{id}`,
         title: t("console-ai-agent.publish.deleteConversationAPI"),
         description: t("console-ai-agent.publish.deleteConversationAPIDesc"),
         color: "error",
