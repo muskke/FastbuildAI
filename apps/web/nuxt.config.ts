@@ -46,6 +46,9 @@ export default defineNuxtConfig({
 
     imports: {
         dirs: ["common/stores", "common/composables/**", "common/utils/**.ts"],
+        // 性能优化：按需导入
+        // scan: true,
+        // global: false, // 禁用全局导入以提升性能
     },
 
     devtools: { enabled: false },
@@ -136,7 +139,7 @@ export default defineNuxtConfig({
 
     devServer: {
         port: 4091,
-        host: "127.0.0.1, 0.0.0.0",
+        host: "0.0.0.0",
     },
 
     future: {
@@ -147,16 +150,11 @@ export default defineNuxtConfig({
         // when using generate, payload js assets included in sw precache manifest
         // but missing on offline, disabling extraction it until fixed
         payloadExtraction: true,
-        treeshakeClientOnly: true,
         renderJsonPayloads: true,
         typedPages: !isProd,
         asyncContext: true,
         viewTransition: true,
 
-        compileTemplate: true,
-        templateUtils: true,
-        relativeWatchPaths: true,
-        resetAsyncDataToUndefined: true,
         defaults: {
             useAsyncData: {
                 deep: true,
@@ -197,15 +195,19 @@ export default defineNuxtConfig({
                           "@tanstack/vue-table",
                           "@iconify-json/lucide",
                           "yup",
+                          "@intlify/shared",
+                          "@intlify/core-base",
                           "markdown-it-async",
                           "markdown-it-github-alerts",
                           "@shikijs/markdown-it/async",
                           "qrcode.vue",
                           "echarts/charts",
+                          "vue-dompurify-html",
                           "echarts/components",
                           "echarts/core",
                           "echarts/features",
                           "echarts/renderers",
+                          "tailwindcss/colors",
                           "motion-v",
                           "@lottiefiles/dotlottie-vue",
                           "@fancyapps/ui",
@@ -214,7 +216,7 @@ export default defineNuxtConfig({
                           "panzoom",
                           "@shikijs/langs",
                           "libphonenumber-js",
-                          "@nuxt/ui/runtime/locale/index.js",
+                          "@nuxt/ui/locale",
                           "clsx",
                           "tailwind-merge",
                           "@tiptap/extension-color",

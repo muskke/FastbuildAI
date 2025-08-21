@@ -6,7 +6,6 @@
 import { computed, defineAsyncComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { useDesignStore } from "../../stores/design";
 import WidgetsBasePage from "../widgets/base/widgets-base-page.vue";
 import LayersPanel from "./layers-panel.vue";
 

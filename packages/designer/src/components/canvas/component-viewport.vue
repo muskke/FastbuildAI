@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { type Component, defineAsyncComponent } from "vue";
 
-import { useDesignStore } from "../../stores/design";
 // 避免一次性注册全部组件，按需加载 content 组件
 const contentModules = import.meta.glob("../../components/widgets/**/content.vue", {
     eager: false,
