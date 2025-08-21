@@ -108,6 +108,7 @@ export interface Agent extends BaseEntity {
         showBranding?: boolean;
         allowDownloadHistory?: boolean;
     };
+    [index: string]: any;
 }
 
 /**
@@ -567,34 +568,6 @@ export interface AgentTemplateConfig {
     modelConfig?: Record<string, unknown>;
     /** 知识库ID列表 */
     datasetIds?: string[];
-}
-
-/**
- * 智能体模板信息
- */
-export interface AgentTemplate {
-    /** 模板ID */
-    id: string;
-    /** 模板名称 */
-    name: string;
-    /** 模板描述 */
-    description?: string;
-    /** 模板分类 */
-    category?: string;
-    /** 模板标签 */
-    tags?: string[];
-    /** 模板图标 */
-    icon?: string;
-    /** 模板预览图 */
-    previewImage?: string;
-    /** 模板配置 */
-    config?: AgentTemplateConfig;
-    /** 使用次数 */
-    usageCount?: number;
-    /** 评分 */
-    rating?: number;
-    /** 是否推荐 */
-    isRecommended?: boolean;
 }
 
 /**

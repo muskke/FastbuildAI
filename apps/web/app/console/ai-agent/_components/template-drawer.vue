@@ -2,7 +2,7 @@
 import { useLockFn, useMessage } from "@fastbuildai/ui";
 import { computed, onMounted, ref } from "vue";
 
-import type { AgentTemplate } from "@/models/ai-agent";
+import type { Agent } from "@/models/ai-agent";
 import {
     apiGetAgentTemplateCategories,
     apiGetAgentTemplates,
@@ -21,13 +21,13 @@ const toast = useMessage();
 const { t } = useI18n();
 
 // 状态管理
-const templates = ref<AgentTemplate[]>([]);
-const recommendedTemplates = ref<AgentTemplate[]>([]);
+const templates = ref<Agent[]>([]);
+const recommendedTemplates = ref<Agent[]>([]);
 const showCreateModal = ref(false);
 const searchKeyword = ref("");
 const selectedCategory = ref("all");
 const categories = ref<string[]>([]);
-const selectedTemplate = ref<AgentTemplate | null>(null);
+const selectedTemplate = ref<Agent | null>(null);
 
 // 计算属性
 const isOpen = ref(true);
@@ -51,7 +51,7 @@ const { lockFn: loadTemplates, isLock: templatesLoading } = useLockFn(async () =
 
 // 过滤模板
 const filteredTemplates = computed(() => {
-    let filtered: AgentTemplate[];
+    let filtered: Agent[];
 
     // 根据分类选择数据源
     if (selectedCategory.value === "recommended") {
@@ -71,14 +71,14 @@ const filteredTemplates = computed(() => {
 
     // 按分类过滤（除了推荐和全部）
     if (selectedCategory.value !== "recommended" && selectedCategory.value !== "all") {
-        filtered = filtered.filter((t) => t.category === selectedCategory.value);
+        filtered = filtered.filter((t) => t?.categories === selectedCategory.value);
     }
 
     return filtered;
 });
 
 // 选择模板 - 弹出创建表单
-const selectTemplate = (template: AgentTemplate) => {
+const selectTemplate = (template: Agent) => {
     selectedTemplate.value = template;
     showCreateModal.value = true;
 };
@@ -217,14 +217,10 @@ onMounted(() => {
                                             class="border-default bg-background hover:border-primary group relative rounded-lg border p-4 shadow-xs transition-all"
                                         >
                                             <div class="flex items-start gap-3">
-                                                <div
-                                                    class="bg-primary/10 flex size-12 flex-shrink-0 items-center justify-center rounded-lg"
-                                                >
-                                                    <UIcon
-                                                        :name="template.icon"
-                                                        class="text-primary h-6 w-6"
-                                                    />
-                                                </div>
+                                                <img
+                                                    :src="template.avatar"
+                                                    class="size-12 flex-shrink-0 rounded-lg"
+                                                />
                                                 <div
                                                     class="flex flex-col items-start justify-around"
                                                 >
@@ -242,7 +238,7 @@ onMounted(() => {
                                                     </div>
                                                     <p class="text-muted-foreground mt-1 text-xs">
                                                         {{
-                                                            template.category ||
+                                                            template.categories ||
                                                             t("console-ai-agent.template.general")
                                                         }}
                                                     </p>
@@ -285,14 +281,10 @@ onMounted(() => {
                                             class="border-default bg-background hover:border-primary group relative rounded-lg border p-4 shadow-xs transition-all"
                                         >
                                             <div class="flex items-start gap-3">
-                                                <div
-                                                    class="bg-primary/10 flex size-12 flex-shrink-0 items-center justify-center rounded-lg"
-                                                >
-                                                    <UIcon
-                                                        :name="template.icon"
-                                                        class="text-primary h-6 w-6"
-                                                    />
-                                                </div>
+                                                <img
+                                                    :src="template.avatar"
+                                                    class="size-12 flex-shrink-0 rounded-lg"
+                                                />
                                                 <div
                                                     class="flex flex-col items-start justify-around"
                                                 >
@@ -314,7 +306,7 @@ onMounted(() => {
                                                     </div>
                                                     <p class="text-muted-foreground mt-1 text-xs">
                                                         {{
-                                                            template.category ||
+                                                            template.categories ||
                                                             t("console-ai-agent.template.general")
                                                         }}
                                                     </p>

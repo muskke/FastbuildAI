@@ -94,6 +94,7 @@ export class AgentController {
      * 获取智能体模板列表
      */
     @Get("templates")
+    @BuildFileUrl(["**.avatar"])
     @Permissions({
         code: "list-templates",
         name: "查询智能体模板",
@@ -118,6 +119,7 @@ export class AgentController {
      * 获取推荐模板
      */
     @Get("templates/recommended")
+    @BuildFileUrl(["**.avatar"])
     @Permissions({
         code: "list-recommended-templates",
         name: "查询推荐模板",
@@ -137,7 +139,6 @@ export class AgentController {
     async createFromTemplate(@Body() dto: CreateAgentFromTemplateDto) {
         const createAgentDto = await this.agentTemplateService.createAgentFromTemplate(dto);
 
-        this.logger.debug(`[+] 从模板创建智能体: ${JSON.stringify(createAgentDto)}`);
         const agent = await this.agentService.createAgentFromTemplate(
             createAgentDto as CreateAgentFromTemplateDto,
         );
