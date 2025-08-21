@@ -144,7 +144,7 @@
         "publicAccessLinkPlaceholder": "未生成链接",
         "apiKey": "API密钥",
         "apiKeyPlaceholder": "未生成密钥",
-        "publishConfig": "发布配置",
+        "publishConfig": "发布配置 (即将开放)",
         "publishConfigDesc": "配置智能体公开访问的安全和功能设置",
         "accessControl": "访问控制",
         "allowedDomains": "允许的域名",

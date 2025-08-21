@@ -144,7 +144,7 @@
         "publicAccessLinkPlaceholder": "Link not generated",
         "apiKey": "API Key",
         "apiKeyPlaceholder": "Key not generated",
-        "publishConfig": "Publish Configuration",
+        "publishConfig": "Publish Configuration (coming soon)",
         "publishConfigDesc": "Configure security and feature settings for public access",
         "accessControl": "Access Control",
         "allowedDomains": "Allowed Domains",
