@@ -271,6 +271,13 @@ onUnmounted(() => {
     viewportEl?.removeEventListener("scroll", handleScroll);
     mutationObserver?.disconnect();
 });
+
+defineExpose({
+    clearRecord() {
+        messages.value = [];
+        conversationId.value = null;
+    },
+});
 </script>
 
 <template>
