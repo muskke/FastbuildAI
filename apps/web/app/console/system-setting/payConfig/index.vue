@@ -26,12 +26,14 @@ const updatePayconfigStatus = useThrottleFn(async (id: string, isEnable: Boolean
 }, 1000);
 const getPayconfigList = async () => {
     const data = await apiGetPayconfigList();
-    payconfigList.value = data.map(({ id, name, payType, isEnable, logo }) => ({
+    payconfigList.value = data.map(({ id, name, payType, isEnable, logo, isDefault, sort }) => ({
         id,
         name,
         payType,
         isEnable,
         logo,
+        isDefault,
+        sort,
     }));
 };
 
@@ -53,6 +55,14 @@ const columns = computed(() => {
         {
             accessorKey: "isEnable",
             header: t("console-payconfig.isEnable"),
+        },
+        {
+            accessorKey: "isDefault",
+            header: t("console-payconfig.isDefault"),
+        },
+        {
+            accessorKey: "sort",
+            header: t("console-payconfig.sort"),
         },
         {
             accessorKey: "action",
@@ -100,7 +110,7 @@ onMounted(() => {
                 {{
                     row.original.payType === 1
                         ? t("console-payconfig.wxPay")
-                        : t("console-payconfig.alipayPay")
+                        : t("console-payconfig.aliPay")
                 }}
             </template>
             <template #isEnable-cell="{ row }">
@@ -109,6 +119,14 @@ onMounted(() => {
                     @update:model-value="updatePayconfigStatus(row.original.id, $event ? 1 : 0)"
                     size="md"
                 />
+            </template>
+            <template #isDefault-cell="{ row }">
+                <UBadge
+                    v-if="row.original.isDefault === 1"
+                    :label="t('console-common.default')"
+                    color="success"
+                />
+                <div v-else></div>
             </template>
             <template #action-cell="{ row }">
                 <UButton size="md" variant="ghost" color="primary" @click="edit(row.original.id)">

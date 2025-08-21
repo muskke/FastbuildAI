@@ -60,7 +60,7 @@ export interface UpdatePayconfigDto {
 // 支付配置列表接口
 export type PayconfigTableData = Pick<
     PayconfigInfo,
-    "id" | "name" | "payType" | "isEnable" | "logo"
+    "id" | "name" | "payType" | "isEnable" | "logo" | "isDefault" | "sort"
 >;
 
 export type BooleanNumberType = 0 | 1;

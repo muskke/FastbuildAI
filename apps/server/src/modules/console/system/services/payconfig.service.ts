@@ -36,6 +36,8 @@ export class PayconfigService extends BaseService<Payconfig> {
                 "payconfig.payType",
                 "payconfig.isEnable",
                 "payconfig.logo",
+                "payconfig.sort",
+                "payconfig.isDefault",
             ])
             .orderBy("sort", "DESC");
         return await queryBuilder.getMany();
