@@ -95,7 +95,13 @@ services:
       fi
       
       echo "📦 Installing dependencies..."
-      pnpm i
+      if [ -d "node_modules" ]; then
+        echo "📁 node_modules exists, using force install..."
+        yes | pnpm i
+      else
+        echo "📁 node_modules not found, installing..."
+        pnpm i
+      fi
   
       if [ ! -f "/fastbuildai/public/index.html" ] || [ "$$QUICK_START_MODE" = "false" ]; then
         echo "🌐 Building web application..."
