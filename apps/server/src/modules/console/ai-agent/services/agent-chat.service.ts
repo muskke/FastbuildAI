@@ -1167,7 +1167,7 @@ export class AgentChatService extends BaseAgentChatService {
                     );
 
                     // 直接返回标注答案，不调用大模型
-                    if (!conversationId) {
+                    if (!conversationId && conversationRecord) {
                         conversationId = conversationRecord.id;
                         res.write(
                             `data: ${JSON.stringify({ type: "conversation_id", data: conversationId })}\n\n`,
@@ -1377,16 +1377,18 @@ export class AgentChatService extends BaseAgentChatService {
         } catch (error) {
             this.logger.error(`流式聊天对话失败: ${error.message}`, error.stack);
 
-            this.saveAssistantMessage(
-                conversationRecord.id,
-                agentId,
-                user.id,
-                error.message,
-                { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
-                error,
-                null,
-                this.isAnonymousUser(user) ? user.id : undefined,
-            );
+            if (conversationRecord) {
+                this.saveAssistantMessage(
+                    conversationRecord.id,
+                    agentId,
+                    user.id,
+                    error.message,
+                    { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+                    error,
+                    null,
+                    this.isAnonymousUser(user) ? user.id : undefined,
+                );
+            }
             try {
                 res.write(
                     `data: ${JSON.stringify({
