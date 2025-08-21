@@ -44,7 +44,13 @@
             "titleLabel": "Title",
             "contentLabel": "Content",
             "titleRequired": "Title required",
-            "contentRequired": "Content required"
+            "contentRequired": "Content required",
+            "privacyTitle": "Please enter the Privacy Policy title",
+            "privacyContent": "Please enter the content of the privacy policy",
+            "serviceTitle": "Please enter the title of the terms of service",
+            "serviceContent": "Please enter the terms of service",
+            "paymentTitle": "Please enter the payment agreement title",
+            "paymentContent": "Please enter the payment agreement"
         },
         "copyright": {
             "title": "Copyright",

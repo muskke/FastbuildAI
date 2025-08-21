@@ -25,6 +25,101 @@ export class PublicAgentController {
     ) {}
 
     /**
+     * API认证方式对话
+     *
+     * @param apiKey API密钥
+     * @param dto 对话DTO
+     * @returns 对话响应结果
+     */
+    @Post("/public/:apiKey/chat")
+    @Public()
+    async apiChat(@Param("apiKey") apiKey: string, @Body() dto: PublicAgentChatDto) {
+        return this.publicAgentChatService.chatWithApiKey(apiKey, dto);
+    }
+
+    /**
+     * API认证方式流式对话
+     *
+     * @param apiKey API密钥
+     * @param dto 对话DTO
+     * @param res 响应对象
+     */
+    @Post("/public/:apiKey/chat/stream")
+    @Public()
+    async apiChatStream(
+        @Param("apiKey") apiKey: string,
+        @Body() dto: PublicAgentChatDto,
+        @Res() res: Response,
+    ) {
+        return this.publicAgentChatService.chatStreamWithApiKey(apiKey, dto, res);
+    }
+
+    /**
+     * API认证方式获取对话记录列表
+     *
+     * @param apiKey API密钥
+     * @param query 查询参数
+     * @returns 对话记录列表
+     */
+    @Get("/public/:apiKey/conversations")
+    @Public()
+    async getApiConversations(@Param("apiKey") apiKey: string, @Query() query: PaginationDto) {
+        return this.publicAgentChatService.getConversationsByApiKey(apiKey, query);
+    }
+
+    /**
+     * API认证方式获取对话消息
+     *
+     * @param apiKey API密钥
+     * @param conversationId 对话ID
+     * @param query 查询参数
+     * @returns 对话消息列表
+     */
+    @Get("/public/:apiKey/conversations/:conversationId/messages")
+    @Public()
+    async getApiMessages(
+        @Param("apiKey") apiKey: string,
+        @Param("conversationId") conversationId: string,
+        @Query() query: PaginationDto,
+    ) {
+        return this.publicAgentChatService.getMessagesByApiKey(apiKey, conversationId, query);
+    }
+
+    /**
+     * API认证方式删除对话记录
+     *
+     * @param apiKey API密钥
+     * @param conversationId 对话ID
+     * @returns 删除结果
+     */
+    @Delete("/public/:apiKey/conversations/:conversationId")
+    @Public()
+    async deleteApiConversation(
+        @Param("apiKey") apiKey: string,
+        @Param("conversationId") conversationId: string,
+    ) {
+        return this.publicAgentChatService.deleteConversationByApiKey(apiKey, conversationId);
+    }
+
+    /**
+     * API认证方式更新对话记录
+     *
+     * @param apiKey API密钥
+     * @param conversationId 对话ID
+     * @param body 更新数据
+     * @returns 更新结果
+     */
+    @Put("/public/:apiKey/conversations/:conversationId")
+    @Public()
+    async updateApiConversation(
+        @Param("apiKey") apiKey: string,
+        @Param("conversationId") conversationId: string,
+        @Body() body: { title?: string },
+    ) {
+        return this.publicAgentChatService.updateConversationByApiKey(apiKey, conversationId, body);
+    }
+
+    /**
      * 生成访问令牌
      *
      * @param publishToken 发布令牌
@@ -262,33 +357,5 @@ export class PublicAgentController {
             res,
             req.user,
         );
-    }
-
-    /**
-     * API认证方式对话
-     *
-     * @param apiKey API密钥
-     * @param dto 对话DTO
-     * @returns 对话响应结果
-     */
-    @Post("chat")
-    async apiChat(@Query("apiKey") apiKey: string, @Body() dto: PublicAgentChatDto) {
-        return this.publicAgentChatService.chatWithApiKey(apiKey, dto);
-    }
-
-    /**
-     * API认证方式流式对话
-     *
-     * @param apiKey API密钥
-     * @param dto 对话DTO
-     * @param res 响应对象
-     */
-    @Post("chat/stream")
-    async apiChatStream(
-        @Query("apiKey") apiKey: string,
-        @Body() dto: PublicAgentChatDto,
-        @Res() res: Response,
-    ) {
-        return this.publicAgentChatService.chatStreamWithApiKey(apiKey, dto, res);
     }
 }
