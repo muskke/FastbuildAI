@@ -8,6 +8,7 @@ import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent } from "@tiptap/vue-3";
+import { Markdown } from "tiptap-markdown";
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -33,10 +34,15 @@ const props = withDefaults(
          * 占位提示
          */
         placeholder?: string;
+        /**
+         * 是否启用 Markdown 模式
+         */
+        enableMarkdown?: boolean;
     }>(),
     {
         customClass: "",
         placeholder: "console-common.proEditor.placeholder",
+        enableMarkdown: true,
     },
 );
 
@@ -50,16 +56,31 @@ const editor = shallowRef<any | null>(null);
 const uiRefresh = ref(0);
 
 onMounted(() => {
+    const extensions = [
+        StarterKit,
+        Underline,
+        Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
+        Image,
+        Placeholder.configure({ placeholder: t(props.placeholder) }),
+        Color.configure({ types: [TextStyle.name, ListItem.name] }),
+        TextStyle,
+    ];
+
+    // 如果启用 Markdown 模式，添加 Markdown 扩展
+    if (props.enableMarkdown) {
+        extensions.push(Markdown.configure({
+            html: true, // 允许 HTML 标签
+            tightLists: true, // 紧密列表
+            bulletListMarker: '-', // 无序列表标记
+            linkify: false, // 自动链接检测
+            breaks: false, // 换行符转换为 <br>
+            transformPastedText: false, // 粘贴文本时转换为 Markdown
+            transformCopiedText: false, // 复制文本时转换为 Markdown
+        }));
+    }
+
     editor.value = new Editor({
-        extensions: [
-            StarterKit,
-            Underline,
-            Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
-            Image,
-            Placeholder.configure({ placeholder: t(props.placeholder) }),
-            Color.configure({ types: [TextStyle.name, ListItem.name] }),
-            TextStyle,
-        ],
+        extensions,
         content: content.value || "",
         autofocus: false,
         injectCSS: false,
@@ -177,6 +198,95 @@ function undo() {
 function redo() {
     editor.value?.chain().focus().redo().run();
 }
+
+/**
+ * 获取 Markdown 格式的内容
+ */
+function getMarkdownContent(): string {
+    if (!editor.value) return '';
+    
+    // 如果安装了 Markdown 扩展，可以获取 Markdown 格式
+    try {
+        return editor.value.storage.markdown?.getMarkdown() || '';
+    } catch {
+        // 如果没有 Markdown 扩展或方法不存在，返回 HTML
+        return editor.value.getHTML();
+    }
+}
+
+/**
+ * 设置 Markdown 格式的内容
+ */
+function setMarkdownContent(markdown: string) {
+    if (!editor.value) return;
+    
+    try {
+        editor.value.commands.setContent(markdown);
+    } catch {
+        // 回退到设置 HTML 内容
+        editor.value.commands.setContent(markdown);
+    }
+}
+
+/**
+ * 插入 Markdown 语法快捷方式
+ */
+function insertMarkdownSyntax(type: 'bold' | 'italic' | 'code' | 'link' | 'image' | 'heading') {
+    if (!editor.value) return;
+    
+    const selection = editor.value.state.selection;
+    const selectedText = editor.value.state.doc.textBetween(selection.from, selection.to);
+    
+    let before = '';
+    let after = '';
+    let placeholder = '';
+    
+    switch (type) {
+        case 'bold':
+            before = '**';
+            after = '**';
+            placeholder = '粗体文本';
+            break;
+        case 'italic':
+            before = '*';
+            after = '*';
+            placeholder = '斜体文本';
+            break;
+        case 'code':
+            before = '`';
+            after = '`';
+            placeholder = '代码';
+            break;
+        case 'link':
+            before = '[';
+            after = '](url)';
+            placeholder = '链接文本';
+            break;
+        case 'image':
+            before = '![';
+            after = '](url)';
+            placeholder = '图片描述';
+            break;
+        case 'heading':
+            before = '# ';
+            after = '';
+            placeholder = '标题';
+            break;
+    }
+    
+    const textToInsert = selectedText || placeholder;
+    const fullText = before + textToInsert + after;
+    
+    editor.value.commands.insertContent(fullText);
+}
+
+// 暴露方法给父组件使用
+defineExpose({
+    editor,
+    getMarkdownContent,
+    setMarkdownContent,
+    insertMarkdownSyntax,
+});
 </script>
 
 <template>
