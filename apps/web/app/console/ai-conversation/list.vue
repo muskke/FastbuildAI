@@ -15,12 +15,14 @@ import {
 
 const ConversationCard = defineAsyncComponent(() => import("./_components/conversation-card.vue"));
 const ConversationDetail = defineAsyncComponent(() => import("./detail.vue"));
+const UCheckbox = resolveComponent("UCheckbox");
 
 const { hasAccessByCodes } = useAccessControl();
 
 // 路由实例
 const toast = useMessage();
 const { t } = useI18n();
+const table = ref();
 
 // 列表查询参数
 const searchForm = reactive({
@@ -66,6 +68,29 @@ const handleConversationSelect = (
 };
 
 const columns = ref<TableColumn<AiConversation>[]>([
+    {
+        id: "select",
+        header: ({ table }) =>
+            h(UCheckbox, {
+                modelValue: table.getIsSomePageRowsSelected()
+                    ? "indeterminate"
+                    : table.getIsAllPageRowsSelected(),
+                "onUpdate:modelValue": (value: boolean | "indeterminate") => {
+                    table.toggleAllPageRowsSelected(!!value);
+                    handleSelectAll(value);
+                },
+                "aria-label": "Select all",
+            }),
+        cell: ({ row }) =>
+            h(UCheckbox, {
+                modelValue: row.getIsSelected(),
+                "onUpdate:modelValue": (value: boolean | "indeterminate") => {
+                    row.toggleSelected(!!value);
+                    handleConversationSelect(row.original, value);
+                },
+                "aria-label": "Select row",
+            }),
+    },
     {
         accessorKey: "title",
         header: t("console-ai-conversation.list.title"),
@@ -131,6 +156,7 @@ function getRowItems(row: Row<AiConversation>) {
  */
 const handleSelectAll = (value: boolean | "indeterminate") => {
     const isSelected = value === true;
+    table.value?.tableApi.toggleAllPageRowsSelected(!!value);
     if (isSelected) {
         paging.items.forEach((conversation: AiConversation) => {
             selectedConversations.value.add(conversation.id);

@@ -87,6 +87,7 @@
         "title": "系统设置",
         "siteInfo": "网站信息",
         "PayConfig": "支付配置",
+        "agreement": "政策协议",
         "channelManagement": "渠道管理",
         "wechatOaConfig": "公众号配置"
     },
