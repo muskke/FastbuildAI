@@ -144,7 +144,7 @@
         "publicAccessLinkPlaceholder": "リンク未生成",
         "apiKey": "APIキー",
         "apiKeyPlaceholder": "キー未生成",
-        "publishConfig": "公開設定",
+        "publishConfig": "公開設定 (近日公開)",
         "publishConfigDesc": "公開アクセスのセキュリティと機能設定",
         "accessControl": "アクセス制御",
         "allowedDomains": "許可ドメイン",
