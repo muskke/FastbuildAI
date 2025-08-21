@@ -48,7 +48,7 @@ const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
     },
     body: {
         agentId: agentId.value,
-        saveConversation: true,
+        saveConversation: false,
         get conversationId() {
             return conversationId.value;
         },
