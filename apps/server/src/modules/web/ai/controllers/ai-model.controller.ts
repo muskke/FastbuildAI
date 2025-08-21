@@ -64,16 +64,6 @@ export class AiModelController extends BaseController {
             }
         }
 
-        const model = await this.aiModelService.findOne({
-            where: { isActive: true },
-            order: { createdAt: "ASC" },
-            excludeFields: ["apiKey"],
-        });
-
-        if (model && model.isActive) {
-            return model;
-        }
-
         return null;
     }
 }
