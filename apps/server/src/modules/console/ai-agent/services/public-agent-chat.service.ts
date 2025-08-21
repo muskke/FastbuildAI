@@ -88,6 +88,114 @@ export class PublicAgentChatService {
     }
 
     /**
+     * API认证方式获取对话记录列表
+     * @param apiKey API密钥
+     * @param query 分页查询参数
+     */
+    async getConversationsByApiKey(apiKey: string, query: { page?: number; pageSize?: number }) {
+        if (!apiKey) {
+            throw HttpExceptionFactory.unauthorized("API密钥不能为空");
+        }
+
+        const agent = await this.agentService.getAgentByApiKey(apiKey);
+        const anonymousUser = this.createAnonymousUser();
+
+        const options = {
+            where: { agentId: agent.id, userId: anonymousUser.id, isDeleted: false },
+            order: { updatedAt: "DESC" as const, createdAt: "DESC" as const },
+        };
+
+        return await this.chatRecordService.paginate(query, options);
+    }
+
+    /**
+     * API认证方式获取对话消息
+     * @param apiKey API密钥
+     * @param conversationId 对话记录ID
+     * @param query 分页查询参数
+     */
+    async getMessagesByApiKey(apiKey: string, conversationId: string, query: PaginationDto) {
+        if (!apiKey) {
+            throw HttpExceptionFactory.unauthorized("API密钥不能为空");
+        }
+
+        const agent = await this.agentService.getAgentByApiKey(apiKey);
+        const messageOptions = {
+            where: { conversationId, agentId: agent.id },
+            order: { createdAt: "ASC" as const },
+        };
+
+        return await this.chatMessageService.paginate(query, messageOptions);
+    }
+
+    /**
+     * API认证方式删除对话记录
+     * @param apiKey API密钥
+     * @param conversationId 对话记录ID
+     */
+    async deleteConversationByApiKey(apiKey: string, conversationId: string) {
+        if (!apiKey) {
+            throw HttpExceptionFactory.unauthorized("API密钥不能为空");
+        }
+
+        const agent = await this.agentService.getAgentByApiKey(apiKey);
+
+        // 验证对话记录是否属于该智能体
+        const chatRecord = await this.chatRecordRepository.findOne({
+            where: { id: conversationId, agentId: agent.id, isDeleted: false },
+        });
+
+        if (!chatRecord) {
+            throw HttpExceptionFactory.notFound("对话记录不存在或已删除");
+        }
+
+        // 软删除对话记录
+        await this.chatRecordRepository.update(conversationId, { isDeleted: true });
+        // 删除对话消息
+        await this.chatMessageRepository.delete({ conversationId });
+
+        this.logger.log(`[+] API删除对话记录: ${agent.id} - ${conversationId}`);
+        return { message: "对话记录删除成功" };
+    }
+
+    /**
+     * API认证方式更新对话记录
+     * @param apiKey API密钥
+     * @param conversationId 对话记录ID
+     * @param updateData 更新数据
+     */
+    async updateConversationByApiKey(
+        apiKey: string,
+        conversationId: string,
+        updateData: { title?: string },
+    ) {
+        if (!apiKey) {
+            throw HttpExceptionFactory.unauthorized("API密钥不能为空");
+        }
+
+        const agent = await this.agentService.getAgentByApiKey(apiKey);
+
+        // 验证对话记录是否属于该智能体
+        const chatRecord = await this.chatRecordRepository.findOne({
+            where: { id: conversationId, agentId: agent.id, isDeleted: false },
+        });
+
+        if (!chatRecord) {
+            throw HttpExceptionFactory.notFound("对话记录不存在或已删除");
+        }
+
+        // 更新对话记录
+        if (updateData.title !== undefined) {
+            await this.chatRecordRepository.update(conversationId, { title: updateData.title });
+        }
+
+        this.logger.log(
+            `[+] API更新对话记录: ${agent.id} - ${conversationId} - 标题: ${updateData.title}`,
+        );
+        return { message: "对话记录更新成功" };
+    }
+
+    /**
      * 获取公开智能体对话记录列表
      * @param publishToken 发布令牌
      * @param accessToken 访问令牌
