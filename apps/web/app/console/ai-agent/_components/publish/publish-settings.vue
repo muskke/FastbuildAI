@@ -55,7 +55,7 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
 </script>
 
 <template>
-    <div class="space-y-6">
+    <div class="cursor-no-drop space-y-6">
         <div>
             <h3 class="mb-2 text-lg font-medium">
                 {{ $t("console-ai-agent.publish.publishConfig") }}
@@ -108,9 +108,12 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
                             v-model="newOrigin"
                             placeholder="例如：https://example.com"
                             class="flex-1"
+                            disabled
                             @keydown="handleOriginKeydown"
                         />
-                        <UButton @click="addOrigin">{{ $t("console-common.add") }}</UButton>
+                        <UButton disabled @click="addOrigin">
+                            {{ $t("console-common.add") }}
+                        </UButton>
                     </div>
                 </div>
 
@@ -129,6 +132,7 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
                         max="1000"
                         placeholder="60"
                         class="w-32"
+                        disabled
                     />
                 </div>
             </div>
@@ -148,7 +152,7 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
                                 {{ $t("console-ai-agent.publish.showBrandingDesc") }}
                             </div>
                         </div>
-                        <USwitch v-model="config.showBranding" />
+                        <USwitch v-model="config.showBranding" disabled />
                     </div>
 
                     <!-- 允许下载历史记录 -->
@@ -161,7 +165,7 @@ const handleOriginKeydown = (event: KeyboardEvent) => {
                                 {{ $t("console-ai-agent.publish.allowDownloadHistoryDesc") }}
                             </div>
                         </div>
-                        <USwitch v-model="config.allowDownloadHistory" />
+                        <USwitch v-model="config.allowDownloadHistory" disabled />
                     </div>
                 </div>
             </div>
