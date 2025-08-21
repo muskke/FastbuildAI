@@ -145,6 +145,30 @@ export class AiModelController extends BaseController {
     }
 
     /**
+     * 批量启用/禁用AI 模型
+     */
+    @Patch("batch-toggle-active")
+    @Permissions({
+        code: "batch-toggle-active",
+        name: "更新AI模型",
+    })
+    async batchToggleActive(@Body("ids") ids: string[], @Body("isActive") isActive: boolean) {
+        if (!Array.isArray(ids)) {
+            throw HttpExceptionFactory.business("参数 ids 必须是数组");
+        }
+        if (typeof isActive !== "boolean") {
+            throw HttpExceptionFactory.business("参数 isActive 必须是布尔值");
+        }
+        // 批量检查模型是否存在
+        const models = await Promise.all(ids.map((id) => this.aiModelService.findOneById(id)));
+        if (models.length === 0) {
+            throw HttpExceptionFactory.business("模型不存在");
+        }
+
+        return await this.aiModelService.updateModelMany(ids, { isActive });
+    }
+
+    /**
      * 更新AI模型配置
      */
     @Patch(":id")
