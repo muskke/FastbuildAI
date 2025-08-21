@@ -23,6 +23,10 @@ declare module "@tiptap/extension-image" {
     export default Image;
 }
 
+declare module "tiptap-markdown" {
+    export const Markdown: any;
+}
+
 declare module "@tiptap/extension-placeholder" {
     const Placeholder: any;
     export default Placeholder;

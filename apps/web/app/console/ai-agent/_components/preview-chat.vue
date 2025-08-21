@@ -48,7 +48,7 @@ const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
     },
     body: {
         agentId: agentId.value,
-        saveConversation: true,
+        saveConversation: false,
         get conversationId() {
             return conversationId.value;
         },
@@ -270,6 +270,13 @@ onUnmounted(() => {
         | undefined;
     viewportEl?.removeEventListener("scroll", handleScroll);
     mutationObserver?.disconnect();
+});
+
+defineExpose({
+    clearRecord() {
+        messages.value = [];
+        conversationId.value = null;
+    },
 });
 </script>
 

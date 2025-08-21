@@ -10,11 +10,45 @@ import {
     FindOptionsWhere,
     ILike,
     In,
+    OptimisticLockVersionMismatchError,
     QueryRunner,
     Raw,
     Repository,
     SelectQueryBuilder,
+    VersionColumn,
 } from "typeorm";
+
+/**
+ * 锁类型枚举
+ */
+export enum LockType {
+    /** 乐观锁 - 基于版本号控制 */
+    OPTIMISTIC = "optimistic",
+    /** 悲观锁 - 共享锁（读锁） */
+    PESSIMISTIC_READ = "pessimistic_read",
+    /** 悲观锁 - 排他锁（写锁） */
+    PESSIMISTIC_WRITE = "pessimistic_write",
+    /** 悲观锁 - 部分写锁 */
+    PESSIMISTIC_PARTIAL_WRITE = "pessimistic_partial_write",
+    /** 悲观锁 - 写锁且跳过锁定的行 */
+    PESSIMISTIC_WRITE_OR_FAIL = "pessimistic_write_or_fail",
+}
+
+/**
+ * 锁配置接口
+ */
+export interface LockOptions {
+    /** 锁类型 */
+    type: LockType;
+    /** 锁超时时间（毫秒） */
+    timeout?: number;
+    /** 重试次数 */
+    retryCount?: number;
+    /** 重试间隔（毫秒） */
+    retryDelay?: number;
+    /** 版本号字段名（乐观锁使用） */
+    versionField?: string;
+}
 
 /**
  * 分页结果接口
@@ -38,11 +72,13 @@ export interface PaginationResult<T> {
     totalPages: number;
 }
 
-export interface FieldFilterOptions<T> extends FindManyOptions<T> {
+export interface FieldFilterOptions<T> extends Omit<FindManyOptions<T>, "lock"> {
     /** 要排除的字段 */
     excludeFields?: string[];
     /** 事务管理器 */
     entityManager?: EntityManager;
+    /** 锁配置 */
+    lock?: LockOptions;
 }
 
 /**
@@ -53,6 +89,24 @@ export interface FieldFilterOptions<T> extends FindManyOptions<T> {
  * 针对PostgreSQL数据库进行了优化
  */
 export class BaseService<T extends { id: string }> {
+    @Inject(DataSource)
+    protected readonly dataSource: DataSource;
+
+    /** 日志记录器 */
+    protected readonly logger: Logger;
+
+    /**
+     * 构造函数
+     *
+     * @param repository 实体仓库，用于数据库操作
+     * @param dataSource 数据源，用于创建事务
+     */
+    constructor(protected readonly repository: Repository<T>) {
+        // 自动获取子类的类名作为日志上下文
+        const serviceName = this.constructor.name;
+        this.logger = new Logger(serviceName);
+    }
+
     /**
      * 使用PostgreSQL的ILike操作符进行不区分大小写的模糊搜索
      * @param field 字段名
@@ -108,23 +162,6 @@ export class BaseService<T extends { id: string }> {
         });
         return condition as FindOptionsWhere<T>;
     }
-    /** 日志记录器 */
-    protected readonly logger: Logger;
-
-    @Inject(DataSource)
-    protected readonly dataSource: DataSource;
-
-    /**
-     * 构造函数
-     *
-     * @param repository 实体仓库，用于数据库操作
-     * @param dataSource 数据源，用于创建事务
-     */
-    constructor(protected readonly repository: Repository<T>) {
-        // 自动获取子类的类名作为日志上下文
-        const serviceName = this.constructor.name;
-        this.logger = new Logger(serviceName);
-    }
 
     /**
      * 构建分页返回结果
@@ -150,7 +187,7 @@ export class BaseService<T extends { id: string }> {
     }
 
     /**
-     * 分页查询
+     * 分页查询（支持锁）
      *
      * @param paginationDto 分页参数，包含页码和每页条数
      * @param options 查询选项，可包含条件、排序、关联等
@@ -161,17 +198,22 @@ export class BaseService<T extends { id: string }> {
         options?: FieldFilterOptions<T>,
     ): Promise<PaginationResult<Partial<T>>> {
         const { page, pageSize } = paginationDto;
-        const { excludeFields = [], entityManager, ...findOptions } = options || {};
+        const { excludeFields = [], entityManager, lock, ...findOptions } = options || {};
 
         // 使用事务管理器或仓库查询实体
         const repo = entityManager
             ? entityManager.getRepository(this.repository.target)
             : this.repository;
-        const [data, total] = await repo.findAndCount({
+
+        // 构建查询选项并应用锁配置
+        const paginationOptions: FindManyOptions<T> = {
             ...findOptions,
             skip: (page - 1) * pageSize,
             take: pageSize,
-        });
+        };
+
+        const lockedPaginationOptions = this.applyLockToFindOptions(paginationOptions, lock);
+        const [data, total] = await repo.findAndCount(lockedPaginationOptions);
 
         const processedData = this.excludeField(data, excludeFields) as T[];
 
@@ -179,19 +221,28 @@ export class BaseService<T extends { id: string }> {
     }
 
     /**
-     * 高级分页查询，适用于高级&复杂的查询方法
+     * 高级分页查询，适用于高级&复杂的查询方法（支持锁）
      *
      * @param queryBuilder 查询构造器
      * @param paginationDto 分页参数，包含页码和每页条数
      * @param excludeFields 要排除的字段数组
+     * @param lockOptions 锁配置
      * @returns 分页结果，包含数据列表和分页信息
      */
     async paginateQueryBuilder(
         queryBuilder: SelectQueryBuilder<T>,
         paginationDto: PaginationDto,
         excludeFields: string[] = [],
+        lockOptions?: LockOptions,
     ): Promise<PaginationResult<T>> {
         const { page, pageSize } = paginationDto;
+
+        // 应用锁配置到查询构造器
+        if (lockOptions && lockOptions.type !== LockType.OPTIMISTIC) {
+            const lockMode = this.getLockMode(lockOptions.type) as any;
+            queryBuilder.setLock(lockMode, lockOptions.timeout);
+        }
+
         const [data, total] = await queryBuilder
             .skip((page - 1) * pageSize)
             .take(pageSize)
@@ -253,18 +304,153 @@ export class BaseService<T extends { id: string }> {
         }
     }
 
-    async create(dto: DeepPartial<T>, options?: FieldFilterOptions<T>): Promise<Partial<T>> {
-        const entity = this.repository.create(dto);
+    /**
+     * 带重试机制的操作执行
+     * @param operation 要执行的操作
+     * @param lockOptions 锁配置
+     * @returns 操作结果
+     */
+    protected async withRetry<R>(
+        operation: () => Promise<R>,
+        lockOptions?: LockOptions,
+    ): Promise<R> {
+        const maxRetries = lockOptions?.retryCount ?? 3;
+        const retryDelay = lockOptions?.retryDelay ?? 100;
+        let lastError: Error;
 
-        // 使用事务管理器或仓库保存实体
-        const { entityManager, excludeFields = [] } = options || {};
-        const repo = entityManager
-            ? entityManager.getRepository(this.repository.target)
-            : this.repository;
-        const saved = await repo.save(entity);
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+                return await operation();
+            } catch (error) {
+                lastError = error;
+
+                // 检查是否是可重试的错误
+                if (this.isRetryableError(error) && attempt < maxRetries) {
+                    this.logger.warn(`操作失败，第 ${attempt + 1} 次重试，错误: ${error.message}`);
+                    await this.sleep(retryDelay * Math.pow(2, attempt)); // 指数退避
+                    continue;
+                }
+
+                throw error;
+            }
+        }
+
+        throw lastError;
+    }
+
+    /**
+     * 检查错误是否可重试
+     * @param error 错误对象
+     * @returns 是否可重试
+     */
+    private isRetryableError(error: any): boolean {
+        // 乐观锁版本冲突
+        if (error instanceof OptimisticLockVersionMismatchError) {
+            return true;
+        }
+
+        // PostgreSQL 锁超时或死锁
+        if (error.code === "40001" || error.code === "40P01") {
+            return true;
+        }
+
+        // 连接错误
+        if (error.code === "ECONNRESET" || error.code === "ENOTFOUND") {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 延迟执行
+     * @param ms 延迟毫秒数
+     */
+    private sleep(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    /**
+     * 应用锁配置到查询选项
+     * @param options 查询选项
+     * @param lockOptions 锁配置
+     * @returns 应用锁后的查询选项
+     */
+    protected applyLockToFindOptions<T>(
+        options: FindManyOptions<T>,
+        lockOptions?: LockOptions,
+    ): FindManyOptions<T> {
+        if (!lockOptions || lockOptions.type === LockType.OPTIMISTIC) {
+            return options;
+        }
+
+        const lockConfig: any = {
+            mode: this.getLockMode(lockOptions.type),
+        };
+
+        if (lockOptions.timeout) {
+            lockConfig.timeout = lockOptions.timeout;
+        }
+
+        return {
+            ...options,
+            lock: lockConfig,
+        };
+    }
+
+    /**
+     * 获取 TypeORM 锁模式
+     * @param lockType 锁类型
+     * @returns TypeORM 锁模式
+     */
+    private getLockMode(lockType: LockType): string {
+        switch (lockType) {
+            case LockType.PESSIMISTIC_READ:
+                return "pessimistic_read";
+            case LockType.PESSIMISTIC_WRITE:
+                return "pessimistic_write";
+            case LockType.PESSIMISTIC_PARTIAL_WRITE:
+                return "pessimistic_partial_write";
+            case LockType.PESSIMISTIC_WRITE_OR_FAIL:
+                return "pessimistic_write_or_fail";
+            default:
+                return "pessimistic_write";
+        }
+    }
+
+    /**
+     * 检查实体是否支持乐观锁
+     * @param entity 实体对象
+     * @param versionField 版本字段名
+     * @returns 是否支持乐观锁
+     */
+    protected hasOptimisticLock(entity: any, versionField: string = "version"): boolean {
+        return entity && typeof entity[versionField] !== "undefined";
+    }
+
+    /**
+     * 创建记录
+     * @param dto 创建数据
+     * @param options 选项配置
+     * @returns 创建的实体
+     */
+    async create(dto: DeepPartial<T>, options?: FieldFilterOptions<T>): Promise<Partial<T>> {
+        const { entityManager, excludeFields = [], lock } = options || {};
+
+        const operation = async () => {
+            const entity = this.repository.create(dto);
+
+            // 使用事务管理器或仓库保存实体
+            const repo = entityManager
+                ? entityManager.getRepository(this.repository.target)
+                : this.repository;
+            const saved = await repo.save(entity);
+
+            return this.excludeField(saved, excludeFields) as T;
+        };
 
         try {
-            return this.excludeField(saved, excludeFields) as T;
+            return await this.withRetry(operation, lock);
         } catch (error) {
             this.logger.error(`创建记录失败: ${error.message}`, error.stack);
             throw HttpExceptionFactory.badRequest("Create failed.");
@@ -305,10 +491,11 @@ export class BaseService<T extends { id: string }> {
     }
 
     /**
-     * 根据ID更新记录
+     * 根据ID更新记录（支持乐观锁和悲观锁）
      *
      * @param id 记录ID
      * @param dto 更新的数据传输对象
+     * @param options 选项配置
      * @returns 更新后的实体对象
      * @throws NotFoundException 当记录不存在时抛出
      */
@@ -317,31 +504,60 @@ export class BaseService<T extends { id: string }> {
         dto: DeepPartial<T>,
         options?: FieldFilterOptions<T>,
     ): Promise<Partial<T>> {
-        // 使用事务管理器或仓库查询实体
-        const { entityManager, excludeFields = [] } = options || {};
-        const repo = entityManager
-            ? entityManager.getRepository(this.repository.target)
-            : this.repository;
+        const { entityManager, excludeFields = [], lock } = options || {};
 
-        // 查询实体
-        const findOptions = { ...options };
-        delete findOptions.entityManager;
-        const entity = await this.findOneById(id, findOptions);
+        const operation = async () => {
+            return await this.withTransaction(async (manager) => {
+                const repo = manager.getRepository(this.repository.target);
 
-        if (!entity) {
-            throw HttpExceptionFactory.notFound(`No such record.`);
-        }
+                // 构建查询选项，应用锁配置
+                const findOptions: FindManyOptions<T> = {
+                    where: { id } as FindOptionsWhere<T>,
+                };
+
+                const lockedFindOptions = this.applyLockToFindOptions(findOptions, lock);
+                const entity = await repo.findOne(lockedFindOptions);
+
+                if (!entity) {
+                    throw HttpExceptionFactory.notFound(`No such record.`);
+                }
+
+                // 乐观锁版本检查
+                if (lock?.type === LockType.OPTIMISTIC) {
+                    const versionField = lock.versionField || "version";
+                    if (
+                        this.hasOptimisticLock(entity, versionField) &&
+                        this.hasOptimisticLock(dto, versionField)
+                    ) {
+                        if ((entity as any)[versionField] !== (dto as any)[versionField]) {
+                            throw new OptimisticLockVersionMismatchError(
+                                this.repository.target as any,
+                                (entity as any)[versionField],
+                                (dto as any)[versionField],
+                            );
+                        }
+                    }
+                }
+
+                // 合并并保存实体
+                const merged = repo.merge(entity as T, dto);
+                const saved = await repo.save(merged);
+
+                return this.excludeField(saved, excludeFields) as T;
+            });
+        };
 
         try {
-            // 合并并保存实体
-            const merged = repo.merge(entity as T, dto);
-            const saved = await repo.save(merged);
-
-            // 排除指定字段
-            return this.excludeField(saved, excludeFields) as T;
+            return await this.withRetry(operation, lock);
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw error;
+            }
+            if (error instanceof OptimisticLockVersionMismatchError) {
+                this.logger.warn(`乐观锁版本冲突: ${error.message}`);
+                throw HttpExceptionFactory.badRequest(
+                    "Record has been modified by another user. Please refresh and try again.",
+                );
             }
             this.logger.error(`更新记录失败: ${error.message}`, error.stack);
             throw HttpExceptionFactory.badRequest("Update failed.");
@@ -401,51 +617,73 @@ export class BaseService<T extends { id: string }> {
     }
 
     /**
-     * 根据ID获取单条记录详情
+     * 根据ID获取单条记录详情（支持锁）
      *
      * @param id 记录ID
-     * @returns 查询到的实体对象，如不存在则抛出异常
-     * @throws NotFoundException 当记录不存在时抛出
+     * @param options 选项配置
+     * @returns 查询到的实体对象，如不存在则返回null
      */
     async findOneById(id: string, options?: FieldFilterOptions<T>): Promise<Partial<T>> {
         if (!id) {
             return null;
         }
-        const { excludeFields = [], where = {}, entityManager, ...restOptions } = options || {};
+        const {
+            excludeFields = [],
+            where = {},
+            entityManager,
+            lock,
+            ...restOptions
+        } = options || {};
 
         // 使用事务管理器或仓库查询实体
         const repo = entityManager
             ? entityManager.getRepository(this.repository.target)
             : this.repository;
-        // 使用 Equal 操作符来明确指定 ID 的类型
+
+        // 构建查询条件
         const whereCondition = { ...where } as FindOptionsWhere<T>;
         whereCondition.id = id as any;
 
-        const entity = await repo.findOne({
+        // 构建查询选项并应用锁配置
+        const findOptions: FindManyOptions<T> = {
             ...restOptions,
             where: whereCondition,
-        });
+        };
+
+        const lockedFindOptions = this.applyLockToFindOptions(findOptions, lock);
+        const entity = await repo.findOne(lockedFindOptions);
 
         return this.excludeField(entity, excludeFields) as T;
     }
 
     /**
-     * 根据条件查询单条记录
+     * 根据条件查询单条记录（支持锁）
      *
-     * @param where 查询条件
+     * @param options 查询选项
      * @returns 查询到的实体对象，如不存在则返回null
      */
     async findOne(options?: FieldFilterOptions<T>): Promise<Partial<T> | null> {
-        const { excludeFields = [], where = {}, entityManager, ...restOptions } = options || {};
+        const {
+            excludeFields = [],
+            where = {},
+            entityManager,
+            lock,
+            ...restOptions
+        } = options || {};
 
         // 使用事务管理器或仓库查询实体
         const repo = entityManager
             ? entityManager.getRepository(this.repository.target)
             : this.repository;
-        const entity = await repo.findOne({
+
+        // 构建查询选项并应用锁配置
+        const findOptions: FindManyOptions<T> = {
             ...restOptions,
             where: { ...where },
-        });
+        };
+
+        const lockedFindOptions = this.applyLockToFindOptions(findOptions, lock);
+        const entity = await repo.findOne(lockedFindOptions);
 
         return this.excludeField(entity, excludeFields) as T;
     }
@@ -576,19 +814,23 @@ export class BaseService<T extends { id: string }> {
     }
 
     /**
-     * 查询所有记录
+     * 查询所有记录（支持锁）
      *
      * @param options 查询选项，可包含条件、排序、关联等
      * @returns 查询到的实体对象数组
      */
     async findAll(options?: FieldFilterOptions<T>): Promise<T[]> {
-        const { excludeFields = [], entityManager, ...restOptions } = options || {};
+        const { excludeFields = [], entityManager, lock, ...restOptions } = options || {};
 
         // 使用事务管理器或仓库查询实体
         const repo = entityManager
             ? entityManager.getRepository(this.repository.target)
             : this.repository;
-        const entities = await repo.find(restOptions);
+
+        // 构建查询选项并应用锁配置
+        const findOptions: FindManyOptions<T> = restOptions;
+        const lockedFindOptions = this.applyLockToFindOptions(findOptions, lock);
+        const entities = await repo.find(lockedFindOptions);
 
         // 类型断言确保返回类型是数组
         return this.excludeField(entities, excludeFields) as T[];
@@ -601,7 +843,7 @@ export class BaseService<T extends { id: string }> {
      * @returns 符合条件的记录总数
      */
     async count(options?: FieldFilterOptions<T>): Promise<number> {
-        const { entityManager, ...restOptions } = options || {};
+        const { entityManager, lock, ...restOptions } = options || {};
 
         // 使用事务管理器或仓库查询实体
         const repo = entityManager
@@ -609,6 +851,7 @@ export class BaseService<T extends { id: string }> {
             : this.repository;
 
         try {
+            // count 操作通常不需要锁，但为了一致性保留接口
             return await repo.count(restOptions);
         } catch (error) {
             this.logger.error(`查询记录数量失败: ${error.message}`, error.stack);
