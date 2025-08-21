@@ -227,7 +227,7 @@ export class IndexingService {
 
         if (rules?.removeUrlsAndEmails) {
             result = result
-                .replace(/https?:\/\/[\w./:%#\$&\?\(\)~\-+=]+/gi, "")
+                .replace(/https?:\/\/[\w./:%#$&?()~\-+=]+/gi, "")
                 .replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, "")
                 .replace(COLLAPSE_WS, " ")
                 .replace(COLLAPSE_NL, "\n")
