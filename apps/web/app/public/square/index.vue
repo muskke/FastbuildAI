@@ -94,7 +94,7 @@ const handleSortChange = (sortBy: "latest" | "popular") => {
 // 智能体卡片点击
 const handleAgentClick = (agent: Agent) => {
     if (agent.publishToken) {
-        navigateTo(`/public/agent/${agent.publishToken}`);
+        window.open(`/public/agent/${agent.publishToken}`, "_blank");
     }
 };
 
