@@ -58,7 +58,7 @@ export class AiChatMessageService extends BaseService<AiChatMessage> {
     async findMessages(paginationDto: PaginationDto, queryDto?: { conversationId?: string }) {
         // 构建查询选项
         const options = {
-            relations: ["conversation"],
+            relations: ["conversation", "model"],
             order: { sequence: "DESC" as const },
             ...(queryDto?.conversationId && {
                 where: { conversationId: queryDto.conversationId },
