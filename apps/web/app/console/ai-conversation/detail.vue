@@ -61,10 +61,13 @@ const { lockFn: fetchMessages, isLock: messagesLoading } = useLockFn(async () =>
 /**
  * 获取消息角色显示文本
  */
-function getRoleDisplay(role: string): string {
+function getRoleDisplay(
+    role: string,
+    model: { name: string } = { name: t("console-ai-conversation.roles.assistant") },
+): string {
     const roleMap: Record<string, string> = {
         user: t("console-ai-conversation.roles.user"),
-        assistant: t("console-ai-conversation.roles.assistant"),
+        assistant: model.name,
     };
     return roleMap[role] || role;
 }
@@ -178,7 +181,7 @@ onMounted(async () => await Promise.all([fetchDetail(), fetchMessages()]));
                                             :class="getRoleStyle(message.role)"
                                             class="rounded-full px-2 py-1 text-xs font-medium"
                                         >
-                                            {{ getRoleDisplay(message.role) }}
+                                            {{ getRoleDisplay(message.role, message.model) }}
                                         </span>
                                         <TimeDisplay
                                             :datetime="message.createdAt as Date"
