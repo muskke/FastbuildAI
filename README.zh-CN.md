@@ -75,6 +75,10 @@ http://localhost:4090
 ![image](./docs/screenshots/8.png)
 ![image](./docs/screenshots/9.png)
 
+## Star 历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=FastbuildAI/FastbuildAI&type=Date)](https://www.star-history.com/#FastbuildAI/FastbuildAI&Date)
+
 ## 许可证
 
 [Apache License 2.0](./LICENSE)
