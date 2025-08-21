@@ -27,6 +27,7 @@ const components: { value: string; label: string; component: any }[] = [
         component: UserSetup,
     },
 ];
+const previewChatRef = useTemplateRef<InstanceType<typeof PreviewChat>>("previewChatRef");
 
 const showVariableInput = ref(false);
 const state = reactive<UpdateAgentConfigParams>({
@@ -124,15 +125,25 @@ onMounted(() => {
                         <h1 class="text-foreground text-lg font-medium">
                             {{ $t("console-ai-agent.configuration.debugPreview") }}
                         </h1>
-                        <UButton
-                            icon="i-lucide-settings-2"
-                            color="primary"
-                            variant="ghost"
-                            size="lg"
-                            @click="handleVariableModalOpen"
-                        />
+                        <div>
+                            <!-- 清除记录 -->
+                            <UButton
+                                icon="i-lucide-refresh-cw"
+                                color="primary"
+                                variant="ghost"
+                                size="lg"
+                                @click="previewChatRef?.clearRecord()"
+                            />
+                            <UButton
+                                icon="i-lucide-settings-2"
+                                color="primary"
+                                variant="ghost"
+                                size="lg"
+                                @click="handleVariableModalOpen"
+                            />
+                        </div>
                     </div>
-                    <PreviewChat :agent="state as UpdateAgentConfigParams" />
+                    <PreviewChat :agent="state as UpdateAgentConfigParams" ref="previewChatRef" />
                 </div>
             </div>
         </div>

@@ -115,7 +115,7 @@ export function apiDeleteAgent(id: string): Promise<{ message: string }> {
  */
 export function apiAgentChat(
     messages: AiMessage[] | any,
-    config?: Partial<any>,
+    config?: Partial<Record<string, any>>,
 ): Promise<{ abort: () => void }> {
     const agentId = config?.agentId || config?.body?.agentId;
     if (!agentId) {

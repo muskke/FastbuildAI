@@ -203,7 +203,7 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         agentId: string,
         dto: AgentChatDto,
         user: UserPlayground,
-    ): Promise<{ agent: Agent; finalConfig: Agent; conversationRecord: AgentChatRecord }> {
+    ): Promise<{ agent: Agent; finalConfig: Agent; conversationRecord: AgentChatRecord | null }> {
         const startTime = Date.now();
         const agent = await this.agentService.getAgentDetail(agentId);
         if (!agent) {
@@ -212,13 +212,14 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
 
         const finalConfig = this.mergeConfigurations(agent, dto);
 
-        let conversationRecord: AgentChatRecord;
+        let conversationRecord: AgentChatRecord | null = null;
         if (dto.conversationId) {
             conversationRecord = await this.agentChatRecordService.getChatRecordDetail(
                 dto.conversationId,
                 user,
             );
-        } else {
+        } else if (dto.saveConversation !== false) {
+            // 只有当 saveConversation 不为 false 时才创建对话记录
             if (this.isAnonymousUser(user)) {
                 // 匿名用户，使用anonymousIdentifier
                 conversationRecord = await this.agentChatRecordService.createChatRecord(
@@ -773,7 +774,7 @@ export class AgentChatService extends BaseAgentChatService {
             const lastUserMessage = dto.messages.filter((m) => m.role === "user").pop() as
                 | ChatMessage
                 | undefined;
-            if (lastUserMessage) {
+            if (lastUserMessage && conversationRecord) {
                 await this.saveUserMessage(
                     conversationRecord.id,
                     agentId,
@@ -909,25 +910,27 @@ export class AgentChatService extends BaseAgentChatService {
                 updatedLastUserMessage,
             );
 
-            await this.saveAssistantMessage(
-                conversationRecord.id,
-                agentId,
-                user.id,
-                aiResponse.response,
-                aiResponse.tokenUsage,
-                aiResponse.rawResponse,
-                metadata,
-                this.isAnonymousUser(user) ? user.id : undefined,
-            );
+            if (conversationRecord) {
+                await this.saveAssistantMessage(
+                    conversationRecord.id,
+                    agentId,
+                    user.id,
+                    aiResponse.response,
+                    aiResponse.tokenUsage,
+                    aiResponse.rawResponse,
+                    metadata,
+                    this.isAnonymousUser(user) ? user.id : undefined,
+                );
 
-            await this.agentChatRecordService.updateChatRecordStats(
-                conversationRecord.id,
-                conversationRecord.messageCount + 2,
-                conversationRecord.totalTokens + (aiResponse.tokenUsage?.total_tokens || 0),
-            );
+                await this.agentChatRecordService.updateChatRecordStats(
+                    conversationRecord.id,
+                    conversationRecord.messageCount + 2,
+                    conversationRecord.totalTokens + (aiResponse.tokenUsage?.total_tokens || 0),
+                );
+            }
 
             const result: AgentChatResponse = {
-                conversationId: conversationRecord.id,
+                conversationId: conversationRecord?.id || null,
                 response: aiResponse.response,
                 responseTime: Date.now() - startTime,
                 tokenUsage: this.convertTokenUsage(aiResponse.tokenUsage),
@@ -979,25 +982,27 @@ export class AgentChatService extends BaseAgentChatService {
         );
 
         // 自定义回复，直接返回
-        await this.saveAssistantMessage(
-            conversationRecord.id,
-            agentId,
-            user.id,
-            response,
-            undefined,
-            undefined,
-            { suggestions },
-            this.isAnonymousUser(user) ? user.id : undefined,
-        );
+        if (conversationRecord) {
+            await this.saveAssistantMessage(
+                conversationRecord.id,
+                agentId,
+                user.id,
+                response,
+                undefined,
+                undefined,
+                { suggestions },
+                this.isAnonymousUser(user) ? user.id : undefined,
+            );
 
-        await this.agentChatRecordService.updateChatRecordStats(
-            conversationRecord.id,
-            conversationRecord.messageCount + 2,
-            conversationRecord.totalTokens,
-        );
+            await this.agentChatRecordService.updateChatRecordStats(
+                conversationRecord.id,
+                conversationRecord.messageCount + 2,
+                conversationRecord.totalTokens,
+            );
+        }
 
         return {
-            conversationId: conversationRecord.id,
+            conversationId: conversationRecord?.id || null,
             response,
             responseTime: Date.now() - startTime,
             tokenUsage: undefined,
@@ -1019,8 +1024,8 @@ export class AgentChatService extends BaseAgentChatService {
         lastUserMessage: ChatMessage | undefined,
         res: Response,
     ): Promise<void> {
-        if (dto.saveConversation !== false) {
-            if (!conversationId) {
+        if (dto.saveConversation !== false && conversationRecord) {
+            if (!conversationId && conversationRecord) {
                 conversationId = conversationRecord.id;
                 res.write(
                     `data: ${JSON.stringify({ type: "conversation_id", data: conversationId })}\n\n`,
@@ -1162,7 +1167,7 @@ export class AgentChatService extends BaseAgentChatService {
                     );
 
                     // 直接返回标注答案，不调用大模型
-                    if (!conversationId) {
+                    if (!conversationId && conversationRecord) {
                         conversationId = conversationRecord.id;
                         res.write(
                             `data: ${JSON.stringify({ type: "conversation_id", data: conversationId })}\n\n`,
@@ -1261,7 +1266,7 @@ export class AgentChatService extends BaseAgentChatService {
                 );
             }
 
-            if (!conversationId) {
+            if (!conversationId && conversationRecord) {
                 conversationId = conversationRecord.id;
                 res.write(
                     `data: ${JSON.stringify({ type: "conversation_id", data: conversationId })}\n\n`,
@@ -1372,16 +1377,18 @@ export class AgentChatService extends BaseAgentChatService {
         } catch (error) {
             this.logger.error(`流式聊天对话失败: ${error.message}`, error.stack);
 
-            this.saveAssistantMessage(
-                conversationRecord.id,
-                agentId,
-                user.id,
-                error.message,
-                { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
-                error,
-                null,
-                this.isAnonymousUser(user) ? user.id : undefined,
-            );
+            if (conversationRecord) {
+                this.saveAssistantMessage(
+                    conversationRecord.id,
+                    agentId,
+                    user.id,
+                    error.message,
+                    { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+                    error,
+                    null,
+                    this.isAnonymousUser(user) ? user.id : undefined,
+                );
+            }
             try {
                 res.write(
                     `data: ${JSON.stringify({
