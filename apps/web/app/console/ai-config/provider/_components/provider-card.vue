@@ -13,6 +13,11 @@ interface ProviderCardEmits {
     (e: "delete", provider: AiProviderInfo): void;
     (e: "edit", provider: AiProviderInfo): void;
     (e: "view-models", providerId: string): void;
+    /**
+     * 切换供应商状态事件
+     * @param providerId 供应商ID
+     * @param isActive 状态
+     */
     (e: "toggle-active", providerId: string, isActive: boolean): void;
 }
 
@@ -111,8 +116,42 @@ function handleSelect(selected: boolean | "indeterminate") {
     }
 }
 
-const handleToggleActive = () => {
-    emit("toggle-active", props.provider.id, props.provider.isActive);
+/**
+ * 本地状态，用于跟踪开关的实际状态
+ */
+const localIsActive = ref(props.provider.isActive);
+
+/**
+ * 监听props中provider.isActive的变化，同步到本地状态
+ */
+watchEffect(() => {
+    localIsActive.value = props.provider.isActive;
+});
+
+/**
+ * 处理开关状态变化
+ */
+const handleToggleActive = async () => {
+    // 保存原始状态，以便在失败时恢复
+    const originalState = !localIsActive.value;
+
+    try {
+        // 发送状态变更事件
+        emit("toggle-active", props.provider.id, localIsActive.value);
+
+        // 添加延时检查，如果父组件没有更新props，则认为更新失败
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
+        // 如果父组件没有更新props，则认为更新失败
+        if (props.provider.isActive !== localIsActive.value) {
+            // 恢复到原始状态
+            localIsActive.value = originalState;
+        }
+    } catch (error) {
+        // 如果出错，恢复到原始状态
+        localIsActive.value = originalState;
+        console.error("切换供应商状态失败:", error);
+    }
 };
 
 function openWebsite() {
@@ -195,7 +234,11 @@ function openWebsite() {
                     {{ `${t("common.unit.general.item")}${t("common.ai.model")}` }}
                 </UBadge>
                 <AccessControl :codes="['ai-providers:update']">
-                    <USwitch v-model="provider.isActive" @click.stop @change="handleToggleActive" />
+                    <USwitch
+                        v-model="localIsActive"
+                        @click.stop
+                        @update:model-value="handleToggleActive"
+                    />
                 </AccessControl>
             </div>
             <!-- <div class="flex justify-end gap-2">
