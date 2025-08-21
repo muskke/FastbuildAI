@@ -27,6 +27,7 @@ const providerId = computed(() => props.id || (route.query.id as string) || null
 // 获取国际化函数
 const { t } = useI18n();
 
+const show = ref(false);
 const modelTypes = ref<string[]>([]);
 const allModelTypes = ref<ModelType[]>([]);
 
@@ -226,10 +227,22 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                 <UFormField :label="t('console-ai-provider.form.apiKey')" name="apiKey" required>
                     <UInput
                         v-model="formData.apiKey"
-                        type="password"
+                        :type="show ? 'text' : 'password'"
                         :placeholder="t('console-ai-provider.form.apiKeyPlaceholder')"
                         :ui="{ root: 'w-full' }"
-                    />
+                    >
+                        <template #trailing>
+                            <UButton
+                                color="neutral"
+                                variant="link"
+                                size="sm"
+                                :icon="show ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                                :aria-label="show ? 'Hide password' : 'Show password'"
+                                :aria-pressed="show"
+                                aria-controls="password"
+                                @click="show = !show"
+                            /> </template
+                    ></UInput>
                 </UFormField>
             </div>
 
