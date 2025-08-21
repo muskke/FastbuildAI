@@ -69,7 +69,7 @@ export class PublicAgentChatService {
         }
 
         const agent = await this.agentService.getAgentByApiKey(apiKey);
-        return this.performChat(agent, dto);
+        return this.performApiKeyChat(agent, dto, apiKey);
     }
 
     /**
@@ -84,7 +84,7 @@ export class PublicAgentChatService {
         }
 
         const agent = await this.agentService.getAgentByApiKey(apiKey);
-        return this.performChatStream(agent, dto, res);
+        return this.performApiKeyChatStream(agent, dto, res, apiKey);
     }
 
     /**
@@ -92,16 +92,16 @@ export class PublicAgentChatService {
      * @param apiKey API密钥
      * @param query 分页查询参数
      */
-    async getConversationsByApiKey(apiKey: string, query: { page?: number; pageSize?: number }) {
+    async getConversationsByApiKey(apiKey: string, query: PaginationDto) {
         if (!apiKey) {
             throw HttpExceptionFactory.unauthorized("API密钥不能为空");
         }
 
         const agent = await this.agentService.getAgentByApiKey(apiKey);
-        const anonymousUser = this.createAnonymousUser();
+        const anonymousIdentifier = this.generateApiKeyIdentifier(apiKey);
 
         const options = {
-            where: { agentId: agent.id, userId: anonymousUser.id, isDeleted: false },
+            where: { agentId: agent.id, anonymousIdentifier, isDeleted: false },
             order: { updatedAt: "DESC" as const, createdAt: "DESC" as const },
         };
 
@@ -120,8 +120,19 @@ export class PublicAgentChatService {
         }
 
         const agent = await this.agentService.getAgentByApiKey(apiKey);
+        const anonymousIdentifier = this.generateApiKeyIdentifier(apiKey);
+
+        // 先验证该对话记录是否属于该API Key
+        const chatRecord = await this.chatRecordRepository.findOne({
+            where: { id: conversationId, agentId: agent.id, anonymousIdentifier, isDeleted: false },
+        });
+
+        if (!chatRecord) {
+            throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
+        }
+
         const messageOptions = {
-            where: { conversationId, agentId: agent.id },
+            where: { conversationId, agentId: agent.id, anonymousIdentifier },
             order: { createdAt: "ASC" as const },
         };
 
@@ -139,20 +150,21 @@ export class PublicAgentChatService {
         }
 
         const agent = await this.agentService.getAgentByApiKey(apiKey);
+        const anonymousIdentifier = this.generateApiKeyIdentifier(apiKey);
 
-        // 验证对话记录是否属于该智能体
+        // 验证对话记录是否属于该API Key
         const chatRecord = await this.chatRecordRepository.findOne({
-            where: { id: conversationId, agentId: agent.id, isDeleted: false },
+            where: { id: conversationId, agentId: agent.id, anonymousIdentifier, isDeleted: false },
         });
 
         if (!chatRecord) {
-            throw HttpExceptionFactory.notFound("对话记录不存在或已删除");
+            throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
         }
 
         // 软删除对话记录
         await this.chatRecordRepository.update(conversationId, { isDeleted: true });
         // 删除对话消息
-        await this.chatMessageRepository.delete({ conversationId });
+        await this.chatMessageRepository.delete({ conversationId, anonymousIdentifier });
 
         this.logger.log(`[+] API删除对话记录: ${agent.id} - ${conversationId}`);
         return { message: "对话记录删除成功" };
@@ -174,14 +186,15 @@ export class PublicAgentChatService {
         }
 
         const agent = await this.agentService.getAgentByApiKey(apiKey);
+        const anonymousIdentifier = this.generateApiKeyIdentifier(apiKey);
 
-        // 验证对话记录是否属于该智能体
+        // 验证对话记录是否属于该API Key
         const chatRecord = await this.chatRecordRepository.findOne({
-            where: { id: conversationId, agentId: agent.id, isDeleted: false },
+            where: { id: conversationId, agentId: agent.id, anonymousIdentifier, isDeleted: false },
         });
 
         if (!chatRecord) {
-            throw HttpExceptionFactory.notFound("对话记录不存在或已删除");
+            throw HttpExceptionFactory.notFound("对话记录不存在或无权访问");
         }
 
         // 更新对话记录
@@ -429,6 +442,24 @@ export class PublicAgentChatService {
     }
 
     /**
+     * 执行API Key认证的对话逻辑
+     */
+    private async performApiKeyChat(agent: Agent, dto: PublicAgentChatDto, apiKey: string) {
+        await this.checkRateLimit(agent);
+        const agentChatDto = this.convertToAgentChatDto(dto, agent);
+        const apiKeyUser = this.createApiKeyUser(apiKey);
+
+        try {
+            const result = await this.agentChatService.chat(agent.id, agentChatDto, apiKeyUser);
+            this.logger.log(`[+] API Key对话完成: ${agent.id} - ${agent.name}`);
+            return result;
+        } catch (error) {
+            this.logger.error(`[!] API Key对话失败: ${error.message}`, error.stack);
+            throw HttpExceptionFactory.business("对话处理失败");
+        }
+    }
+
+    /**
      * 执行流式对话逻辑
      */
     private async performChatStream(agent: Agent, dto: PublicAgentChatDto, res: Response) {
@@ -450,6 +481,27 @@ export class PublicAgentChatService {
     }
 
     /**
+     * 执行API Key认证的流式对话逻辑
+     */
+    private async performApiKeyChatStream(
+        agent: Agent,
+        dto: PublicAgentChatDto,
+        res: Response,
+        apiKey: string,
+    ) {
+        await this.checkRateLimit(agent);
+        const agentChatDto = this.convertToAgentChatDto(dto, agent);
+        const apiKeyUser = this.createApiKeyUser(apiKey);
+
+        try {
+            return await this.agentChatService.chatStream(agent.id, agentChatDto, apiKeyUser, res);
+        } catch (error) {
+            this.logger.error(`[!] API Key流式对话失败: ${error.message}`, error.stack);
+            throw HttpExceptionFactory.business("流式对话处理失败");
+        }
+    }
+
+    /**
      * 创建匿名用户上下文
      * 为直接访问的用户生成唯一标识符
      */
@@ -464,6 +516,29 @@ export class PublicAgentChatService {
         return {
             id: uniqueId,
             username: `anonymous_${timestamp}`,
+            isRoot: 0,
+            role: {} as any,
+            permissions: [],
+        };
+    }
+
+    /**
+     * 为API Key生成固定的匿名标识符
+     * 用于区分不同API Key的对话记录
+     */
+    private generateApiKeyIdentifier(apiKey: string): string {
+        return `api_${apiKey}`;
+    }
+
+    /**
+     * 创建基于API Key的匿名用户上下文
+     */
+    private createApiKeyUser(apiKey: string): UserPlayground {
+        const anonymousIdentifier = this.generateApiKeyIdentifier(apiKey);
+
+        return {
+            id: anonymousIdentifier,
+            username: `anonymous_api_${apiKey.substring(3, 11)}`, // 以 anonymous_ 开头确保被识别为匿名用户
             isRoot: 0,
             role: {} as any,
             permissions: [],
