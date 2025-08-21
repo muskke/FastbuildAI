@@ -104,6 +104,17 @@ export function apiSetAiModelIsActive(id: string, isActive: boolean): Promise<vo
 }
 
 /**
+ * 批量设置AI模型状态
+ * @description 根据AI模型ID设置模型状态
+ * @param {string[]} ids AI模型ID数组
+ * @param {boolean} isActive 模型状态
+ * @returns {Promise<void>} 设置结果
+ */
+export function apiBatchSetAiModelIsActive(ids: string[], isActive: boolean): Promise<void> {
+    return useConsolePatch(`/ai-models/batch-toggle-active`, { ids, isActive });
+}
+
+/**
  * 删除AI模型
  * @description 根据AI模型ID删除指定的AI模型配置
  * @param {string} id AI模型ID
