@@ -24,6 +24,7 @@
     "now": "现在",
     "refresh": "刷新",
     "error": "错误信息",
+    "batchOperation": "批量操作",
     "batchEnable": "批量启用",
     "batchDisable": "批量禁用",
     "batchEnableSuccess": "批量启用成功",

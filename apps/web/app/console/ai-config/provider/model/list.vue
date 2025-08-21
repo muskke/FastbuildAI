@@ -8,6 +8,7 @@ import { useRouter } from "vue-router";
 import type { AiModelInfo, AiModelQueryRequest, ModelType } from "@/models/ai-provider";
 import {
     apiBatchDeleteAiModel,
+    apiBatchSetAiModelIsActive,
     apiDeleteAiModel,
     apiGetAiModelList,
     apiSetAiModelIsActive,
@@ -122,6 +123,7 @@ const columns = ref<TableColumn<AiModelInfo>[]>([
     },
 ]);
 
+// 获取行操作
 const getRowItems = (row: Row<AiModelInfo>) => {
     const items = [];
 
@@ -161,6 +163,34 @@ const getRowItems = (row: Row<AiModelInfo>) => {
         });
     }
 
+    return items;
+};
+
+// 获取批量操作
+const getBatchItems = () => {
+    const items = [];
+    if (hasAccessByCodes(["ai-models:delete"])) {
+        items.push({
+            label: t("console-common.batchDelete"),
+            icon: "i-heroicons-trash",
+            color: "error",
+            onSelect: () => handleBatchDelete(),
+        });
+    }
+    if (hasAccessByCodes(["ai-models:update"])) {
+        items.push({
+            label: t("console-common.batchEnable"),
+            icon: "i-lucide-eye",
+            color: "success",
+            onSelect: () => handleBatchIsActiveChange(true),
+        });
+        items.push({
+            label: t("console-common.batchDisable"),
+            icon: "i-lucide-eye-off",
+            color: "warning",
+            onSelect: () => handleBatchIsActiveChange(false),
+        });
+    }
     return items;
 };
 
@@ -301,6 +331,27 @@ const handleIsActiveChange = async (modelId: string, isActive: boolean) => {
     }
 };
 
+/**
+ * 批量设置AI模型状态
+ */
+const handleBatchIsActiveChange = async (isActive: boolean) => {
+    const selectedIds = Array.from(selectedModels.value);
+    if (selectedIds.length === 0) return;
+    try {
+        await apiBatchSetAiModelIsActive(selectedIds, isActive);
+        toast.success(
+            isActive
+                ? t("console-ai-provider.model.messages.isActiveEnabled")
+                : t("console-ai-provider.model.messages.isActiveDisabled"),
+        );
+        selectedModels.value.clear();
+        // 刷新列表
+        getLists();
+    } catch (error) {
+        console.error("Toggle model active failed:", error);
+    }
+};
+
 const isIndeterminate = computed(() => {
     const selectedCount = paging.items.filter(
         (model: AiModelInfo) => model.id && selectedModels.value.has(model.id as string),
@@ -373,20 +424,31 @@ onMounted(async () => getLists());
                     </span>
                 </div>
 
-                <AccessControl :codes="['ai-models:delete']">
+                <UDropdownMenu
+                    v-if="
+                        hasAccessByCodes(['ai-models:delete']) ||
+                        hasAccessByCodes(['ai-models:update'])
+                    "
+                    size="lg"
+                    :items="getBatchItems()"
+                    :content="{
+                        align: 'start',
+                        side: 'bottom',
+                        sideOffset: 8,
+                    }"
+                >
                     <UButton
-                        color="error"
+                        color="info"
                         variant="subtle"
-                        :label="t('console-common.batchDelete')"
-                        icon="i-heroicons-trash"
+                        :label="t('console-common.batchOperation')"
+                        icon="i-lucide-list-checks"
                         :disabled="selectedModels.size === 0"
-                        @click="handleBatchDelete"
                     >
                         <template #trailing>
                             <UKbd>{{ selectedModels.size }}</UKbd>
                         </template>
                     </UButton>
-                </AccessControl>
+                </UDropdownMenu>
 
                 <AccessControl :codes="['ai-models:create']">
                     <UButton

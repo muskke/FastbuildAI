@@ -87,6 +87,35 @@ export class AiModelService extends BaseService<AiModel> {
     }
 
     /**
+     * 批量更新AI模型状态
+     *
+     * @param ids 模型ID列表
+     * @param dto 更新AI模型DTO
+     * @param options 字段过滤选项
+     * @returns 更新后的AI模型实体
+     */
+    async updateModelMany(
+        ids: string[],
+        dto: UpdateAiModelDto,
+        options?: FieldFilterOptions<AiModel>,
+    ): Promise<Partial<AiModel>[]> {
+        try {
+            // 使用 In 操作符构建 where 条件
+            const where = { id: In(ids) };
+            const updateOptions = { ...options, where };
+
+            // 使用 update 方法进行批量更新
+            const result = await this.update(dto, updateOptions);
+
+            // 确保返回的是数组
+            return Array.isArray(result) ? result : [result];
+        } catch (error) {
+            this.logger.error(`更新AI模型失败: ${error.message}`, error.stack);
+            throw HttpExceptionFactory.badRequest("Failed to update AI model.");
+        }
+    }
+
+    /**
      * 获取可用的模型列表
      *
      * @param excludeFields 要排除的字段
