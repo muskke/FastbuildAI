@@ -65,10 +65,8 @@ export class PublicAccessTokenGuard implements CanActivate {
 }
 
 // 扩展 Request 接口以包含 accessToken
-declare global {
-    namespace Express {
-        interface Request {
-            accessToken?: string;
-        }
+declare module "express-serve-static-core" {
+    interface Request {
+        accessToken?: string;
     }
 }
