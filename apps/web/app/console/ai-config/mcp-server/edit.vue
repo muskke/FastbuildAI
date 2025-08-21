@@ -210,14 +210,10 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                             :ui="{ root: 'w-full' }"
                         />
                     </UFormField>
-
-                    <UFormField
-                        :label="t('console-ai-mcp-server.form.providerName')"
-                        name="providerName"
-                    >
+                    <UFormField :label="t('console-ai-mcp-server.form.alias')" name="alias">
                         <UInput
-                            v-model="formData.providerName"
-                            :placeholder="t('console-ai-mcp-server.form.providerName')"
+                            v-model="formData.alias"
+                            :placeholder="t('console-ai-mcp-server.form.alias')"
                             :ui="{ root: 'w-full' }"
                         />
                     </UFormField>
@@ -236,19 +232,22 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                 </UFormField>
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <UFormField
+                        :label="t('console-ai-mcp-server.form.providerName')"
+                        name="providerName"
+                    >
+                        <UInput
+                            v-model="formData.providerName"
+                            :placeholder="t('console-ai-mcp-server.form.providerName')"
+                            :ui="{ root: 'w-full' }"
+                        />
+                    </UFormField>
+                    <UFormField
                         :label="t('console-ai-mcp-server.form.providerUrl')"
                         name="providerUrl"
                     >
                         <UInput
                             v-model="formData.providerUrl"
                             :placeholder="t('console-ai-mcp-server.form.providerUrl')"
-                            :ui="{ root: 'w-full' }"
-                        />
-                    </UFormField>
-                    <UFormField :label="t('console-ai-mcp-server.form.alias')" name="alias">
-                        <UInput
-                            v-model="formData.alias"
-                            :placeholder="t('console-ai-mcp-server.form.alias')"
                             :ui="{ root: 'w-full' }"
                         />
                     </UFormField>
