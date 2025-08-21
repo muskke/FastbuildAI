@@ -5,6 +5,14 @@
     "actions": {
         "viewDetail": "詳細を表示"
     },
+    "list": {
+        "title": "対話タイトル",
+        "userName": "ユーザー名",
+        "messageCount": "対話回数",
+        "totalTokens": "トークン消耗",
+        "updatedAt": "更新日時",
+        "action": "操作"
+    },
     "detail": {
         "title": "会話詳細",
         "description": "AI会話記録の詳細情報を表示",

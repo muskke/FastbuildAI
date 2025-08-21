@@ -39,6 +39,7 @@
     "power": "計算力",
     "recharge": "チャージ",
     "officeLink": "公式ウェブサイトに行く",
+    "default": "デフォルト",
     "tab": {
         "all": "すべて",
         "system": "システム",
@@ -253,5 +254,14 @@
         "ai": {
             "embedding": "ベクトルモデル"
         }
+    },
+    "proEditor": {
+        "placeholder": "内容を入力してください...",
+        "img": "画像",
+        "clearMarks": "フォーマットをクリアする",
+        "clearNodes": "ノードを削除",
+        "undo": "取り消し",
+        "redo": "やり直し",
+        "purple": "紫色"
     }
 }
