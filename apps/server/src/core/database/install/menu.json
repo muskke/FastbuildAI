@@ -1138,6 +1138,34 @@
                                 "pluginPackName": null
                             }
                         ]
+                    },
+                    {
+                        "name": "console-menu.systemSettings.agreement",
+                        "code": "system-agreement",
+                        "path": "agreement",
+                        "icon": "",
+                        "component": "/console/system-setting/agreement/index",
+                        "permissionCode": "system-website:getConfig",
+                        "sort": 0,
+                        "isHidden": 0,
+                        "type": 2,
+                        "sourceType": 1,
+                        "pluginPackName": "",
+                        "children": [
+                            {
+                                "name": "console-system.website.actions.save",
+                                "code": "system-agreement-save",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "system-website:setConfig",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            }
+                        ]
                     }
                 ]
             },
