@@ -35,54 +35,25 @@ export interface AgentTemplateConfig {
  */
 export class AgentTemplateDto {
     /** 模板ID */
-    @IsNotEmpty({ message: "模板ID不能为空" })
-    @IsString({ message: "模板ID必须是字符串" })
     id: string;
 
     /** 模板名称 */
-    @IsNotEmpty({ message: "模板名称不能为空" })
-    @IsString({ message: "模板名称必须是字符串" })
     name: string;
 
     /** 模板描述 */
-    @IsOptional()
-    @IsString({ message: "模板描述必须是字符串" })
     description?: string;
 
+    /** 模板头像 */
+    avatar?: string;
+
     /** 模板分类 */
-    @IsOptional()
-    @IsString({ message: "模板分类必须是字符串" })
-    category?: string;
-
-    /** 模板标签 */
-    @IsOptional()
-    @IsArray({ message: "模板标签必须是数组" })
-    @IsString({ each: true, message: "标签必须是字符串" })
-    tags?: string[];
-
-    /** 模板图标 */
-    @IsOptional()
-    @IsString({ message: "模板图标必须是字符串" })
-    icon?: string;
-
-    /** 模板预览图 */
-    @IsOptional()
-    @IsString({ message: "模板预览图必须是字符串" })
-    previewImage?: string;
-
-    /** 模板配置 */
-    config?: AgentTemplateConfig;
-
-    /** 使用次数 */
-    usageCount?: number;
-
-    /** 评分 */
-    rating?: number;
+    categories?: string;
 
     /** 是否推荐 */
-    @IsOptional()
-    @IsBoolean({ message: "是否推荐必须是布尔值" })
     isRecommended?: boolean;
+
+    /** 其他配置（包含所有 AgentTemplateConfig 属性） */
+    [key: string]: any;
 }
 
 /**
@@ -125,7 +96,7 @@ export class QueryTemplateDto {
     /** 分类筛选 */
     @IsOptional()
     @IsString({ message: "分类必须是字符串" })
-    category?: string;
+    categories?: string;
 
     /** 标签筛选 */
     @IsOptional()

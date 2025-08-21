@@ -157,7 +157,18 @@
             "sortOrderHelp": "値が大きいほどリストの上位に表示されます",
             "basicInfoTitle": "モデル基本情報",
             "basicInfoDescription": "モデルの基本情報と識別パラメータを設定",
-            "modelType": "モデルタイプ"
+            "modelType": "モデルタイプ",
+            "modelTypePlaceholder": "モデルタイプを入力してください"
+        },
+        "table": {
+            "icon": "アイコン",
+            "name": "名称",
+            "model": "モデル識別",
+            "modelType": "モデルタイプ",
+            "isActive": "状態",
+            "isDefault": "デフォルトモデル",
+            "sortOrder": "ソート",
+            "action": "操作"
         },
         "currency": {
             "USD": "米ドル",
@@ -246,7 +257,9 @@
             "loadProvidersFailed": "プロバイダーリスト取得失敗",
             "getProvidersFailed": "プロバイダーリスト取得失敗",
             "missingModelId": "モデルIDが不足しています",
-            "getModelDetailFailed": "モデル詳細取得失敗"
+            "getModelDetailFailed": "モデル詳細取得失敗",
+            "isActiveEnabled": "モデルが有効になりました",
+            "isActiveDisabled": "モデルは無効になっています"
         }
     },
     "viewWebsite": "公式サイトへ",

@@ -44,7 +44,13 @@
             "titleLabel": "タイトル",
             "contentLabel": "内容",
             "titleRequired": "タイトルを入力してください",
-            "contentRequired": "内容を入力してください"
+            "contentRequired": "内容を入力してください",
+            "privacyTitle": "プライバシーポリシーのタイトルを入力してください",
+            "privacyContent": "プライバシーポリシーの内容を入力してください",
+            "serviceTitle": "サービス利用規約のタイトルを入力してください",
+            "serviceContent": "サービス利用規約の内容を入力してください",
+            "paymentTitle": "支払い契約のタイトルを入力してください",
+            "paymentContent": "支払い契約の内容を入力してください"
         },
         "copyright": {
             "title": "著作権・免責事項設定",

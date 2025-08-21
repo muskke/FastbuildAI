@@ -69,9 +69,9 @@ export class AgentTemplateService {
         }
 
         // 分类筛选
-        if (query.category) {
+        if (query.categories) {
             filteredTemplates = filteredTemplates.filter(
-                (template) => template.category === query.category,
+                (template) => template.categories === query.categories,
             );
         }
 
@@ -125,14 +125,12 @@ export class AgentTemplateService {
             throw new Error(`模板不存在: ${dto.templateId}`);
         }
 
-        delete template.config?.datasetIds;
+        delete template?.datasetIds;
+        delete template?.id;
 
         return {
-            ...template.config,
-            ...dto.customConfig,
-            name: dto.name,
-            description: dto.description || template.description,
-            avatar: dto.avatar || "/static/images/agent.png",
+            ...template,
+            ...dto,
         };
     }
 
@@ -140,7 +138,7 @@ export class AgentTemplateService {
      * 获取模板分类列表
      */
     async getTemplateCategories(): Promise<string[]> {
-        const categories = [...new Set(this.templates.map((t) => t.category).filter(Boolean))];
+        const categories = [...new Set(this.templates.map((t) => t.categories).filter(Boolean))];
         return categories.sort();
     }
 

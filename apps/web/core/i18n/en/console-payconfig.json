@@ -9,6 +9,11 @@
     "wxMiniProgram": "Mini Program",
     "H5Pay": "H5 Pay",
     "oaPay": "Official Account Pay",
+    "logo": "icon",
+    "payType": "Payment methods",
+    "name": "Display Name",
+    "isEnable": "Whether enabled or not",
+    "action": "operate",
     "form": {
         "addLogo": "Add Logo",
         "formValidationFailed": "Validation Failed",

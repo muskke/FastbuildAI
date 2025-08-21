@@ -157,7 +157,18 @@
             "sortOrderHelp": "Higher priority appears first",
             "basicInfoTitle": "Basic Info",
             "basicInfoDescription": "Configure model identification",
-            "modelType": "Model Type"
+            "modelType": "Model Type",
+            "modelTypePlaceholder": "Please enter the model type"
+        },
+        "table": {
+            "icon": "icon",
+            "name": "name",
+            "model": "Model identification",
+            "modelType": "Model type",
+            "isActive": "state",
+            "isDefault": "Default model",
+            "sortOrder": "sort",
+            "action": "operate"
         },
         "currency": {
             "USD": "USD",
@@ -246,7 +257,9 @@
             "loadProvidersFailed": "Failed to load providers",
             "getProvidersFailed": "Failed to get providers",
             "missingModelId": "Missing model ID",
-            "getModelDetailFailed": "Failed to load details"
+            "getModelDetailFailed": "Failed to load details",
+            "isActiveEnabled": "The model is enabled",
+            "isActiveDisabled": "The model is disabled"
         }
     },
     "viewWebsite": "Visit Website",

@@ -118,14 +118,6 @@ const columns: TableColumn<AgentChatRecord>[] = [
                         },
                         user.nickname || user.username,
                     ),
-                    h(
-                        "span",
-                        {
-                            class: "text-xs text-muted-foreground truncate",
-                            title: user.email || user.phone || user.username,
-                        },
-                        user.email || user.phone || user.username,
-                    ),
                 ]),
             ]);
         },

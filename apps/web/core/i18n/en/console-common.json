@@ -39,6 +39,7 @@
     "power": "Power",
     "recharge": "Recharge",
     "officeLink": "Go to Website",
+    "default": "default",
     "tab": {
         "all": "All",
         "system": "System",
@@ -253,5 +254,14 @@
         "ai": {
             "embedding": "Embedding"
         }
+    },
+    "proEditor": {
+        "placeholder": "Please enter the content...",
+        "img": "Image",
+        "clearMarks": "Clear formatting",
+        "clearNodes": "Clear nodes",
+        "undo": "quash",
+        "redo": "redo",
+        "purple": "purple"
     }
 }
