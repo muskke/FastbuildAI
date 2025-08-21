@@ -62,6 +62,7 @@ const COMMON_LANGUAGES = [
     "yaml",
     "ini",
     "powershell",
+    "objective-c",
 ];
 
 /**
