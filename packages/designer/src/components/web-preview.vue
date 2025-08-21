@@ -8,7 +8,6 @@ import { type Component, computed, defineAsyncComponent, onMounted, onUnmounted,
 import { useRouter } from "vue-router";
 
 import { DESIGN_CONFIG } from "../config/design";
-import { useDesignStore } from "../stores/design";
 // 避免一次性注册所有组件，按需加载
 const contentModules = import.meta.glob("../components/widgets/**/content.vue", { eager: false });
 

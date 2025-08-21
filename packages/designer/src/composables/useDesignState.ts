@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 
-import { useDesignStore } from "../stores/design";
+import { useDesignStore } from "@/common/stores/design";
 
 /**
  * 设计核心 Hook

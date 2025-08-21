@@ -45,13 +45,13 @@
         "i18n:translate": "node apps/web/libs/translate-i18n.mjs"
     },
     "devDependencies": {
-        "@swc/core": "^1.11.24",
-        "bing-translate-api": "^4.0.2",
-        "chalk": "^5.4.1",
-        "prettier": "^3.5.3",
-        "prettier-plugin-tailwindcss": "^0.6.11",
+        "@swc/core": "^1.13.4",
+        "bing-translate-api": "^4.1.0",
+        "chalk": "^5.6.0",
+        "prettier": "^3.6.2",
+        "prettier-plugin-tailwindcss": "^0.6.14",
         "ts-node": "^10.9.2",
-        "turbo": "^2.5.0",
+        "turbo": "^2.5.6",
         "typescript": "5.8.2"
     },
     "packageManager": "pnpm@10.0.0",
@@ -78,13 +78,13 @@
     },
     "dependencies": {
         "@tiptap/extension-color": "^2.26.1",
-        "@tiptap/extension-image": "^2.10.4",
-        "@tiptap/extension-link": "^2.10.4",
+        "@tiptap/extension-image": "^2.26.1",
+        "@tiptap/extension-link": "^2.26.1",
         "@tiptap/extension-list-item": "^2.26.1",
-        "@tiptap/extension-placeholder": "^2.10.4",
+        "@tiptap/extension-placeholder": "^2.26.1",
         "@tiptap/extension-text-style": "^2.26.1",
-        "@tiptap/extension-underline": "^2.10.4",
-        "@tiptap/starter-kit": "^2.10.4",
-        "@tiptap/vue-3": "^2.10.4"
+        "@tiptap/extension-underline": "^2.26.1",
+        "@tiptap/starter-kit": "^2.26.1",
+        "@tiptap/vue-3": "^2.26.1"
     }
 }

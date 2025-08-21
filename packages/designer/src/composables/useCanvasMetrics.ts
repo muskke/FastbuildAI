@@ -1,8 +1,8 @@
 import type { CSSProperties } from "vue";
-import { computed, getCurrentInstance, onUnmounted, type Ref, ref, watch } from "vue";
+import { computed, getCurrentInstance, type Ref, ref, watch } from "vue";
 
 import { DESIGN_CONFIG } from "../config/design";
-import { useDesignStore } from "../stores/design";
+import { useDesignStore } from "@/common/stores/design";
 
 // 当前画布尺寸
 const designWidth = ref<number>(DESIGN_CONFIG.value.DEFAULT_WIDTH);

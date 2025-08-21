@@ -5,7 +5,6 @@ import { computed, onMounted, onUnmounted, useTemplateRef } from "vue";
 import { useCanvasMetrics } from "../../composables/useCanvasMetrics";
 import { useDesignSystem } from "../../composables/useDesignSystem";
 import { DESIGN_CONFIG } from "../../config/design";
-import { useDesignStore } from "../../stores/design";
 import ComponentContainer from "./component-viewport.vue";
 import GuideLines from "./guide-lines.vue";
 import HighlightArea from "./highlight-area.vue";

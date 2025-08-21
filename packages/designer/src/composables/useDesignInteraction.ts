@@ -1,6 +1,6 @@
 import type { Ref } from "vue";
 
-import { useDesignStore } from "../stores/design";
+import { useDesignStore } from "@/common/stores/design";
 import type { DesignGuidesType } from "./useDesignGuides";
 import type { DesignCoreType } from "./useDesignState";
 
