@@ -5,6 +5,14 @@
     "actions": {
         "viewDetail": "View details"
     },
+    "list": {
+        "title": "Conversation title",
+        "userName": "Username",
+        "messageCount": "Number of conversations",
+        "totalTokens": "Token consumption",
+        "updatedAt": "Update time",
+        "action": "operate"
+    },
     "detail": {
         "title": "Chat Details",
         "description": "View AI conversation details",
