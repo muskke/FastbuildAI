@@ -9,7 +9,6 @@ const { t } = useI18n();
 
 const tabs = computed<{ name: string; label: string }[]>(() => [
     { name: "information", label: t("console-system.website.tabs.information") },
-    { name: "agreement", label: t("console-system.website.tabs.agreement") },
     { name: "copyright", label: t("console-system.website.tabs.copyright") },
     { name: "statistics", label: t("console-system.website.tabs.statistics") },
 ]);
