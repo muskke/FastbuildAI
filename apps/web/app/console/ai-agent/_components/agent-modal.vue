@@ -49,7 +49,6 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
         formData.value = data as UpdateAgentConfigParams;
     } catch (error) {
         console.error("获取智能体详情失败:", error);
-        toast.error((error as Error).message);
     }
 });
 
@@ -76,7 +75,6 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         emits("close", true);
     } catch (error) {
         console.error(`${props.id ? "更新" : "创建"}智能体失败:`, error);
-        toast.error((error as Error).message);
     }
 });
 

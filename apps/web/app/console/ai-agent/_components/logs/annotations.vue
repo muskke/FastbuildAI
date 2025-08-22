@@ -100,7 +100,6 @@ const { lockFn: reviewAnnotation } = useLockFn(
             getLists();
         } catch (error) {
             console.error("审核标注失败:", error);
-            toast.error((error as Error).message);
         }
     },
 );
@@ -113,7 +112,6 @@ const { lockFn: deleteAnnotation } = useLockFn(async (id: string) => {
         getLists();
     } catch (error) {
         console.error("删除标注失败:", error);
-        toast.error((error as Error).message);
     }
 });
 

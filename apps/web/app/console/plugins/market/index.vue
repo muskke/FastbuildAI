@@ -79,7 +79,6 @@ async function getPluginList() {
         }
     } catch (error) {
         console.error("获取插件市场数据失败:", error);
-        toast.error(t("console-plugins.market.messages.fetchError"));
         items.value = [];
         pagination.total = 0;
     } finally {

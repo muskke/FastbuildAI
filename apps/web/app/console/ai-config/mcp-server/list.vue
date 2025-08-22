@@ -158,7 +158,6 @@ const handleSetQuickMenu = async (mcpServer: McpServerDetail) => {
         toast.success(t("console-ai-mcp-server.quickMenuSuccess"));
     } catch (error) {
         console.error("Set quick menu failed:", error);
-        toast.error(t("console-ai-mcp-server.quickMenuFailed"));
     }
 };
 

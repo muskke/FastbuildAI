@@ -42,7 +42,6 @@ const { lockFn: handleSubmit, isLock } = useLockFn(async () => {
         toast.success(`${t("console-common.messages.saveSuccess")}`);
     } catch (error) {
         console.error(error);
-        toast.error(`${t("console-common.messages.saveFailed")} (error as Error).message`);
     }
 });
 

@@ -116,7 +116,6 @@ const handleRecharge = async () => {
         startPolling();
     } catch (error) {
         console.error(error);
-        toast.error(t("web-personal-rights.rechargeCenter.qrCodeFailed"));
     }
 };
 
@@ -137,7 +136,6 @@ const startPolling = () => {
             }
         } catch (error) {
             console.error(error);
-            toast.error(t("web-personal-rights.rechargeCenter.payFailed"));
         }
     }, 3000);
 };

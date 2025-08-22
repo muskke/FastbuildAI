@@ -289,7 +289,6 @@ const { lockFn: getPermissions, isLock: listLoading } = useLockFn(async () => {
         }
     } catch (error) {
         console.error("获取权限列表失败:", error);
-        toast.error(t("console-system-perms.permission.listError"));
     }
 });
 
@@ -309,7 +308,6 @@ const { lockFn: syncPermissions, isLock: syncLoading } = useLockFn(async () => {
         await getPermissions();
     } catch (error) {
         console.error("同步权限失败:", error);
-        toast.error(t("console-system-perms.permission.syncError"));
     }
 });
 
@@ -326,7 +324,6 @@ const { lockFn: cleanupPermissions, isLock: cleanupLoading } = useLockFn(async (
         await getPermissions();
     } catch (error) {
         console.error("清理权限失败:", error);
-        toast.error(t("console-system-perms.permission.cleanupError"));
     }
 });
 

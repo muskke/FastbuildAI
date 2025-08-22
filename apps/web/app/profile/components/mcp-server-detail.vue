@@ -101,7 +101,6 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
         });
     } catch (error) {
         console.error("获取供应商详情失败:", error);
-        toast.error("获取供应商详情失败");
     }
 });
 
