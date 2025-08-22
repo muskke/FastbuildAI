@@ -9,6 +9,7 @@ import { apiCreateAgentFromTemplate } from "@/services/console/ai-agent";
 
 const { t } = useI18n();
 const toast = useMessage();
+const router = useRouter();
 
 const props = defineProps<{
     /** 选中的模板 */
@@ -37,7 +38,7 @@ const schema = object({
 // 提交表单
 const { lockFn: submitForm, isLock } = useLockFn(async () => {
     try {
-        await apiCreateAgentFromTemplate({
+        const res = await apiCreateAgentFromTemplate({
             templateId: props.template.id,
             name: formData.name,
             description: formData.description,
@@ -45,7 +46,7 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         });
 
         toast.success(t("console-ai-agent.template.create.success"));
-        emits("close", true);
+        router.push(useRoutePath("ai-agent:detail", { id: res.id }));
     } catch (error) {
         console.error(t("console-ai-agent.template.create.failed"), error);
         toast.error((error as Error).message);
