@@ -142,10 +142,6 @@ export class UserController extends BaseController {
                 throw HttpExceptionFactory.badRequest("该邮箱已被其他用户使用");
             }
         }
-        // // 特殊字段验证
-        // if (field === "avatar" && newValue) {
-        //     newValue = await this.fileService.set(newValue);
-        // }
 
         if (field === "phone" && newValue) {
             // 检查手机号是否已被其他用户使用
