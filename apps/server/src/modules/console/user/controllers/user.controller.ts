@@ -14,6 +14,7 @@ import { Body, Delete, Get, Inject, Param, Patch, Post, Query } from "@nestjs/co
 import { In } from "typeorm";
 
 import { MenuService } from "../../menu/menu.service";
+import { RoleService } from "../../role/role.service";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { BatchDeleteUserDto, DeleteUserDto } from "../dto/delete-user.dto";
 import { QueryUserDto } from "../dto/query-user.dto";
@@ -39,6 +40,7 @@ export class UserController extends BaseController {
         @Inject(RolePermissionService)
         private readonly rolePermissionService: RolePermissionService,
         private readonly fileService: FileService,
+        private readonly roleService: RoleService,
     ) {
         super();
     }
@@ -95,6 +97,21 @@ export class UserController extends BaseController {
     @BuildFileUrl(["**.avatar"])
     async create(@Body() createUserDto: CreateUserDto) {
         return await this.userService.createUser(createUserDto);
+    }
+
+    /**
+     * 查询全部角色列表（不分页）
+     *
+     * @returns 全部角色列表
+     */
+    @Get("roles")
+    @Permissions({
+        code: "list",
+        name: "查看角色",
+        description: "查询全部角色列表",
+    })
+    async findAllRoles() {
+        return this.roleService.findAll();
     }
 
     /**

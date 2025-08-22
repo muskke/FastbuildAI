@@ -1,5 +1,6 @@
 // ==================== 用户查询相关 API ====================
 
+import type { RoleFormData } from "@/models";
 import type { PaginationResult } from "@/models/global";
 import type {
     UserCreateRequest,
@@ -16,6 +17,15 @@ import type {
  */
 export function apiGetUserList(params: UserQueryRequest): Promise<PaginationResult<UserInfo>> {
     return useConsoleGet("/users", params);
+}
+
+/**
+ * 获取用户角色列表
+ * @description 获取系统中所有角色的列表，不分页
+ * @returns {Promise<RoleFormData[]>} 全部角色列表
+ */
+export function apiGetUserRolesList(): Promise<RoleFormData[]> {
+    return useConsoleGet("/users/roles");
 }
 
 /**
