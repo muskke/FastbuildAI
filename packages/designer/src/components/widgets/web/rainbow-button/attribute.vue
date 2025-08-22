@@ -73,7 +73,7 @@ const htmlTagOptions: { label: string; value: string }[] = [
                                 size="md"
                             />
                         </UFormField>
-                        >
+                        
                         <UFormField
                             size="xs"
                             :label="t('console-widgets.button.linkUrl')"

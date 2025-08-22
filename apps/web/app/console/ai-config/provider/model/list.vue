@@ -169,26 +169,26 @@ const getRowItems = (row: Row<AiModelInfo>) => {
 // 获取批量操作
 const getBatchItems = () => {
     const items = [];
+    if (hasAccessByCodes(["ai-models:update"])) {
+        items.push({
+            label: t("console-common.batchEnable"),
+            icon: "i-lucide-eye",
+            color: "neutral",
+            onSelect: () => handleBatchIsActiveChange(true),
+        });
+        items.push({
+            label: t("console-common.batchDisable"),
+            icon: "i-lucide-eye-off",
+            color: "neutral",
+            onSelect: () => handleBatchIsActiveChange(false),
+        });
+    }
     if (hasAccessByCodes(["ai-models:delete"])) {
         items.push({
             label: t("console-common.batchDelete"),
             icon: "i-heroicons-trash",
             color: "error",
             onSelect: () => handleBatchDelete(),
-        });
-    }
-    if (hasAccessByCodes(["ai-models:update"])) {
-        items.push({
-            label: t("console-common.batchEnable"),
-            icon: "i-lucide-eye",
-            color: "success",
-            onSelect: () => handleBatchIsActiveChange(true),
-        });
-        items.push({
-            label: t("console-common.batchDisable"),
-            icon: "i-lucide-eye-off",
-            color: "warning",
-            onSelect: () => handleBatchIsActiveChange(false),
         });
     }
     return items;
@@ -444,8 +444,8 @@ onMounted(async () => getLists());
                     }"
                 >
                     <UButton
-                        color="info"
-                        variant="subtle"
+                        color="neutral"
+                        variant="outline"
                         :label="t('console-common.batchOperation')"
                         icon="i-lucide-list-checks"
                         :disabled="selectedModels.size === 0"
