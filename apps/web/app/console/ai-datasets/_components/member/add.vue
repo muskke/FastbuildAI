@@ -54,7 +54,6 @@ const roleOptions = [
 const searchUsers = async (keyword: string) => {
     if (!keyword.trim()) {
         searchResults.value = [];
-        return;
     }
     try {
         const users = await apiSearchUsers({ keyword: keyword.trim(), limit: 20 });
@@ -156,14 +155,23 @@ watch(
             placeholder="搜索并选择用户..."
         >
             <template #item-trailing="{ item }">
-                <div class="flex items-center gap-2" @click.stop>
+                <div class="flex items-center gap-2">
                     <USelect
                         v-model="item.role"
                         :items="roleOptions"
                         label-key="label"
                         value-key="value"
+                        @click.stop
                     />
-                    <UInput v-model="formData.note" placeholder="备注信息（可选）" />
+                    <UInput v-model="formData.note" placeholder="备注信息（可选）" @click.stop />
+                    <UButton
+                        v-if="!selectedUsers.some((user) => user.id === item.id)"
+                        color="primary"
+                        size="sm"
+                        class="flex-shrink-0"
+                    >
+                        添加
+                    </UButton>
                 </div>
             </template>
             <template #empty>
