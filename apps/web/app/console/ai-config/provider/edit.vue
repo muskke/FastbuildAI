@@ -84,7 +84,6 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
         });
     } catch (error) {
         console.error("获取供应商详情失败:", error);
-        toast.error(t("console-ai-provider.messages.fetchFailed"));
     }
 });
 
@@ -101,11 +100,6 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         emits("close", true);
     } catch (error) {
         console.error("提交失败:", error);
-        toast.error(
-            providerId.value
-                ? t("console-ai-provider.messages.updateFailed")
-                : t("console-ai-provider.messages.createFailed"),
-        );
     }
 });
 
@@ -256,6 +250,7 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                     <UInputMenu
                         :disabled="detail?.isBuiltIn"
                         v-model="formData.supportedModelTypes"
+                        open-on-click
                         multiple
                         value-key="value"
                         :items="allModelTypes"

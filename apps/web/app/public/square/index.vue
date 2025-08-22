@@ -68,7 +68,6 @@ const getAgentList = async (reset = false) => {
         hasMore.value = response.totalPages > searchForm.page!;
     } catch (error) {
         console.error("获取智能体列表失败:", error);
-        toast.error((error as Error).message);
         hasMore.value = false;
     } finally {
         loading.value = false;

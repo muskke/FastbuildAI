@@ -179,7 +179,6 @@ const { lockFn: fetchMicropageList, isLock } = useLockFn(async () => {
         micropageList.value = result || [];
     } catch (error) {
         console.log("get micropage-list api error --->", error);
-        toast.error(t("console-decorate.micropage.list.getListFailed"));
     }
 });
 
@@ -227,7 +226,6 @@ const handleDelete = async (id: string | string[]) => {
         }
     } catch (error) {
         console.error("删除失败:", error);
-        toast.error(t("console-common.messages.failed"));
     }
 };
 

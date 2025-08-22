@@ -60,7 +60,6 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
         });
     } catch (error) {
         console.error("获取微页面详情失败:", error);
-        toast.error(t("console-decorate.micropage.edit.getDetailFailed"));
     }
 });
 
@@ -79,7 +78,6 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         emits("close", true);
     } catch (error) {
         console.error("提交失败:", error);
-        toast.error(t("console-common.messages.failed"));
     }
 });
 

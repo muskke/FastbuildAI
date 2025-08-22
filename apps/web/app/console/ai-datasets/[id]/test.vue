@@ -123,8 +123,6 @@ const { lockFn: handleRetrievalTest, isLock: loading } = useLockFn(async () => {
             success: false,
             error: error instanceof Error ? error.message : "未知错误",
         });
-
-        toast.error(t("console-ai-datasets.test.failed"));
     }
 });
 

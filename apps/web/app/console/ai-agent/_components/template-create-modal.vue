@@ -49,7 +49,6 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         router.push(useRoutePath("ai-agent:detail", { id: res.id }));
     } catch (error) {
         console.error(t("console-ai-agent.template.create.failed"), error);
-        toast.error((error as Error).message);
     }
 });
 

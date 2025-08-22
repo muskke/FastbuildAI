@@ -90,7 +90,6 @@ const { lockFn: handleCreate } = useLockFn(async () => {
         nextStep();
     } catch (error) {
         console.log("创建错误 => ", error);
-        toast.error((error as Error).message);
     }
 });
 
@@ -114,7 +113,6 @@ const handleCreateEmpty = async () => {
         // 跳转到新知识库详情页
         router.replace(useRoutePath("ai-datasets-documents:list", { id: result.id as string }));
     } catch (error) {
-        toast.error(t("console-common.failed"));
         console.error("创建空知识库失败", error);
     }
 };

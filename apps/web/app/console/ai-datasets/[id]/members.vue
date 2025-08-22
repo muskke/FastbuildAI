@@ -334,7 +334,6 @@ const handleUpdateRole = async (member: TeamMember) => {
         }
     } catch (error) {
         console.error("更新角色失败:", error);
-        toast.error(t("console-ai-datasets.members.updateRoleFailed"));
     }
 };
 
@@ -367,7 +366,6 @@ const handleRemoveMember = async (row: Row<TeamMember>) => {
         getLists();
     } catch (error) {
         console.error("移除失败:", error);
-        toast.error(t("console-ai-datasets.members.removeFailed"));
     }
 };
 
@@ -403,7 +401,6 @@ const handleTransferOwnership = async (member: TeamMember) => {
         getLists();
     } catch (error) {
         console.error("转移所有权失败:", error);
-        toast.error(t("console-ai-datasets.members.confirmTransferFailed"));
     }
 };
 

@@ -194,7 +194,6 @@ const updateConversationTitle = async (conversationId: string, title: string): P
         toast.success("对话标题更新成功");
     } catch (error) {
         console.error("更新对话标题失败:", error);
-        toast.error("更新对话标题失败");
     }
 };
 
@@ -221,7 +220,6 @@ const deleteConversation = async (conversation: AiConversation) => {
         toast.success(t("common.message.deleteSuccess"));
     } catch (error) {
         console.error("删除对话失败:", error);
-        toast.error((error as Error).message);
     }
 };
 
