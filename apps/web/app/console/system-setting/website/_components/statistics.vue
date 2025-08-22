@@ -78,15 +78,6 @@ onMounted(() => getWebsiteConfig());
 
 <template>
     <div class="statistics-container mt-8">
-        <div class="mb-4 flex flex-col justify-center">
-            <h2 class="text-xl font-semibold">
-                {{ t("console-system.website.statistics.title") }}
-            </h2>
-            <p class="text-muted-foreground mt-1 text-sm">
-                {{ t("console-system.website.statistics.description") }}
-            </p>
-        </div>
-
         <!-- 表单 -->
         <UForm
             :schema="schema"
