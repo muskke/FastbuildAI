@@ -2,7 +2,7 @@
     "name": "web",
     "private": true,
     "packageManager": "pnpm@10.0.0",
-    "version": "1.0.0-beta.3",
+    "version": "1.0.0-beta.4",
     "license": "MIT",
     "scripts": {
         "build": "NODE_OPTIONS='--max-old-space-size=4096' NUXT_BUILD_SSR=true NUXT_BUILD_ENV=production nuxi build --dotenv ../../.env.production.local && NUXT_BUILD_SSR=true node libs/release.mjs",
