@@ -51,7 +51,7 @@ const { lockFn: getUserDetail, isLock } = useLockFn(async () => {
 const handleSubmit = async (formData: any) => {
     try {
         // 移除更新时不需要的字段
-        const { username, password, isRoot, power, totalRechargeAmount, ...submitData } = formData;
+        const { username, password, isRoot, totalRechargeAmount, ...submitData } = formData;
 
         await apiUpdateUser(userId.value, submitData);
         message.success(t("console-user.messages.updateSuccess"));
