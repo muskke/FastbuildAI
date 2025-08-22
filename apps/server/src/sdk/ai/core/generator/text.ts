@@ -106,7 +106,6 @@ export class TextGenerator {
 
                 const { index = 0 } = choice;
                 const { content, role, tool_calls, reasoning_content } = choice.delta;
-                console.log("------------------choice.delta:", choice.delta);
 
                 if (!choices[index]) {
                     choices.splice(index, 0, {
@@ -121,7 +120,7 @@ export class TextGenerator {
 
                 if (content) choices[index].message.content += content;
                 if (role) choices[index].message.role = role;
-                // 处理 DeepSeek 的 reasoning_content 字段
+                // 处理 思考过程 reasoning_content 字段
                 if (reasoning_content) {
                     if (!choices[index].message.reasoning_content) {
                         choices[index].message.reasoning_content = "";

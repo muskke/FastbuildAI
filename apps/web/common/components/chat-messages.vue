@@ -107,6 +107,14 @@ const getMessageName = (message: AiMessage) => {
             return t("common.chat.messages.unknown");
     }
 };
+
+/**
+ * 判断深度思考组件是否应该默认打开
+ * 如果是正在思考中的消息，则默认打开
+ */
+const shouldReasoningDefaultOpen = (message: AiMessage) => {
+    return message.metadata?.reasoning && !message.metadata?.reasoning?.endTime;
+};
 </script>
 
 <template>
@@ -174,6 +182,7 @@ const getMessageName = (message: AiMessage) => {
                         :reasoning="message.metadata?.reasoning"
                         :message-id="message.id"
                         :is-thinking="!message.metadata?.reasoning?.endTime"
+                        :default-open="shouldReasoningDefaultOpen(message)"
                         :key="`reasoning-${message.id}-${JSON.stringify(message.metadata?.reasoning)}`"
                     />
 

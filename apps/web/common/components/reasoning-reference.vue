@@ -21,12 +21,15 @@ interface Props {
     messageId?: string;
     /** 是否正在思考中 */
     isThinking?: boolean;
+    /** 默认是否打开 */
+    defaultOpen?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     reasoning: undefined,
     messageId: undefined,
     isThinking: false,
+    defaultOpen: false,
 });
 
 /**
@@ -48,7 +51,7 @@ const thinkingDuration = computed(() => {
 
 <template>
     <div v-if="reasoning?.content || isThinking" class="bg-muted mb-2 rounded-lg p-2">
-        <UCollapsible :unmountOnHide="false" class="group" :default-open="true">
+        <UCollapsible :unmountOnHide="false" class="group" :default-open="defaultOpen">
             <div class="flex cursor-pointer flex-row items-center gap-2 p-1 text-xs select-none">
                 <UIcon name="i-lucide-atom" class="text-primary size-4" />
 
