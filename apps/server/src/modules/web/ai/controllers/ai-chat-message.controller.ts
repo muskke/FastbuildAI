@@ -563,6 +563,8 @@ export class AiChatMessageController extends BaseController {
             let currentMessages = limitedMessages;
             let finalChatCompletion: any = null;
             let hasToolCalls = false;
+            let reasoningContent = ""; // 收集深度思考内容
+            let reasoningStartTime: number | null = null; // 深度思考开始时间
 
             do {
                 hasToolCalls = false;
@@ -586,6 +588,11 @@ export class AiChatMessageController extends BaseController {
 
                     // 处理 DeepSeek 的 reasoning_content 字段
                     if (chunk.choices[0].delta.reasoning_content) {
+                        // 记录深度思考开始时间
+                        if (!reasoningStartTime) {
+                            reasoningStartTime = Date.now();
+                        }
+                        reasoningContent += chunk.choices[0].delta.reasoning_content;
                         res.write(
                             `data: ${JSON.stringify({
                                 type: "reasoning",
@@ -791,6 +798,18 @@ export class AiChatMessageController extends BaseController {
                 // 打印AI完整回复
                 this.logger.debug(`🤖 AI回复: ${fullResponse}`);
 
+                // 准备 metadata，包含深度思考数据
+                const metadata: Record<string, any> = {};
+                if (reasoningContent && reasoningStartTime) {
+                    const endTime = Date.now();
+                    metadata.reasoning = {
+                        content: reasoningContent,
+                        startTime: reasoningStartTime,
+                        endTime: endTime,
+                        duration: endTime - reasoningStartTime,
+                    };
+                }
+
                 await this.AiChatRecordService.createMessage({
                     conversationId,
                     modelId: dto.modelId,
@@ -804,6 +823,7 @@ export class AiChatMessageController extends BaseController {
                     },
                     rawResponse: finalChatCompletion,
                     mcpToolCalls: mcpToolCalls.length > 0 ? mcpToolCalls : null,
+                    metadata: Object.keys(metadata).length > 0 ? metadata : null,
                 });
             }
 

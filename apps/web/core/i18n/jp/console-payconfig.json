@@ -5,6 +5,7 @@
     "enable": "有効",
     "disabled": "無効",
     "wxPay": "WeChat Pay",
+    "aliPay": "支付宝での支払い",
     "pcPay": "PC支払い",
     "wxMiniProgram": "WeChatミニプログラム",
     "H5Pay": "H5支払い",
@@ -13,6 +14,9 @@
     "payType": "支払い方法",
     "name": "表示名称",
     "isEnable": "使用しますか？",
+    "isDefault": "デフォルトですか？",
+    "default": "デフォルト",
+    "sort": "ソート",
     "action": "操作",
     "form": {
         "addLogo": "アイコン追加",

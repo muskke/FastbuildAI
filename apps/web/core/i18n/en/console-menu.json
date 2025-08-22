@@ -87,6 +87,7 @@
         "title": "Settings",
         "siteInfo": "Site Info",
         "PayConfig": "Payments",
+        "agreement": "Policy agreements",
         "channelManagement": "Channels",
         "wechatOaConfig": "WeChat OA"
     },
