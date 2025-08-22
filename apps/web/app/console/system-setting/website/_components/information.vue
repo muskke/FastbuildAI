@@ -108,15 +108,6 @@ onMounted(() => getWebsiteConfig());
 
 <template>
     <div class="information-container mt-8">
-        <div class="mb-4 flex flex-col justify-center">
-            <h2 class="text-xl font-semibold">
-                {{ t("console-system.website.information.title") }}
-            </h2>
-            <p class="text-muted-foreground mt-1 text-sm">
-                {{ t("console-system.website.information.description1") }}
-            </p>
-        </div>
-
         <!-- 表单 -->
         <UForm :schema="schema" :state="state" class="space-y-6" @submit="handleSubmit">
             <!-- 网站名称 -->
