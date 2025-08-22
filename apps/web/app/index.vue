@@ -92,7 +92,8 @@ const getQuickMenu = async () => {
 
 async function createChat(prompt: string) {
     try {
-        if (!selectedModelId.value) return useMessage().warning(t("common.chat.selectModel"));
+        if (!selectedModelId.value && useUserStore().isLogin)
+            return useMessage().warning(t("common.chat.selectModel"));
 
         const chat = await apiCreateAiConversation({
             title: "",
