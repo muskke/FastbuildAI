@@ -152,7 +152,7 @@ watch(
         v-model="isOpen"
         :title="t('console-ai-datasets.members.addModal.title')"
         :description="t('console-ai-datasets.members.addModal.description')"
-        :ui="{ content: 'max-w-lg' }"
+        :ui="{ content: 'max-w-2xl' }"
         @close="handleClose"
     >
         <UCommandPalette
@@ -161,6 +161,7 @@ watch(
             :groups="groups"
             class="min-h-64 pt-4"
             :multiple="true"
+            :ui="{ itemTrailingIcon: 'px-6 text-green-500' }"
             :empty-state="t('console-ai-datasets.members.addModal.emptyState')"
             :placeholder="t('console-ai-datasets.members.addModal.searchPlaceholder')"
         >
