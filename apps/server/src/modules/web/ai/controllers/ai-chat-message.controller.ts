@@ -311,10 +311,26 @@ export class AiChatMessageController extends BaseController {
             const exists = await this.AiChatRecordService.findOneById(conversationId);
 
             if (!exists.title) {
-                const title = await this.aiGenerateTitle(
-                    model,
-                    dto.messages as Array<ChatCompletionMessageParam>,
-                );
+                let title: string;
+
+                // 检查是否有深度思考内容（从最终响应中检查）
+                const hasReasoningContent = finalResponse?.choices?.[0]?.message?.reasoning_content;
+
+                if (hasReasoningContent) {
+                    // 如果有深度思考内容，说明是支持深度思考的模型，使用用户问题前20字符作为标题
+                    const userMessage = dto.messages.find((msg) => msg.role === "user");
+                    const userContent = userMessage?.content || "";
+                    title =
+                        typeof userContent === "string"
+                            ? userContent.slice(0, 20) + (userContent.length > 20 ? "..." : "")
+                            : "新对话";
+                } else {
+                    // 非深度思考模型，使用AI生成标题
+                    title = await this.aiGenerateTitle(
+                        model,
+                        dto.messages as Array<ChatCompletionMessageParam>,
+                    );
+                }
 
                 await this.AiChatRecordService.updateConversation(conversationId, playground.id, {
                     title,
@@ -565,6 +581,7 @@ export class AiChatMessageController extends BaseController {
             let hasToolCalls = false;
             let reasoningContent = ""; // 收集深度思考内容
             let reasoningStartTime: number | null = null; // 深度思考开始时间
+            let reasoningEndTime: number | null = null; // 深度思考结束时间
 
             do {
                 hasToolCalls = false;
@@ -592,6 +609,8 @@ export class AiChatMessageController extends BaseController {
                         if (!reasoningStartTime) {
                             reasoningStartTime = Date.now();
                         }
+                        // 每次收到 reasoning_content 都更新结束时间
+                        reasoningEndTime = Date.now();
                         reasoningContent += chunk.choices[0].delta.reasoning_content;
                         res.write(
                             `data: ${JSON.stringify({
@@ -800,13 +819,12 @@ export class AiChatMessageController extends BaseController {
 
                 // 准备 metadata，包含深度思考数据
                 const metadata: Record<string, any> = {};
-                if (reasoningContent && reasoningStartTime) {
-                    const endTime = Date.now();
+                if (reasoningContent && reasoningStartTime && reasoningEndTime) {
                     metadata.reasoning = {
                         content: reasoningContent,
                         startTime: reasoningStartTime,
-                        endTime: endTime,
-                        duration: endTime - reasoningStartTime,
+                        endTime: reasoningEndTime,
+                        duration: reasoningEndTime - reasoningStartTime,
                     };
                 }
 
@@ -835,10 +853,23 @@ export class AiChatMessageController extends BaseController {
             const exists = await this.AiChatRecordService.findOneById(conversationId);
 
             if (!exists.title) {
-                const title = await this.aiGenerateTitle(
-                    model,
-                    dto.messages as Array<ChatCompletionMessageParam>,
-                );
+                let title: string;
+
+                // 如果有深度思考内容，说明是支持深度思考的模型，使用用户问题前20字符作为标题
+                if (reasoningContent) {
+                    const userMessage = dto.messages.find((msg) => msg.role === "user");
+                    const userContent = userMessage?.content || "";
+                    title =
+                        typeof userContent === "string"
+                            ? userContent.slice(0, 20) + (userContent.length > 20 ? "..." : "")
+                            : "新对话";
+                } else {
+                    // 非深度思考模型，使用AI生成标题
+                    title = await this.aiGenerateTitle(
+                        model,
+                        dto.messages as Array<ChatCompletionMessageParam>,
+                    );
+                }
 
                 await this.AiChatRecordService.updateConversation(conversationId, playground.id, {
                     title,

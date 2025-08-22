@@ -1,137 +1,143 @@
 # 定义通用资源配置
 x-resource-config: &resource-config
-  deploy:
-    resources:
-      limits:
-        memory: ${DOCKER_MEMORY_LIMIT:-3584M}
-        cpus: '${DOCKER_CPU_LIMIT:-1.0}'
-      reservations:
-        memory: ${DOCKER_MEMORY_RESERVATION:-512M}
+    deploy:
+        resources:
+            limits:
+                memory: ${DOCKER_MEMORY_LIMIT:-3584M}
+                cpus: "${DOCKER_CPU_LIMIT:-1.0}"
+            reservations:
+                memory: ${DOCKER_MEMORY_RESERVATION:-512M}
 
 services:
-  # Redis 缓存服务
-  redis:
-    image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/redis:8.2.0
-    container_name: fastbuildai-redis${DOCKER_CONTAINER_SUFFIX:-}
-    restart: always
-    environment:
-      TZ: Asia/Shanghai
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
-      QUICK_START_MODE: ${QUICK_START_MODE:-false}
-    ports:
-      - "${REDIS_EXTERNAL_PORT:-}${REDIS_EXTERNAL_PORT:+:}6379"
-    volumes:
-      - ./data/redis:/data
-    networks:
-      - fastbuildai-network
-    <<: *resource-config
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # Redis 缓存服务
+    redis:
+        image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/redis:8.2.0
+        container_name: fastbuildai-redis${DOCKER_CONTAINER_SUFFIX:-}
+        restart: always
+        environment:
+            TZ: Asia/Shanghai
+            REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+            QUICK_START_MODE: ${QUICK_START_MODE:-false}
+        ports:
+            - "${REDIS_EXTERNAL_PORT:-}${REDIS_EXTERNAL_PORT:+:}6379"
+        volumes:
+            - ./data/redis:/data
+        networks:
+            - fastbuildai-network
+        <<: *resource-config
+        healthcheck:
+            test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # PostgreSQL 数据库服务 (with pgvector)
-  postgres:
-    image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/postgres:17.6
-    container_name: fastbuildai-postgres${DOCKER_CONTAINER_SUFFIX:-}
-    restart: always
-    environment:
-      TZ: Asia/Shanghai
-      POSTGRES_USER: ${DB_USERNAME:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_DATABASE:-fastbuildai}
-    ports:
-      - "${POSTGRES_EXTERNAL_PORT:-}${POSTGRES_EXTERNAL_PORT:+:}5432"
-    volumes:
-      - ./data/postgres/postgres_data:/var/lib/postgresql/data
-    networks:
-      - fastbuildai-network
-    <<: *resource-config
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # PostgreSQL 数据库服务 (with pgvector)
+    postgres:
+        image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/postgres:17.6
+        container_name: fastbuildai-postgres${DOCKER_CONTAINER_SUFFIX:-}
+        restart: always
+        environment:
+            TZ: Asia/Shanghai
+            POSTGRES_USER: ${DB_USERNAME:-postgres}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+            POSTGRES_DB: ${DB_DATABASE:-fastbuildai}
+        ports:
+            - "${POSTGRES_EXTERNAL_PORT:-}${POSTGRES_EXTERNAL_PORT:+:}5432"
+        volumes:
+            - ./data/postgres/postgres_data:/var/lib/postgresql/data
+        networks:
+            - fastbuildai-network
+        <<: *resource-config
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # Node.js 开发环境
-  nodejs:
-    image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/node:22.18.0
-    container_name: fastbuildai-nodejs${DOCKER_CONTAINER_SUFFIX:-}
-    restart: on-failure:3
-    working_dir: /fastbuildai
-    volumes:
-      - ../:/fastbuildai
-    ports:
-      - "${SERVER_PORT:-4090}:${SERVER_PORT:-4090}"
-    environment:
-      TZ: Asia/Shanghai
-      SERVER_PORT: ${SERVER_PORT:-4090}
-      QUICK_START_MODE: ${QUICK_START_MODE:-false}
-      DB_USERNAME: ${DB_USERNAME:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      DB_DATABASE: ${DB_DATABASE:-fastbuildai}
-      DB_HOST: postgres
-      DB_PORT: 5432
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
-    command: |
-      sh -c '
-      set -e
-      echo "🚀 Starting FastbuildAI container..."
-      
-      if [ -z "$$QUICK_START_MODE" ]; then
-        QUICK_START_MODE="false"
-        echo "⚠️  QUICK_START_MODE is empty, setting default value: false"
-      fi      
-      
-      echo "🔍 Debug: QUICK_START_MODE = [$$QUICK_START_MODE]"
-      
-      if ! command -v pnpm >/dev/null 2>&1; then
-        echo "📦 Installing pnpm..."
-        npm config set registry https://registry.npmmirror.com
-        npm install -g pnpm
-      fi
-      
-      echo "📦 Installing dependencies..."
-      if [ -d "node_modules" ]; then
-        echo "📁 node_modules exists, using force install..."
-        yes | pnpm i
-      else
-        echo "📁 node_modules not found, installing..."
-        pnpm i
-      fi
-  
-      if [ ! -f "/fastbuildai/public/index.html" ] || [ "$$QUICK_START_MODE" = "false" ]; then
-        echo "🌐 Building web application..."
-        pnpm --filter ./apps/web run generate
-      fi
-      
-      if [ ! -d "/fastbuildai/apps/server/dist" ] || [ "$$QUICK_START_MODE" = "false" ]; then
-        echo "🔧 Building server application..."
-        pnpm --filter ./apps/server run build
-      fi
-      
-      echo "🔍 Debug: QUICK_START_MODE = [$$QUICK_START_MODE]"
-      echo "🎯 Starting production server..."
-      exec pnpm --filter ./apps/server run start:prod
-      '
-    networks:
-      - fastbuildai-network
-    <<: *resource-config
-    depends_on:
-      redis:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "ps aux | grep 'dist/main' | grep -v grep || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-      start_period: 180s
+    # Node.js 开发环境
+    nodejs:
+        image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/node:22.18.0
+        container_name: fastbuildai-nodejs${DOCKER_CONTAINER_SUFFIX:-}
+        restart: on-failure:3
+        working_dir: /fastbuildai
+        volumes:
+            - ../:/fastbuildai
+        ports:
+            - "${SERVER_PORT:-4090}:${SERVER_PORT:-4090}"
+        environment:
+            TZ: Asia/Shanghai
+            SERVER_PORT: ${SERVER_PORT:-4090}
+            QUICK_START_MODE: ${QUICK_START_MODE:-false}
+            DB_USERNAME: ${DB_USERNAME:-postgres}
+            DB_PASSWORD: ${DB_PASSWORD:-postgres}
+            DB_DATABASE: ${DB_DATABASE:-fastbuildai}
+            DB_HOST: postgres
+            DB_PORT: 5432
+            REDIS_HOST: redis
+            REDIS_PORT: 6379
+            REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+        command: |
+            sh -c '
+            set -e
+            echo "🚀 Starting FastbuildAI container..."
+
+            if [ -z "$$QUICK_START_MODE" ]; then
+              QUICK_START_MODE="false"
+              echo "⚠️  QUICK_START_MODE is empty, setting default value: false"
+            fi      
+
+            echo "🔍 Debug: QUICK_START_MODE = [$$QUICK_START_MODE]"
+
+            if ! command -v pnpm >/dev/null 2>&1; then
+              echo "📦 Installing pnpm..."
+              if [ -n "$$NPM_REGISTRY_URL" ]; then
+                echo "🔧 Using custom registry: $$NPM_REGISTRY_URL"
+                npm config set registry "$$NPM_REGISTRY_URL"
+              fi
+              npm install -g pnpm
+              if [ -n "$$NPM_REGISTRY_URL" ]; then
+                pnpm config set registry "$$NPM_REGISTRY_URL"
+              fi
+            fi
+
+            echo "📦 Installing dependencies..."
+            if [ -d "node_modules" ]; then
+              echo "📁 node_modules exists, using force install..."
+              yes | pnpm i
+            else
+              echo "📁 node_modules not found, installing..."
+              pnpm i
+            fi
+
+            if [ ! -f "/fastbuildai/public/index.html" ] || [ "$$QUICK_START_MODE" = "false" ]; then
+              echo "🌐 Building web application..."
+              pnpm --filter ./apps/web run generate
+            fi
+
+            if [ ! -d "/fastbuildai/apps/server/dist" ] || [ "$$QUICK_START_MODE" = "false" ]; then
+              echo "🔧 Building server application..."
+              pnpm --filter ./apps/server run build
+            fi
+
+            echo "🔍 Debug: QUICK_START_MODE = [$$QUICK_START_MODE]"
+            echo "🎯 Starting production server..."
+            exec pnpm --filter ./apps/server run start:prod
+            '
+        networks:
+            - fastbuildai-network
+        <<: *resource-config
+        depends_on:
+            redis:
+                condition: service_healthy
+            postgres:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD-SHELL", "ps aux | grep 'dist/main' | grep -v grep || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 10
+            start_period: 180s
 
 networks:
-  fastbuildai-network:
-    driver: bridge
+    fastbuildai-network:
+        driver: bridge

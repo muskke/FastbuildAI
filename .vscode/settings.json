@@ -27,5 +27,8 @@
     },
     "[plaintext]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[dockercompose]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
 }
