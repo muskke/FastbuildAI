@@ -85,9 +85,9 @@ export class UserController extends BaseController {
     @Get("search")
     @BuildFileUrl(["**.avatar"])
     async searchUsers(
+        @Playground() user: UserPlayground,
         @Query("keyword") keyword?: string,
         @Query("limit") limit?: number,
-        @Playground() user: UserPlayground,
     ) {
         const searchLimit = Math.min(limit || 20, 50); // 限制最大返回50条
 
