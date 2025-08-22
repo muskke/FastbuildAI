@@ -288,7 +288,11 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
                     aiMessage.content = message.content || aiMessage.content;
 
                     // 如果有深度思考数据，设置结束时间和计算持续时间
-                    if (aiMessage.metadata?.reasoning && aiMessage.metadata.reasoning.startTime) {
+                    if (
+                        aiMessage.metadata?.reasoning &&
+                        aiMessage.metadata.reasoning.startTime &&
+                        !aiMessage.metadata.reasoning.endTime
+                    ) {
                         aiMessage.metadata.reasoning.endTime = Date.now();
                         aiMessage.metadata.reasoning.duration =
                             aiMessage.metadata.reasoning.endTime -
