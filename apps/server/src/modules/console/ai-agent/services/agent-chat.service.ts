@@ -1299,12 +1299,30 @@ export class AgentChatService extends BaseAgentChatService {
                 ...requestOpts,
             });
 
+            let reasoningContent = ""; // 收集深度思考内容
+            let reasoningStartTime: number | null = null; // 深度思考开始时间
+
             for await (const chunk of stream) {
                 if (chunk.choices[0].delta.content) {
                     res.write(
                         `data: ${JSON.stringify({ type: "chunk", data: chunk.choices[0].delta.content })}\n\n`,
                     );
                     fullResponse += chunk.choices[0].delta.content;
+                }
+
+                // 处理 DeepSeek 的 reasoning_content 字段
+                if (chunk.choices[0].delta.reasoning_content) {
+                    // 记录深度思考开始时间
+                    if (!reasoningStartTime) {
+                        reasoningStartTime = Date.now();
+                    }
+                    reasoningContent += chunk.choices[0].delta.reasoning_content;
+                    res.write(
+                        `data: ${JSON.stringify({
+                            type: "reasoning",
+                            data: chunk.choices[0].delta.reasoning_content,
+                        })}\n\n`,
+                    );
                 }
             }
 
@@ -1332,6 +1350,17 @@ export class AgentChatService extends BaseAgentChatService {
                     context: [...messages, { role: "assistant", content: fullResponse }],
                     suggestions: streamSuggestions,
                 };
+
+                // 添加深度思考数据到元数据
+                if (reasoningContent && reasoningStartTime) {
+                    const endTime = Date.now();
+                    streamMetadata.reasoning = {
+                        content: reasoningContent,
+                        startTime: reasoningStartTime,
+                        endTime: endTime,
+                        duration: endTime - reasoningStartTime,
+                    };
+                }
 
                 await this.saveAssistantMessage(
                     conversationId,

@@ -145,6 +145,13 @@ export interface MessageMetadata {
     context?: ChatMessage[];
     /** 问题建议 */
     suggestions?: string[];
+    /** 深度思考数据 */
+    reasoning?: {
+        content: string;
+        startTime: number;
+        endTime: number;
+        duration: number;
+    };
     /** 其他扩展数据 */
     [key: string]: unknown;
 }

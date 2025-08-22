@@ -204,6 +204,16 @@ export class ChatStream {
                                     message: { ...currentMessage },
                                     delta: parsed.data,
                                 });
+                            } else if (parsed.type === "reasoning" && parsed.data) {
+                                // 处理深度思考数据
+                                onUpdate?.({
+                                    type: "metadata",
+                                    message: { ...currentMessage },
+                                    metadata: {
+                                        type: "reasoning",
+                                        data: parsed.data,
+                                    },
+                                });
                             } else if (
                                 parsed.type === "context" ||
                                 parsed.type === "references" ||

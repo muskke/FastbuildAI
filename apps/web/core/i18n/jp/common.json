@@ -42,6 +42,11 @@
             "sendMessage": "メッセージを送信",
             "inputPlaceholder": "こんにちは、何か質問がありますか？"
         },
+        "reasoning": {
+            "thinking": "深く考え中",
+            "completed": "深い思考が完了しました",
+            "duration": "思考時間："
+        },
         "toolCall": {
             "start": "開始",
             "from": "から",

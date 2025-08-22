@@ -24,6 +24,7 @@
     "now": "現在",
     "refresh": "更新",
     "error": "エラーメッセージ",
+    "batchOperation": "バッチ操作",
     "batchEnable": "一括有効化",
     "batchDisable": "一括無効化",
     "batchEnableSuccess": "一括有効化成功",

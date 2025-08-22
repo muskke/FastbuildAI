@@ -3,6 +3,7 @@ import { ProButtonCopy } from "@fastbuildai/ui";
 import { useElementSize } from "@vueuse/core";
 import { computed } from "vue";
 
+import ReasoningReference from "@/common/components/reasoning-reference.vue";
 import ToolCallReference from "@/common/components/tool-call-reference.vue";
 import { STORAGE_KEYS } from "@/common/constants";
 import type { AiMessage } from "@/models/ai-conversation";
@@ -106,6 +107,14 @@ const getMessageName = (message: AiMessage) => {
             return t("common.chat.messages.unknown");
     }
 };
+
+/**
+ * 判断深度思考组件是否应该默认打开
+ * 如果是正在思考中的消息，则默认打开
+ */
+const shouldReasoningDefaultOpen = (message: AiMessage) => {
+    return message.metadata?.reasoning && !message.metadata?.reasoning?.endTime;
+};
 </script>
 
 <template>
@@ -167,6 +176,17 @@ const getMessageName = (message: AiMessage) => {
                         <span>{{ t("common.chat.messages.thinking") }}</span>
                     </div>
 
+                    <!-- 深度思考组件 -->
+                    <ReasoningReference
+                        v-if="message.role === 'assistant' && message.metadata?.reasoning?.content"
+                        :reasoning="message.metadata?.reasoning"
+                        :message-id="message.id"
+                        :is-thinking="!message.metadata?.reasoning?.endTime"
+                        :default-open="shouldReasoningDefaultOpen(message)"
+                        :key="`reasoning-${message.id}-${JSON.stringify(message.metadata?.reasoning)}`"
+                    />
+
+                    <!-- 工具调用组件 -->
                     <ToolCallReference
                         v-if="
                             message.mcpToolCalls &&
