@@ -659,8 +659,12 @@ export class AiChatMessageController extends BaseController {
                 if (assistantMessage.tool_calls && assistantMessage.tool_calls.length > 0) {
                     hasToolCalls = true;
 
-                    // 将AI的回复添加到消息列表
-                    currentMessages.push(assistantMessage);
+                    // 将AI的回复添加到消息列表（移除 reasoning_content 以避免在工具调用中发送）
+                    const cleanAssistantMessage = {
+                        ...assistantMessage,
+                        reasoning_content: undefined, // 移除 reasoning_content 字段
+                    };
+                    currentMessages.push(cleanAssistantMessage);
 
                     // 处理每个工具调用
                     for (const toolCall of assistantMessage.tool_calls) {
