@@ -23,6 +23,7 @@ const UDropdownMenu = resolveComponent("UDropdownMenu");
 const UIcon = resolveComponent("UIcon");
 const UInput = resolveComponent("UInput");
 const UAvatar = resolveComponent("UAvatar");
+const UTextarea = resolveComponent("UTextarea");
 
 // 路由实例
 const router = useRouter();
@@ -124,16 +125,16 @@ const columns: TableColumn<TeamMember>[] = [
             return h(UBadge, { color: roleInfo.color, variant: "subtle" }, () => roleInfo.label);
         },
     },
-    {
-        accessorKey: "isActive",
-        header: () => h("p", { class: "" }, `${columnLabels.value.status}`),
-        cell: ({ row }) => {
-            const isActive = row.getValue("isActive") as boolean;
-            return h(UBadge, { color: isActive ? "success" : "error", variant: "subtle" }, () =>
-                isActive ? t("console-common.enabled") : t("console-common.disabled"),
-            );
-        },
-    },
+    // {
+    //     accessorKey: "isActive",
+    //     header: () => h("p", { class: "" }, `${columnLabels.value.status}`),
+    //     cell: ({ row }) => {
+    //         const isActive = row.getValue("isActive") as boolean;
+    //         return h(UBadge, { color: isActive ? "success" : "error", variant: "subtle" }, () =>
+    //             isActive ? t("console-common.enabled") : t("console-common.disabled"),
+    //         );
+    //     },
+    // },
     {
         accessorKey: "joinedAt",
         header: ({ column }) => {
@@ -260,6 +261,7 @@ const handleAddMember = async () => {
 const handleUpdateRole = async (member: TeamMember) => {
     try {
         const newRole = ref(member.role);
+        const newNote = ref(member.note || "");
 
         const roleOptions = [
             { label: t("console-ai-datasets.members.role.manager"), value: "manager" },
@@ -295,6 +297,20 @@ const handleUpdateRole = async (member: TeamMember) => {
                                 class: "w-full",
                             }),
                         ]),
+                        h("div", {}, [
+                            h(
+                                "label",
+                                { class: "block text-sm font-medium mb-2" },
+                                `${t("console-ai-datasets.members.note")}:`,
+                            ),
+                            h(resolveComponent("UTextarea"), {
+                                modelValue: newNote.value,
+                                "onUpdate:modelValue": (value: string) => (newNote.value = value),
+                                placeholder: t("console-ai-datasets.members.notePlaceholder"),
+                                class: "w-full",
+                                rows: 3,
+                            }),
+                        ]),
                     ]);
             },
         });
@@ -307,10 +323,11 @@ const handleUpdateRole = async (member: TeamMember) => {
             ui: { content: "!w-md" },
         });
 
-        if (newRole.value !== member.role) {
+        if (newRole.value !== member.role || newNote.value !== (member.note || "")) {
             await apiUpdateTeamMemberRole({
                 memberId: member.id,
                 role: newRole.value,
+                note: newNote.value || undefined,
             });
             toast.success(t("console-ai-datasets.members.updateRoleSuccess"));
             getLists();
