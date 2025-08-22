@@ -214,7 +214,21 @@
         "confirmTransferFailed": "所有权转移失败",
         "confirmTransferContent2": "转移后您将失去所有者权限。",
         "addMember": "添加成员",
-        "confirmTransfer": "转移所有权"
+        "confirmTransfer": "转移所有权",
+        "addModal": {
+            "title": "添加团队成员",
+            "description": "搜索并选择要添加的团队成员，设置角色和备注信息",
+            "searchPlaceholder": "搜索并选择用户...",
+            "emptyState": "暂无用户",
+            "userMatch": "用户匹配",
+            "user": "用户",
+            "selectUserError": "请选择用户",
+            "addMemberFailed": "添加成员失败",
+            "addMemberFailedLog": "添加成员失败:",
+            "addButton": "添加",
+            "noteInputPlaceholder": "备注信息（可选）",
+            "addSuccess": "成功添加 {count} 个成员"
+        }
     },
     "test": {
         "title": "召回测试",

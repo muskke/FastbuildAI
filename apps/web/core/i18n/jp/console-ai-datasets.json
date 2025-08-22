@@ -192,6 +192,7 @@
         },
         "self": "自分",
         "note": "備考",
+        "notePlaceholder": "備考情報を入力...",
         "transferOwnership": "所有権を移転",
         "updateRole": "ロールを更新",
         "removeMember": "メンバーを削除",
@@ -213,7 +214,21 @@
         "confirmTransferFailed": "所有権移転に失敗しました",
         "confirmTransferContent2": "移転後、所有者権限を失います。",
         "addMember": "メンバーを追加",
-        "confirmTransfer": "所有権を移転"
+        "confirmTransfer": "所有権を移転",
+        "addModal": {
+            "title": "チームメンバーを追加",
+            "description": "追加するチームメンバーを検索・選択し、ロールと備考情報を設定します",
+            "searchPlaceholder": "ユーザーを検索・選択...",
+            "emptyState": "ユーザーが見つかりません",
+            "userMatch": "ユーザーマッチ",
+            "user": "ユーザー",
+            "selectUserError": "ユーザーを選択してください",
+            "addMemberFailed": "メンバー追加に失敗しました",
+            "addMemberFailedLog": "メンバー追加に失敗しました:",
+            "addButton": "追加",
+            "noteInputPlaceholder": "備考情報（任意）",
+            "addSuccess": "{count}名のメンバーを追加しました"
+        }
     },
     "test": {
         "title": "検索テスト",

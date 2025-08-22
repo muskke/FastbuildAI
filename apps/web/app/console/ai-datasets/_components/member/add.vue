@@ -50,9 +50,9 @@ const searchValue = ref<string>("");
 const searchValueDebounced = refDebounced(searchValue, 200);
 
 const roleOptions = [
-    { label: "管理者", value: "manager" },
-    { label: "编辑者", value: "editor" },
-    { label: "查看者", value: "viewer" },
+    { label: t("console-ai-datasets.members.role.manager"), value: "manager" },
+    { label: t("console-ai-datasets.members.role.editor"), value: "editor" },
+    { label: t("console-ai-datasets.members.role.viewer"), value: "viewer" },
 ];
 
 // 搜索用户函数
@@ -81,7 +81,9 @@ const searchUsers = async (keyword: string) => {
 const groups = computed(() => [
     {
         id: "users",
-        label: searchValue.value ? `用户匹配 “${searchValue.value}”...` : "用户",
+        label: searchValue.value
+            ? `${t("console-ai-datasets.members.addModal.userMatch")} "${searchValue.value}"...`
+            : t("console-ai-datasets.members.addModal.user"),
         items: searchResults.value,
         ignoreFilter: true,
     },
@@ -99,7 +101,7 @@ const resetForm = () => {
 const { lockFn: submitForm, isLock } = useLockFn(async () => {
     try {
         if (selectedUsers.value.length === 0) {
-            toast.error("请选择用户");
+            toast.error(t("console-ai-datasets.members.addModal.selectUserError"));
             return;
         }
 
@@ -114,13 +116,17 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
             members,
         });
 
-        toast.success(`成功添加 ${selectedUsers.value.length} 个成员`);
+        toast.success(
+            t("console-ai-datasets.members.addModal.addSuccess", {
+                count: selectedUsers.value.length,
+            }),
+        );
         isOpen.value = false;
         resetForm();
         emits("close", true);
     } catch (error) {
-        console.error("添加成员失败:", error);
-        toast.error("添加成员失败");
+        console.error(t("console-ai-datasets.members.addModal.addMemberFailedLog"), error);
+        toast.error(t("console-ai-datasets.members.addModal.addMemberFailed"));
     }
 });
 
@@ -145,8 +151,8 @@ watch(
 <template>
     <ProModal
         v-model="isOpen"
-        title="添加团队成员"
-        description="搜索并选择要添加的团队成员，设置角色和备注信息"
+        :title="t('console-ai-datasets.members.addModal.title')"
+        :description="t('console-ai-datasets.members.addModal.description')"
         :ui="{ content: 'max-w-lg' }"
         @close="handleClose"
     >
@@ -156,8 +162,8 @@ watch(
             :groups="groups"
             class="min-h-64 pt-4"
             :multiple="true"
-            empty-state="暂无用户"
-            placeholder="搜索并选择用户..."
+            :empty-state="t('console-ai-datasets.members.addModal.emptyState')"
+            :placeholder="t('console-ai-datasets.members.addModal.searchPlaceholder')"
         >
             <template #item-trailing="{ item }">
                 <div class="flex items-center gap-2">
@@ -168,28 +174,38 @@ watch(
                         value-key="value"
                         @click.stop
                     />
-                    <UInput v-model="formData.note" placeholder="备注信息（可选）" @click.stop />
+                    <UInput
+                        v-model="formData.note"
+                        :placeholder="
+                            t('console-ai-datasets.members.addModal.noteInputPlaceholder')
+                        "
+                        @click.stop
+                    />
                     <UButton
                         v-if="!selectedUsers.some((user) => user.id === item.id)"
                         color="primary"
                         size="sm"
                         class="flex-shrink-0"
                     >
-                        添加
+                        {{ t("console-ai-datasets.members.addModal.addButton") }}
                     </UButton>
                 </div>
             </template>
             <template #empty>
                 <div class="flex h-full min-h-36 flex-col items-center justify-center gap-2">
                     <UIcon name="i-lucide-users" class="text-muted-foreground text-2xl" />
-                    <div class="text-muted-foreground text-sm">请搜索用户并选择</div>
+                    <div class="text-muted-foreground text-sm">
+                        {{ t("console-ai-datasets.members.addModal.searchPlaceholder") }}
+                    </div>
                 </div>
             </template>
         </UCommandPalette>
 
         <!-- 底部按钮 -->
         <div class="mt-6 flex justify-end gap-2">
-            <UButton color="neutral" variant="soft" size="lg" @click="handleClose"> 取消 </UButton>
+            <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
+                {{ t("console-common.cancel") }}
+            </UButton>
             <UButton
                 color="primary"
                 size="lg"
@@ -197,7 +213,7 @@ watch(
                 :disabled="selectedUsers.length === 0"
                 @click="submitForm"
             >
-                添加
+                {{ t("console-common.add") }}
             </UButton>
         </div>
     </ProModal>
