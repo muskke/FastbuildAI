@@ -11,6 +11,8 @@ import {
 import type { UserCreateRequest } from "@/models/user";
 import { apiGetAllRoleList } from "@/services/console/role";
 
+import { apiGetUserRolesList } from "../../../../services/console/user";
+
 // 引入国际化
 const { t } = useI18n();
 
@@ -116,7 +118,7 @@ const schema = computed(() => {
 /** 获取角色列表 */
 const getRoleList = async () => {
     try {
-        const response = await apiGetAllRoleList();
+        const response = await apiGetUserRolesList();
         roleOptions.value = [
             { label: t("console-user.form.noRole"), value: "null" }, // 添加无角色选项，使用空字符串
             ...response.map((role: any) => ({
