@@ -486,14 +486,29 @@ export class AuthService extends BaseService<User> {
     /**
      * 退出登录
      *
+     * 在撤销令牌后，清理该用户的角色与权限缓存：
+     * - user_roles:${userId}
+     * - user_permissions:${userId}
+     *
      * @param token JWT令牌
      * @returns 退出结果
      */
     async logout(token: string): Promise<{ success: boolean; message: string }> {
         try {
+            // 先查找令牌记录以获取 userId（即使令牌已过期，记录仍可能存在）
+            const tokenRecord = await this.userTokenService.findOne({ where: { token } });
+            const userId = tokenRecord?.userId;
+
             const result = await this.userTokenService.revokeToken(token);
 
             if (result) {
+                // 撤销成功后清理该用户的权限相关缓存（忽略清理失败，不影响主流程）
+                if (userId) {
+                    this.rolePermissionService
+                        .clearUserCache(userId)
+                        .catch((e) => this.logger.warn(`清理用户缓存失败: ${e.message}`));
+                }
+
                 return {
                     success: true,
                     message: "退出登录成功",
