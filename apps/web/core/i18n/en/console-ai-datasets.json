@@ -192,6 +192,7 @@
         },
         "self": "You",
         "note": "Note",
+        "notePlaceholder": "Enter note...",
         "transferOwnership": "Transfer Ownership",
         "updateRole": "Update Role",
         "removeMember": "Remove",
@@ -213,7 +214,21 @@
         "confirmTransferFailed": "Failed",
         "confirmTransferContent2": "You'll lose owner access.",
         "addMember": "Add Member",
-        "confirmTransfer": "Transfer"
+        "confirmTransfer": "Transfer",
+        "addModal": {
+            "title": "Add Team Member",
+            "description": "Search and select team members to add, set roles and notes",
+            "searchPlaceholder": "Search and select users...",
+            "emptyState": "No users found",
+            "userMatch": "Users matching",
+            "user": "Users",
+            "selectUserError": "Please select users",
+            "addMemberFailed": "Failed to add members",
+            "addMemberFailedLog": "Failed to add members:",
+            "addButton": "Add",
+            "noteInputPlaceholder": "Note (optional)",
+            "addSuccess": "Successfully added {count} member(s)"
+        }
     },
     "test": {
         "title": "Retrieval Test",
