@@ -42,6 +42,11 @@
             "sendMessage": "Send",
             "inputPlaceholder": "Ask me anything..."
         },
+        "reasoning": {
+            "thinking": "Deep thinking",
+            "completed": "Deep thought",
+            "duration": "took "
+        },
         "toolCall": {
             "start": "Start",
             "from": "From",

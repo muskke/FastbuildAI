@@ -3,6 +3,7 @@ import { ProButtonCopy } from "@fastbuildai/ui";
 import { useElementSize } from "@vueuse/core";
 import { computed } from "vue";
 
+import ReasoningReference from "@/common/components/reasoning-reference.vue";
 import ToolCallReference from "@/common/components/tool-call-reference.vue";
 import { STORAGE_KEYS } from "@/common/constants";
 import type { AiMessage } from "@/models/ai-conversation";
@@ -167,6 +168,16 @@ const getMessageName = (message: AiMessage) => {
                         <span>{{ t("common.chat.messages.thinking") }}</span>
                     </div>
 
+                    <!-- 深度思考组件 -->
+                    <ReasoningReference
+                        v-if="message.role === 'assistant' && message.metadata?.reasoning?.content"
+                        :reasoning="message.metadata?.reasoning"
+                        :message-id="message.id"
+                        :is-thinking="!message.metadata?.reasoning?.endTime"
+                        :key="`reasoning-${message.id}-${JSON.stringify(message.metadata?.reasoning)}`"
+                    />
+
+                    <!-- 工具调用组件 -->
                     <ToolCallReference
                         v-if="
                             message.mcpToolCalls &&
