@@ -169,7 +169,7 @@ onMounted(() => {
                     v-model:indexingConfig="datasets.indexingConfig"
                     v-model:embeddingModelId="datasets.embeddingModelId"
                     v-model:retrievalConfig="datasets.retrievalConfig"
-                    :disabled="!!props.id"
+                    :disabled="!!props.datasetsDetail?.documentCount"
                     @onStepChange="changeStep"
                     @onCreate="handleCreate"
                 />
