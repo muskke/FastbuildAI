@@ -83,6 +83,7 @@ const EMBEDDING_MODELS = [
                         {{ $t("console-ai-datasets.create.stepTwo.embeddingModel") }}
                     </h5>
                     <ModelSelect
+                        :model-value="embeddingModelId"
                         :button-ui="{
                             variant: 'outline',
                             color: 'neutral',
@@ -92,6 +93,7 @@ const EMBEDDING_MODELS = [
                         capability="chat"
                         :supportedModelTypes="['text-embedding']"
                         placeholder="选择嵌入模型"
+                        :disabled="disabled"
                         @change="(e) => (embeddingModelId = e.id)"
                     />
                 </section>
