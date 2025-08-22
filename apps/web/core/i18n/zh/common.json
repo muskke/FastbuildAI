@@ -42,6 +42,11 @@
             "sendMessage": "发送消息",
             "inputPlaceholder": "Hi~有什么想问小助手的"
         },
+        "reasoning": {
+            "thinking": "思考中...",
+            "completed": "已深度思考",
+            "duration": "用时 "
+        },
         "toolCall": {
             "start": "开始",
             "from": "从",

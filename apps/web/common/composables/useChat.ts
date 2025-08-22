@@ -184,6 +184,18 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
                 onUpdate(chunk) {
                     // 更新AI消息内容
                     if (chunk.delta) {
+                        // 如果开始接收正文内容，且有未完成的思考，则标记思考完成
+                        if (
+                            aiMessage.metadata?.reasoning &&
+                            aiMessage.metadata.reasoning.startTime &&
+                            !aiMessage.metadata.reasoning.endTime
+                        ) {
+                            aiMessage.metadata.reasoning.endTime = Date.now();
+                            aiMessage.metadata.reasoning.duration =
+                                aiMessage.metadata.reasoning.endTime -
+                                aiMessage.metadata.reasoning.startTime;
+                        }
+
                         aiMessage.content += chunk.delta;
                         aiMessage.status = "active";
                         // 触发响应式更新
@@ -226,6 +238,17 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
                                 // 保存标注
                                 aiMessage.metadata.annotations = chunk.metadata.data;
                                 break;
+                            case "reasoning":
+                                // 保存深度思考数据，累积内容
+                                if (!aiMessage.metadata.reasoning) {
+                                    aiMessage.metadata.reasoning = {
+                                        content: chunk.metadata.data,
+                                        startTime: Date.now(),
+                                    };
+                                } else {
+                                    aiMessage.metadata.reasoning.content += chunk.metadata.data;
+                                }
+                                break;
                             default:
                                 // 保存其他类型的元数据
                                 aiMessage.metadata[chunk.metadata.type] = chunk.metadata.data;
@@ -263,6 +286,15 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
                 onFinish(message) {
                     aiMessage.status = "completed";
                     aiMessage.content = message.content || aiMessage.content;
+
+                    // 如果有深度思考数据，设置结束时间和计算持续时间
+                    if (aiMessage.metadata?.reasoning && aiMessage.metadata.reasoning.startTime) {
+                        aiMessage.metadata.reasoning.endTime = Date.now();
+                        aiMessage.metadata.reasoning.duration =
+                            aiMessage.metadata.reasoning.endTime -
+                            aiMessage.metadata.reasoning.startTime;
+                    }
+
                     messages.value = [...messages.value];
                     streamController.value = null;
                     status.value = "idle";

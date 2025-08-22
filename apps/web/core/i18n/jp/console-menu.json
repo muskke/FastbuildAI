@@ -87,6 +87,7 @@
         "title": "システム設定",
         "siteInfo": "サイト情報",
         "PayConfig": "支払い設定",
+        "agreement": "政策協定",
         "channelManagement": "チャネル管理",
         "wechatOaConfig": "公式アカウント設定"
     },

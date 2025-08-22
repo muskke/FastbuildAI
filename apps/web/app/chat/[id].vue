@@ -63,6 +63,7 @@ const initialMessages = messagesData.value.items.map((item: AiMessage) => {
     return {
         id: item.id || uuid(),
         role: item.role,
+        metadata: item.metadata,
         content: item.errorMessage || item.content,
         status: item.errorMessage ? ("failed" as const) : ("completed" as const),
         mcpToolCalls: item.mcpToolCalls,

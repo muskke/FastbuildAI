@@ -5,6 +5,7 @@
     "enable": "Enable",
     "disabled": "Disable",
     "wxPay": "WeChat Pay",
+    "aliPay": "Alipay payment",
     "pcPay": "PC Pay",
     "wxMiniProgram": "Mini Program",
     "H5Pay": "H5 Pay",
@@ -13,6 +14,9 @@
     "payType": "Payment methods",
     "name": "Display Name",
     "isEnable": "Whether enabled or not",
+    "isDefault": "Whether it is default or not",
+    "default": "default",
+    "sort": "排序",
     "action": "operate",
     "form": {
         "addLogo": "Add Logo",
