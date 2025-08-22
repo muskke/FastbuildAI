@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDesignStore } from "@fastbuildai/designer/stores";
+import { useDesignStore } from "@/common/stores/design";
 import { ProModal, useLockFn, useMessage, useModal } from "@fastbuildai/ui";
 
 import Logo from "@/public/logo.svg";

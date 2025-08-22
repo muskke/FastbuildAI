@@ -2,8 +2,6 @@
 import { computed, ref } from "vue";
 import Draggable from "vuedraggable";
 
-import { useDesignStore } from "../../stores/design";
-
 const design = useDesignStore();
 
 // 是否处于重命名状态

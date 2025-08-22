@@ -370,7 +370,7 @@ definePageMeta({ layout: "full-screen" });
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center gap-1 text-xs font-medium">
                                     <UIcon name="i-lucide-grip" class="size-3" />
-                                    Chunks #{{ segmentIndex + 1 }}
+                                    Chunks #{{ segment.chunkIndex + 1 }}
                                 </div>
                                 <div class="text-xs">{{ segment.contentLength }} character</div>
                                 <template v-if="segment.status === 'failed'">
