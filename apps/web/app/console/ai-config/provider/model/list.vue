@@ -44,8 +44,8 @@ const modelTypes = ref<ModelType[]>([]);
 
 const tab = ref(1);
 const tabs = [
-    { value: 1, icon: "i-lucide-list" },
-    { value: 2, icon: "i-tabler-layout-grid" },
+    { value: 1, icon: "i-tabler-layout-grid" },
+    { value: 2, icon: "i-lucide-list" },
 ];
 
 const columns = ref<TableColumn<AiModelInfo>[]>([
@@ -352,6 +352,12 @@ const handleBatchIsActiveChange = async (isActive: boolean) => {
     }
 };
 
+// 设置操作列固定在右侧
+const columnPinning = ref({
+    left: [],
+    right: ["action"],
+});
+
 const isIndeterminate = computed(() => {
     const selectedCount = paging.items.filter(
         (model: AiModelInfo) => model.id && selectedModels.value.has(model.id as string),
@@ -479,15 +485,24 @@ onMounted(async () => getLists());
         </div>
 
         <!-- 列表网格 -->
-        <template v-if="!paging.loading && paging.items.length > 0 && tab === 1">
+        <template v-if="!paging.loading && paging.items.length > 0 && tab === 2">
             <ProScrollArea class="h-[calc(100vh-17rem)]" :shadow="false">
                 <UTable
                     ref="table"
                     :columns="columns"
                     :data="paging.items"
                     :loading="paging.loading"
+                    v-model:column-pinning="columnPinning"
                     @page-change="getLists"
                     @page-size-change="getLists"
+                    :ui="{
+                        base: 'table-fixed border-separate border-spacing-0',
+                        thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
+                        tbody: '[&>tr]:last:[&>td]:border-b-0',
+                        th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
+                        td: 'border-b border-default',
+                        tr: '[&:has(>td[colspan])]:hidden',
+                    }"
                 >
                     <template #icon-cell="{ row }">
                         <div
@@ -496,9 +511,19 @@ onMounted(async () => getLists());
                             <UIcon name="i-lucide-brain" class="h-5 w-5" />
                         </div>
                     </template>
+                    <template #name-cell="{ row }">
+                        <div class="max-w-40 truncate">
+                            {{ row.original.name }}
+                        </div>
+                    </template>
+                    <template #model-cell="{ row }">
+                        <div class="max-w-40 truncate">
+                            {{ row.original.model }}
+                        </div>
+                    </template>
                     <template #modelType-cell="{ row }">
                         <UBadge variant="soft" color="neutral">
-                            {{ row.getValue("modelType") }}
+                            {{ row.original.modelType?.toLocaleUpperCase().replaceAll("-", " ") }}
                         </UBadge>
                     </template>
                     <template #isActive-cell="{ row }">
@@ -510,7 +535,7 @@ onMounted(async () => getLists());
                         />
                     </template>
                     <template #isDefault-cell="{ row }">
-                        <UBadge v-if="row.getValue('isDefault')" variant="soft" color="success">
+                        <UBadge v-if="row.original.isDefault" variant="soft" color="success">
                             {{ t("console-common.default") }}
                         </UBadge>
                         <div v-else>-</div>
@@ -520,7 +545,7 @@ onMounted(async () => getLists());
         </template>
 
         <!-- 卡片网格 -->
-        <template v-else-if="!paging.loading && paging.items.length > 0 && tab === 2">
+        <template v-else-if="!paging.loading && paging.items.length > 0 && tab === 1">
             <ProScrollArea class="h-[calc(100vh-17rem)]" :shadow="false">
                 <div
                     class="mt-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"

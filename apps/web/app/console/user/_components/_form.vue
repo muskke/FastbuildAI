@@ -44,6 +44,9 @@ const message = useMessage();
 // 过滤掉initialData中的userNo属性
 const { userNo, ...filteredInitialData } = props.initialData || {};
 
+// 是否编辑剩余算力
+const editPower = ref(false);
+
 // 表单数据
 const formData = reactive<UserCreateRequest>({
     username: "",
@@ -207,6 +210,32 @@ onMounted(() => getRoleList());
                                 @change="(value) => (formData.status = !formData.status ? 1 : 0)"
                             />
                         </div>
+
+                        <!-- 剩余算力 -->
+                        <div class="mt-4 w-full">
+                            <UFormField :label="t('console-user.form.power')" name="power">
+                                <UInput
+                                    v-model="formData.power"
+                                    :disabled="!editPower"
+                                    :variant="editPower ? 'outline' : 'subtle'"
+                                    size="xl"
+                                    class="w-full"
+                                    type="number"
+                                >
+                                    <template #trailing>
+                                        <UButton
+                                            class="cursor-pointer"
+                                            color="primary"
+                                            variant="link"
+                                            size="sm"
+                                            icon="i-lucide-edit"
+                                            aria-label="Clear input"
+                                            @click="editPower = !editPower"
+                                        />
+                                    </template>
+                                </UInput>
+                            </UFormField>
+                        </div>
                     </div>
                 </div>
 
@@ -338,6 +367,16 @@ onMounted(() => getRoleList());
                                 value-key="value"
                                 :items="roleOptions"
                                 :placeholder="t('console-user.form.roleSelect')"
+                                size="xl"
+                                class="w-full"
+                            />
+                        </UFormField>
+
+                        <!-- 真实姓名 -->
+                        <UFormField :label="t('console-user.form.realName')" name="realName">
+                            <UInput
+                                v-model="formData.realName"
+                                :placeholder="t('console-user.form.realNameInput')"
                                 size="xl"
                                 class="w-full"
                             />

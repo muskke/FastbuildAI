@@ -95,7 +95,7 @@ export class User {
      * 真实姓名
      */
     @Column({ nullable: true, length: 32, comment: "真实姓名" })
-    real_name: string;
+    realName: string;
 
     /**
      * 累计消费金额
