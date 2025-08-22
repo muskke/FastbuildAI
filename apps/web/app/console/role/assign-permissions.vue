@@ -71,7 +71,6 @@ const { lockFn: loadPermissions, isLock: permissionsLoading } = useLockFn(async 
         permissionGroups.value = response as PermissionGroup[];
     } catch (error) {
         console.error("加载权限列表失败:", error);
-        toast.error(t("console-system-perms.role.loadPermissionsFailed"));
     }
 });
 
@@ -83,7 +82,6 @@ const { lockFn: loadRoleDetail, isLock: loading } = useLockFn(async () => {
         selectedPermissionIds.value = role.permissions?.map((p) => p.id) ?? [];
     } catch (error) {
         console.error("加载角色详情失败:", error);
-        toast.error(t("console-system-perms.role.loadRoleDetailFailed"));
     }
 });
 
@@ -103,7 +101,6 @@ const { isLock: isSubmitting, lockFn: submitPermissions } = useLockFn(async () =
         handleClose(true);
     } catch (error) {
         console.error("分配权限失败:", error);
-        toast.error(t("console-system-perms.role.assignPermissionsFailed"));
     }
 });
 

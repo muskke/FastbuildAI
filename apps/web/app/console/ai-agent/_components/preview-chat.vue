@@ -207,7 +207,6 @@ async function createAnnotationDirectly(message: AiMessage, index: number) {
         };
     } catch (error) {
         console.error("创建标注失败:", error);
-        toast.error((error as Error).message);
     }
 }
 

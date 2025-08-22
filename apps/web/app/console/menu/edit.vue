@@ -74,7 +74,6 @@ const fetchMenuTree = async () => {
         menuTree.value = await apiGetMenuTree(props.sourceType || 1);
     } catch (error) {
         console.error("获取菜单树失败:", error);
-        toast.error(t("console-system-perms.menu.getMenuTreeFailed"));
     }
 };
 
@@ -90,7 +89,6 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
         });
     } catch (error) {
         console.error("获取详情失败:", error);
-        toast.error(t("console-system-perms.menu.getMenuFailed"));
     }
 });
 
@@ -105,7 +103,6 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         emits("close", true);
     } catch (error) {
         console.error("提交失败:", error);
-        toast.error(t("console-system-perms.menu.error"));
     }
 });
 

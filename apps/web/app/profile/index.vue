@@ -28,7 +28,6 @@ const { lockFn: updateUserFieldLockFn, isLock: isLoading } = useLockFn(
             toast.success(response.message || t("common.profile.modifySuccess"));
         } catch (error: any) {
             console.error("修改失败:", error);
-            toast.error(error.message || t("common.profile.modifyFailed"));
             throw error;
         }
     },

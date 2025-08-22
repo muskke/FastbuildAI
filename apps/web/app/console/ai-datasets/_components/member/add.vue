@@ -126,7 +126,6 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         emits("close", true);
     } catch (error) {
         console.error(t("console-ai-datasets.members.addModal.addMemberFailedLog"), error);
-        toast.error(t("console-ai-datasets.members.addModal.addMemberFailed"));
     }
 });
 

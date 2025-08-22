@@ -45,7 +45,7 @@ const { lockFn: loadTemplates, isLock: templatesLoading } = useLockFn(async () =
         categories.value = categoriesData;
         recommendedTemplates.value = recommendedData;
     } catch (error: any) {
-        toast.error(error.message || t("console-ai-agent.template.messages.loadingFailed"));
+        console.error(error);
     }
 });
 

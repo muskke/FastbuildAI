@@ -101,7 +101,6 @@ const handleDelete = async (agent: Agent) => {
         toast.success(t("common.message.deleteSuccess"));
     } catch (error) {
         console.error("删除失败:", error);
-        toast.error((error as Error).message);
     }
 };
 
@@ -215,7 +214,6 @@ const handleImportAgent = async () => {
                 // 刷新列表
                 await getLists();
             } catch (parseError) {
-                toast.error("JSON格式错误，请检查内容");
                 console.error("JSON解析失败:", parseError);
             }
         }

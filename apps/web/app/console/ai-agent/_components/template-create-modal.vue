@@ -48,7 +48,6 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         emits("close", true);
     } catch (error) {
         console.error(t("console-ai-agent.template.create.failed"), error);
-        toast.error((error as Error).message);
     }
 });
 

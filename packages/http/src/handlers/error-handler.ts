@@ -60,7 +60,14 @@ export class ErrorHandler {
                 });
                 throw new Error(`Not Found: ${status}: ${errorMessage}${errorPath}`);
 
+            case 500:
+                useMessage().error(`Internal Server Error: ${errorMessage}${errorPath}`, {
+                    title: t("console-common.request.500"),
+                });
+                throw new Error(`Internal Server Error: ${errorMessage}${errorPath}`);
+
             default:
+                useMessage().error(errorMessage + errorPath);
                 throw new Error(`HTTP Error ${status}: ${errorMessage}${errorPath}`);
         }
     }

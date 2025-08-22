@@ -36,7 +36,6 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
         conversation.value = await apiGetConversationDetail(props.conversationId);
     } catch (error) {
         console.error("获取对话详情失败:", error);
-        toast.error(t("console-ai-conversation.fetch.detailFailed"));
     }
 });
 
@@ -54,7 +53,6 @@ const { lockFn: fetchMessages, isLock: messagesLoading } = useLockFn(async () =>
         hasMore.value = result.total > messages.value.length;
     } catch (error) {
         console.error("获取消息列表失败:", error);
-        toast.error(t("console-ai-conversation.fetch.messagesFailed"));
     }
 });
 

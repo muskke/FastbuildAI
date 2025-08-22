@@ -84,7 +84,6 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
         };
     } catch (error) {
         console.error("获取标注详情失败:", error);
-        toast.error((error as Error).message);
     }
 });
 
@@ -142,7 +141,6 @@ const { lockFn: submitForm, isLock: submitting } = useLockFn(async () => {
         emits("close", true);
     } catch (error) {
         console.error(`${props.annotationId ? "更新" : "创建"}标注失败:`, error);
-        toast.error((error as Error).message);
     }
 });
 

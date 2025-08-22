@@ -68,7 +68,6 @@ const loadMessages = async (reset = false) => {
         hasMore.value = data.total > messages.value.length;
     } catch (error: any) {
         console.error("加载消息失败:", error);
-        toast.error(error?.message || "加载消息失败");
     } finally {
         loading.value = false;
     }

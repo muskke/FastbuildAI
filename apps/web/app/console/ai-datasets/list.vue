@@ -100,7 +100,6 @@ const handleDelete = async (dataset: Dataset) => {
         toast.success(t("common.message.deleteSuccess"));
     } catch (error) {
         console.error("删除失败:", error);
-        toast.error((error as Error).message);
     }
 };
 
