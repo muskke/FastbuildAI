@@ -163,6 +163,8 @@ export class UserController extends BaseController {
      * @param updateUserDto 更新用户DTO
      * @param currentUser 当前登录用户
      * @returns 更新后的用户
+     *
+     * 注意：更新成功后会清理该用户的角色与权限缓存，确保后续权限读取为最新。
      */
     @Patch(":id")
     @Permissions({
@@ -186,6 +188,7 @@ export class UserController extends BaseController {
             throw HttpExceptionFactory.notFound("用户不存在");
         }
 
+        let result;
         // 如果要修改的是超级管理员
         if (isEnabled(user.isRoot)) {
             // 只有超级管理员本人可以修改自己的信息
@@ -193,14 +196,21 @@ export class UserController extends BaseController {
                 throw HttpExceptionFactory.unauthorized("暂无权限");
             }
             // 超级管理员可以修改自己的基本信息
-            return await this.userService.updateById(id, updateUserDto, {
+            result = await this.userService.updateById(id, updateUserDto, {
                 excludeFields: ["password"],
             });
         } else {
-            return await this.userService.updateById(id, updateUserDto, {
+            result = await this.userService.updateById(id, updateUserDto, {
                 excludeFields: ["password"],
             });
         }
+
+        // 更新成功后清理该用户的权限相关缓存（忽略清理失败，不影响主流程）
+        this.rolePermissionService
+            .clearUserCache(id)
+            .catch((e) => this.logger?.warn?.(`清理用户缓存失败: ${e.message}`));
+
+        return result;
     }
 
     /**
