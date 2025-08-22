@@ -95,13 +95,6 @@ onMounted(() => {
 
 <template>
     <div class="copyright-container mt-8">
-        <div class="mb-4 flex flex-col justify-center">
-            <h2 class="text-xl font-semibold">{{ t("console-system.website.copyright.title") }}</h2>
-            <p class="text-muted-foreground mt-1 text-sm">
-                {{ t("console-system.website.copyright.description") }}
-            </p>
-        </div>
-
         <!-- 表单 -->
         <UForm :schema="schema" :state="state" class="space-y-6" @submit="onSubmit">
             <UFormField
