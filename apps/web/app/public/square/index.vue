@@ -138,8 +138,8 @@ definePageMeta({
             </div>
         </div>
 
-        <div class="container mx-auto h-full px-4 py-8">
-            <section class="flex h-full flex-col">
+        <div class="container mx-auto h-full min-h-0 px-4 pt-5 pb-4">
+            <section class="flex h-full min-h-0 flex-col">
                 <div class="mb-6 flex items-center justify-between">
                     <h2 class="text-xl font-bold">
                         {{ $t("square.allAgents") }}
@@ -166,7 +166,7 @@ definePageMeta({
                     </div>
                 </div>
 
-                <ProScrollArea class="h-full">
+                <ProScrollArea class="min-0 h-full">
                     <ProInfiniteScroll
                         :loading="loading || ssrLoading"
                         :has-more="hasMore"
