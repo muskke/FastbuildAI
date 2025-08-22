@@ -1,8 +1,9 @@
 import type { CSSProperties } from "vue";
 import { computed, getCurrentInstance, type Ref, ref, watch } from "vue";
 
-import { DESIGN_CONFIG } from "../config/design";
 import { useDesignStore } from "@/common/stores/design";
+
+import { DESIGN_CONFIG } from "../config/design";
 
 // 当前画布尺寸
 const designWidth = ref<number>(DESIGN_CONFIG.value.DEFAULT_WIDTH);
@@ -62,10 +63,13 @@ export function useCanvasMetrics(currentScale?: Ref<number>) {
 
         // 获取所有组件的最大Y坐标（组件底部位置）
         const designStore = useDesignStore();
-        const maxComponentBottom = designStore.components.reduce((max, component) => {
-            const componentBottom = component.position.y + component.size.height;
-            return Math.max(max, componentBottom);
-        }, 0);
+        const maxComponentBottom = designStore.components.reduce(
+            (max: number, component: ComponentConfig) => {
+                const componentBottom = component.position.y + component.size.height;
+                return Math.max(max, componentBottom);
+            },
+            0,
+        );
 
         // 计算最小允许高度：取默认最小高度和组件最大底部位置的较大值
         const minAllowedHeight = Math.max(DESIGN_CONFIG.value.DEFAULT_HEIGHT, maxComponentBottom);
