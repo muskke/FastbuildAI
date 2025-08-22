@@ -13,6 +13,21 @@ export interface ChatCompletionStream extends ProviderChatCompletionStream {
     finalChatCompletion(): Promise<ChatCompletion>;
 }
 
+// 扩展 ChatCompletionChunk 接口，添加 DeepSeek 特有的字段
+export interface ExtendedChatCompletionChunk extends ChatCompletionChunk {
+    choices: Array<{
+        delta: {
+            content?: string | null;
+            role?: "developer" | "system" | "user" | "assistant" | "tool";
+            tool_calls?: any[];
+            reasoning_content?: string; // DeepSeek 特有的深度思考内容字段
+        };
+        index: number;
+        finish_reason: "stop" | "length" | "tool_calls" | "content_filter" | "function_call" | null;
+        logprobs?: any | null;
+    }>;
+}
+
 export class TextGenerator {
     private adapter: Adapter;
 
@@ -76,8 +91,8 @@ export class TextGenerator {
                 const { value, done } = await asyncIterator.next();
                 if (done) break;
 
-                // 确保 value 是 ChatCompletionChunk 类型
-                const completionChunk = value as ChatCompletionChunk;
+                // 确保 value 是 ExtendedChatCompletionChunk 类型
+                const completionChunk = value as ExtendedChatCompletionChunk;
 
                 // 如果有 usage
                 if ("usage" in completionChunk && completionChunk.usage) {
@@ -90,7 +105,8 @@ export class TextGenerator {
                 if (!choice.delta) continue;
 
                 const { index = 0 } = choice;
-                const { content, role, tool_calls } = choice.delta;
+                const { content, role, tool_calls, reasoning_content } = choice.delta;
+                console.log("------------------choice.delta:", choice.delta);
 
                 if (!choices[index]) {
                     choices.splice(index, 0, {
@@ -98,12 +114,20 @@ export class TextGenerator {
                             role: role || "",
                             content: "",
                             tool_calls: [],
+                            reasoning_content: "", // 添加 reasoning_content 字段
                         },
                     });
                 }
 
                 if (content) choices[index].message.content += content;
                 if (role) choices[index].message.role = role;
+                // 处理 DeepSeek 的 reasoning_content 字段
+                if (reasoning_content) {
+                    if (!choices[index].message.reasoning_content) {
+                        choices[index].message.reasoning_content = "";
+                    }
+                    choices[index].message.reasoning_content += reasoning_content;
+                }
 
                 // 处理工具调用
                 if (tool_calls && Array.isArray(tool_calls)) {

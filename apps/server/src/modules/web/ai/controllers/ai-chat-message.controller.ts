@@ -584,6 +584,16 @@ export class AiChatMessageController extends BaseController {
                         fullResponse += chunk.choices[0].delta.content;
                     }
 
+                    // 处理 DeepSeek 的 reasoning_content 字段
+                    if (chunk.choices[0].delta.reasoning_content) {
+                        res.write(
+                            `data: ${JSON.stringify({
+                                type: "reasoning",
+                                data: chunk.choices[0].delta.reasoning_content,
+                            })}\n\n`,
+                        );
+                    }
+
                     // 处理工具调用（流式提示）
                     if (chunk.choices[0].delta.tool_calls) {
                         // 获取工具调用信息
