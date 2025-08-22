@@ -25,8 +25,13 @@ const emits = defineEmits<{
 const isOpen = ref(false);
 watch(
     () => props.modelValue,
-    (val) => (isOpen.value = val),
-    { immediate: true },
+    (val) => {
+        isOpen.value = val;
+        if (val) {
+            searchUsers("");
+        }
+    },
+    { immediate: false },
 );
 watch(
     () => isOpen.value,
@@ -132,7 +137,7 @@ watch(
         searchUsers(val);
     },
     {
-        immediate: true,
+        immediate: false,
     },
 );
 </script>
