@@ -4,7 +4,7 @@
  * @description 专门用于预览设计结果，模拟真实网页显示效果
  */
 import { useColorMode } from "@vueuse/core";
-import { type Component, computed, defineAsyncComponent, onMounted, onUnmounted, ref } from "vue";
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import { DESIGN_CONFIG } from "../config/design";

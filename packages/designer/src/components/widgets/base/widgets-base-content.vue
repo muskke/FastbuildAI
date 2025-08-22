@@ -3,7 +3,7 @@
  * Widgets 基础内容组件
  * @description 为所有widget组件提供统一的样式处理和内容包装
  */
-import { computed, type CSSProperties, inject, nextTick, onMounted, ref, watch } from "vue";
+import { computed, type CSSProperties } from "vue";
 
 export interface BaseWidgetStyle {
     /** 背景颜色 */

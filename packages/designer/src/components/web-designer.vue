@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted, ref } from "vue";
 
+import { useDesignStore } from "@/common/stores/design";
+
 import { setDesignConfig } from "../config/design";
 import DesignerSkeleton from "./designer-skeleton.vue";
 const ComponentPanel = defineAsyncComponent(() => import("./panels/component-panel.vue"));
