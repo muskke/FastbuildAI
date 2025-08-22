@@ -296,7 +296,6 @@ const handleSetDefault = async (model: AiModelInfo) => {
         getLists();
     } catch (error) {
         console.error("Set default failed:", error);
-        toast.error(t("console-ai-provider.model.messages.setDefaultError"));
     }
 };
 

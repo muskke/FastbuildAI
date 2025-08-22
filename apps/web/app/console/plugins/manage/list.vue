@@ -168,7 +168,6 @@ async function getPluginList() {
         }
     } catch (error) {
         console.error("获取插件列表失败:", error);
-        toast.error(t("console-plugins.manage.messages.fetchError"));
         items.value = [];
         pagination.total = 0;
     } finally {

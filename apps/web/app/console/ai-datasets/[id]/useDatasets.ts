@@ -81,7 +81,6 @@ export function useDocumentActions() {
             onSuccess?.();
         } catch (error) {
             console.error("删除失败:", error);
-            toast.error((error as Error).message);
         }
     };
 
@@ -134,7 +133,6 @@ export function useDocumentActions() {
             }
         } catch (error) {
             console.error("重命名失败:", error);
-            toast.error(t("console-ai-datasets.documents.renameModal.failed"));
         }
     };
 
@@ -156,7 +154,6 @@ export function useDocumentActions() {
             onSuccess?.();
         } catch (error) {
             console.error("重试失败:", error);
-            toast.error(t("console-ai-datasets.documents.retry.failed"));
         }
     };
 
@@ -188,13 +185,6 @@ export function useDocumentActions() {
             onSuccess?.();
         } catch (error) {
             console.error("切换启用状态失败:", error);
-            toast.error(
-                t(
-                    enabled
-                        ? "console-ai-datasets.documents.enable.failed"
-                        : "console-ai-datasets.documents.disable.failed",
-                ),
-            );
         }
     };
 
@@ -239,7 +229,6 @@ export function useSegmentActions() {
             onSuccess?.();
         } catch (error) {
             console.error("删除失败:", error);
-            toast.error(t("console-ai-datasets.segments.batchDelete.failed"));
         }
     };
 
@@ -296,7 +285,6 @@ export function useSegmentActions() {
             }
         } catch (error) {
             console.error("创建失败:", error);
-            toast.error(t("console-ai-datasets.segments.createSegmentModal.failed"));
         }
     };
 
@@ -347,7 +335,6 @@ export function useSegmentActions() {
             }
         } catch (error) {
             console.error("编辑失败:", error);
-            toast.error(t("console-ai-datasets.segments.editSegmentModal.failed"));
         }
     };
 

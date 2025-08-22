@@ -78,7 +78,6 @@ const handleDelete = async (id: number | string | number[] | string[]) => {
         toast.success(t("console-user.success"));
     } catch (error) {
         console.error("Delete failed:", error);
-        toast.error(t("console-user.error"));
     }
 };
 

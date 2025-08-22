@@ -389,7 +389,6 @@ const handleDelete = async (id: string | string[]) => {
         refreshSidebarMenu();
     } catch (error) {
         console.error("删除失败:", error);
-        toast.error(t("console-system-perms.menu.error"));
     }
 };
 

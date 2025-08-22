@@ -194,7 +194,6 @@ const handleDelete = async (id: string | string[]) => {
         getLists();
     } catch (error) {
         console.error("Delete failed:", error);
-        toast.error(t("common.message.deleteFailed"));
     }
 };
 

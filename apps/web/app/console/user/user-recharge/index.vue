@@ -90,7 +90,6 @@ const saveRules = async () => {
         toast.success(t("console-marketing.packageManagement.saveSuccess"));
     } catch (error) {
         console.error(error);
-        toast.error(t("console-marketing.packageManagement.saveFailed"));
     }
 };
 

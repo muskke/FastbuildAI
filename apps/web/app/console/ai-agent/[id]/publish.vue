@@ -60,7 +60,7 @@ const loadAgentDetail = async () => {
             Object.assign(publishConfig, data.publishConfig);
         }
     } catch (error: any) {
-        toast.error(error.message || "加载智能体信息失败");
+        console.error("加载智能体信息失败:", error);
     } finally {
         loading.value = false;
     }
@@ -92,7 +92,7 @@ const handlePublish = async () => {
         // 切换到状态页面
         activeTab.value = "status";
     } catch (error: any) {
-        toast.error(error.message || "发布失败");
+        console.error("发布智能体失败:", error);
     } finally {
         publishing.value = false;
     }
@@ -117,7 +117,7 @@ const handleUnpublish = async () => {
 
         toast.success("已取消发布");
     } catch (error: any) {
-        toast.error(error.message || "取消发布失败");
+        console.error("取消发布智能体失败:", error);
     } finally {
         publishing.value = false;
     }
@@ -137,7 +137,7 @@ const handleRegenerateApiKey = async () => {
 
         toast.success("API密钥重新生成成功");
     } catch (error: any) {
-        toast.error(error.message || "重新生成API密钥失败");
+        console.error("重新生成API密钥失败:", error);
     }
 };
 

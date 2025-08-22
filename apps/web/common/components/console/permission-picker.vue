@@ -67,7 +67,6 @@ const { lockFn: loadPermissions, isLock } = useLockFn(async () => {
         permissionCode.value = props.modelValue;
     } catch (error) {
         console.error("获取权限列表失败:", error);
-        toast.error(t("permission.listError"));
     }
 });
 
