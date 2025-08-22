@@ -52,6 +52,8 @@ export interface UserInfo {
     updatedAt: string;
     /** 删除时间 */
     deletedAt?: string;
+    /** 真实姓名 */
+    realName?: string;
 }
 
 // 用户中心

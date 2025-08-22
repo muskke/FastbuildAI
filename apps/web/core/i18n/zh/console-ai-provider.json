@@ -7,6 +7,7 @@
         "basicInfo": "基本信息",
         "name": "供应商名称",
         "namePlaceholder": "请输入供应商名称",
+        "nameRequired": "请输入供应商名称",
         "nameHelp": "用于显示的供应商名称，建议简洁明了",
         "provider": "供应商标识",
         "providerPlaceholder": "例如：openai、anthropic",

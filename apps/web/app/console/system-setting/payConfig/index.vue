@@ -93,7 +93,18 @@ onMounted(() => {
                 {{ $t("console-payconfig.title") }}
             </h1>
         </div>
-        <UTable :columns="columns" :data="payconfigList">
+        <UTable
+            :columns="columns"
+            :data="payconfigList"
+            :ui="{
+                base: 'table-fixed border-separate border-spacing-0',
+                thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
+                tbody: '[&>tr]:last:[&>td]:border-b-0',
+                th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
+                td: 'border-b border-default',
+                tr: '[&:has(>td[colspan])]:hidden',
+            }"
+        >
             <template #logo-cell="{ row }">
                 <UAvatar
                     :src="row.original.logo"
