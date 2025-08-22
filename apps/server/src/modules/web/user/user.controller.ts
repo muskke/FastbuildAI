@@ -84,18 +84,37 @@ export class UserController extends BaseController {
      */
     @Get("search")
     @BuildFileUrl(["**.avatar"])
-    async searchUsers(@Query("keyword") keyword?: string, @Query("limit") limit?: number) {
+    async searchUsers(
+        @Query("keyword") keyword?: string,
+        @Query("limit") limit?: number,
+        @Playground() user: UserPlayground,
+    ) {
         const searchLimit = Math.min(limit || 20, 50); // 限制最大返回50条
 
         // 查询用户列表 - 只返回有角色的用户
         const users = await this.userService.findAll({
             where: keyword
                 ? [
-                      { username: Like(`%${keyword}%`), status: 1, role: Not(IsNull()) },
-                      { nickname: Like(`%${keyword}%`), status: 1, role: Not(IsNull()) },
-                      { email: Like(`%${keyword}%`), status: 1, role: Not(IsNull()) },
+                      {
+                          username: Like(`%${keyword}%`),
+                          status: 1,
+                          id: Not(user.id),
+                          role: Not(IsNull()),
+                      },
+                      {
+                          nickname: Like(`%${keyword}%`),
+                          status: 1,
+                          id: Not(user.id),
+                          role: Not(IsNull()),
+                      },
+                      {
+                          email: Like(`%${keyword}%`),
+                          status: 1,
+                          id: Not(user.id),
+                          role: Not(IsNull()),
+                      },
                   ]
-                : { isRoot: 0, status: 1, role: Not(IsNull()) },
+                : { status: 1, role: Not(IsNull()), id: Not(user.id) },
             take: searchLimit,
             order: { createdAt: "DESC" },
             excludeFields: ["password", "phone", "phoneAreaCode", "permissions"],
