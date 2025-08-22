@@ -24,13 +24,42 @@ const statistics = ref<Statistics>({
     totalRefundAmount: 0,
     totalRefundOrder: 0,
 });
+
+// 统计卡片配置
+const statisticsItems = [
+    {
+        key: "totalOrder",
+        unit: "console-common.unit",
+        label: "console-order-management.recharge.rechargeCount",
+    },
+    {
+        key: "totalAmount",
+        unit: "console-common.yuan",
+        label: "console-order-management.recharge.totalRechargeAmount",
+    },
+    {
+        key: "totalRefundOrder",
+        unit: "console-common.unit",
+        label: "console-order-management.recharge.refundCount",
+    },
+    {
+        key: "totalRefundAmount",
+        unit: "console-common.yuan",
+        label: "console-order-management.recharge.totalRefundAmount",
+    },
+    {
+        key: "totalIncome",
+        unit: "console-common.yuan",
+        label: "console-order-management.recharge.netIncome",
+    },
+] as const;
 const orderDetail = ref<OrderDetailData | null>(null);
 
-const keyword = ref("");
-const orderNo = ref("");
-const payType = ref("");
-const payStatus = ref("");
-const refundStatus = ref("");
+const keyword = ref<string>("");
+const orderNo = ref<string>("");
+const payType = ref<string | undefined>(undefined);
+const payStatus = ref<string | undefined>(undefined);
+const refundStatus = ref<string | undefined>(undefined);
 
 const paging = ref({
     page: 1,
@@ -209,6 +238,19 @@ const changePage = () => {
     getOrderList();
 };
 
+const changeSelect = () => {
+    if (payType.value === "all") {
+        payType.value = undefined;
+    }
+    if (payStatus.value === "all") {
+        payStatus.value = undefined;
+    }
+    if (refundStatus.value === "all") {
+        refundStatus.value = undefined;
+    }
+    getOrderList();
+};
+
 onMounted(() => {
     getOrderList();
 });
@@ -218,91 +260,19 @@ onMounted(() => {
     <div class="flex h-full flex-col space-y-4 pb-6">
         <!-- 信息卡片 -->
         <div class="grid grid-cols-2 gap-4 pt-px md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            <UCard>
+            <UCard v-for="(item, index) in statisticsItems" :key="index">
                 <div class="flex items-center justify-center">
-                    <div class="flex items-center gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="">
-                                <span class="text-2xl font-bold">{{ statistics.totalOrder }}</span>
-                                <span class="text-muted-foreground ml-1 text-xs">
-                                    {{ t("console-common.unit") }}
-                                </span>
-                            </div>
-                            <div class="text-muted-foreground text-xs">
-                                {{ t("console-order-management.recharge.rechargeCount") }}
-                            </div>
+                    <div class="flex flex-col items-center">
+                        <div>
+                            <span class="text-2xl font-bold">
+                                {{ statistics[item.key as keyof Statistics] }}
+                            </span>
+                            <span class="text-muted-foreground ml-1 text-xs">
+                                {{ t(item.unit) }}
+                            </span>
                         </div>
-                    </div>
-                </div>
-            </UCard>
-            <UCard>
-                <div class="flex items-center justify-center">
-                    <div class="flex items-center gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="">
-                                <span class="text-2xl font-bold">{{ statistics.totalAmount }}</span>
-                                <span class="text-muted-foreground ml-1 text-xs">
-                                    {{ t("console-common.yuan") }}
-                                </span>
-                            </div>
-                            <div class="text-muted-foreground text-xs">
-                                {{ t("console-order-management.recharge.totalRechargeAmount") }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </UCard>
-            <UCard>
-                <div class="flex items-center justify-center">
-                    <div class="flex items-center gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="">
-                                <span class="text-2xl font-bold">{{
-                                    statistics.totalRefundOrder
-                                }}</span>
-                                <span class="text-muted-foreground ml-1 text-xs">
-                                    {{ t("console-common.unit") }}
-                                </span>
-                            </div>
-                            <div class="text-muted-foreground text-xs">
-                                {{ t("console-order-management.recharge.refundCount") }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </UCard>
-            <UCard>
-                <div class="flex items-center justify-center">
-                    <div class="flex items-center gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="">
-                                <span class="text-2xl font-bold">{{
-                                    statistics.totalRefundAmount
-                                }}</span>
-                                <span class="text-muted-foreground ml-1 text-xs">
-                                    {{ t("console-common.yuan") }}
-                                </span>
-                            </div>
-                            <div class="text-muted-foreground text-xs">
-                                {{ t("console-order-management.recharge.totalRefundAmount") }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </UCard>
-            <UCard>
-                <div class="flex items-center justify-center">
-                    <div class="flex items-center gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="">
-                                <span class="text-2xl font-bold">{{ statistics.totalIncome }}</span>
-                                <span class="text-muted-foreground ml-1 text-xs">
-                                    {{ t("console-common.yuan") }}
-                                </span>
-                            </div>
-                            <div class="text-muted-foreground text-xs">
-                                {{ t("console-order-management.recharge.netIncome") }}
-                            </div>
+                        <div class="text-muted-foreground text-xs">
+                            {{ t(item.label) }}
                         </div>
                     </div>
                 </div>
@@ -330,7 +300,7 @@ onMounted(() => {
                         :items="[
                             {
                                 label: t('console-common.all'),
-                                value: null,
+                                value: 'all',
                             },
                             {
                                 label: t('console-order-management.recharge.list.wechatPay'),
@@ -342,14 +312,14 @@ onMounted(() => {
                             },
                         ]"
                         v-model="payType"
-                        @update:modelValue="getOrderList"
+                        @update:modelValue="changeSelect()"
                     />
                     <USelect
                         :placeholder="t('console-order-management.recharge.list.paymentStatus')"
                         :items="[
                             {
                                 label: t('console-common.all'),
-                                value: null,
+                                value: 'all',
                             },
                             {
                                 label: t('console-order-management.recharge.list.paid'),
@@ -361,14 +331,14 @@ onMounted(() => {
                             },
                         ]"
                         v-model="payStatus"
-                        @update:modelValue="getOrderList"
+                        @update:modelValue="changeSelect()"
                     />
                     <USelect
                         :placeholder="t('console-order-management.recharge.list.refundStatus')"
                         :items="[
                             {
                                 label: t('console-common.all'),
-                                value: null,
+                                value: 'all',
                             },
                             {
                                 label: t('console-order-management.recharge.list.refunded'),
@@ -380,7 +350,7 @@ onMounted(() => {
                             },
                         ]"
                         v-model="refundStatus"
-                        @update:modelValue="getOrderList"
+                        @update:modelValue="changeSelect()"
                     />
                 </div>
             </div>
