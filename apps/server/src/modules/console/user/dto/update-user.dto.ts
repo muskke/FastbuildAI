@@ -97,4 +97,11 @@ export class UpdateUserDto {
     @IsInt({ message: "注册来源必须是整数" })
     @IsIn([0, 1, 2, 3, 4], { message: "注册来源只能是0-4之间的数字" })
     source?: UserCreateSourceType;
+
+    /**
+     * 剩余算力
+     */
+    @IsOptional()
+    @IsInt({ message: "剩余算力必须是整数" })
+    power?: number;
 }
