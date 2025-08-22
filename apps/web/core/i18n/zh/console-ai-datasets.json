@@ -192,6 +192,7 @@
         },
         "self": "自己",
         "note": "备注",
+        "notePlaceholder": "请输入备注信息...",
         "transferOwnership": "转移所有权",
         "updateRole": "更新角色",
         "removeMember": "移除成员",
