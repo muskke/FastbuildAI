@@ -8,8 +8,6 @@ import ProUploader from "@fastbuildai/ui/components/pro-uploader.vue";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
-import { useDesignStore } from "../../../stores/design";
-
 const { t } = useI18n();
 const designStore = useDesignStore();
 

@@ -1,10 +1,17 @@
+import { useCanvasMetrics } from "@fastbuildai/designer/composables/useCanvasMetrics";
+import type {
+    ComponentConfig,
+    ComponentMenuItem,
+    DecorateScene,
+    PageMateConfig,
+    Position,
+    Size,
+} from "@fastbuildai/designer/types";
 import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
 import { computed, ref } from "vue";
 
 import { apiGetMicropageDetail, apiUpdateMicropage } from "@/services/console/decorate";
-
-import { useCanvasMetrics } from "../composables/useCanvasMetrics";
 
 /**
  * 管理设计画布的尺寸计算和动态调整
@@ -93,7 +100,7 @@ export const useDesignStore = defineStore("design", () => {
     // 页面组件操作部分-----------------------------------------
     /** 获取当前选择的组件 */
     const activeComponent = computed(() =>
-        components.value.find((c) => c.id === activeComponentId.value),
+        components.value.find((c: ComponentConfig) => c.id === activeComponentId.value),
     );
 
     /** 添加组件 */
@@ -122,7 +129,7 @@ export const useDesignStore = defineStore("design", () => {
 
     /** 更新组件位置 */
     function updatePosition(id: string, position: Position) {
-        const component = components.value.find((c) => c.id === id);
+        const component = components.value.find((c: ComponentConfig) => c.id === id);
         if (component) {
             component.position = position;
         }
@@ -130,7 +137,7 @@ export const useDesignStore = defineStore("design", () => {
 
     /** 更新组件大小 */
     function updateSize(id: string, size: Size) {
-        const component = components.value.find((c) => c.id === id);
+        const component = components.value.find((c: ComponentConfig) => c.id === id);
         if (component) {
             component.size.width = size.width;
             component.size.height = size.height;
@@ -139,7 +146,7 @@ export const useDesignStore = defineStore("design", () => {
 
     /** 更新组件属性 */
     function updateProperties(id: string, props: Record<string, any>) {
-        const component = components.value.find((c) => c.id === id);
+        const component = components.value.find((c: ComponentConfig) => c.id === id);
         if (component) {
             component.props = { ...component.props, ...props };
         } else {
@@ -149,7 +156,7 @@ export const useDesignStore = defineStore("design", () => {
 
     /** 更新组件显示 */
     function updateVisible(id: string, value: boolean) {
-        const component = components.value.find((c) => c.id === id);
+        const component = components.value.find((c: ComponentConfig) => c.id === id);
         if (component) {
             component.isHidden = value;
         }
@@ -162,7 +169,7 @@ export const useDesignStore = defineStore("design", () => {
 
     /** 删除组件 */
     function removeComponent(id: string) {
-        components.value = components.value.filter((c) => c.id !== id);
+        components.value = components.value.filter((c: ComponentConfig) => c.id !== id);
         activeComponentId.value = null;
     }
 

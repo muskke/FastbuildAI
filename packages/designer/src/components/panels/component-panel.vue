@@ -6,7 +6,6 @@
 import ProScrollArea from "@fastbuildai/ui/components/pro-scroll-area.vue";
 import { computed, ref } from "vue";
 
-import { useDesignStore } from "../../stores/design";
 import {
     getCategories,
     getCategoryComponents,

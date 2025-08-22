@@ -312,7 +312,6 @@ export class AiChatMessageController extends BaseController {
 
             if (!exists.title) {
                 const title = await this.aiGenerateTitle(
-                    client,
                     model,
                     dto.messages as Array<ChatCompletionMessageParam>,
                 );
@@ -585,6 +584,16 @@ export class AiChatMessageController extends BaseController {
                         fullResponse += chunk.choices[0].delta.content;
                     }
 
+                    // 处理 DeepSeek 的 reasoning_content 字段
+                    if (chunk.choices[0].delta.reasoning_content) {
+                        res.write(
+                            `data: ${JSON.stringify({
+                                type: "reasoning",
+                                data: chunk.choices[0].delta.reasoning_content,
+                            })}\n\n`,
+                        );
+                    }
+
                     // 处理工具调用（流式提示）
                     if (chunk.choices[0].delta.tool_calls) {
                         // 获取工具调用信息
@@ -807,7 +816,6 @@ export class AiChatMessageController extends BaseController {
 
             if (!exists.title) {
                 const title = await this.aiGenerateTitle(
-                    client,
                     model,
                     dto.messages as Array<ChatCompletionMessageParam>,
                 );
@@ -878,16 +886,20 @@ export class AiChatMessageController extends BaseController {
         }
     }
 
-    private async aiGenerateTitle(
-        client: TextGenerator,
-        model,
-        messages: ChatCompletionMessageParam[],
-    ): Promise<string> {
+    private async aiGenerateTitle(model, messages: ChatCompletionMessageParam[]): Promise<string> {
         const content = messages.find((item) => item.role === "user")?.content as string;
         try {
             if (!content) {
                 return "new Chat";
             }
+
+            const provider = getProvider(model.provider.provider, {
+                apiKey: model.provider.apiKey,
+                baseURL: model.provider.baseUrl,
+                timeout: 10000,
+            });
+
+            const client = new TextGenerator(provider);
 
             const response = await client.chat.create({
                 model: model.model,
