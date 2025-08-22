@@ -312,7 +312,6 @@ export class AiChatMessageController extends BaseController {
 
             if (!exists.title) {
                 const title = await this.aiGenerateTitle(
-                    client,
                     model,
                     dto.messages as Array<ChatCompletionMessageParam>,
                 );
@@ -807,7 +806,6 @@ export class AiChatMessageController extends BaseController {
 
             if (!exists.title) {
                 const title = await this.aiGenerateTitle(
-                    client,
                     model,
                     dto.messages as Array<ChatCompletionMessageParam>,
                 );
@@ -878,16 +876,20 @@ export class AiChatMessageController extends BaseController {
         }
     }
 
-    private async aiGenerateTitle(
-        client: TextGenerator,
-        model,
-        messages: ChatCompletionMessageParam[],
-    ): Promise<string> {
+    private async aiGenerateTitle(model, messages: ChatCompletionMessageParam[]): Promise<string> {
         const content = messages.find((item) => item.role === "user")?.content as string;
         try {
             if (!content) {
                 return "new Chat";
             }
+
+            const provider = getProvider(model.provider.provider, {
+                apiKey: model.provider.apiKey,
+                baseURL: model.provider.baseUrl,
+                timeout: 10000,
+            });
+
+            const client = new TextGenerator(provider);
 
             const response = await client.chat.create({
                 model: model.model,

@@ -139,7 +139,7 @@ export default defineNuxtConfig({
 
     devServer: {
         port: 4091,
-        host: "0.0.0.0",
+        host: "localhost,0.0.0.0",
     },
 
     future: {
