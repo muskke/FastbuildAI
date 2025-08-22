@@ -118,6 +118,8 @@ export class AgentTemplateService {
 
     /**
      * 从模板创建智能体
+     * @param dto 创建参数，包含模板ID及可覆盖的字段
+     * @returns 新的智能体配置对象（不会修改原始模板）
      */
     async createAgentFromTemplate(dto: CreateAgentFromTemplateDto) {
         const template = await this.getTemplateById(dto.templateId);
@@ -125,11 +127,11 @@ export class AgentTemplateService {
             throw new Error(`模板不存在: ${dto.templateId}`);
         }
 
-        delete template?.datasetIds;
-        delete template?.id;
+        // 使用解构排除不需要从模板继承的字段，避免修改原始模板对象
+        const { id: _omitId, datasetIds: _omitDatasetIds, ...templateForCreate } = template;
 
         return {
-            ...template,
+            ...templateForCreate,
             ...dto,
         };
     }

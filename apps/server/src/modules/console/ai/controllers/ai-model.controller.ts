@@ -197,7 +197,7 @@ export class AiModelController extends BaseController {
     @Patch(":id/toggle-active")
     @Permissions({
         code: "toggle-active",
-        name: "更新AI模型",
+        name: "启用/禁用AI模型",
     })
     async toggleActive(@Param("id") id: string, @Body("isActive") isActive: boolean) {
         if (typeof isActive !== "boolean") {
@@ -337,7 +337,7 @@ export class AiModelController extends BaseController {
     @Put(":id/default")
     @Permissions({
         code: "default-update",
-        name: "更新AI模型",
+        name: "设置默认AI模型",
     })
     async setDefault(@Param("id") id: string) {
         await this.dictService.set(AI_DEFAULT_MODEL, id);

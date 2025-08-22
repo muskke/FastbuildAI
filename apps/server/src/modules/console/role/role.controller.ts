@@ -45,7 +45,7 @@ export class RoleController extends BaseController {
     @Get()
     @Permissions({
         code: "list",
-        name: "查看角色",
+        name: "角色列表",
         description: "分页查询角色列表",
     })
     async findAll(@Query() queryRoleDto: QueryRoleDto) {
@@ -61,7 +61,7 @@ export class RoleController extends BaseController {
     @Get("all")
     @Permissions({
         code: "all",
-        name: "查看角色",
+        name: "全部角色",
         description: "查询全部角色列表",
     })
     async findAllRoles(): Promise<Role[]> {
@@ -77,7 +77,7 @@ export class RoleController extends BaseController {
     @Get(":id")
     @Permissions({
         code: "detail",
-        name: "查看角色",
+        name: "角色详情",
         description: "根据ID查询角色详情",
     })
     async findOne(@Param("id", UUIDValidationPipe) id: string): Promise<Role> {
