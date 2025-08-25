@@ -22,12 +22,15 @@ const props = withDefaults(
         placeholder?: string;
         isLoading?: boolean;
         rows?: number;
+        // 是否需要登录校验
+        needAuth?: boolean;
     }>(),
     {
         modelValue: "",
         placeholder: "",
         isLoading: false,
         rows: 1,
+        needAuth: false,
     },
 );
 
@@ -40,7 +43,7 @@ const { focused: isFocused } = useFocus(textareaElement, { initialValue: false }
 // 点击其他地方也聚焦输入框
 function handleFocus() {
     uTextareaRefs.value?.textareaRef?.focus();
-    if (!userStore.isAgreed) {
+    if (!userStore.isAgreed && props.needAuth) {
         navigateTo("/login");
     }
 }

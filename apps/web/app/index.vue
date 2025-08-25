@@ -205,6 +205,7 @@ definePageMeta({
                         class="[view-transition-name:chat-prompt]"
                         v-model="inputValue"
                         :rows="2"
+                        :needAuth="true"
                         @submit="createChat"
                     >
                         <template #panel-left>
