@@ -62,6 +62,8 @@ const { paging, getLists } = usePaging<TeamMember>({
     params: searchForm,
 });
 
+const mySelf = computed(() => paging.items.find((item) => item.oneself));
+
 // 角色映射
 const roleMap = {
     owner: { label: t("console-ai-datasets.members.role.owner"), color: "error" as const },
@@ -461,6 +463,7 @@ definePageMeta({ layout: "full-screen" });
 
                 <UButton
                     :label="$t('console-ai-datasets.members.addMember')"
+                    :disabled="!(mySelf?.role === 'owner') && !(mySelf?.role === 'manager')"
                     leading-icon="i-lucide-plus"
                     color="primary"
                     @click="handleAddMember"
