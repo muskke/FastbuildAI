@@ -61,7 +61,11 @@ const searchUsers = async (keyword: string) => {
         searchResults.value = [];
     }
     try {
-        const users = await apiSearchUsers({ keyword: keyword.trim(), limit: 20 });
+        const users = await apiSearchUsers({
+            keyword: keyword.trim(),
+            datasetId: props.datasetId,
+            limit: 20,
+        });
         searchResults.value = users.map((user) => ({
             id: user.id,
             label: user.nickname || user.username,
