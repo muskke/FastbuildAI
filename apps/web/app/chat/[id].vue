@@ -381,6 +381,7 @@ definePageMeta({ activePath: "/" });
                 <ChatPrompt
                     v-model="input"
                     :is-loading="isLoading"
+                    :needAuth="true"
                     class="sticky bottom-0 z-10 [view-transition-name:chat-prompt]"
                     @stop="stop"
                     @submit="handleSubmitMessage"
