@@ -142,6 +142,8 @@ function clearSelection() {
     localStorage.removeItem("mcpIds");
 }
 
+const findMcpById = (id: string) => allMcpList.value.find((m) => m.id === id);
+
 async function handlePopoverUpdate(value: boolean) {
     if (value) {
         await getAllList();
@@ -201,14 +203,14 @@ async function handlePopoverUpdate(value: boolean) {
                 >
                     <UAvatar
                         v-for="(id, index) in selectedValidIds"
-                        :src="allMcpList.find((m) => m.id === id)?.icon"
+                        :src="findMcpById(id)?.icon"
                         :style="`z-index: ${index + 1}`"
                         :key="id"
-                        class="bg-primary"
+                        :class="`${!findMcpById(id)?.icon ? 'bg-primary' : 'bg-secondary'}`"
                         :ui="{ fallback: 'text-inverted' }"
                         :alt="
                             (() => {
-                                const server = allMcpList.find((m) => m.id === id);
+                                const server = findMcpById(id);
                                 return server?.name || '';
                             })()
                         "
@@ -230,7 +232,7 @@ async function handlePopoverUpdate(value: boolean) {
 
         <template #content>
             <div class="bg-background max-h-[480px] w-90 overflow-hidden rounded-lg shadow-lg">
-                <div class="flex items-center gap-2 border-b p-3">
+                <div class="flex items-stretch gap-2 border-b p-3">
                     <UInput
                         v-model="search"
                         :placeholder="t('console-common.placeholder.mcpSelect')"
@@ -313,6 +315,7 @@ async function handlePopoverUpdate(value: boolean) {
                                                 :src="mcp.icon"
                                                 :alt="mcp.name"
                                                 size="lg"
+                                                class="bg-secondary"
                                                 :ui="{ image: 'rounded-md' }"
                                             />
                                             <div
@@ -388,6 +391,7 @@ async function handlePopoverUpdate(value: boolean) {
                                                     :src="mcp.icon"
                                                     :alt="mcp.name"
                                                     size="2xl"
+                                                    class="bg-secondary"
                                                     :ui="{ image: 'rounded-md' }"
                                                 />
                                                 <div
