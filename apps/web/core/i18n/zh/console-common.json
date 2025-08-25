@@ -41,6 +41,8 @@
     "recharge": "充值",
     "officeLink": "前往官网",
     "default": "默认",
+    "remove": "移除",
+    "exit": "退出",
     "tab": {
         "all": "全部",
         "system": "系统",

@@ -218,11 +218,7 @@ onMounted(async () => await Promise.all([fetchDetail(), fetchMessages()]));
                                 >
                                     <details class="text-xs">
                                         <summary class="text-muted-foreground cursor-pointer">
-                                            {{
-                                                $t(
-                                                    "console-console-ai-conversation.detail.metadata",
-                                                )
-                                            }}
+                                            {{ $t("console-ai-conversation.detail.metadata") }}
                                         </summary>
                                         <pre class="text-accent-foreground mt-2">{{
                                             JSON.stringify(message.metadata, null, 2)
