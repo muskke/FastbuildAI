@@ -11,8 +11,9 @@ import { RolePermissionService } from "@common/modules/auth/services/role-permis
 import { AccountLog } from "@modules/console/finance/entities/account-log.entity";
 import { Body, Get, Inject, Patch, Query } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { IsNull, Like, Not, Repository } from "typeorm";
+import { In, IsNull, Like, Not, Repository } from "typeorm";
 
+import { DatasetMemberService } from "../../console/ai-datasets/services/datasets-member.service";
 import { UserService } from "../../console/user/services/user.service";
 import { AccountLogDto } from "./dto/account-log-dto";
 import { ALLOWED_USER_FIELDS, UpdateUserFieldDto } from "./dto/update-user-field.dto";
@@ -31,12 +32,14 @@ export class UserController extends BaseController {
      *
      * @param userService 用户服务
      * @param rolePermissionService 角色权限服务
+     * @param datasetMemberService 知识库成员服务
      */
     constructor(
         private readonly userService: UserService,
         @Inject(RolePermissionService)
         private readonly rolePermissionService: RolePermissionService,
         private readonly fileService: FileService,
+        private readonly datasetMemberService: DatasetMemberService,
         @InjectRepository(AccountLog)
         private readonly accountLogRepository: Repository<AccountLog>,
     ) {
@@ -80,7 +83,8 @@ export class UserController extends BaseController {
      *
      * @param keyword 搜索关键词
      * @param limit 返回数量限制
-     * @returns 用户列表（只返回有角色的用户）
+     * @param datasetId 知识库ID，用于排除已存在的成员
+     * @returns 用户列表（只返回有角色的用户，排除已存在于知识库的成员）
      */
     @Get("search")
     @BuildFileUrl(["**.avatar"])
@@ -88,33 +92,50 @@ export class UserController extends BaseController {
         @Playground() user: UserPlayground,
         @Query("keyword") keyword?: string,
         @Query("limit") limit?: number,
+        @Query("datasetId") datasetId?: string,
     ) {
         const searchLimit = Math.min(limit || 20, 50); // 限制最大返回50条
 
-        // 查询用户列表 - 只返回有角色的用户
+        // 获取已存在于知识库中的成员用户ID列表
+        let excludeUserIds: string[] = [];
+        if (datasetId) {
+            const existingMembers = await this.datasetMemberService.findAll({
+                where: { datasetId, isActive: true },
+                select: ["userId"],
+            });
+            excludeUserIds = existingMembers.map((member) => member.userId);
+        }
+
+        // 构建基础查询条件
+        const baseCondition: any = {
+            status: 1,
+            role: Not(IsNull()),
+        };
+
+        // 构建排除用户ID的条件
+        const excludeIds = [user.id, ...excludeUserIds];
+        if (excludeIds.length > 0) {
+            baseCondition.id = Not(In(excludeIds));
+        }
+
+        // 查询用户列表 - 只返回有角色的用户，排除已存在于知识库的成员
         const users = await this.userService.findAll({
             where: keyword
                 ? [
                       {
                           username: Like(`%${keyword}%`),
-                          status: 1,
-                          id: Not(user.id),
-                          role: Not(IsNull()),
+                          ...baseCondition,
                       },
                       {
                           nickname: Like(`%${keyword}%`),
-                          status: 1,
-                          id: Not(user.id),
-                          role: Not(IsNull()),
+                          ...baseCondition,
                       },
                       {
                           email: Like(`%${keyword}%`),
-                          status: 1,
-                          id: Not(user.id),
-                          role: Not(IsNull()),
+                          ...baseCondition,
                       },
                   ]
-                : { status: 1, role: Not(IsNull()), id: Not(user.id) },
+                : baseCondition,
             take: searchLimit,
             order: { createdAt: "DESC" },
             excludeFields: ["password", "phone", "phoneAreaCode", "permissions"],

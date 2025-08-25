@@ -27,6 +27,8 @@ export function apiGetCurrentUserInfo(): Promise<UserInfo> {
 export function apiSearchUsers(params?: {
     /** 搜索关键词 */
     keyword?: string;
+    /** 知识库ID */
+    datasetId?: string;
     /** 返回数量限制 */
     limit?: number;
 }): Promise<UserInfo[]> {

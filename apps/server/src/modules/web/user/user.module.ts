@@ -5,6 +5,7 @@ import { AccountLog } from "@modules/console/finance/entities/account-log.entity
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { AiDatasetsModule } from "../../console/ai-datasets/datasets.module";
 import { UserService } from "../../console/user/services/user.service";
 import { AuthModule } from "../auth/auth.module";
 import { UserController } from "./user.controller";
@@ -15,7 +16,11 @@ import { UserController } from "./user.controller";
  * 处理前台用户信息管理相关功能
  */
 @Module({
-    imports: [TypeOrmModule.forFeature([User, Role, Permission, AccountLog]), AuthModule],
+    imports: [
+        TypeOrmModule.forFeature([User, Role, Permission, AccountLog]),
+        AuthModule,
+        AiDatasetsModule,
+    ],
     controllers: [UserController],
     providers: [UserService],
     exports: [UserService],
