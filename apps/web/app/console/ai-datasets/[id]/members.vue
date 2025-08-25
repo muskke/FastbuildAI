@@ -100,11 +100,11 @@ const columns: TableColumn<TeamMember>[] = [
                               )
                             : null,
                     ]),
-                    row.original.user?.email
+                    row.original.user?.username
                         ? h(
                               "p",
                               { class: "text-sm text-muted-foreground truncate max-w-xs" },
-                              row.original.user.email,
+                              row.original.user.username,
                           )
                         : null,
                     row.original.note
