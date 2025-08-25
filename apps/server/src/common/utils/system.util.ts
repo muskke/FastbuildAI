@@ -107,6 +107,7 @@ export const tryListen = async (
  *
  * 通过分析模块文件路径获取插件目录，然后读取package.json中的name字段
  * 如果找不到name字段，则使用插件目录名称作为备选
+ * 支持跨平台路径规则（Windows/Unix）
  */
 export const getPluginPackName = (): string => {
     try {
@@ -123,10 +124,29 @@ export const getPluginPackName = (): string => {
 
         // 对每个插件进行检查，看是否在调用文件路径中出现
         for (const plugin of pluginList) {
-            // 检查调用文件路径中是否包含该插件目录名
-            const pluginDir = plugin.path.split("/").pop(); // 获取插件目录名
-            if (pluginDir && callerFile.some((file) => file.includes(`/plugins/${pluginDir}/`))) {
-                return plugin.name;
+            // 使用 path.basename 获取插件目录名，适配跨平台路径
+            const pluginDir = path.basename(plugin.path);
+
+            if (pluginDir) {
+                // 构建跨平台的插件路径模式
+                const pluginPathPattern = path.join("plugins", pluginDir);
+
+                // 检查调用文件路径中是否包含该插件目录
+                const isPluginMatch = callerFile.some((file) => {
+                    // 将文件路径标准化为统一的分隔符进行比较
+                    const normalizedFile = path.normalize(file);
+                    const normalizedPattern = path.normalize(pluginPathPattern);
+
+                    // 检查路径是否包含插件目录
+                    return (
+                        normalizedFile.includes(normalizedPattern) ||
+                        normalizedFile.includes(pluginDir)
+                    );
+                });
+
+                if (isPluginMatch) {
+                    return plugin.name;
+                }
             }
         }
 
