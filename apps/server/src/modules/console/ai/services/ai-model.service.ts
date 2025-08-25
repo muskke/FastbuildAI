@@ -176,7 +176,7 @@ export class AiModelService extends BaseService<AiModel> {
             const result = (await this.paginate(paginationDto, {
                 where: whereConditions.length > 1 ? whereConditions : where,
                 order: {
-                    sortOrder: "ASC",
+                    sortOrder: "DESC",
                     createdAt: "DESC",
                 },
                 excludeFields,
