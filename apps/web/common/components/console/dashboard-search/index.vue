@@ -66,9 +66,10 @@ const filteredTools = computed(() => {
     if (!searchQuery.value) return allTools.value;
 
     const query = searchQuery.value.toLowerCase().trim();
+
     return allTools.value.filter(
         (tool) =>
-            tool.name.toLowerCase().includes(query) ||
+            t(tool.name).toLowerCase().includes(query) ||
             (tool.parentName && tool.parentName.toLowerCase().includes(query)) ||
             (tool.path && tool.path.toLowerCase().includes(query)),
     );
@@ -97,8 +98,9 @@ const hasSearchResults = computed(() => {
  */
 const handleSearch = () => {
     // 如果只有一个结果，直接导航到该工具
-    if (filteredTools.value.length === 1 && filteredTools.value[0].path) {
-        handleItemClick(filteredTools.value[0]);
+    if (filteredTools.value.length === 1 && filteredTools.value[0]?.path) {
+        // 使用非空断言确保类型安全
+        handleItemClick(filteredTools.value[0]!);
     }
 };
 
@@ -151,7 +153,7 @@ const handleThemeChange = (mode: "light" | "dark" | "auto") => {
                         class="w-full"
                         variant="none"
                         autofocus
-                        @keydown.esc="isOpen = false"
+                        @keydown.esc="controlsStore.toggleGlobalSearch()"
                         @keydown.enter="handleSearch"
                     >
                     </UInput>
@@ -161,7 +163,7 @@ const handleThemeChange = (mode: "light" | "dark" | "auto") => {
                         size="sm"
                         icon="i-lucide-x"
                         aria-label="关闭搜索"
-                        @click="isOpen = false"
+                        @click="controlsStore.toggleGlobalSearch()"
                     />
                 </div>
 
