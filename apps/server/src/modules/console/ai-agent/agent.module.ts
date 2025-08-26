@@ -9,7 +9,7 @@ import { AgentController } from "./controllers/agent.controller";
 import { AgentAnnotationController } from "./controllers/agent-annotation.controller";
 import { AgentChatMessageController } from "./controllers/agent-chat-message.controller";
 import { AgentChatRecordController } from "./controllers/agent-chat-record.controller";
-import { PublicAgentController } from "./controllers/public-agent.controller";
+import { V1Controller } from "./controllers/v1.controller";
 import { Agent } from "./entities/agent.entity";
 import { AgentAnnotation } from "./entities/agent-annotation.entity";
 import { AgentChatMessage } from "./entities/agent-chat-message.entity";
@@ -20,7 +20,7 @@ import { AgentChatService } from "./services/agent-chat.service";
 import { AgentChatMessageService } from "./services/agent-chat-message.service";
 import { AgentChatRecordService } from "./services/agent-chat-record.service";
 import { AgentTemplateService } from "./services/agent-template.service";
-import { PublicAgentChatService } from "./services/public-agent-chat.service";
+import { PublicAgentChatService } from "./services/v1-agent-chat.service";
 
 /**
  * 智能体模块
@@ -37,7 +37,7 @@ import { PublicAgentChatService } from "./services/public-agent-chat.service";
         AgentAnnotationController,
         AgentChatRecordController,
         AgentChatMessageController,
-        PublicAgentController,
+        V1Controller,
     ],
     providers: [
         AgentService,

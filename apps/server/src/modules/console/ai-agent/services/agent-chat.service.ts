@@ -90,7 +90,6 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         try {
             const { client, requestOpts, modelName } = await this.getAIClient(model, config, dto);
 
-            // 获取用户最后一条消息
             const lastUserMessage = messages.filter((m) => m.role === "user").pop()?.content || "";
 
             const basePrompt = `你是一个AI助手，任务是预测用户可能提出的下一个问题。根据用户的问题和AI的回复，生成3个引导对话继续的潜在问题。要求：
@@ -193,7 +192,6 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
 
     /**
      * 检查是否是匿名用户
-     * 通过用户名格式判断：匿名用户的用户名以 "anonymous_" 或 "access_" 开头
      */
     protected isAnonymousUser(user: UserPlayground): boolean {
         return user.username.startsWith("anonymous_") || user.username.startsWith("access_");
@@ -219,18 +217,15 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
                 user,
             );
         } else if (dto.saveConversation !== false) {
-            // 只有当 saveConversation 不为 false 时才创建对话记录
             if (this.isAnonymousUser(user)) {
-                // 匿名用户，使用anonymousIdentifier
                 conversationRecord = await this.agentChatRecordService.createChatRecord(
                     agentId,
-                    undefined, // userId为空
+                    undefined,
                     dto.title ||
                         this.generateConversationTitle(dto.messages[0]?.content || "新对话"),
-                    user.id, // 使用用户ID作为匿名标识符
+                    user.id,
                 );
             } else {
-                // 注册用户，使用userId
                 conversationRecord = await this.agentChatRecordService.createChatRecord(
                     agentId,
                     user.id,
@@ -334,7 +329,6 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
             throw new Error("模型不存在、未激活或缺少provider配置");
         }
 
-        // 智能判断是否需要检索知识库
         let retrievalResults: DatasetRetrievalResult[] = [];
         if (finalConfig.datasetIds?.length && lastUserMessage) {
             const shouldRetrieve = await this.shouldPerformRetrieval(
@@ -582,10 +576,6 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         }
     }
 
-    /**
-     * 智能判断是否需要检索知识库
-     * 先进行向量检索预探测，基于实际检索结果让AI判断是否需要正式检索
-     */
     protected async shouldPerformRetrieval(
         userQuery: string,
         model: any,
@@ -593,12 +583,10 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         dto: AgentChatDto,
     ): Promise<boolean> {
         try {
-            // 如果没有配置知识库，直接返回false
             if (!config.datasetIds?.length) {
                 return false;
             }
 
-            // 简单的关键词预过滤，避免明显不需要检索的情况
             const simpleQueries = [
                 /^(你好|hello|hi|哈喽|嗨)$/i,
                 /^(谢谢|thank you|thanks)$/i,
@@ -612,13 +600,10 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
                 return false;
             }
 
-            // 第一步：进行快速向量检索预探测
             const preSearchResults = await this.performPreSearch(config.datasetIds, userQuery);
 
-            // 第二步：基于预检索结果让AI判断是否需要正式检索
             const { client, requestOpts, modelName } = await this.getAIClient(model, config, dto);
 
-            // 取前3个最相关的片段用于判断
             const topChunks = preSearchResults.slice(0, 3);
             const chunksContent = topChunks
                 .map((chunk, index) => `[片段${index + 1}] ${chunk.content.substring(0, 200)}...`)
@@ -664,33 +649,25 @@ ${chunksContent}
                 return result.need_retrieval;
             }
 
-            // JSON解析失败，但有向量预检索结果，倾向于执行检索
             this.logger.warn(
                 `[智能检索] JSON解析失败，但有向量预检索结果，执行检索。LLM回复: ${content}`,
             );
             return true;
         } catch (err) {
             this.logger.error(`[智能检索] 判断失败，默认执行检索: ${err.message}`);
-            // 判断失败时默认执行检索，保证功能可用性
             return true;
         }
     }
 
-    /**
-     * 执行向量检索预探测
-     * 快速检查知识库中是否有与用户问题语义相关的内容
-     */
     private async performPreSearch(datasetIds: string[], query: string): Promise<any[]> {
         try {
             const allResults: any[] = [];
 
-            // 并行对所有知识库进行快速向量检索
             const promises = datasetIds.map(async (datasetId) => {
                 try {
                     const dataset = await this.getDatasetConfig(datasetId);
                     if (!dataset) return [];
 
-                    // 使用向量检索，限制返回数量为5，降低相似度阈值
                     const quickConfig = {
                         retrievalMode: "vector" as const,
                         topK: 3,
@@ -714,7 +691,6 @@ ${chunksContent}
             const results = await Promise.all(promises);
             results.forEach((chunks) => allResults.push(...chunks));
 
-            // 按向量相似度分数排序并去重
             const uniqueResults = allResults
                 .filter((chunk, index, arr) => arr.findIndex((c) => c.id === chunk.id) === index)
                 .sort((a, b) => (b.score || 0) - (a.score || 0));
@@ -763,18 +739,46 @@ export class AgentChatService extends BaseAgentChatService {
         );
     }
 
-    async chat(
+    /**
+     * Unified chat handler for both synchronous and streaming responses
+     */
+    async handleChat(
         agentId: string,
         dto: AgentChatDto,
         user: UserPlayground,
-    ): Promise<AgentChatResponse> {
+        responseMode: "sync" | "stream",
+        res?: Response,
+    ): Promise<AgentChatResponse | void> {
+        if (responseMode === "stream" && !res) {
+            throw new Error("Response object is required for streaming mode");
+        }
+
+        if (responseMode === "stream") {
+            res!.setHeader("Content-Type", "text/event-stream");
+            res!.setHeader("Cache-Control", "no-cache");
+            res!.setHeader("Connection", "keep-alive");
+            res!.setHeader("Access-Control-Allow-Origin", "*");
+            res!.setHeader("Access-Control-Allow-Headers", "Cache-Control");
+        }
+
         const startTime = Date.now();
         const { finalConfig, conversationRecord } = await this.initializeChat(agentId, dto, user);
+        let conversationId = dto.conversationId;
+        let fullResponse = "";
+        let result: AgentChatResponse = {
+            conversationId: conversationRecord?.id || null,
+            response: "",
+            responseTime: 0,
+            tokenUsage: undefined,
+            suggestions: [],
+        };
+
         try {
             const lastUserMessage = dto.messages.filter((m) => m.role === "user").pop() as
                 | ChatMessage
                 | undefined;
-            if (lastUserMessage && conversationRecord) {
+
+            if (lastUserMessage && conversationRecord && dto.saveConversation !== false) {
                 await this.saveUserMessage(
                     conversationRecord.id,
                     agentId,
@@ -786,22 +790,34 @@ export class AgentChatService extends BaseAgentChatService {
                 );
             }
 
-            // 检查快捷指令
             const quickCommandResult = this.handleQuickCommand(dto, lastUserMessage);
             if (quickCommandResult.matched && quickCommandResult.response) {
-                // 处理自定义回复的快捷指令
-                return await this.handleCustomQuickCommand(
-                    quickCommandResult.response,
-                    conversationRecord,
-                    agentId,
-                    user,
-                    dto,
-                    finalConfig,
-                    startTime,
-                );
+                if (responseMode === "stream") {
+                    await this.handleStreamQuickCommand(
+                        dto,
+                        conversationId || conversationRecord?.id || "",
+                        conversationRecord,
+                        agentId,
+                        user,
+                        finalConfig,
+                        quickCommandResult,
+                        lastUserMessage,
+                        res!,
+                    );
+                    return;
+                } else {
+                    return await this.handleCustomQuickCommand(
+                        quickCommandResult.response,
+                        conversationRecord,
+                        agentId,
+                        user,
+                        dto,
+                        finalConfig,
+                        startTime,
+                    );
+                }
             }
 
-            // 处理模型类型的快捷指令，替换消息内容
             const updatedLastUserMessage =
                 quickCommandResult.matched && quickCommandResult.content
                     ? { role: "user" as const, content: quickCommandResult.content }
@@ -815,7 +831,6 @@ export class AgentChatService extends BaseAgentChatService {
                       }
                     : dto;
 
-            // 检查标注匹配
             if (updatedLastUserMessage) {
                 const annotationMatch = await this.agentAnnotationService.matchUserQuestion(
                     agentId,
@@ -824,54 +839,79 @@ export class AgentChatService extends BaseAgentChatService {
 
                 if (annotationMatch.matched && annotationMatch.annotation) {
                     this.logger.log(
-                        `[标注命中] 问题: "${updatedLastUserMessage.content}" -> 答案: "${annotationMatch.annotation.answer}"`,
+                        `[标注命中${responseMode === "stream" ? "-流式" : ""}] 问题: "${updatedLastUserMessage.content}" -> 答案: "${annotationMatch.annotation.answer}"`,
                     );
 
-                    // 直接返回标注答案，不调用大模型
-                    await this.saveAssistantMessage(
-                        conversationRecord.id,
-                        agentId,
-                        user.id,
-                        annotationMatch.annotation.answer,
-                        undefined,
-                        undefined,
-                        {
-                            context: modifiedDto.messages,
-                            annotations: {
-                                annotationId: annotationMatch.annotation.id,
-                                question: annotationMatch.annotation.question,
-                                similarity: annotationMatch.similarity || 1.0,
-                                createdBy:
-                                    annotationMatch.annotation.user?.nickname ||
-                                    annotationMatch.annotation.user?.username ||
-                                    "未知用户",
-                            },
-                        },
-                        this.isAnonymousUser(user) ? user.id : undefined,
-                    );
-
-                    await this.agentChatRecordService.updateChatRecordStats(
-                        conversationRecord.id,
-                        conversationRecord.messageCount + 2,
-                        conversationRecord.totalTokens,
-                    );
-
-                    return {
-                        conversationId: conversationRecord.id,
-                        response: annotationMatch.annotation.answer,
-                        responseTime: Date.now() - startTime,
-                        tokenUsage: undefined,
-                        suggestions: [], // 标注回复暂不生成建议问题
-                        annotations: {
-                            annotationId: annotationMatch.annotation.id,
-                            question: annotationMatch.annotation.question,
-                            similarity: annotationMatch.similarity || 1.0,
-                            createdBy:
-                                annotationMatch.annotation.user?.nickname ||
-                                annotationMatch.annotation.user?.username ||
-                                "未知用户",
-                        },
+                    const annotations = {
+                        annotationId: annotationMatch.annotation.id,
+                        question: annotationMatch.annotation.question,
+                        similarity: annotationMatch.similarity || 1.0,
+                        createdBy:
+                            annotationMatch.annotation.user?.nickname ||
+                            annotationMatch.annotation.user?.username ||
+                            "未知用户",
                     };
+
+                    if (dto.saveConversation !== false && conversationRecord) {
+                        await this.saveAssistantMessage(
+                            conversationRecord.id,
+                            agentId,
+                            user.id,
+                            annotationMatch.annotation.answer,
+                            undefined,
+                            undefined,
+                            {
+                                context: modifiedDto.messages,
+                                annotations,
+                            },
+                            this.isAnonymousUser(user) ? user.id : undefined,
+                        );
+
+                        await this.agentChatRecordService.updateChatRecordStats(
+                            conversationRecord.id,
+                            conversationRecord.messageCount + 2,
+                            conversationRecord.totalTokens,
+                        );
+                    }
+
+                    if (responseMode === "stream") {
+                        if (!conversationId && conversationRecord) {
+                            conversationId = conversationRecord.id;
+                            res!.write(
+                                `data: ${JSON.stringify({ type: "conversation_id", data: conversationId })}\n\n`,
+                            );
+                        }
+
+                        await StreamUtils.wordStream(annotationMatch.annotation.answer, res!, 20);
+
+                        const completeContext = [
+                            ...modifiedDto.messages,
+                            { role: "assistant", content: annotationMatch.annotation.answer },
+                        ];
+                        res!.write(
+                            `data: ${JSON.stringify({ type: "context", data: completeContext })}\n\n`,
+                        );
+
+                        res!.write(
+                            `data: ${JSON.stringify({
+                                type: "annotations",
+                                data: annotations,
+                            })}\n\n`,
+                        );
+
+                        res!.write("data: [DONE]\n\n");
+                        res!.end();
+                        return;
+                    } else {
+                        return {
+                            conversationId: conversationRecord?.id || null,
+                            response: annotationMatch.annotation.answer,
+                            responseTime: Date.now() - startTime,
+                            tokenUsage: undefined,
+                            suggestions: [],
+                            annotations,
+                        };
+                    }
                 }
             }
 
@@ -881,82 +921,222 @@ export class AgentChatService extends BaseAgentChatService {
                 updatedLastUserMessage,
             );
 
+            const shouldIncludeReferences =
+                modifiedDto.includeReferences ?? finalConfig.showReference;
+            if (
+                shouldIncludeReferences &&
+                retrievalResults.length > 0 &&
+                responseMode === "stream"
+            ) {
+                const referenceSources = this.formatReferenceSources(
+                    retrievalResults,
+                    updatedLastUserMessage?.content || "",
+                );
+                res!.write(
+                    `data: ${JSON.stringify({ type: "references", data: referenceSources })}\n\n`,
+                );
+            }
+
+            if (!conversationId && conversationRecord && responseMode === "stream") {
+                conversationId = conversationRecord.id;
+                res!.write(
+                    `data: ${JSON.stringify({ type: "conversation_id", data: conversationId })}\n\n`,
+                );
+            }
+
             const { client, requestOpts, modelName } = await this.getAIClient(
                 model,
                 finalConfig,
                 modifiedDto,
             );
 
-            const response = await client.chat.create({
-                model: modelName,
-                messages: messages as any,
-                ...requestOpts,
-            });
+            let metadata: MessageMetadata | undefined;
+            let tokenUsage: TokenUsage | undefined;
+            let rawResponse: AIRawResponse | undefined;
 
-            const aiResponse: AIResponse = {
-                response: response.choices[0].message.content || "",
-                tokenUsage: response.usage as TokenUsage,
-                rawResponse: response as unknown as AIRawResponse,
-            };
+            if (responseMode === "stream") {
+                const stream = await client.chat.stream({
+                    model: modelName,
+                    messages: messages as any,
+                    ...requestOpts,
+                });
 
-            // 准备消息元数据
-            const metadata = await this.prepareMessageMetadata(
-                retrievalResults,
-                messages,
-                aiResponse.response,
-                model,
-                finalConfig,
-                modifiedDto,
-                updatedLastUserMessage,
-            );
+                let reasoningContent = "";
+                let reasoningStartTime: number | null = null;
 
-            if (conversationRecord) {
+                for await (const chunk of stream) {
+                    if (chunk.choices[0].delta.content) {
+                        res!.write(
+                            `data: ${JSON.stringify({ type: "chunk", data: chunk.choices[0].delta.content })}\n\n`,
+                        );
+                        fullResponse += chunk.choices[0].delta.content;
+                    }
+
+                    if (chunk.choices[0].delta.reasoning_content) {
+                        if (!reasoningStartTime) {
+                            reasoningStartTime = Date.now();
+                        }
+                        reasoningContent += chunk.choices[0].delta.reasoning_content;
+                        res!.write(
+                            `data: ${JSON.stringify({
+                                type: "reasoning",
+                                data: chunk.choices[0].delta.reasoning_content,
+                            })}\n\n`,
+                        );
+                    }
+                }
+
+                const finalChatCompletion = await stream.finalChatCompletion();
+                tokenUsage = finalChatCompletion.usage as TokenUsage;
+                rawResponse = finalChatCompletion as unknown as AIRawResponse;
+
+                metadata = await this.prepareMessageMetadata(
+                    retrievalResults,
+                    messages,
+                    fullResponse,
+                    model,
+                    finalConfig,
+                    modifiedDto,
+                    updatedLastUserMessage,
+                );
+
+                if (reasoningContent && reasoningStartTime) {
+                    const endTime = Date.now();
+                    metadata.reasoning = {
+                        content: reasoningContent,
+                        startTime: reasoningStartTime,
+                        endTime: endTime,
+                        duration: endTime - reasoningStartTime,
+                    };
+                }
+
+                if (dto.saveConversation !== false && conversationId && fullResponse) {
+                    await this.saveAssistantMessage(
+                        conversationId,
+                        agentId,
+                        user.id,
+                        fullResponse,
+                        tokenUsage,
+                        rawResponse,
+                        metadata,
+                        this.isAnonymousUser(user) ? user.id : undefined,
+                    );
+
+                    await this.agentChatRecordService.updateChatRecordStats(
+                        conversationRecord!.id,
+                        conversationRecord!.messageCount + 2,
+                        conversationRecord!.totalTokens + (tokenUsage?.total_tokens || 0),
+                    );
+                }
+
+                if (finalConfig.showContext) {
+                    const completeContext = [
+                        ...messages,
+                        { role: "assistant", content: fullResponse },
+                    ];
+                    res!.write(
+                        `data: ${JSON.stringify({ type: "context", data: completeContext })}\n\n`,
+                    );
+                }
+
+                if (metadata.suggestions?.length) {
+                    res!.write(
+                        `data: ${JSON.stringify({ type: "suggestions", data: metadata.suggestions })}\n\n`,
+                    );
+                }
+
+                res!.write("data: [DONE]\n\n");
+                res!.end();
+                return;
+            } else {
+                const response = await client.chat.create({
+                    model: modelName,
+                    messages: messages as any,
+                    ...requestOpts,
+                });
+
+                fullResponse = response.choices[0].message.content || "";
+                tokenUsage = response.usage as TokenUsage;
+                rawResponse = response as unknown as AIRawResponse;
+
+                metadata = await this.prepareMessageMetadata(
+                    retrievalResults,
+                    messages,
+                    fullResponse,
+                    model,
+                    finalConfig,
+                    modifiedDto,
+                    updatedLastUserMessage,
+                );
+
+                if (dto.saveConversation !== false && conversationRecord) {
+                    await this.saveAssistantMessage(
+                        conversationRecord.id,
+                        agentId,
+                        user.id,
+                        fullResponse,
+                        tokenUsage,
+                        rawResponse,
+                        metadata,
+                        this.isAnonymousUser(user) ? user.id : undefined,
+                    );
+
+                    await this.agentChatRecordService.updateChatRecordStats(
+                        conversationRecord.id,
+                        conversationRecord.messageCount + 2,
+                        conversationRecord.totalTokens + (tokenUsage?.total_tokens || 0),
+                    );
+                }
+
+                result = {
+                    conversationId: conversationRecord?.id || null,
+                    response: fullResponse,
+                    responseTime: Date.now() - startTime,
+                    tokenUsage: this.convertTokenUsage(tokenUsage),
+                    suggestions: metadata.suggestions || [],
+                };
+
+                if (shouldIncludeReferences && retrievalResults.length > 0) {
+                    result.referenceSources = this.convertReferenceSources(metadata.references);
+                }
+
+                this.logger.log(`[+] 智能体对话完成: ${agentId}, 耗时: ${result.responseTime}ms`);
+                return result;
+            }
+        } catch (err) {
+            this.logger.error(`[!] 智能体对话失败: ${err.message}`, err.stack);
+
+            if (conversationRecord && dto.saveConversation !== false) {
                 await this.saveAssistantMessage(
                     conversationRecord.id,
                     agentId,
                     user.id,
-                    aiResponse.response,
-                    aiResponse.tokenUsage,
-                    aiResponse.rawResponse,
-                    metadata,
+                    err.message,
+                    { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+                    err,
+                    null,
                     this.isAnonymousUser(user) ? user.id : undefined,
                 );
-
-                await this.agentChatRecordService.updateChatRecordStats(
-                    conversationRecord.id,
-                    conversationRecord.messageCount + 2,
-                    conversationRecord.totalTokens + (aiResponse.tokenUsage?.total_tokens || 0),
-                );
             }
 
-            const result: AgentChatResponse = {
-                conversationId: conversationRecord?.id || null,
-                response: aiResponse.response,
-                responseTime: Date.now() - startTime,
-                tokenUsage: this.convertTokenUsage(aiResponse.tokenUsage),
-                suggestions: metadata.suggestions || [],
-            };
-
-            const shouldIncludeReferences =
-                modifiedDto.includeReferences ?? finalConfig.showReference;
-            if (shouldIncludeReferences && retrievalResults.length > 0) {
-                result.referenceSources = this.convertReferenceSources(metadata.references);
+            if (responseMode === "stream") {
+                try {
+                    res!.write(
+                        `data: ${JSON.stringify({
+                            type: "error",
+                            data: { message: err.message, code: err.code || "INTERNAL_ERROR" },
+                        })}\n\n`,
+                    );
+                    res!.write("data: [DONE]\n\n");
+                    res!.end();
+                } catch (writeError) {
+                    this.logger.error("发送错误信息失败:", writeError);
+                    throw HttpExceptionFactory.badRequest(err.message);
+                }
+                return;
+            } else {
+                throw HttpExceptionFactory.business("对话处理失败");
             }
-
-            this.logger.log(`[+] 智能体对话完成: ${agentId}, 耗时: ${result.responseTime}ms`);
-            return result;
-        } catch (err) {
-            this.logger.error(`[!] 智能体对话失败: ${err.message}`, err.stack);
-            this.saveAssistantMessage(
-                conversationRecord.id,
-                agentId,
-                user.id,
-                err.message,
-                { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
-                err,
-                null,
-            );
-            throw HttpExceptionFactory.business("对话处理失败");
         }
     }
 
@@ -972,7 +1152,6 @@ export class AgentChatService extends BaseAgentChatService {
         finalConfig: Agent,
         startTime: number,
     ): Promise<AgentChatResponse> {
-        // 生成问题建议
         const suggestions = await this.generateAutoQuestions(
             [...dto.messages],
             response,
@@ -981,8 +1160,7 @@ export class AgentChatService extends BaseAgentChatService {
             dto,
         );
 
-        // 自定义回复，直接返回
-        if (conversationRecord) {
+        if (conversationRecord && dto.saveConversation !== false) {
             await this.saveAssistantMessage(
                 conversationRecord.id,
                 agentId,
@@ -1024,6 +1202,7 @@ export class AgentChatService extends BaseAgentChatService {
         lastUserMessage: ChatMessage | undefined,
         res: Response,
     ): Promise<void> {
+        let suggestions: AgentChatResponse["suggestions"] = [];
         if (dto.saveConversation !== false && conversationRecord) {
             if (!conversationId && conversationRecord) {
                 conversationId = conversationRecord.id;
@@ -1044,8 +1223,7 @@ export class AgentChatService extends BaseAgentChatService {
                 );
             }
 
-            // 生成问题建议
-            const suggestions = await this.generateAutoQuestions(
+            suggestions = await this.generateAutoQuestions(
                 [...dto.messages],
                 quickCommandResult.response!,
                 null,
@@ -1071,26 +1249,13 @@ export class AgentChatService extends BaseAgentChatService {
             );
         }
 
-        // 使用流式模拟器输出快捷指令答案
         await StreamUtils.wordStream(quickCommandResult.response!, res, 20);
 
-        const suggestions = await this.generateAutoQuestions(
-            [...dto.messages],
-            quickCommandResult.response!,
-            null,
-            finalConfig,
-            dto,
-        );
-
-        res.write(
-            `data: ${JSON.stringify({
-                type: "context",
-                data: [
-                    ...dto.messages,
-                    { role: "assistant", content: quickCommandResult.response },
-                ],
-            })}\n\n`,
-        );
+        const completeContext = [
+            ...dto.messages,
+            { role: "assistant", content: quickCommandResult.response },
+        ];
+        res.write(`data: ${JSON.stringify({ type: "context", data: completeContext })}\n\n`);
 
         if (suggestions.length > 0) {
             res.write(`data: ${JSON.stringify({ type: "suggestions", data: suggestions })}\n\n`);
@@ -1098,340 +1263,6 @@ export class AgentChatService extends BaseAgentChatService {
 
         res.write("data: [DONE]\n\n");
         res.end();
-    }
-
-    async chatStream(
-        agentId: string,
-        dto: AgentChatDto,
-        user: UserPlayground,
-        res: Response,
-    ): Promise<void> {
-        res.setHeader("Content-Type", "text/event-stream");
-        res.setHeader("Cache-Control", "no-cache");
-        res.setHeader("Connection", "keep-alive");
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Headers", "Cache-Control");
-
-        let conversationId = dto.conversationId;
-        let fullResponse = "";
-
-        const { finalConfig, conversationRecord } = await this.initializeChat(agentId, dto, user);
-        try {
-            const lastUserMessage = dto.messages.filter((m) => m.role === "user").pop() as
-                | ChatMessage
-                | undefined;
-
-            // 检查快捷指令
-            const quickCommandResult = this.handleQuickCommand(dto, lastUserMessage);
-
-            // 处理自定义回复类型的快捷指令
-            if (quickCommandResult.matched && quickCommandResult.response) {
-                await this.handleStreamQuickCommand(
-                    dto,
-                    conversationId,
-                    conversationRecord,
-                    agentId,
-                    user,
-                    finalConfig,
-                    quickCommandResult,
-                    lastUserMessage,
-                    res,
-                );
-                return;
-            }
-
-            // 处理模型类型的快捷指令，替换消息内容
-            const updatedLastUserMessage =
-                quickCommandResult.matched && quickCommandResult.content
-                    ? { role: "user" as const, content: quickCommandResult.content }
-                    : lastUserMessage;
-
-            const modifiedDto =
-                quickCommandResult.matched && quickCommandResult.content
-                    ? {
-                          ...dto,
-                          messages: [...dto.messages.slice(0, -1), updatedLastUserMessage],
-                      }
-                    : dto;
-
-            // 检查标注匹配
-            if (updatedLastUserMessage) {
-                const annotationMatch = await this.agentAnnotationService.matchUserQuestion(
-                    agentId,
-                    updatedLastUserMessage.content,
-                );
-
-                if (annotationMatch.matched && annotationMatch.annotation) {
-                    this.logger.log(
-                        `[标注命中-流式] 问题: "${updatedLastUserMessage.content}" -> 答案: "${annotationMatch.annotation.answer}"`,
-                    );
-
-                    // 直接返回标注答案，不调用大模型
-                    if (!conversationId && conversationRecord) {
-                        conversationId = conversationRecord.id;
-                        res.write(
-                            `data: ${JSON.stringify({ type: "conversation_id", data: conversationId })}\n\n`,
-                        );
-                    }
-
-                    if (dto.saveConversation !== false) {
-                        await this.saveUserMessage(
-                            conversationId,
-                            agentId,
-                            user.id,
-                            updatedLastUserMessage.content,
-                            dto.formVariables,
-                            dto.formFieldsInputs,
-                            this.isAnonymousUser(user) ? user.id : undefined,
-                        );
-
-                        await this.saveAssistantMessage(
-                            conversationId,
-                            agentId,
-                            user.id,
-                            annotationMatch.annotation.answer,
-                            undefined,
-                            undefined,
-                            {
-                                context: modifiedDto.messages,
-                                annotations: {
-                                    annotationId: annotationMatch.annotation.id,
-                                    question: annotationMatch.annotation.question,
-                                    similarity: annotationMatch.similarity || 1.0,
-                                    createdBy:
-                                        annotationMatch.annotation.user?.nickname ||
-                                        annotationMatch.annotation.user?.username ||
-                                        "未知用户",
-                                },
-                            },
-                            this.isAnonymousUser(user) ? user.id : undefined,
-                        );
-
-                        await this.agentChatRecordService.updateChatRecordStats(
-                            conversationRecord.id,
-                            conversationRecord.messageCount + 2,
-                            conversationRecord.totalTokens,
-                        );
-                    }
-
-                    // 使用流式模拟器输出标注答案
-                    await StreamUtils.wordStream(annotationMatch.annotation.answer, res, 20);
-
-                    // 输出上下文
-                    const completeContext = [
-                        ...modifiedDto.messages,
-                        { role: "assistant", content: annotationMatch.annotation.answer },
-                    ];
-                    res.write(
-                        `data: ${JSON.stringify({ type: "context", data: completeContext })}\n\n`,
-                    );
-
-                    // 输出标注命中信息
-                    res.write(
-                        `data: ${JSON.stringify({
-                            type: "annotations",
-                            data: {
-                                annotationId: annotationMatch.annotation.id,
-                                question: annotationMatch.annotation.question,
-                                similarity: annotationMatch.similarity || 1.0,
-                                createdBy:
-                                    annotationMatch.annotation.user?.nickname ||
-                                    annotationMatch.annotation.user?.username ||
-                                    "未知用户",
-                            },
-                        })}\n\n`,
-                    );
-
-                    res.write("data: [DONE]\n\n");
-                    res.end();
-                    return;
-                }
-            }
-
-            const { messages, retrievalResults, model } = await this.prepareChatContext(
-                finalConfig,
-                modifiedDto,
-                updatedLastUserMessage,
-            );
-
-            const shouldIncludeReferences =
-                modifiedDto.includeReferences ?? finalConfig.showReference;
-            if (shouldIncludeReferences && retrievalResults.length > 0) {
-                const referenceSources = this.formatReferenceSources(
-                    retrievalResults,
-                    updatedLastUserMessage?.content || "",
-                );
-                res.write(
-                    `data: ${JSON.stringify({ type: "references", data: referenceSources })}\n\n`,
-                );
-            }
-
-            if (!conversationId && conversationRecord) {
-                conversationId = conversationRecord.id;
-                res.write(
-                    `data: ${JSON.stringify({ type: "conversation_id", data: conversationId })}\n\n`,
-                );
-            }
-
-            if (dto.saveConversation !== false) {
-                if (lastUserMessage) {
-                    await this.saveUserMessage(
-                        conversationId,
-                        agentId,
-                        user.id,
-                        lastUserMessage.content,
-                        dto.formVariables,
-                        dto.formFieldsInputs,
-                        this.isAnonymousUser(user) ? user.id : undefined,
-                    );
-                }
-            }
-
-            const { client, requestOpts, modelName } = await this.getAIClient(
-                model,
-                finalConfig,
-                modifiedDto,
-            );
-
-            const stream = await client.chat.stream({
-                model: modelName,
-                messages: messages as any,
-                ...requestOpts,
-            });
-
-            let reasoningContent = ""; // 收集深度思考内容
-            let reasoningStartTime: number | null = null; // 深度思考开始时间
-
-            for await (const chunk of stream) {
-                if (chunk.choices[0].delta.content) {
-                    res.write(
-                        `data: ${JSON.stringify({ type: "chunk", data: chunk.choices[0].delta.content })}\n\n`,
-                    );
-                    fullResponse += chunk.choices[0].delta.content;
-                }
-
-                // 处理 DeepSeek 的 reasoning_content 字段
-                if (chunk.choices[0].delta.reasoning_content) {
-                    // 记录深度思考开始时间
-                    if (!reasoningStartTime) {
-                        reasoningStartTime = Date.now();
-                    }
-                    reasoningContent += chunk.choices[0].delta.reasoning_content;
-                    res.write(
-                        `data: ${JSON.stringify({
-                            type: "reasoning",
-                            data: chunk.choices[0].delta.reasoning_content,
-                        })}\n\n`,
-                    );
-                }
-            }
-
-            const finalChatCompletion = await stream.finalChatCompletion();
-
-            if (dto.saveConversation !== false && conversationId && fullResponse) {
-                // 生成问题建议
-                const streamSuggestions = await this.generateAutoQuestions(
-                    messages,
-                    fullResponse,
-                    model,
-                    finalConfig,
-                    modifiedDto,
-                );
-
-                // 准备流式消息元数据
-                const streamMetadata: MessageMetadata = {
-                    references:
-                        retrievalResults.length > 0
-                            ? this.formatReferenceSources(
-                                  retrievalResults,
-                                  updatedLastUserMessage?.content || "",
-                              )
-                            : undefined,
-                    context: [...messages, { role: "assistant", content: fullResponse }],
-                    suggestions: streamSuggestions,
-                };
-
-                // 添加深度思考数据到元数据
-                if (reasoningContent && reasoningStartTime) {
-                    const endTime = Date.now();
-                    streamMetadata.reasoning = {
-                        content: reasoningContent,
-                        startTime: reasoningStartTime,
-                        endTime: endTime,
-                        duration: endTime - reasoningStartTime,
-                    };
-                }
-
-                await this.saveAssistantMessage(
-                    conversationId,
-                    agentId,
-                    user.id,
-                    fullResponse,
-                    finalChatCompletion.usage as TokenUsage,
-                    finalChatCompletion as unknown as AIRawResponse,
-                    streamMetadata,
-                    this.isAnonymousUser(user) ? user.id : undefined,
-                );
-
-                await this.agentChatRecordService.updateChatRecordStats(
-                    conversationRecord.id,
-                    conversationRecord.messageCount + 2,
-                    conversationRecord.totalTokens + (finalChatCompletion.usage?.total_tokens || 0),
-                );
-            }
-
-            const suggestions = await this.generateAutoQuestions(
-                messages,
-                fullResponse,
-                model,
-                finalConfig,
-                modifiedDto,
-            );
-
-            if (finalConfig.showContext) {
-                const completeContext = [...messages, { role: "assistant", content: fullResponse }];
-                res.write(
-                    `data: ${JSON.stringify({ type: "context", data: completeContext })}\n\n`,
-                );
-            }
-
-            if (suggestions.length > 0) {
-                res.write(
-                    `data: ${JSON.stringify({ type: "suggestions", data: suggestions })}\n\n`,
-                );
-            }
-
-            res.write("data: [DONE]\n\n");
-            res.end();
-        } catch (error) {
-            this.logger.error(`流式聊天对话失败: ${error.message}`, error.stack);
-
-            if (conversationRecord) {
-                this.saveAssistantMessage(
-                    conversationRecord.id,
-                    agentId,
-                    user.id,
-                    error.message,
-                    { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
-                    error,
-                    null,
-                    this.isAnonymousUser(user) ? user.id : undefined,
-                );
-            }
-            try {
-                res.write(
-                    `data: ${JSON.stringify({
-                        type: "error",
-                        data: { message: error.message, code: error.code || "INTERNAL_ERROR" },
-                    })}\n\n`,
-                );
-                res.write("data: [DONE]\n\n");
-                res.end();
-            } catch (writeError) {
-                this.logger.error("发送错误信息失败:", writeError);
-                throw HttpExceptionFactory.badRequest(error.message);
-            }
-        }
     }
 
     /**

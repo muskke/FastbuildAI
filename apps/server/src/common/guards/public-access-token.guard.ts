@@ -5,27 +5,27 @@ import { HttpExceptionFactory } from "../exceptions/http-exception.factory";
 
 /**
  * 公开智能体访问令牌守卫
- * 验证请求头中的 accessToken
+ * 验证请求头中的 Bearer Token (API Key 或 Access Token)
  */
 @Injectable()
 export class PublicAccessTokenGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<Request>();
 
-        // 从请求头中获取 accessToken
-        const accessToken = this.extractTokenFromHeader(request);
+        // 从请求头中获取 token
+        const token = this.extractTokenFromHeader(request);
 
-        if (!accessToken) {
+        if (!token) {
             throw HttpExceptionFactory.unauthorized("缺少访问令牌");
         }
 
-        // 验证 accessToken 格式
-        if (!this.isValidAccessToken(accessToken)) {
+        // 验证 token 格式
+        if (!this.isValidToken(token)) {
             throw HttpExceptionFactory.unauthorized("无效的访问令牌格式");
         }
 
-        // 将 accessToken 附加到请求对象上，供控制器使用
-        request.accessToken = accessToken;
+        // 将 token 附加到请求对象上，供控制器使用
+        request.accessToken = token;
 
         return true;
     }
@@ -34,13 +34,19 @@ export class PublicAccessTokenGuard implements CanActivate {
      * 从请求头中提取访问令牌
      */
     private extractTokenFromHeader(request: Request): string | undefined {
-        // 优先从自定义头获取
+        // 优先从 Authorization Bearer 头获取
+        const authorization = request.headers.authorization;
+        if (authorization && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7);
+        }
+
+        // 备用：从自定义头获取（向后兼容）
         const publicAccessTokenHeader = request.headers["x-public-access-token"] as string;
         if (publicAccessTokenHeader) {
             return publicAccessTokenHeader;
         }
 
-        // 备用：从 x-access-token 头获取
+        // 备用：从 x-access-token 头获取（向后兼容）
         const accessTokenHeader = request.headers["x-access-token"] as string;
         if (accessTokenHeader) {
             return accessTokenHeader;
@@ -58,9 +64,11 @@ export class PublicAccessTokenGuard implements CanActivate {
     /**
      * 验证访问令牌格式
      */
-    private isValidAccessToken(token: string): boolean {
-        // 基本格式验证：64个十六进制字符
-        return /^[a-f0-9]{64}$/i.test(token);
+    private isValidToken(token: string): boolean {
+        // 支持两种格式：
+        // 1. 64个十六进制字符的 accessToken
+        // 2. API Key 格式（更灵活的验证）
+        return /^[a-f0-9]{64}$/i.test(token) || token.length >= 32;
     }
 }
 
