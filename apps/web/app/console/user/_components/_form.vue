@@ -214,7 +214,7 @@ onMounted(() => getRoleList());
                         </div>
 
                         <!-- 剩余算力 -->
-                        <div class="mt-4 w-full">
+                        <div v-if="props.isEdit" class="mt-4 w-full">
                             <UFormField :label="t('console-user.form.power')" name="power">
                                 <UInput
                                     v-model="formData.power"
