@@ -85,6 +85,7 @@
         "@tiptap/extension-text-style": "^2.26.1",
         "@tiptap/extension-underline": "^2.26.1",
         "@tiptap/starter-kit": "^2.26.1",
-        "@tiptap/vue-3": "^2.26.1"
+        "@tiptap/vue-3": "^2.26.1",
+        "pnpm": "^10.15.0"
     }
 }
