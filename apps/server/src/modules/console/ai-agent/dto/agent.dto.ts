@@ -147,8 +147,8 @@ export class ModelConfigDto {
 export class ModelBillingConfigDto {
     @IsOptional()
     @IsNumber()
-    @IsNotEmpty({ message: "算力不能为空" })
-    power: number;
+    @IsNotEmpty({ message: "价格不能为空" })
+    price: number;
 }
 
 /**

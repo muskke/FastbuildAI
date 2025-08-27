@@ -20,7 +20,6 @@ export interface QuickCommandConfig {
 
 export interface ModelBillingConfig {
     price: number;
-    extra?: Record<string, any>;
 }
 
 /**
