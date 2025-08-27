@@ -98,7 +98,7 @@ export class Agent {
     /**
      * 智能体计费配置
      */
-    @Column({ type: "json", nullable: true, comment: "模型配置" })
+    @Column({ type: "json", nullable: true, comment: "模型配置", default: { price: 0 } })
     billingConfig?: ModelBillingConfig;
 
     /**
