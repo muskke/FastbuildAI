@@ -14,8 +14,6 @@ export class AccountLogService extends BaseService<AccountLog> {
     constructor(
         @InjectRepository(AccountLog)
         private readonly accountLogRepository: Repository<AccountLog>,
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
     ) {
         super(accountLogRepository);
     }
@@ -44,6 +42,7 @@ export class AccountLogService extends BaseService<AccountLog> {
         const user = await manager.findOne(User, {
             where: { id: userId },
         });
+
         if (!user) {
             return false;
         }

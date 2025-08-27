@@ -265,7 +265,7 @@ export class AgentController {
         @Body() dto: AgentChatDto,
         @Playground() user: UserPlayground,
     ) {
-        return this.agentChatService.chat(id, dto, user);
+        return this.agentChatService.handleChat(id, dto, user, "sync");
     }
 
     /**
@@ -289,7 +289,7 @@ export class AgentController {
         @Playground() user: UserPlayground,
         @Res() res: Response,
     ) {
-        return this.agentChatService.chatStream(id, dto, user, res);
+        return this.agentChatService.handleChat(id, dto, user, "stream", res);
     }
 
     /**

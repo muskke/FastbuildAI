@@ -18,6 +18,11 @@ export interface QuickCommandConfig {
     replyContent: string;
 }
 
+export interface ModelBillingConfig {
+    price: number;
+    extra?: Record<string, any>;
+}
+
 /**
  * 模型配置类型
  */

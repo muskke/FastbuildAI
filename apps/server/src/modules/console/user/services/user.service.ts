@@ -3,17 +3,19 @@ import { BaseService } from "@common/base/services/base.service";
 import { BooleanNumberType, UserCreateSource } from "@common/constants";
 import { BusinessCode } from "@common/constants/business-code.constant";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
+import { ACCOUNT_LOG_TYPE, ACTION } from "@common/modules/account/constants/account-log.constants";
+import { AccountLogService } from "@common/modules/account/services/account-log.service";
 import { Role } from "@common/modules/auth/entities/role.entity";
 import { User } from "@common/modules/auth/entities/user.entity";
 import { generateNo } from "@common/utils/helper.util";
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
 import { Between, DeepPartial, Like, Repository } from "typeorm";
 
 import { CreateUserDto } from "../dto/create-user.dto";
 import { QueryUserDto } from "../dto/query-user.dto";
-import { UpdateUserDto } from "../dto/update-user.dto";
+import { UpdateUserBalanceDto, UpdateUserDto } from "../dto/update-user.dto";
 
 /**
  * 用户服务
@@ -26,6 +28,7 @@ export class UserService extends BaseService<User> {
      * @param userRepository 用户仓库
      */
     constructor(
+        private readonly accountLogService: AccountLogService,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
         @InjectRepository(Role)
@@ -328,5 +331,50 @@ export class UserService extends BaseService<User> {
         });
 
         return result;
+    }
+
+    async updateBalance(userId: string, dto: UpdateUserBalanceDto) {
+        try {
+            const user = await this.findOneById(userId);
+
+            if (!user) {
+                throw HttpExceptionFactory.notFound(`ID为 ${userId} 的用户不存在`);
+            }
+
+            // 计算变动后的余额
+            let newBalance: number;
+            let actualChangeAmount: number;
+
+            if (dto.action === ACTION.INC) {
+                // 增加余额
+                newBalance = user.power + dto.amount;
+                actualChangeAmount = dto.amount;
+            } else {
+                // 减少余额，确保不会低于0
+                newBalance = Math.max(0, user.power - dto.amount);
+                actualChangeAmount = user.power - newBalance; // 实际减少的金额
+            }
+
+            await this.userRepository.manager.transaction(async (entityManager) => {
+                // 先更新用户余额
+                await entityManager.update(User, { id: userId }, { power: newBalance });
+
+                // 再记录账户变动，此时查询到的就是最新余额
+                await this.accountLogService.recordWithTransaction(
+                    entityManager,
+                    userId,
+                    dto.action === ACTION.INC
+                        ? ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_INC
+                        : ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_DEC,
+                    dto.action,
+                    actualChangeAmount,
+                );
+            });
+
+            // 返回更新后的用户信息
+            return this.findOneById(userId, { excludeFields: ["password", "openid"] });
+        } catch (error) {
+            throw HttpExceptionFactory.badRequest(error.message);
+        }
     }
 }

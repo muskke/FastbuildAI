@@ -1,4 +1,5 @@
 import { UserCreateSourceType } from "@common/constants/status-codes.constant";
+import { ACTION_VALUE } from "@common/modules/account/constants/account-log.constants";
 import {
     IsEmail,
     IsIn,
@@ -104,4 +105,20 @@ export class UpdateUserDto {
     @IsOptional()
     @IsInt({ message: "剩余算力必须是整数" })
     power?: number;
+}
+
+export class UpdateUserBalanceDto {
+    /**
+     * 变动类型
+     */
+    @IsOptional()
+    @IsInt({ message: "类型必须是整数" })
+    action?: ACTION_VALUE;
+
+    /**
+     * 变动数量
+     */
+    @IsOptional()
+    @IsInt({ message: "变动数量必须是整数" })
+    amount?: number;
 }
