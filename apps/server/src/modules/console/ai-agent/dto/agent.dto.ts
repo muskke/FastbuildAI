@@ -5,12 +5,15 @@ import {
     IsBoolean,
     IsEnum,
     IsNotEmpty,
+    IsNumber,
     IsObject,
     IsOptional,
     IsString,
     IsUUID,
     ValidateNested,
 } from "class-validator";
+
+import { ModelBillingConfig } from "../interfaces/agent-config.interface";
 
 /**
  * 快捷指令配置DTO
@@ -141,6 +144,13 @@ export class ModelConfigDto {
     };
 }
 
+export class ModelBillingConfigDto {
+    @IsOptional()
+    @IsNumber()
+    @IsNotEmpty({ message: "算力不能为空" })
+    power: number;
+}
+
 /**
  * 自动追问配置DTO
  */
@@ -212,6 +222,14 @@ export class AgentConfigBaseDto {
     @ValidateNested()
     @Type(() => ModelConfigDto)
     modelConfig?: ModelConfigDto;
+
+    /**
+     * 智能体计费配置
+     */
+    @IsOptional()
+    @ValidateNested()
+    @Type(() => ModelBillingConfigDto)
+    billingConfig?: ModelBillingConfig;
 
     /**
      * 知识库ID列表
