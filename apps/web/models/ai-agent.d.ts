@@ -267,6 +267,16 @@ export interface UpdateAgentConfigParams {
     formFieldsInputs?: Record<string, any>;
     /** 是否公开 */
     isPublic?: boolean;
+    /** 计费配置 */
+    billingConfig?: BillingConfig;
+}
+
+/**
+ * 计费配置
+ */
+export interface BillingConfig {
+    /** 价格 */
+    price: number;
 }
 
 /**

@@ -123,7 +123,9 @@
         "youCanAskMe": "你可以这样问我",
         "chatContext": "对话上下文",
         "noChatContext": "暂无对话上下文",
-        "editedAnswer": "编辑的答案"
+        "editedAnswer": "编辑的答案",
+        "billingSetup": "计费配置",
+        "dialogueConsumption": "对话消耗"
     },
     "publish": {
         "title": "智能体发布",

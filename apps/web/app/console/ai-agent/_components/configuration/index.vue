@@ -6,6 +6,7 @@ import { apiUpdateAgentConfig } from "@/services/console/ai-agent";
 
 const FuncSetup = defineAsyncComponent(() => import("./func-setup.vue"));
 const UserSetup = defineAsyncComponent(() => import("./user-setup.vue"));
+const BillingSetup = defineAsyncComponent(() => import("./billing-setup.vue"));
 const PreviewChat = defineAsyncComponent(() => import("../preview-chat.vue"));
 const VariableInput = defineAsyncComponent(() => import("./variable-input.vue"));
 const ModelConfig = defineAsyncComponent(() => import("./model-config.vue"));
@@ -26,6 +27,11 @@ const components: { value: string; label: string; component: any }[] = [
         label: t("console-ai-agent.configuration.user"),
         component: UserSetup,
     },
+    {
+        value: "2",
+        label: t("console-ai-agent.configuration.billingSetup"),
+        component: BillingSetup,
+    },
 ];
 const previewChatRef = useTemplateRef<InstanceType<typeof PreviewChat>>("previewChatRef");
 
@@ -40,6 +46,9 @@ const state = reactive<UpdateAgentConfigParams>({
     showReference: true,
     enableFeedback: true,
     enableWebSearch: false,
+    billingConfig: {
+        price: 0,
+    },
     modelConfig: {
         id: "",
         options: {},
