@@ -1,6 +1,7 @@
 // ==================== 用户查询相关 API ====================
 
 import type { RoleFormData } from "@/models";
+import type { ACTION_VALUE } from "@/models/account-balance";
 import type { PaginationResult } from "@/models/global";
 import type {
     UserCreateRequest,
@@ -103,4 +104,19 @@ export function apiResetUserPassword(id: string, password: string): Promise<{ su
  */
 export function apiSetUserStatus(id: string, status: number): Promise<UserInfo> {
     return useConsolePost(`/users/status/${id}`, { status });
+}
+
+/**
+ * 更新算力
+ * @description 更新指定用户的算力
+ * @param {string} id 用户ID
+ * @param {number} amount 算力值
+ * @returns {Promise<UserInfo>} 更新结果
+ */
+export function apiUpdateUserAmount(
+    id: string,
+    amount: number,
+    action: ACTION_VALUE,
+): Promise<UserInfo> {
+    return useConsolePost(`/users/change-balance/${id}`, { amount, action });
 }
