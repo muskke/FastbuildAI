@@ -28,7 +28,7 @@ export class DictModule implements OnModuleInit {
         try {
             // 等待数据库连接完成后，初始化字典缓存
             await this.dictCacheService.loadAllDictsToCache();
-            TerminalLogger.success("Config Cache", "Dict Cache Init Success");
+            TerminalLogger.success("Config Cache", "Dict Cache Init Successful");
             this.logger.log("✅ 字典缓存初始化完成");
         } catch (error) {
             // 如果初始化失败，记录警告但不阻断模块加载

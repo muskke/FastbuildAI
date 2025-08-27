@@ -18,7 +18,7 @@ import { RoleService } from "../../role/role.service";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { BatchDeleteUserDto, DeleteUserDto } from "../dto/delete-user.dto";
 import { QueryUserDto } from "../dto/query-user.dto";
-import { UpdateUserDto } from "../dto/update-user.dto";
+import { UpdateUserBalanceDto, UpdateUserDto } from "../dto/update-user.dto";
 import { UserService } from "../services/user.service";
 
 /**
@@ -39,7 +39,6 @@ export class UserController extends BaseController {
         private readonly menuService: MenuService,
         @Inject(RolePermissionService)
         private readonly rolePermissionService: RolePermissionService,
-        private readonly fileService: FileService,
         private readonly roleService: RoleService,
     ) {
         super();
@@ -318,5 +317,18 @@ export class UserController extends BaseController {
         @Body("status") status: BooleanNumberType,
     ) {
         return await this.userService.setUserStatus(id, status);
+    }
+
+    @Post("/change-balance/:id")
+    @Permissions({
+        code: "change-balance",
+        name: "更新用户余额",
+        description: "设置用户余额",
+    })
+    async changeBalance(
+        @Param("id", UUIDValidationPipe) userId: string,
+        @Body() dto: UpdateUserBalanceDto,
+    ) {
+        return await this.userService.updateBalance(userId, dto);
     }
 }

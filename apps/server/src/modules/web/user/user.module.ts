@@ -1,3 +1,4 @@
+import { AccountLogService } from "@common/modules/account/services/account-log.service";
 import { Permission } from "@common/modules/auth/entities/permission.entity";
 import { Role } from "@common/modules/auth/entities/role.entity";
 import { User } from "@common/modules/auth/entities/user.entity";
@@ -22,7 +23,7 @@ import { UserController } from "./user.controller";
         AiDatasetsModule,
     ],
     controllers: [UserController],
-    providers: [UserService],
-    exports: [UserService],
+    providers: [UserService, AccountLogService],
+    exports: [UserService, AccountLogService],
 })
 export class UserModule {}

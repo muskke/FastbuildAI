@@ -1,6 +1,7 @@
+import { AccountLogModule } from "@common/modules/account/account-log.module";
 import { Role } from "@common/modules/auth/entities/role.entity";
 import { User } from "@common/modules/auth/entities/user.entity";
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { MenuModule } from "../menu/menu.module";
@@ -12,7 +13,12 @@ import { UserService } from "./services/user.service";
  * 用户管理模块
  */
 @Module({
-    imports: [TypeOrmModule.forFeature([User, Role]), MenuModule, RoleModule],
+    imports: [
+        TypeOrmModule.forFeature([User, Role]),
+        MenuModule,
+        RoleModule,
+        forwardRef(() => AccountLogModule),
+    ],
     controllers: [UserController],
     providers: [UserService],
     exports: [UserService],

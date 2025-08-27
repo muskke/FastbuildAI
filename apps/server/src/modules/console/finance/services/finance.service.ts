@@ -111,24 +111,51 @@ export class FinanceService extends BaseService<AccountLog> {
     }
     /**
      * 用户账户变动记录
-     * @param queryAccountLogDto
-     * @returns
+     * @param queryAccountLogDto 查询参数，包含关键词和账户类型筛选
+     * @returns 分页的账户变动记录列表，包含用户信息和类型描述
      */
     async accountLogLists(queryAccountLogDto: QueryAccountLogDto) {
+        // 构建查询并获取分页数据
+        const queryBuilder = this.buildAccountLogQuery(queryAccountLogDto);
+        const paginationResult = await this.paginateQueryBuilder(queryBuilder, queryAccountLogDto);
+
+        // 获取关联用户信息并处理数据映射
+        const enrichedItems = await this.enrichAccountLogItems(paginationResult.items);
+
+        return {
+            ...paginationResult,
+            items: enrichedItems,
+            accountTypeLists: ACCOUNT_LOG_TYPE_DESCRIPTION,
+        };
+    }
+
+    /**
+     * 构建账户变动记录查询
+     * @param queryAccountLogDto 查询参数
+     * @returns 构建好的查询构建器
+     */
+    private buildAccountLogQuery(queryAccountLogDto: QueryAccountLogDto) {
         const { keyword, accountType } = queryAccountLogDto;
-        const queryBuilder = this.accountLogRepository.createQueryBuilder("account-log");
-        queryBuilder.leftJoin("account-log.user", "user");
+
+        const queryBuilder = this.accountLogRepository
+            .createQueryBuilder("account-log")
+            .leftJoin("account-log.user", "user");
+
+        // 添加关键词搜索条件
         if (keyword) {
             queryBuilder.andWhere("(user.username ILIKE :keyword OR user.phone ILIKE :keyword)", {
                 keyword: `%${keyword}%`,
             });
         }
-        //
+
+        // 添加账户类型筛选条件
         if (accountType) {
             queryBuilder.andWhere("account-log.accountType = :accountType", {
-                accountType: accountType,
+                accountType,
             });
         }
+
+        // 选择需要的字段
         queryBuilder.select([
             "account-log.id",
             "account-log.accountNo",
@@ -142,24 +169,40 @@ export class FinanceService extends BaseService<AccountLog> {
             "user.userNo",
             "user.avatar",
         ]);
+
+        // 设置排序规则
         queryBuilder
             .orderBy("account-log.createdAt", "DESC")
             .addOrderBy("account-log.accountType", "DESC");
 
-        const lists = await this.paginateQueryBuilder(queryBuilder, queryAccountLogDto);
-        const userLists = await this.userRepository.find({
+        return queryBuilder;
+    }
+
+    /**
+     * 丰富账户变动记录数据，添加类型描述和关联用户信息
+     * @param accountLogs 原始账户变动记录列表
+     * @returns 处理后的账户变动记录列表
+     */
+    private async enrichAccountLogItems(accountLogs: any[]) {
+        // 获取控制台用户列表用于关联用户查找
+        const consoleUsers = await this.userRepository.find({
             where: { source: UserCreateSource.CONSOLE },
             select: ["id", "nickname"],
         });
-        lists.items = lists.items.map((accountLog) => {
+
+        // 创建用户ID到昵称的映射，提高查找效率
+        const userNicknameMap = new Map(consoleUsers.map((user) => [user.id, user.nickname]));
+
+        // 处理每条记录，添加描述信息
+        return accountLogs.map((accountLog) => {
             const accountTypeDesc = ACCOUNT_LOG_TYPE_DESCRIPTION[accountLog.accountType];
-            // const totalPower = order.power + order.givePower;
-            const associationUser =
-                userLists.find((item) => item.id == accountLog.associationUserId)?.nickname || "";
-            //const payStatusDesc = order.payStatus == 1 ? "已支付" : "未支付";
-            return { ...accountLog, accountTypeDesc, associationUser };
+            const associationUser = userNicknameMap.get(accountLog.associationUserId) || "";
+
+            return {
+                ...accountLog,
+                accountTypeDesc,
+                associationUser,
+            };
         });
-        const accountTypeLists = ACCOUNT_LOG_TYPE_DESCRIPTION;
-        return { ...lists, accountTypeLists };
     }
 }
