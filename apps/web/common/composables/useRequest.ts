@@ -365,37 +365,35 @@ function createPluginApiRequest(apiType: PluginApiType = AppConfig.WEB_API_PREFI
     let requestFactory: ReturnType<typeof createRequestFactory> | null = null;
 
     const getRequestFactory = () => {
-        if (!requestFactory) {
-            // 延迟获取插件key，避免在模块加载时调用useNuxtApp
-            let finalPluginKey: string;
-            try {
-                const nuxtApp = useNuxtApp();
-                finalPluginKey =
-                    typeof nuxtApp.$getCurrentPluginKey === "function"
-                        ? nuxtApp.$getCurrentPluginKey() || "unknown"
-                        : "unknown";
-            } catch {
-                finalPluginKey = "unknown";
-            }
-
-            // 构建插件API前缀: /{pluginKey}/{apiType}
-            const pluginApiPrefix = `/${finalPluginKey}${apiType}`;
-
-            requestFactory = createRequestFactory({
-                apiPrefix: pluginApiPrefix,
-                enableStatusLog: apiType === "web",
-                enableRuntimeConfig: apiType === "web",
-                filterEmptyParams: apiType === "console",
-                customErrorHandler: (error: unknown) => {
-                    const typedError = error as Error;
-                    console.error(
-                        `[插件 ${finalPluginKey} ${apiType.toUpperCase()} API 请求失败]`,
-                        typedError.message,
-                        error,
-                    );
-                },
-            });
+        // 延迟获取插件key，避免在模块加载时调用useNuxtApp
+        let finalPluginKey: string;
+        try {
+            const nuxtApp = useNuxtApp();
+            finalPluginKey =
+                typeof nuxtApp.$getCurrentPluginKey === "function"
+                    ? nuxtApp.$getCurrentPluginKey() || "unknown"
+                    : "unknown";
+        } catch {
+            finalPluginKey = "unknown";
         }
+
+        // 构建插件API前缀: /{pluginKey}/{apiType}
+        const pluginApiPrefix = `/${finalPluginKey}${apiType}`;
+
+        requestFactory = createRequestFactory({
+            apiPrefix: pluginApiPrefix,
+            enableStatusLog: apiType === "web",
+            enableRuntimeConfig: apiType === "web",
+            filterEmptyParams: apiType === "console",
+            customErrorHandler: (error: unknown) => {
+                const typedError = error as Error;
+                console.error(
+                    `[插件 ${finalPluginKey} ${apiType.toUpperCase()} API 请求失败]`,
+                    typedError.message,
+                    error,
+                );
+            },
+        });
         return requestFactory;
     };
 
