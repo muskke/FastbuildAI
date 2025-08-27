@@ -102,7 +102,7 @@ export class DatabaseInitService implements OnModuleInit {
             await this.writeVersionFile(await this.getCurrentVersion());
 
             this.logger.log("✅ 数据库初始化完成");
-            TerminalLogger.success("Database Init", "数据库初始化完成");
+            TerminalLogger.success("Database Init", "Successful");
         } catch (error) {
             this.logger.error(`❌ 数据库初始化失败: ${error.message}`);
         }
