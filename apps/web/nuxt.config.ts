@@ -238,6 +238,7 @@ export default defineNuxtConfig({
             minify: isProd && !isSSR,
             cssMinify: isProd && !isSSR,
             sourcemap: false,
+            cssCodeSplit: true,
         },
     },
 
