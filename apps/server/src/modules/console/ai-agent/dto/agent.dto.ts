@@ -146,8 +146,7 @@ export class ModelConfigDto {
 
 export class ModelBillingConfigDto {
     @IsOptional()
-    @IsNumber()
-    @IsNotEmpty({ message: "价格不能为空" })
+    @IsNumber({}, { message: "价格必须是数字" })
     price: number;
 }
 
