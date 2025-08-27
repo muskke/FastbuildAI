@@ -1,3 +1,9 @@
+export enum ACTION {
+    DEC = 0,
+    INC = 1,
+}
+export type ACTION_VALUE = (typeof ACTION)[keyof typeof ACTION];
+
 /**
  * 账户余额
  */

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ProInputPassword, ProUploader, useLockFn, useMessage } from "@fastbuildai/ui";
+import { ProInputPassword, ProModal, ProUploader, useLockFn, useMessage } from "@fastbuildai/ui";
 import { computed, onMounted, reactive, ref } from "vue";
 import { number, object, string } from "yup";
 
@@ -11,7 +11,7 @@ import {
 import type { UserCreateRequest } from "@/models/user";
 import { apiGetAllRoleList } from "@/services/console/role";
 
-import { apiGetUserRolesList } from "../../../../services/console/user";
+import { apiGetUserRolesList, apiUpdateUserAmount } from "../../../../services/console/user";
 
 // 引入国际化
 const { t } = useI18n();
@@ -46,8 +46,62 @@ const message = useMessage();
 // 过滤掉initialData中的userNo属性
 const { userNo, ...filteredInitialData } = props.initialData || {};
 
-// 是否编辑剩余算力
+/**
+ * 编辑算力状态
+ */
 const editPower = ref(false);
+
+/**
+ * 算力调整表单数据
+ */
+const powerAdjustForm = reactive({
+    type: 1, // 1: 增加, 0: 扣减
+    amount: 0, // 调整数量
+});
+
+/**
+ * 调整后的算力
+ */
+const adjustedPower = computed(() => {
+    const currentPower = Number(formData.power) || 0;
+    const adjustAmount = Number(powerAdjustForm.amount) || 0;
+
+    if (powerAdjustForm.type === 1) {
+        return currentPower + adjustAmount;
+    } else {
+        return Math.max(0, currentPower - adjustAmount);
+    }
+});
+
+/**
+ * 取消算力编辑
+ */
+const handleCancelPowerEdit = () => {
+    editPower.value = false;
+    // 重置表单数据
+    powerAdjustForm.type = 1;
+    powerAdjustForm.amount = 0;
+};
+
+/**
+ * 确认算力编辑
+ */
+const handleConfirmPowerEdit = async () => {
+    if (!powerAdjustForm.amount || powerAdjustForm.amount <= 0) {
+        message.warning("请输入有效的调整数量");
+        return;
+    }
+    await apiUpdateUserAmount(props.id as string, powerAdjustForm.amount, powerAdjustForm.type);
+    // 更新算力值
+    formData.power = adjustedPower.value;
+
+    // 关闭弹窗并重置表单
+    handleCancelPowerEdit();
+
+    message.success(
+        `算力${powerAdjustForm.type === 1 ? t("console-user.form.add") : t("console-user.form.reduce")}成功`,
+    );
+};
 
 // 表单数据
 const formData = reactive<UserCreateRequest>({
@@ -69,6 +123,7 @@ const roleOptions = ref<{ label: string; value: string }[]>([]);
 
 // 区号选项 - 使用公共配置
 const areaCodeOptions = computed(() => {
+    console.log(PHONE_AREA_CODES);
     return PHONE_AREA_CODES.map((item) => ({
         label: `${item.flag} ${t(item.i18nKey)} +${item.areaCode}`,
         value: item.areaCode,
@@ -218,8 +273,8 @@ onMounted(() => getRoleList());
                             <UFormField :label="t('console-user.form.power')" name="power">
                                 <UInput
                                     v-model="formData.power"
-                                    :disabled="!editPower"
-                                    :variant="editPower ? 'outline' : 'subtle'"
+                                    :disabled="true"
+                                    variant="subtle"
                                     size="xl"
                                     class="w-full"
                                     type="number"
@@ -232,7 +287,7 @@ onMounted(() => getRoleList());
                                             size="sm"
                                             icon="i-lucide-edit"
                                             aria-label="Clear input"
-                                            @click="editPower = !editPower"
+                                            @click="editPower = true"
                                         />
                                     </template>
                                 </UInput>
@@ -265,6 +320,65 @@ onMounted(() => getRoleList());
                             </template>
                         </UFormField>
 
+                        <!-- 昵称 -->
+                        <UFormField
+                            :label="t('console-user.form.nickname')"
+                            name="nickname"
+                            required
+                        >
+                            <UInput
+                                v-model="formData.nickname"
+                                :placeholder="t('console-user.form.nicknameInput')"
+                                size="xl"
+                                class="w-full"
+                            />
+                        </UFormField>
+                    </div>
+
+                    <!-- 手机号和昵称 -->
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <!-- 手机号 -->
+                        <UFormField :label="t('console-user.form.phone')" name="phone">
+                            <UInput
+                                v-model="formData.phone"
+                                :placeholder="t('console-user.form.phoneInput')"
+                                size="xl"
+                                autocomplete="off"
+                                :ui="{ root: 'w-full', base: '!pl-28' }"
+                            >
+                                <template #leading>
+                                    <div class="flex items-center text-sm" @click.stop.prevent>
+                                        <USelectMenu
+                                            v-model="formData.phoneAreaCode"
+                                            :items="areaCodeOptions"
+                                            trailing-icon="heroicons:chevron-up-down-20-solid"
+                                            class="w-fit"
+                                            size="lg"
+                                            :ui="{
+                                                base: '!ring-0',
+                                                content: 'z-999 w-64',
+                                            }"
+                                            value-key="value"
+                                        >
+                                            <template #default>
+                                                +
+                                                {{ formData.phoneAreaCode }}
+                                            </template>
+                                            <template #item="{ item }">
+                                                {{ item.label }}
+                                            </template>
+                                        </USelectMenu>
+                                    </div>
+                                    <USeparator class="h-1/2" orientation="vertical" />
+                                </template>
+                            </UInput>
+                            <!-- <template #hint>
+                                <span class="text-muted-foreground text-xs">{{
+                                    t("console-user.form.phoneOrEmailHint")
+                                }}</span>
+                            </template> -->
+                        </UFormField>
+
                         <!-- 邮箱 -->
                         <UFormField :label="t('console-user.form.email')" name="email">
                             <UInput
@@ -279,62 +393,6 @@ onMounted(() => getRoleList());
                                     t("console-user.form.emailOrPhoneHint")
                                 }}</span>
                             </template> -->
-                        </UFormField>
-                    </div>
-
-                    <!-- 手机号和昵称 -->
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <!-- 手机号 -->
-                        <UFormField :label="t('console-user.form.phone')" name="phone">
-                            <UInput
-                                v-model="formData.phone"
-                                :placeholder="t('console-user.form.phoneInput')"
-                                size="xl"
-                                autocomplete="off"
-                                :ui="{ root: 'w-full', base: '!pl-42' }"
-                            >
-                                <template #leading>
-                                    <div class="flex items-center text-sm" @click.stop.prevent>
-                                        <USelectMenu
-                                            v-model="formData.phoneAreaCode"
-                                            :items="areaCodeOptions"
-                                            trailing-icon="heroicons:chevron-up-down-20-solid"
-                                            class="w-36"
-                                            size="lg"
-                                            :ui="{
-                                                base: '!ring-0',
-                                                content: 'z-999 w-64',
-                                            }"
-                                            value-key="value"
-                                            label-key="label"
-                                        >
-                                            <template #item="{ item }">
-                                                {{ $t(item.label) }}
-                                            </template>
-                                        </USelectMenu>
-                                    </div>
-                                    <USeparator class="h-1/2" orientation="vertical" />
-                                </template>
-                            </UInput>
-                            <!-- <template #hint>
-                                <span class="text-muted-foreground text-xs">{{
-                                    t("console-user.form.phoneOrEmailHint")
-                                }}</span>
-                            </template> -->
-                        </UFormField>
-
-                        <!-- 昵称 -->
-                        <UFormField
-                            :label="t('console-user.form.nickname')"
-                            name="nickname"
-                            required
-                        >
-                            <UInput
-                                v-model="formData.nickname"
-                                :placeholder="t('console-user.form.nicknameInput')"
-                                size="xl"
-                                class="w-full"
-                            />
                         </UFormField>
                     </div>
 
@@ -416,5 +474,71 @@ onMounted(() => getRoleList());
                 </div>
             </div>
         </UForm>
+
+        <!-- 编辑算力 -->
+        <ProModal
+            :model-value="editPower"
+            :title="t('console-user.form.editPower')"
+            :ui="{
+                content: 'max-w-sm overflow-y-auto h-fit',
+            }"
+            @close="editPower = false"
+        >
+            <UForm :state="powerAdjustForm" class="space-y-4" @submit="handleConfirmPowerEdit">
+                <UFormField :label="t('console-user.form.currentPower')" name="currentPower">
+                    <UInput
+                        :model-value="formData.power"
+                        size="lg"
+                        disabled
+                        variant="subtle"
+                        class="w-full"
+                        type="number"
+                    />
+                </UFormField>
+
+                <UFormField :label="t('console-user.form.powerAdjust')" name="type">
+                    <URadioGroup
+                        v-model="powerAdjustForm.type"
+                        :items="[
+                            { label: t('console-user.form.add'), value: 1 },
+                            { label: t('console-user.form.reduce'), value: 0 },
+                        ]"
+                        orientation="horizontal"
+                        color="primary"
+                    />
+                </UFormField>
+
+                <UFormField :label="t('console-user.form.adjustAmount')" name="amount">
+                    <UInput
+                        v-model="powerAdjustForm.amount"
+                        :placeholder="t('console-user.form.adjustAmountInput')"
+                        size="lg"
+                        class="w-full"
+                        type="number"
+                        min="0"
+                    />
+                </UFormField>
+
+                <UFormField :label="t('console-user.form.adjustedPower')" name="adjustedPower">
+                    <UInput
+                        :model-value="adjustedPower"
+                        size="lg"
+                        disabled
+                        variant="subtle"
+                        class="w-full"
+                        type="number"
+                    />
+                </UFormField>
+
+                <div class="flex justify-end gap-2">
+                    <UButton color="neutral" variant="soft" @click="handleCancelPowerEdit">
+                        {{ t("console-common.cancel") }}
+                    </UButton>
+                    <UButton color="primary" type="submit">
+                        {{ t("console-common.confirm") }}
+                    </UButton>
+                </div>
+            </UForm>
+        </ProModal>
     </div>
 </template>

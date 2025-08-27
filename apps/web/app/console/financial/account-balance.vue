@@ -74,6 +74,8 @@ const paging = reactive({
     total: 0,
 });
 
+const items = ref<any[]>([]);
+
 const getLists = async () => {
     const res = await getAccountBalanceList({
         page: paging.page,
@@ -123,6 +125,14 @@ onMounted(() => {
                     {
                         label: t('console-financial.accountBalance.rechargeRefundPower'),
                         value: '102',
+                    },
+                    {
+                        label: t('console-financial.accountBalance.systemIncreasePower'),
+                        value: '200',
+                    },
+                    {
+                        label: t('console-financial.accountBalance.systemDecreasePower'),
+                        value: '201',
                     },
                 ]"
                 @update:model-value="getLists"
