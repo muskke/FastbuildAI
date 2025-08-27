@@ -11,9 +11,9 @@ import {
     apiUpdateAgentAnnotation,
 } from "@/services/console/ai-agent";
 import {
-    apiCreatePublicAgentAnnotation,
-    apiGetPublicAgentAnnotationDetail,
-    apiUpdatePublicAgentAnnotation,
+    apiCreateAnnotation,
+    apiGetAnnotationDetail,
+    apiUpdateAnnotation,
 } from "@/services/web/ai-agent-publish";
 
 const toast = useMessage();
@@ -66,7 +66,7 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
         let data;
         if (props.isPublic && props.publishToken && props.accessToken) {
             // 公开访问模式
-            data = await apiGetPublicAgentAnnotationDetail(
+            data = await apiGetAnnotationDetail(
                 props.publishToken,
                 props.accessToken,
                 props.annotationId as string,
@@ -94,7 +94,7 @@ const { lockFn: submitForm, isLock: submitting } = useLockFn(async () => {
             // 更新标注
             if (props.isPublic && props.publishToken && props.accessToken) {
                 // 公开访问模式
-                await apiUpdatePublicAgentAnnotation(
+                await apiUpdateAnnotation(
                     props.publishToken,
                     props.accessToken,
                     props.annotationId,
@@ -116,7 +116,7 @@ const { lockFn: submitForm, isLock: submitting } = useLockFn(async () => {
             let result;
             if (props.isPublic && props.publishToken && props.accessToken) {
                 // 公开访问模式
-                result = await apiCreatePublicAgentAnnotation(
+                result = await apiCreateAnnotation(
                     props.publishToken,
                     props.accessToken,
                     {

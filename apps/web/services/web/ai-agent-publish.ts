@@ -85,39 +85,43 @@ export function apiGetEmbedCode(agentId: string): Promise<EmbedCodeResponse> {
     return useConsoleGet(`/ai-agent/${agentId}/embed-code`);
 }
 
-// ==================== 公开智能体对话相关 API ====================
+// ==================== V1 API ====================
 
 /**
- * 获取公开智能体信息
+ * 获取智能体信息
  * @param publishToken 发布令牌
+ * @param accessToken 访问令牌
  * @returns 智能体公开信息
  */
-export function apiGetPublicAgentInfo(publishToken: string, accessToken: string): Promise<any> {
+export function apiGetAgentInfo(publishToken: string, accessToken?: string): Promise<any> {
+    const headers: any = {};
+    if (accessToken) {
+        headers.Authorization = `Bearer ${accessToken}`;
+    }
+
     return useConsoleGet(
-        `/public-agent/${publishToken}/info`,
+        `/v1/${publishToken}/info`,
         {},
         {
-            headers: {
-                "X-Public-Access-Token": accessToken,
-            },
+            headers,
             requireAuth: false,
         },
     );
 }
 
 /**
- * 生成公开智能体访问令牌
+ * 生成访问令牌
  * @param publishToken 发布令牌
  * @returns 访问令牌信息
  */
-export function apiGeneratePublicAgentAccessToken(publishToken: string): Promise<{
+export function apiGenerateAccessToken(publishToken: string): Promise<{
     accessToken: string;
     agentId: string;
     agentName: string;
     description: string;
 }> {
     return useConsolePost(
-        `/public-agent/${publishToken}/generate-access-token`,
+        `/v1/${publishToken}/generate-access-token`,
         {},
         {
             requireAuth: false,
@@ -126,141 +130,205 @@ export function apiGeneratePublicAgentAccessToken(publishToken: string): Promise
 }
 
 /**
- * 获取公开智能体对话记录列表（使用访问令牌）
+ * 获取对话记录列表（使用访问令牌）
  * @param publishToken 发布令牌
  * @param accessToken 访问令牌
  * @param params 查询参数
  * @returns 对话记录列表
  */
-export function apiGetPublicAgentConversations(
+export function apiGetConversations(
     publishToken: string,
     accessToken: string,
     params: { page?: number; pageSize?: number } = {},
 ): Promise<any> {
-    return useConsoleGet(`/public-agent/${publishToken}/conversations`, params, {
+    return useConsoleGet(`/v1/${publishToken}/conversations`, params, {
         headers: {
-            "X-Public-Access-Token": accessToken,
+            Authorization: `Bearer ${accessToken}`,
         },
         requireAuth: false,
     });
 }
 
 /**
- * 获取公开智能体对话消息（使用访问令牌）
+ * 获取对话记录列表（使用 API Key）
+ * @param apiKey API密钥
+ * @param params 查询参数
+ * @returns 对话记录列表
+ */
+export function apiGetConversationsByApiKey(
+    apiKey: string,
+    params: { page?: number; pageSize?: number } = {},
+): Promise<any> {
+    return useConsoleGet(`/v1/conversations`, params, {
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+        },
+        requireAuth: false,
+    });
+}
+
+/**
+ * 获取对话消息（使用访问令牌）
  * @param publishToken 发布令牌
  * @param accessToken 访问令牌
  * @param conversationId 对话ID
  * @param params 查询参数
  * @returns 对话消息列表
  */
-export function apiGetPublicAgentMessages(
+export function apiGetMessages(
     publishToken: string,
     accessToken: string,
     conversationId: string,
     params: { page?: number; pageSize?: number } = {},
 ): Promise<PaginationResult<AiMessage>> {
-    return useConsoleGet(
-        `/public-agent/${publishToken}/conversations/${conversationId}/messages`,
-        params,
-        {
-            headers: {
-                "X-Public-Access-Token": accessToken,
-            },
-            requireAuth: false,
+    return useConsoleGet(`/v1/${publishToken}/conversations/${conversationId}/messages`, params, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
         },
-    );
+        requireAuth: false,
+    });
 }
 
 /**
- * 删除公开智能体对话记录（使用访问令牌）
+ * 获取对话消息（使用 API Key）
+ * @param apiKey API密钥
+ * @param conversationId 对话ID
+ * @param params 查询参数
+ * @returns 对话消息列表
+ */
+export function apiGetMessagesByApiKey(
+    apiKey: string,
+    conversationId: string,
+    params: { page?: number; pageSize?: number } = {},
+): Promise<PaginationResult<AiMessage>> {
+    return useConsoleGet(`/v1/conversations/${conversationId}/messages`, params, {
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+        },
+        requireAuth: false,
+    });
+}
+
+/**
+ * 删除对话记录（使用访问令牌）
  * @param publishToken 发布令牌
  * @param accessToken 访问令牌
  * @param conversationId 对话ID
  * @returns 删除结果
  */
-export function apiDeletePublicAgentConversation(
+export function apiDeleteConversation(
     publishToken: string,
     accessToken: string,
     conversationId: string,
 ): Promise<any> {
-    return useConsoleDelete(
-        `/public-agent/${publishToken}/conversations/${conversationId}`,
-        undefined,
-        {
-            headers: {
-                "X-Public-Access-Token": accessToken,
-            },
-            requireAuth: false,
+    return useConsoleDelete(`/v1/${publishToken}/conversations/${conversationId}`, undefined, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
         },
-    );
+        requireAuth: false,
+    });
 }
 
 /**
- * 更新公开智能体对话记录（使用访问令牌）
+ * 删除对话记录（使用 API Key）
+ * @param apiKey API密钥
+ * @param conversationId 对话ID
+ * @returns 删除结果
+ */
+export function apiDeleteConversationByApiKey(
+    apiKey: string,
+    conversationId: string,
+): Promise<any> {
+    return useConsoleDelete(`/v1/conversations/${conversationId}`, undefined, {
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+        },
+        requireAuth: false,
+    });
+}
+
+/**
+ * 更新对话记录（使用访问令牌）
  * @param publishToken 发布令牌
  * @param accessToken 访问令牌
  * @param conversationId 对话ID
  * @param updateData 更新数据
  * @returns 更新结果
  */
-export function apiUpdatePublicAgentConversation(
+export function apiUpdateConversation(
     publishToken: string,
     accessToken: string,
     conversationId: string,
     updateData: { title?: string },
 ): Promise<any> {
-    return useConsolePut(
-        `/public-agent/${publishToken}/conversations/${conversationId}`,
-        updateData,
-        {
-            headers: {
-                "X-Public-Access-Token": accessToken,
-            },
-            requireAuth: false,
-        },
-    );
-}
-
-// ==================== 公开智能体标注相关 API ====================
-
-/**
- * 游客创建标注
- * @param publishToken 发布令牌
- * @param accessToken 访问令牌
- * @param data 创建标注数据
- * @returns 创建的标注
- */
-export function apiCreatePublicAgentAnnotation(
-    publishToken: string,
-    accessToken: string,
-    data: CreateAgentAnnotationParams,
-): Promise<any> {
-    return useConsolePost(`/public-agent/${publishToken}/annotations`, data, {
+    return useConsolePut(`/v1/${publishToken}/conversations/${conversationId}`, updateData, {
         headers: {
-            "X-Public-Access-Token": accessToken,
+            Authorization: `Bearer ${accessToken}`,
         },
         requireAuth: false,
     });
 }
 
 /**
- * 获取公开智能体标注详情
+ * 更新对话记录（使用 API Key）
+ * @param apiKey API密钥
+ * @param conversationId 对话ID
+ * @param updateData 更新数据
+ * @returns 更新结果
+ */
+export function apiUpdateConversationByApiKey(
+    apiKey: string,
+    conversationId: string,
+    updateData: { title?: string },
+): Promise<any> {
+    return useConsolePut(`/v1/conversations/${conversationId}`, updateData, {
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+        },
+        requireAuth: false,
+    });
+}
+
+// ==================== 标注相关 API ====================
+
+/**
+ * 创建标注
+ * @param publishToken 发布令牌
+ * @param accessToken 访问令牌
+ * @param data 创建标注数据
+ * @returns 创建的标注
+ */
+export function apiCreateAnnotation(
+    publishToken: string,
+    accessToken: string,
+    data: CreateAgentAnnotationParams,
+): Promise<any> {
+    return useConsolePost(`/v1/${publishToken}/annotations`, data, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+        requireAuth: false,
+    });
+}
+
+/**
+ * 获取标注详情
  * @param publishToken 发布令牌
  * @param accessToken 访问令牌
  * @param annotationId 标注ID
  * @returns 标注详情
  */
-export function apiGetPublicAgentAnnotationDetail(
+export function apiGetAnnotationDetail(
     publishToken: string,
     accessToken: string,
     annotationId: string,
 ): Promise<any> {
     return useConsoleGet(
-        `/public-agent/${publishToken}/annotations/${annotationId}`,
+        `/v1/${publishToken}/annotations/${annotationId}`,
         {},
         {
             headers: {
-                "X-Public-Access-Token": accessToken,
+                Authorization: `Bearer ${accessToken}`,
             },
             requireAuth: false,
         },
@@ -268,34 +336,92 @@ export function apiGetPublicAgentAnnotationDetail(
 }
 
 /**
- * 游客更新标注
+ * 更新标注
  * @param publishToken 发布令牌
  * @param accessToken 访问令牌
  * @param annotationId 标注ID
  * @param data 更新标注数据
  * @returns 更新后的标注
  */
-export function apiUpdatePublicAgentAnnotation(
+export function apiUpdateAnnotation(
     publishToken: string,
     accessToken: string,
     annotationId: string,
     data: UpdateAgentAnnotationParams,
 ): Promise<any> {
-    return useConsolePut(`/public-agent/${publishToken}/annotations/${annotationId}`, data, {
+    return useConsolePut(`/v1/${publishToken}/annotations/${annotationId}`, data, {
         headers: {
-            "X-Public-Access-Token": accessToken,
+            Authorization: `Bearer ${accessToken}`,
+        },
+        requireAuth: false,
+    });
+}
+
+// ==================== 对话相关 API ====================
+
+/**
+ * 统一对话接口（支持流式和阻塞模式）
+ * @param publishToken 发布令牌
+ * @param accessToken 访问令牌
+ * @param data 对话数据
+ * @returns 对话结果或流控制器
+ */
+export function apiChat(
+    publishToken: string,
+    accessToken: string,
+    data: {
+        messages: AiMessage[];
+        responseMode?: "streaming" | "blocking";
+        conversationId?: string;
+        title?: string;
+        formVariables?: Record<string, string>;
+        formFieldsInputs?: Record<string, any>;
+        saveConversation?: boolean;
+        includeReferences?: boolean;
+    },
+): Promise<any> {
+    return useConsolePost(`/v1/${publishToken}/chat`, data, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
         },
         requireAuth: false,
     });
 }
 
 /**
- * 公开智能体流式对话（兼容 useChat）
+ * API Key 方式对话
+ * @param apiKey API密钥
+ * @param data 对话数据
+ * @returns 对话结果或流控制器
+ */
+export function apiChatByApiKey(
+    apiKey: string,
+    data: {
+        messages: AiMessage[];
+        responseMode?: "streaming" | "blocking";
+        conversationId?: string;
+        title?: string;
+        formVariables?: Record<string, string>;
+        formFieldsInputs?: Record<string, any>;
+        saveConversation?: boolean;
+        includeReferences?: boolean;
+    },
+): Promise<any> {
+    return useConsolePost(`/v1/chat`, data, {
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+        },
+        requireAuth: false,
+    });
+}
+
+/**
+ * 流式对话（兼容 useChat）
  * @param messages 消息列表
  * @param config 对话配置（包含publishToken和accessToken）
  * @returns 流控制器
  */
-export function apiPublicAgentChatByAccessToken(
+export function apiChatStream(
     messages: AiMessage[] | any,
     config?: Partial<any>,
 ): Promise<{ abort: () => void }> {
@@ -312,11 +438,12 @@ export function apiPublicAgentChatByAccessToken(
     delete config.body?.publishToken;
     delete config.body?.accessToken;
 
-    return useConsoleStream(`/public-agent/${publishToken}/chat/stream`, {
+    return useConsoleStream(`/v1/${publishToken}/chat`, {
         ...config,
         messages,
+        responseMode: "streaming",
         headers: {
-            "X-Public-Access-Token": accessToken,
+            Authorization: `Bearer ${accessToken}`,
             ...config?.headers,
         },
     });
