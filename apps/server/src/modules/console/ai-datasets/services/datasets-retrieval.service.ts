@@ -1,6 +1,7 @@
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Jieba } from "@node-rs/jieba";
 import { embeddingGenerator } from "@sdk/ai/core/embedding";
 import { rerankGenerator } from "@sdk/ai/core/rerank";
 import { RerankParams } from "@sdk/ai/interfaces/adapter";
@@ -21,7 +22,6 @@ import {
     DbQueryResult,
     FullTextSearchResult,
     HybridSearchResult,
-    QueryOptions,
     RerankConfig,
     RetrievalChunk,
     RetrievalConfig,
@@ -35,15 +35,18 @@ const RAG_SERVICE_CONSTANTS = {
     DEFAULT_SCORE_THRESHOLD: 0.5,
     DEFAULT_SEMANTIC_WEIGHT: 0.7,
     DEFAULT_KEYWORD_WEIGHT: 0.3,
+    // 全文检索分数标准化因子
+    FULLTEXT_SCORE_MULTIPLIER: 100,
+    // 向量检索分数标准化因子 (cosine similarity 已在 0-1 范围)
+    VECTOR_SCORE_MULTIPLIER: 1,
 } as const;
 
 /**
- * 数据集检索服务
- * 专门负责处理知识库的检索逻辑
+ * Dataset retrieval service for handling knowledge base queries
  */
 @Injectable()
 export class DatasetsRetrievalService {
-    protected readonly logger = new Logger(DatasetsRetrievalService.name);
+    private readonly logger = new Logger(DatasetsRetrievalService.name);
 
     constructor(
         @InjectRepository(Datasets)
@@ -54,162 +57,51 @@ export class DatasetsRetrievalService {
     ) {}
 
     /**
-     * 校验数据集存在且已完成训练
+     * Validates dataset existence and readiness
      */
-    private async getAndCheckDataset(datasetId: string): Promise<Datasets> {
+    private async validateDataset(datasetId: string): Promise<Datasets> {
         const dataset = await this.datasetsRepository.findOne({ where: { id: datasetId } });
-        if (!dataset) throw HttpExceptionFactory.notFound("知识库不存在");
+        if (!dataset) {
+            throw HttpExceptionFactory.notFound("知识库不存在");
+        }
         return dataset;
     }
 
     /**
-     * 检索模式分发
+     * Maps database query results to RetrievalChunk format
      */
-    private async dispatchRetrieval(
-        mode: RetrievalModeType,
-        datasetId: string,
-        query: string,
-        config: RetrievalConfig,
-        options?: QueryOptions,
-    ): Promise<RetrievalChunk[]> {
-        switch (mode) {
-            case RETRIEVAL_MODE.VECTOR:
-                return (await this.performVectorSearch(datasetId, query, config, options)).chunks;
-            case RETRIEVAL_MODE.FULL_TEXT:
-                return (await this.performFullTextSearch(datasetId, query, config, options)).chunks;
-            case RETRIEVAL_MODE.HYBRID:
-                return (await this.performHybridSearch(datasetId, query, config, options)).chunks;
-            default:
-                throw HttpExceptionFactory.badRequest(`不支持的检索模式: ${mode}`);
-        }
-    }
-
-    /**
-     * 召回测试查询
-     * 允许传入自定义的检索配置进行测试
-     */
-    async queryDatasetWithConfig(
-        datasetId: string,
-        query: string,
-        customConfig?: RetrievalConfig,
-    ): Promise<RetrievalResult> {
-        const startTime = Date.now();
-        const dataset = await this.getAndCheckDataset(datasetId);
-        const config = customConfig || dataset.retrievalConfig!;
-        const mode = customConfig?.retrievalMode || dataset.retrievalMode;
-        const chunks = await this.dispatchRetrieval(mode, datasetId, query, config);
-        return {
-            chunks,
-            totalTime: Date.now() - startTime,
-        };
-    }
-
-    /**
-     * 向量检索
-     */
-    private async performVectorSearch(
-        datasetId: string,
-        query: string,
-        config: RetrievalConfig,
-        options?: QueryOptions,
-    ): Promise<VectorSearchResult> {
-        const dataset = await this.datasetsRepository.findOne({ where: { id: datasetId } });
-        if (!dataset) throw HttpExceptionFactory.internal("数据集不存在");
-        const embeddingModel = await this.aiModelService.findOne({
-            where: { id: dataset.embeddingModelId, isActive: true },
-            relations: ["provider"],
-        });
-        if (!embeddingModel) throw HttpExceptionFactory.internal("未找到可用的向量模型");
-        const adapter = getProvider(embeddingModel.provider.provider, {
-            apiKey: embeddingModel.provider.apiKey,
-            baseURL: embeddingModel.provider.baseUrl,
-        });
-        const generator = embeddingGenerator(adapter);
-        const embeddingResponse: CreateEmbeddingResponse = await generator.embeddings.create({
-            input: [query],
-            model: embeddingModel.model,
-        });
-        const queryEmbedding = embeddingResponse.data[0].embedding;
-        const topK = config.topK ?? RAG_SERVICE_CONSTANTS.DEFAULT_TOP_K;
-        const scoreThreshold =
-            config.scoreThreshold ?? RAG_SERVICE_CONSTANTS.DEFAULT_SCORE_THRESHOLD;
-        // 更健壮的布尔判断，兼容字符串/数字
-        const scoreThresholdEnabled = config.scoreThresholdEnabled;
-        let dbResults: DbQueryResult[] = [];
-        try {
-            let queryBuilder = this.segmentsRepository
-                .createQueryBuilder("segment")
-                .leftJoin("segment.document", "document")
-                .select([
-                    "segment.id AS segment_id",
-                    "segment.documentId AS document_id",
-                    "segment.content AS segment_content",
-                    "segment.metadata AS segment_metadata",
-                    "segment.chunkIndex AS chunk_index",
-                    "segment.contentLength AS content_length",
-                    "document.fileName AS document_name",
-                    "1 - (segment.embedding::vector <=> CAST(:queryEmbedding AS vector)) AS score",
-                ])
-                .where("segment.datasetId = :datasetId", { datasetId })
-                .andWhere("segment.status = :status", { status: PROCESSING_STATUS.COMPLETED })
-                .andWhere("segment.embedding IS NOT NULL")
-                .andWhere("segment.enabled = :enabled", { enabled: 1 })
-                .orderBy("score", "DESC")
-                .limit(topK)
-                .setParameter("queryEmbedding", JSON.stringify(queryEmbedding));
-            if (scoreThresholdEnabled) {
-                queryBuilder = queryBuilder.andWhere(
-                    "(1 - (segment.embedding::vector <=> CAST(:queryEmbedding AS vector))) >= :scoreThreshold",
-                    { scoreThreshold },
-                );
-            }
-            dbResults = await queryBuilder.getRawMany();
-        } catch (error) {
-            this.logger.error("pgvector 向量检索失败", error);
-            throw new Error("向量检索服务不可用，请确保 pgvector 扩展已正确安装");
-        }
-        let finalChunks: RetrievalChunk[] = dbResults.map((result: DbQueryResult) => ({
+    private mapDbResultsToChunks(results: DbQueryResult[], scoreMultiplier = 1): RetrievalChunk[] {
+        return results.map((result) => ({
             id: result.segment_id || result.id,
             documentId: result.document_id,
             content: result.segment_content || result.content,
-            score: result.score,
+            score: result.score * scoreMultiplier,
             metadata: result.segment_metadata,
             chunkIndex: result.chunk_index,
             contentLength: result.content_length,
             fileName: result.document_name,
         }));
-        let rerankUsed = false;
-        if (config.rerankConfig?.enabled && config.rerankConfig.modelId) {
-            finalChunks = await this.performRerank(
-                query,
-                finalChunks,
-                config.rerankConfig.modelId,
-                topK,
-                scoreThreshold,
-                scoreThresholdEnabled,
-            );
-            rerankUsed = true;
-        }
-        return {
-            chunks: finalChunks,
-            info: { topK, scoreThreshold, rerankUsed },
-        };
     }
 
     /**
-     * 全文检索
+     * 使用 jieba 中文分词进行查询优化，提升全文检索效果
      */
-    private async performFullTextSearch(
-        datasetId: string,
-        query: string,
-        config: RetrievalConfig,
-        options?: QueryOptions,
-    ): Promise<FullTextSearchResult> {
-        const topK = config.topK ?? RAG_SERVICE_CONSTANTS.DEFAULT_TOP_K;
-        const scoreThreshold =
-            config.scoreThreshold ?? RAG_SERVICE_CONSTANTS.DEFAULT_SCORE_THRESHOLD;
-        const scoreThresholdEnabled = config.scoreThresholdEnabled;
-        let queryBuilder = this.segmentsRepository
+    private jiebaSegment(query: string): string {
+        try {
+            const jieba = new Jieba();
+            // 使用全模式，更好识别词组如"黄彪"
+            return jieba.cut(query, true).join(" ");
+        } catch (error) {
+            this.logger.warn(`jieba分词失败: ${error.message}`);
+            return query;
+        }
+    }
+
+    /**
+     * Builds base query for segments with common conditions
+     */
+    private buildBaseQuery(datasetId: string) {
+        return this.segmentsRepository
             .createQueryBuilder("segment")
             .leftJoin("segment.document", "document")
             .select([
@@ -220,78 +112,220 @@ export class DatasetsRetrievalService {
                 "segment.chunkIndex AS chunk_index",
                 "segment.contentLength AS content_length",
                 "document.fileName AS document_name",
-                "ts_rank(to_tsvector('chinese_zh', coalesce(segment.content, '')), plainto_tsquery('chinese_zh', :query)) AS score",
             ])
             .where("segment.datasetId = :datasetId", { datasetId })
             .andWhere("segment.status = :status", { status: PROCESSING_STATUS.COMPLETED })
-            .andWhere(
-                "to_tsvector('chinese_zh', coalesce(segment.content, '')) @@ plainto_tsquery('chinese_zh', :query)",
-                { query },
-            )
-            .andWhere("segment.enabled = :enabled", { enabled: 1 })
-            .orderBy("score", "DESC")
-            .limit(topK);
-        if (scoreThresholdEnabled && config.retrievalMode !== "hybrid") {
-            queryBuilder = queryBuilder.andWhere(
-                "ts_rank_cd(to_tsvector('chinese_zh', content), plainto_tsquery('chinese_zh', :query)) >= :scoreThreshold",
-                { query, scoreThreshold },
-            );
-        }
-        const dbResults: DbQueryResult[] = await queryBuilder.getRawMany();
-        let finalChunks: RetrievalChunk[] = dbResults.map((result: DbQueryResult) => ({
-            id: result.segment_id,
-            documentId: result.document_id,
-            content: result.segment_content,
-            score: result.score * 10,
-            metadata: result.segment_metadata,
-            chunkIndex: result.chunk_index,
-            contentLength: result.content_length,
-            fileName: result.document_name,
-        }));
-        let rerankUsed = false;
-        if (config.rerankConfig?.enabled && config.rerankConfig.modelId) {
-            finalChunks = await this.performRerank(
-                query,
-                finalChunks,
-                config.rerankConfig.modelId,
-                topK,
-                scoreThreshold,
-                scoreThresholdEnabled,
-            );
-            rerankUsed = true;
-        }
+            .andWhere("segment.enabled = :enabled", { enabled: 1 });
+    }
+
+    /**
+     * Queries dataset with specified or default configuration
+     */
+    async queryDatasetWithConfig(
+        datasetId: string,
+        query: string,
+        customConfig?: RetrievalConfig,
+    ): Promise<RetrievalResult> {
+        const startTime = Date.now();
+
+        const dataset = await this.validateDataset(datasetId);
+        const config = customConfig || dataset.retrievalConfig;
+        const mode = customConfig?.retrievalMode || dataset.retrievalMode;
+        const topK = config!.topK || RAG_SERVICE_CONSTANTS.DEFAULT_TOP_K;
+
+        this.logger.debug(`[检索服务] 检索模式: ${mode}`);
+        this.logger.debug(`[检索服务] 最终配置: ${JSON.stringify({ ...config, topK })}`);
+
+        const chunks = await this.dispatchRetrieval(mode, datasetId, query, { ...config, topK });
+
+        const totalTime = Date.now() - startTime;
         return {
-            chunks: finalChunks,
-            info: { topK, scoreThreshold, rerankUsed },
+            chunks,
+            totalTime,
         };
     }
 
     /**
-     * 执行混合检索
+     * Dispatches retrieval based on mode
+     */
+    private async dispatchRetrieval(
+        mode: RetrievalModeType,
+        datasetId: string,
+        query: string,
+        config: RetrievalConfig,
+    ): Promise<RetrievalChunk[]> {
+        try {
+            switch (mode) {
+                case RETRIEVAL_MODE.VECTOR:
+                    return (await this.performVectorSearch(datasetId, query, config)).chunks;
+                case RETRIEVAL_MODE.FULL_TEXT:
+                    return (await this.performFullTextSearch(datasetId, query, config)).chunks;
+                case RETRIEVAL_MODE.HYBRID:
+                    return (await this.performHybridSearch(datasetId, query, config)).chunks;
+                default:
+                    throw HttpExceptionFactory.badRequest(`不支持的检索模式: ${mode}`);
+            }
+        } catch (error) {
+            this.logger.error(`检索失败 [模式: ${mode}]: ${error.message}`, error.stack);
+            throw error;
+        }
+    }
+
+    /**
+     * Performs vector search using embeddings
+     */
+    private async performVectorSearch(
+        datasetId: string,
+        query: string,
+        config: RetrievalConfig,
+    ): Promise<VectorSearchResult> {
+        const { topK, scoreThreshold, scoreThresholdEnabled, rerankConfig } =
+            this.normalizeConfig(config);
+
+        const dataset = await this.validateDataset(datasetId);
+        const embeddingModel = await this.getEmbeddingModel(dataset.embeddingModelId);
+        const queryEmbedding = await this.generateEmbedding(query, embeddingModel);
+
+        let queryBuilder = this.buildBaseQuery(datasetId)
+            .addSelect(
+                "1 - (segment.embedding::vector <=> CAST(:queryEmbedding AS vector)) AS score",
+            )
+            .andWhere("segment.embedding IS NOT NULL")
+            .orderBy("score", "DESC")
+            .limit(topK)
+            .setParameter("queryEmbedding", JSON.stringify(queryEmbedding));
+
+        if (scoreThresholdEnabled) {
+            queryBuilder = queryBuilder.andWhere(
+                "(1 - (segment.embedding::vector <=> CAST(:queryEmbedding AS vector))) >= :scoreThreshold",
+                { scoreThreshold },
+            );
+        }
+
+        let dbResults: DbQueryResult[];
+        try {
+            dbResults = await queryBuilder.getRawMany();
+        } catch (error) {
+            this.logger.error("向量检索失败", error);
+            throw new Error("向量检索服务不可用，请确保 pgvector 扩展已正确安装");
+        }
+
+        let chunks = this.mapDbResultsToChunks(
+            dbResults,
+            RAG_SERVICE_CONSTANTS.VECTOR_SCORE_MULTIPLIER,
+        );
+        const rerankUsed = rerankConfig?.enabled && rerankConfig.modelId;
+
+        if (rerankUsed) {
+            chunks = await this.performRerank(
+                query,
+                chunks,
+                rerankConfig.modelId,
+                topK,
+                scoreThreshold,
+                scoreThresholdEnabled,
+            );
+        }
+
+        return {
+            chunks,
+            info: { topK, scoreThreshold, rerankUsed: !!rerankUsed },
+        };
+    }
+
+    /**
+     * Performs full-text search using PostgreSQL text search
+     */
+    private async performFullTextSearch(
+        datasetId: string,
+        query: string,
+        config: RetrievalConfig,
+    ): Promise<FullTextSearchResult> {
+        const topK = config.topK || RAG_SERVICE_CONSTANTS.DEFAULT_TOP_K;
+
+        // jieba分词
+        const keyword = this.jiebaSegment(query);
+        const queries = this.preprocessQuerySimple(keyword);
+
+        this.logger.debug(`[全文检索] "${query}" -> "${queries}"`);
+
+        const sql = `
+            SELECT 
+                segment.id AS segment_id,
+                segment.document_id AS document_id,
+                segment.content AS segment_content,
+                segment.metadata AS segment_metadata,
+                segment.chunk_index AS chunk_index,
+                segment.content_length AS content_length,
+                document.file_name AS document_name,
+                ts_rank(to_tsvector('chinese_zh', coalesce(segment.content, '')), to_tsquery('chinese_zh', $3)) AS score
+            FROM fb_datasets_segments segment
+            LEFT JOIN fb_datasets_documents document ON document.id = segment.document_id
+            WHERE segment.dataset_id = $1 
+                AND segment.status = $2
+                AND segment.enabled = 1
+                AND to_tsvector('chinese_zh', coalesce(segment.content, '')) @@ to_tsquery('chinese_zh', $3)
+            ORDER BY score DESC
+            LIMIT ${topK}
+        `;
+
+        const dbResults = await this.segmentsRepository.query(sql, [
+            datasetId,
+            "completed",
+            queries,
+        ]);
+
+        this.logger.debug(`[全文检索] 查询结果: ${dbResults.length}条`);
+
+        const chunks = this.mapDbResultsToChunks(
+            dbResults,
+            RAG_SERVICE_CONSTANTS.FULLTEXT_SCORE_MULTIPLIER,
+        );
+
+        return {
+            chunks,
+            info: { topK, rerankUsed: false },
+        };
+    }
+
+    private preprocessQuerySimple(keyword: string): string {
+        // 简单预处理：过滤有效词汇，用&连接
+        const tokens = keyword
+            .split(" ")
+            .filter((token) => token.length >= 2 && /[\u4e00-\u9fa5a-zA-Z0-9]/.test(token))
+            .slice(0, 3);
+
+        return tokens.join(" & ") || keyword;
+    }
+
+    /**
+     * Performs hybrid search with weighted or rerank strategy
      */
     private async performHybridSearch(
         datasetId: string,
         query: string,
         config: RetrievalConfig,
-        options?: QueryOptions,
     ): Promise<HybridSearchResult> {
         const strategy = config.strategy || "weighted_score";
+        const topK = config.topK || RAG_SERVICE_CONSTANTS.DEFAULT_TOP_K;
+        // 获取更多候选项用于混合搜索，但确保最终结果数量正确
+        const candidateConfig = { ...config, topK: Math.max(topK * 2, 10) };
 
         if (strategy === "weighted_score") {
-            return await this.performWeightedHybridSearch(
+            return this.performWeightedHybridSearch(
                 datasetId,
                 query,
-                config.weightConfig!,
-                options,
-                config,
+                config.weightConfig,
+                candidateConfig,
+                topK,
             );
         } else if (strategy === "rerank") {
-            return await this.performRerankHybridSearch(
+            return this.performRerankHybridSearch(
                 datasetId,
                 query,
-                config.rerankConfig!,
-                options,
-                config,
+                config.rerankConfig,
+                candidateConfig,
+                topK,
             );
         } else {
             throw HttpExceptionFactory.badRequest(`不支持的混合检索策略: ${strategy}`);
@@ -299,169 +333,144 @@ export class DatasetsRetrievalService {
     }
 
     /**
-     * 执行权重混合检索
+     * Performs weighted hybrid search
      */
     private async performWeightedHybridSearch(
         datasetId: string,
         query: string,
-        weightConfig: WeightConfig,
-        options?: QueryOptions,
-        config?: RetrievalConfig,
+        weightConfig: WeightConfig | undefined,
+        candidateConfig: RetrievalConfig,
+        finalTopK: number,
     ): Promise<HybridSearchResult> {
         const semanticWeight =
-            weightConfig.semanticWeight ?? RAG_SERVICE_CONSTANTS.DEFAULT_SEMANTIC_WEIGHT;
+            weightConfig?.semanticWeight ?? RAG_SERVICE_CONSTANTS.DEFAULT_SEMANTIC_WEIGHT;
         const keywordWeight =
-            weightConfig.keywordWeight ?? RAG_SERVICE_CONSTANTS.DEFAULT_KEYWORD_WEIGHT;
-        // 统一从 config 读取 topK
-        const topK = options?.topK ?? config?.topK ?? RAG_SERVICE_CONSTANTS.DEFAULT_TOP_K;
+            weightConfig?.keywordWeight ?? RAG_SERVICE_CONSTANTS.DEFAULT_KEYWORD_WEIGHT;
 
-        // 并行执行向量检索和全文检索
-        const searchConfig: RetrievalConfig = {
-            retrievalMode: RETRIEVAL_MODE.HYBRID,
-            topK: topK * 2,
-            weightConfig: { semanticWeight, keywordWeight },
-        };
+        // 确保权重之和为1，如果不是则标准化
+        const totalWeight = semanticWeight + keywordWeight;
+        const normalizedSemanticWeight = semanticWeight / totalWeight;
+        const normalizedKeywordWeight = keywordWeight / totalWeight;
 
         const [vectorResult, fullTextResult] = await Promise.all([
-            this.performVectorSearch(datasetId, query, searchConfig),
-            this.performFullTextSearch(datasetId, query, searchConfig),
+            this.performVectorSearch(datasetId, query, candidateConfig),
+            this.performFullTextSearch(datasetId, query, candidateConfig),
         ]);
 
-        // 加权融合，权重始终生效
+        // 计算分数范围用于标准化
+        const vectorScores = vectorResult.chunks.map((c) => c.score);
+        const fullTextScores = fullTextResult.chunks.map((c) => c.score);
+
+        const vectorMax = Math.max(...vectorScores, 0.01);
+        const fullTextMax = Math.max(...fullTextScores, 0.01);
+
         const combinedChunks = new Map<
             string,
-            RetrievalChunk & { _vectorScore: number; _fullTextScore: number }
+            RetrievalChunk & { _normalizedVectorScore: number; _normalizedFullTextScore: number }
         >();
 
-        console.log("vectorResult.chunks", vectorResult.chunks);
-        console.log("fullTextResult.chunks", fullTextResult.chunks);
+        // 添加向量搜索结果（标准化分数）
         vectorResult.chunks.forEach((chunk) => {
             combinedChunks.set(chunk.id, {
                 ...chunk,
-                _vectorScore: chunk.score,
-                _fullTextScore: 0,
-                sources: ["vector"],
+                _normalizedVectorScore: chunk.score / vectorMax,
+                _normalizedFullTextScore: 0,
             });
         });
+
+        // 添加全文搜索结果（标准化分数）
         fullTextResult.chunks.forEach((chunk) => {
+            const normalizedScore = chunk.score / fullTextMax;
             if (combinedChunks.has(chunk.id)) {
                 const existing = combinedChunks.get(chunk.id)!;
-                existing._fullTextScore = chunk.score;
-                existing.sources = [...(existing.sources || []), "fulltext"];
+                existing._normalizedFullTextScore = normalizedScore;
             } else {
                 combinedChunks.set(chunk.id, {
                     ...chunk,
-                    _vectorScore: 0,
-                    _fullTextScore: chunk.score,
-                    sources: ["fulltext"],
+                    _normalizedVectorScore: 0,
+                    _normalizedFullTextScore: normalizedScore,
                 });
             }
         });
 
-        // 纯加权融合，体验和 dify 完全一致
+        // 计算加权分数并排序
         const finalChunks = Array.from(combinedChunks.values())
-            .map((chunk) => {
-                const score =
-                    chunk._vectorScore * semanticWeight + chunk._fullTextScore * keywordWeight;
-                console.log({
-                    id: chunk.id,
-                    content: chunk.content,
-                    vectorScore: chunk._vectorScore,
-                    fullTextScore: chunk._fullTextScore,
-                    semanticWeight,
-                    keywordWeight,
-                    finalScore: score,
-                });
-                return {
-                    ...chunk,
-                    score,
-                };
-            })
+            .map((chunk) => ({
+                ...chunk,
+                score:
+                    chunk._normalizedVectorScore * normalizedSemanticWeight +
+                    chunk._normalizedFullTextScore * normalizedKeywordWeight,
+            }))
             .sort((a, b) => b.score - a.score)
-            .slice(0, topK)
-            .map(({ _vectorScore, _fullTextScore, ...rest }) => rest);
+            .slice(0, finalTopK)
+            .map(({ _normalizedVectorScore, _normalizedFullTextScore, ...rest }) => rest);
 
         return {
             chunks: finalChunks,
             info: {
                 strategy: "weighted_score",
-                semanticWeight,
-                keywordWeight,
-                topK,
+                semanticWeight: normalizedSemanticWeight,
+                keywordWeight: normalizedKeywordWeight,
+                topK: finalTopK,
             },
         };
     }
 
     /**
-     * 执行Rerank混合检索
+     * Performs rerank-based hybrid search
      */
     private async performRerankHybridSearch(
         datasetId: string,
         query: string,
-        rerankConfig: RerankConfig,
-        options?: QueryOptions,
-        config?: RetrievalConfig,
+        rerankConfig: RerankConfig | undefined,
+        candidateConfig: RetrievalConfig,
+        finalTopK: number,
     ): Promise<HybridSearchResult> {
-        const topK = options?.topK ?? config?.topK ?? RAG_SERVICE_CONSTANTS.DEFAULT_TOP_K;
-        const scoreThreshold =
-            options?.scoreThreshold ??
-            config?.scoreThreshold ??
-            RAG_SERVICE_CONSTANTS.DEFAULT_SCORE_THRESHOLD;
-        const scoreThresholdEnabled = config?.scoreThresholdEnabled;
-
-        // 并行执行向量检索和全文检索，获取更多候选
-        const searchConfig: RetrievalConfig = {
-            retrievalMode: RETRIEVAL_MODE.HYBRID,
-            topK: topK * 2,
-            scoreThreshold,
-            scoreThresholdEnabled,
-            weightConfig: config?.weightConfig,
-            rerankConfig,
-        };
+        const { scoreThreshold, scoreThresholdEnabled } = this.normalizeConfig(candidateConfig);
 
         const [vectorResult, fullTextResult] = await Promise.all([
-            this.performVectorSearch(datasetId, query, searchConfig),
-            this.performFullTextSearch(datasetId, query, searchConfig),
+            this.performVectorSearch(datasetId, query, candidateConfig),
+            this.performFullTextSearch(datasetId, query, candidateConfig),
         ]);
 
-        // 合并去重
+        // 去重合并候选结果，保留最高分数
         const candidateChunks = new Map<string, RetrievalChunk>();
         [...vectorResult.chunks, ...fullTextResult.chunks].forEach((chunk) => {
-            if (!candidateChunks.has(chunk.id)) {
-                candidateChunks.set(chunk.id, {
-                    ...chunk,
-                    chunkIndex: chunk.chunkIndex,
-                    contentLength: chunk.contentLength,
-                    fileName: chunk.fileName,
-                });
+            const existing = candidateChunks.get(chunk.id);
+            if (!existing || chunk.score > existing.score) {
+                candidateChunks.set(chunk.id, chunk);
             }
         });
 
         const candidates = Array.from(candidateChunks.values());
-
-        // 使用Rerank模型重排序
-        const finalChunks = await this.performRerank(
-            query,
-            candidates,
-            rerankConfig.modelId!,
-            topK,
-            scoreThreshold,
-            config?.scoreThresholdEnabled ?? true,
-        );
+        const finalChunks =
+            rerankConfig?.enabled && rerankConfig.modelId
+                ? await this.performRerank(
+                      query,
+                      candidates,
+                      rerankConfig.modelId,
+                      finalTopK,
+                      scoreThreshold,
+                      scoreThresholdEnabled,
+                  )
+                : candidates
+                      .filter((chunk) => !scoreThresholdEnabled || chunk.score >= scoreThreshold)
+                      .sort((a, b) => b.score - a.score)
+                      .slice(0, finalTopK); // 确保返回正确数量
 
         return {
             chunks: finalChunks,
             info: {
                 strategy: "rerank",
-                topK,
+                topK: finalTopK,
                 scoreThreshold,
-                rerankUsed: true,
+                rerankUsed: !!rerankConfig?.enabled,
             },
         };
     }
 
     /**
-     * 执行Rerank重排序
+     * Performs reranking of chunks
      */
     private async performRerank(
         query: string,
@@ -469,9 +478,8 @@ export class DatasetsRetrievalService {
         rerankModelId: string,
         topK: number,
         scoreThreshold: number,
-        scoreThresholdEnabled: boolean = true,
+        scoreThresholdEnabled: boolean,
     ): Promise<RetrievalChunk[]> {
-        // 获取Rerank模型配置
         const rerankModel = await this.aiModelService.findOne({
             where: { id: rerankModelId, isActive: true },
             relations: ["provider"],
@@ -479,11 +487,12 @@ export class DatasetsRetrievalService {
 
         if (!rerankModel) {
             this.logger.warn("Rerank模型不可用，跳过重排序");
-            return chunks.slice(0, topK);
+            return chunks
+                .filter((chunk) => !scoreThresholdEnabled || chunk.score >= scoreThreshold)
+                .slice(0, topK);
         }
 
         try {
-            // 创建Rerank适配器
             const adapter = getProvider(rerankModel.provider.provider, {
                 apiKey: rerankModel.provider.apiKey,
                 baseURL: rerankModel.provider.baseUrl,
@@ -498,9 +507,7 @@ export class DatasetsRetrievalService {
             };
 
             const rerankResponse = await generator.rerank.create(rerankParams);
-
-            // 映射重排序结果并排序
-            const rerankedChunks = rerankResponse.results
+            return rerankResponse.results
                 .filter(
                     (result) => !scoreThresholdEnabled || result.relevance_score >= scoreThreshold,
                 )
@@ -509,14 +516,54 @@ export class DatasetsRetrievalService {
                     ...chunks[result.index],
                     relevanceScore: result.relevance_score,
                 }));
-
-            return rerankedChunks;
         } catch (error) {
             this.logger.error(`Rerank重排序失败: ${error.message}`);
-            // 如果Rerank失败，返回原始结果
             return chunks
                 .filter((chunk) => !scoreThresholdEnabled || chunk.score >= scoreThreshold)
                 .slice(0, topK);
         }
+    }
+
+    /**
+     * Generates embedding for query
+     */
+    private async generateEmbedding(query: string, model: any): Promise<number[]> {
+        const adapter = getProvider(model.provider.provider, {
+            apiKey: model.provider.apiKey,
+            baseURL: model.provider.baseUrl,
+        });
+        const generator = embeddingGenerator(adapter);
+        const embeddingResponse: CreateEmbeddingResponse = await generator.embeddings.create({
+            input: [query],
+            model: model.model,
+        });
+        return embeddingResponse.data[0].embedding;
+    }
+
+    /**
+     * Retrieves and validates embedding model
+     */
+    private async getEmbeddingModel(modelId: string): Promise<any> {
+        const model = await this.aiModelService.findOne({
+            where: { id: modelId, isActive: true },
+            relations: ["provider"],
+        });
+        if (!model) {
+            throw HttpExceptionFactory.internal("未找到可用的向量模型");
+        }
+        return model;
+    }
+
+    /**
+     * Normalizes retrieval configuration with defaults
+     */
+    private normalizeConfig(config: RetrievalConfig) {
+        return {
+            topK: config.topK ?? RAG_SERVICE_CONSTANTS.DEFAULT_TOP_K,
+            scoreThreshold: config.scoreThreshold ?? RAG_SERVICE_CONSTANTS.DEFAULT_SCORE_THRESHOLD,
+            scoreThresholdEnabled: config.scoreThresholdEnabled ?? false,
+            rerankConfig: config.rerankConfig,
+            weightConfig: config.weightConfig,
+        };
     }
 }
