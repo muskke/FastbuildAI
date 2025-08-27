@@ -316,6 +316,35 @@ export class PublicAgentChatService {
     }
 
     /**
+     * 公开智能体阻塞对话
+     * @param publishToken 发布令牌
+     * @param accessToken 访问令牌
+     * @param dto 对话请求数据
+     * @param loggedInUser 可选的登录用户信息
+     */
+    async chatByAccessToken(
+        publishToken: string,
+        accessToken: string,
+        dto: PublicAgentChatDto,
+        loggedInUser?: UserPlayground,
+    ) {
+        const agent = await this.getAgentByPublishToken(publishToken);
+        await this.checkRateLimit(agent);
+
+        const agentChatDto = this.convertToAgentChatDto(dto, agent);
+        const user = this.createEnhancedUser(accessToken, loggedInUser);
+
+        this.logger.debug(`[+] 公开智能体阻塞对话用户: ${JSON.stringify(agentChatDto)}`);
+
+        try {
+            return await this.agentChatService.handleChat(agent.id, agentChatDto, user, "sync");
+        } catch (error) {
+            this.logger.error(`[!] 公开智能体阻塞对话失败: ${error.message}`, error.stack);
+            throw HttpExceptionFactory.business("阻塞对话处理失败");
+        }
+    }
+
+    /**
      * 公开智能体流式对话
      * @param publishToken 发布令牌
      * @param accessToken 访问令牌
@@ -339,7 +368,13 @@ export class PublicAgentChatService {
         this.logger.debug(`[+] 公开智能体对话用户: ${JSON.stringify(agentChatDto)}`);
 
         try {
-            return await this.agentChatService.chatStream(agent.id, agentChatDto, user, res);
+            return await this.agentChatService.handleChat(
+                agent.id,
+                agentChatDto,
+                user,
+                "stream",
+                res,
+            );
         } catch (error) {
             this.logger.error(`[!] 公开智能体流式对话失败: ${error.message}`, error.stack);
             throw HttpExceptionFactory.business("流式对话处理失败");
@@ -424,24 +459,6 @@ export class PublicAgentChatService {
     }
 
     /**
-     * 执行对话逻辑
-     */
-    private async performChat(agent: Agent, dto: PublicAgentChatDto) {
-        await this.checkRateLimit(agent);
-        const agentChatDto = this.convertToAgentChatDto(dto, agent);
-        const anonymousUser = this.createAnonymousUser();
-
-        try {
-            const result = await this.agentChatService.chat(agent.id, agentChatDto, anonymousUser);
-            this.logger.log(`[+] 公开智能体对话完成: ${agent.id} - ${agent.name}`);
-            return result;
-        } catch (error) {
-            this.logger.error(`[!] 公开智能体对话失败: ${error.message}`, error.stack);
-            throw HttpExceptionFactory.business("对话处理失败");
-        }
-    }
-
-    /**
      * 执行API Key认证的对话逻辑
      */
     private async performApiKeyChat(agent: Agent, dto: PublicAgentChatDto, apiKey: string) {
@@ -450,33 +467,17 @@ export class PublicAgentChatService {
         const apiKeyUser = this.createApiKeyUser(apiKey);
 
         try {
-            const result = await this.agentChatService.chat(agent.id, agentChatDto, apiKeyUser);
+            const result = await this.agentChatService.handleChat(
+                agent.id,
+                agentChatDto,
+                apiKeyUser,
+                "sync",
+            );
             this.logger.log(`[+] API Key对话完成: ${agent.id} - ${agent.name}`);
             return result;
         } catch (error) {
             this.logger.error(`[!] API Key对话失败: ${error.message}`, error.stack);
             throw HttpExceptionFactory.business("对话处理失败");
-        }
-    }
-
-    /**
-     * 执行流式对话逻辑
-     */
-    private async performChatStream(agent: Agent, dto: PublicAgentChatDto, res: Response) {
-        await this.checkRateLimit(agent);
-        const agentChatDto = this.convertToAgentChatDto(dto, agent);
-        const anonymousUser = this.createAnonymousUser();
-
-        try {
-            return await this.agentChatService.chatStream(
-                agent.id,
-                agentChatDto,
-                anonymousUser,
-                res,
-            );
-        } catch (error) {
-            this.logger.error(`[!] 公开智能体流式对话失败: ${error.message}`, error.stack);
-            throw HttpExceptionFactory.business("流式对话处理失败");
         }
     }
 
@@ -494,32 +495,17 @@ export class PublicAgentChatService {
         const apiKeyUser = this.createApiKeyUser(apiKey);
 
         try {
-            return await this.agentChatService.chatStream(agent.id, agentChatDto, apiKeyUser, res);
+            return await this.agentChatService.handleChat(
+                agent.id,
+                agentChatDto,
+                apiKeyUser,
+                "stream",
+                res,
+            );
         } catch (error) {
             this.logger.error(`[!] API Key流式对话失败: ${error.message}`, error.stack);
             throw HttpExceptionFactory.business("流式对话处理失败");
         }
-    }
-
-    /**
-     * 创建匿名用户上下文
-     * 为直接访问的用户生成唯一标识符
-     */
-    private createAnonymousUser(): UserPlayground {
-        // 生成基于时间戳和随机数的唯一标识符
-        const timestamp = Date.now().toString(36);
-        const randomStr = Math.random().toString(36).substring(2, 8);
-        const uniqueId = `anonymous_${timestamp}_${randomStr}`;
-
-        this.logger.debug(`[+] 创建匿名用户: ${uniqueId}`);
-
-        return {
-            id: uniqueId,
-            username: `anonymous_${timestamp}`,
-            isRoot: 0,
-            role: {} as any,
-            permissions: [],
-        };
     }
 
     /**
@@ -537,7 +523,7 @@ export class PublicAgentChatService {
         const anonymousIdentifier = this.generateApiKeyIdentifier(apiKey);
 
         return {
-            id: anonymousIdentifier,
+            id: anonymousIdentifier, // 使用匿名标识符作为 ID，这样 isAnonymousUser 逻辑就能正常工作
             username: `anonymous_api_${apiKey.substring(3, 11)}`, // 以 anonymous_ 开头确保被识别为匿名用户
             isRoot: 0,
             role: {} as any,

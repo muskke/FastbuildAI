@@ -119,7 +119,7 @@ export class AiProviderService extends BaseService<AiProvider> {
                 where: whereConditions.length > 1 ? whereConditions : where,
                 relations: ["models"],
                 order: {
-                    sortOrder: "ASC",
+                    sortOrder: "DESC",
                     createdAt: "DESC",
                 },
                 excludeFields,

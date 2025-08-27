@@ -10,10 +10,10 @@ import { uuid } from "@/common/utils/helper";
 import type { AiMessage } from "@/models/ai-conversation";
 import type { PaginationResult } from "@/models/global";
 import {
-    apiGeneratePublicAgentAccessToken,
-    apiGetPublicAgentInfo,
-    apiGetPublicAgentMessages,
-    apiPublicAgentChatByAccessToken,
+    apiGenerateAccessToken,
+    apiGetAgentInfo,
+    apiGetMessages,
+    apiChatStream,
 } from "@/services/web/ai-agent-publish";
 
 import AgentAnnotationModal from "../../console/ai-agent/_components/logs/annotation-modal.vue";
@@ -73,7 +73,7 @@ const { data: accessTokenData, refresh: refreshAccessToken } = await useAsyncDat
         }
 
         try {
-            const tokenInfo = await apiGeneratePublicAgentAccessToken(publishToken.value);
+            const tokenInfo = await apiGenerateAccessToken(publishToken.value);
             existingToken.value = tokenInfo.accessToken;
             return { ...tokenInfo, fromCache: false };
         } catch (error) {
@@ -96,7 +96,7 @@ const { data: messagesData, refresh: refreshMessagesData } = await useAsyncData(
                 pageSize: queryPaging.pageSize,
             } as unknown as Promise<PaginationResult<AiMessage>>;
         }
-        return apiGetPublicAgentMessages(
+        return apiGetMessages(
             publishToken.value,
             accessToken.value,
             conversationId.value as string,
@@ -132,7 +132,7 @@ const initialMessages = computed(() => {
 // 获取智能体信息
 const { data: agent, pending: agentLoading } = await useAsyncData(
     `public-agent-${publishToken.value}`,
-    () => apiGetPublicAgentInfo(publishToken.value, accessToken.value),
+    () => apiGetAgentInfo(publishToken.value, accessToken.value),
 );
 
 // 对话管理方法
@@ -154,7 +154,7 @@ const switchConversation = async (conv: any) => {
 
 // 聊天功能
 const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
-    api: apiPublicAgentChatByAccessToken,
+    api: apiChatStream,
     initialMessages: [],
     chatConfig: {
         get avatar() {
@@ -201,7 +201,7 @@ const loadMoreMessages = async () => {
 
     queryPaging.page++;
     try {
-        const data = await apiGetPublicAgentMessages(
+        const data = await apiGetMessages(
             publishToken.value,
             accessToken.value,
             conversationId.value,

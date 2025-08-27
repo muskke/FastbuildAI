@@ -7,9 +7,9 @@ import { groupConversationsByDate, type GroupedConversations } from "@/common/ut
 import type { Agent } from "@/models/ai-agent";
 import type { AiConversation } from "@/models/ai-conversation";
 import {
-    apiDeletePublicAgentConversation,
-    apiGetPublicAgentConversations,
-    apiUpdatePublicAgentConversation,
+    apiDeleteConversation,
+    apiGetConversations,
+    apiUpdateConversation,
 } from "@/services/web/ai-agent-publish";
 
 const { t } = useI18n();
@@ -62,7 +62,7 @@ const { data: conversationsData, pending: loading } = await useAsyncData(
     () => `public-agent-conversations-${props.publishToken}-${props.accessToken}`,
     () => {
         if (!props.accessToken) return { items: [] } as any;
-        return apiGetPublicAgentConversations(props.publishToken, props.accessToken, {
+        return apiGetConversations(props.publishToken, props.accessToken, {
             page: 1,
             pageSize: 50,
         });
@@ -182,7 +182,7 @@ const openEditModal = async (conversation: any): Promise<void> => {
 // 更新对话标题
 const updateConversationTitle = async (conversationId: string, title: string): Promise<void> => {
     try {
-        await apiUpdatePublicAgentConversation(
+        await apiUpdateConversation(
             props.publishToken,
             props.accessToken,
             conversationId,
@@ -202,7 +202,7 @@ const deleteConversation = async (conversation: AiConversation) => {
     if (!props.accessToken) return;
 
     try {
-        await apiDeletePublicAgentConversation(
+        await apiDeleteConversation(
             props.publishToken,
             props.accessToken,
             conversation.id,
