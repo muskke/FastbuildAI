@@ -108,7 +108,15 @@ export function transformMenus(
                 ? undefined
                 : getToPath(menu, basePath);
 
-        const defaultOpen = options.currentPath ? options.currentPath.startsWith(matchPath) : false;
+        const children = menu.children?.length
+            ? transformMenus(menu.children, fullPath, options)
+            : [];
+
+        const isCurrentPathMatch = options.currentPath
+            ? options.currentPath.startsWith(matchPath)
+            : false;
+        const hasExpandedChildren = children.some((child) => child.defaultOpen || child.active);
+        const defaultOpen = isCurrentPathMatch || hasExpandedChildren;
 
         // 特殊处理 GROUP 类型的菜单
         if (menu.type === MENU_TYPE.GROUP) {
@@ -122,7 +130,7 @@ export function transformMenus(
 
             // 2. 将子项添加到同级
             if (menu.children?.length) {
-                result = result.concat(transformMenus(menu.children, fullPath, options));
+                result = result.concat(children);
             }
         } else {
             // 正常处理其他类型的菜单
@@ -131,11 +139,9 @@ export function transformMenus(
                 icon: menu.icon || "",
                 to,
                 matchPath,
-                active: !!to && defaultOpen,
+                active: !!to && isCurrentPathMatch,
                 defaultOpen,
-                children: menu.children?.length
-                    ? transformMenus(menu.children, fullPath, options)
-                    : [],
+                children,
             });
         }
     });
