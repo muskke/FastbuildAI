@@ -5,6 +5,8 @@
         "rechargeIncreasePower": "充值增加算力",
         "rechargeGiftPower": "充值赠送增加算力",
         "rechargeRefundPower": "充值退款退回算力",
+        "systemIncreasePower": "系统增加算力",
+        "systemDecreasePower": "系统扣减算力",
         "table": {
             "userNo": "用户编号",
             "nickname": "用户昵称",
