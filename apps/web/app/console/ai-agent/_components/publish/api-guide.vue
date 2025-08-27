@@ -15,13 +15,14 @@ const baseUrl = computed(() => import.meta.env.VITE_APP_BASE_URL);
 const apiEndpoints = computed(() => [
     {
         method: "POST",
-        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/chat`,
+        url: `/consoleapi/v1/chat`,
         title: t("console-ai-agent.publish.normalChatAPI"),
         description: t("console-ai-agent.publish.normalChatAPIDesc"),
         color: "success",
         requestExample: {
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${props.agent?.apiKey || "{API_KEY}"}`,
             },
             body: {
                 messages: [
@@ -30,8 +31,7 @@ const apiEndpoints = computed(() => [
                         content: "你好",
                     },
                 ],
-                conversationId: "可选，继续指定对话",
-                title: "可选，对话标题",
+                responseMode: "blocking",
             },
         },
         responseExample: {
@@ -49,13 +49,14 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "POST",
-        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/chat/stream`,
+        url: `/consoleapi/v1/chat`,
         title: t("console-ai-agent.publish.streamChatAPI"),
         description: t("console-ai-agent.publish.streamChatAPIDesc"),
         color: "info",
         requestExample: {
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${props.agent?.apiKey || "{API_KEY}"}`,
             },
             body: {
                 messages: [
@@ -64,7 +65,7 @@ const apiEndpoints = computed(() => [
                         content: "你好",
                     },
                 ],
-                conversationId: "可选，继续指定对话",
+                responseMode: "streaming",
             },
         },
         responseExample: {
@@ -74,11 +75,14 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "GET",
-        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/conversations`,
+        url: `/consoleapi/v1/conversations`,
         title: t("console-ai-agent.publish.getConversationsAPI"),
         description: t("console-ai-agent.publish.getConversationsAPIDesc"),
         color: "neutral",
         requestExample: {
+            headers: {
+                Authorization: `Bearer ${props.agent?.apiKey || "{API_KEY}"}`,
+            },
             params: {
                 page: 1,
                 pageSize: 10,
@@ -105,11 +109,14 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "GET",
-        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/conversations/{id}/messages`,
+        url: `/consoleapi/v1/conversations/{id}/messages`,
         title: t("console-ai-agent.publish.getMessagesAPI"),
         description: t("console-ai-agent.publish.getMessagesAPIDesc"),
         color: "neutral",
         requestExample: {
+            headers: {
+                Authorization: `Bearer ${props.agent?.apiKey || "{API_KEY}"}`,
+            },
             params: {
                 page: 1,
                 pageSize: 50,
@@ -145,13 +152,14 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "PUT",
-        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/conversations/{id}`,
+        url: `/consoleapi/v1/conversations/{id}`,
         title: t("console-ai-agent.publish.updateConversationAPI"),
         description: t("console-ai-agent.publish.updateConversationAPIDesc"),
         color: "warning",
         requestExample: {
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${props.agent?.apiKey || "{API_KEY}"}`,
             },
             body: {
                 title: "新的对话标题",
@@ -163,11 +171,14 @@ const apiEndpoints = computed(() => [
     },
     {
         method: "DELETE",
-        url: `/consoleapi/public-agent/public/${props.agent?.apiKey || "{apiKey}"}/conversations/{id}`,
+        url: `/consoleapi/v1/conversations/{id}`,
         title: t("console-ai-agent.publish.deleteConversationAPI"),
         description: t("console-ai-agent.publish.deleteConversationAPIDesc"),
         color: "error",
         requestExample: {
+            headers: {
+                Authorization: `Bearer ${props.agent?.apiKey || "{API_KEY}"}`,
+            },
             note: t("console-ai-agent.publish.deleteNoBody"),
         },
         responseExample: {

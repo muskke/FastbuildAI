@@ -5,12 +5,15 @@ import {
     IsBoolean,
     IsEnum,
     IsNotEmpty,
+    IsNumber,
     IsObject,
     IsOptional,
     IsString,
     IsUUID,
     ValidateNested,
 } from "class-validator";
+
+import { ModelBillingConfig } from "../interfaces/agent-config.interface";
 
 /**
  * 快捷指令配置DTO
@@ -141,6 +144,13 @@ export class ModelConfigDto {
     };
 }
 
+export class ModelBillingConfigDto {
+    @IsOptional()
+    @IsNumber()
+    @IsNotEmpty({ message: "算力不能为空" })
+    power: number;
+}
+
 /**
  * 自动追问配置DTO
  */
@@ -212,6 +222,14 @@ export class AgentConfigBaseDto {
     @ValidateNested()
     @Type(() => ModelConfigDto)
     modelConfig?: ModelConfigDto;
+
+    /**
+     * 智能体计费配置
+     */
+    @IsOptional()
+    @ValidateNested()
+    @Type(() => ModelBillingConfigDto)
+    billingConfig?: ModelBillingConfig;
 
     /**
      * 知识库ID列表
@@ -790,3 +808,67 @@ export class PublicAgentChatDto {
  * 导入智能体DTO
  */
 export class ImportAgentDto extends UpdateAgentConfigDto {}
+
+/**
+ * V1 API 对话请求 DTO
+ */
+export class V1ChatDto {
+    /**
+     * 消息列表（标准AI对话格式）
+     */
+    @IsNotEmpty({ message: "消息列表不能为空" })
+    @IsArray({ message: "消息必须是数组" })
+    @ValidateNested({ each: true })
+    @Type(() => AgentChatMessageDto)
+    messages: AgentChatMessageDto[];
+
+    /**
+     * 响应模式
+     * streaming: 流式模式（推荐）
+     * blocking: 阻塞模式，等待执行完毕后返回结果
+     */
+    @IsOptional()
+    @IsEnum(["streaming", "blocking"], { message: "响应模式必须是 streaming 或 blocking" })
+    responseMode?: "streaming" | "blocking" = "streaming";
+    /**
+     * 对话ID（可选，用于继续对话）
+     */
+    @IsOptional()
+    @IsString({ message: "对话ID必须是字符串" })
+    conversationId?: string;
+
+    /**
+     * 对话标题（可选）
+     */
+    @IsOptional()
+    @IsString({ message: "对话标题必须是字符串" })
+    title?: string;
+
+    /**
+     * 表单变量（可选）
+     */
+    @IsOptional()
+    @IsObject({ message: "表单变量必须是对象" })
+    formVariables?: Record<string, string>;
+
+    /**
+     * 表单字段输入值（可选）
+     */
+    @IsOptional()
+    @IsObject({ message: "表单字段输入值必须是对象" })
+    formFieldsInputs?: Record<string, any>;
+
+    /**
+     * 是否保存对话记录
+     */
+    @IsOptional()
+    @IsBoolean({ message: "保存对话记录必须是布尔值" })
+    saveConversation?: boolean = true;
+
+    /**
+     * 是否包含引用来源
+     */
+    @IsOptional()
+    @IsBoolean({ message: "包含引用来源必须是布尔值" })
+    includeReferences?: boolean;
+}

@@ -4,6 +4,7 @@ import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } fr
 import {
     AutoQuestionsConfig,
     FormFieldConfig,
+    ModelBillingConfig,
     ModelConfig,
     QuickCommandConfig,
 } from "../interfaces/agent-config.interface";
@@ -93,6 +94,12 @@ export class Agent {
      */
     @Column({ type: "json", nullable: true, comment: "模型配置" })
     modelConfig?: ModelConfig;
+
+    /**
+     * 智能体计费配置
+     */
+    @Column({ type: "json", nullable: true, comment: "模型配置" })
+    billingConfig?: ModelBillingConfig;
 
     /**
      * 关联知识库ID列表

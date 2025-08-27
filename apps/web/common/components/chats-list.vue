@@ -205,7 +205,7 @@ defineOptions({ inheritAttrs: false });
                 v-show="!controlsStore.chatSidebarVisible"
             >
                 <!-- 新建对话按钮 & 折叠按钮 -->
-                <div class="flex items-center gap-2 p-4">
+                <div class="flex items-center gap-2 p-4 pt-2">
                     <!-- 新建对话 -->
                     <UButton
                         icon="i-lucide-sparkles"
