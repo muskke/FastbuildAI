@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useClipboard } from "@vueuse/core";
 import { computed, ref } from "vue";
 
 import type { Agent } from "@/models/ai-agent";
@@ -83,11 +84,7 @@ const tabs = [
     { value: "wordpress", label: "WordPress", icon: "i-lucide-wordpress" },
 ];
 
-const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code).then(() => {
-        // 这里可以添加复制成功的提示
-    });
-};
+const { copy } = useClipboard();
 </script>
 
 <template>
@@ -136,7 +133,7 @@ const copyCode = (code: string) => {
                             icon="i-lucide-copy"
                             variant="outline"
                             size="sm"
-                            @click="copyCode(iframeCode)"
+                            @click="copy(iframeCode)"
                         >
                             {{ $t("console-common.copy") }}
                         </UButton>
@@ -161,7 +158,7 @@ const copyCode = (code: string) => {
                             icon="i-lucide-copy"
                             variant="outline"
                             size="sm"
-                            @click="copyCode(jsCode)"
+                            @click="copy(jsCode)"
                         >
                             {{ $t("console-common.copy") }}
                         </UButton>
@@ -188,7 +185,7 @@ const copyCode = (code: string) => {
                             icon="i-lucide-copy"
                             variant="outline"
                             size="sm"
-                            @click="copyCode(wordpressCode)"
+                            @click="copy(wordpressCode)"
                         >
                             {{ $t("console-common.copy") }}
                         </UButton>
