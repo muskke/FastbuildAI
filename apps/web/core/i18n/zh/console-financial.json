@@ -14,7 +14,8 @@
             "leftAmount": "剩余数量",
             "accountTypeDesc": "变动类型",
             "associationUser": "管理员",
-            "createdAt": "记录时间"
+            "createdAt": "记录时间",
+            "consumeSourceDesc": "来源"
         }
     },
     "financialCenter": {

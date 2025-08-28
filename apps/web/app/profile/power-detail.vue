@@ -32,7 +32,7 @@ const columns: TableColumn<PowerDetaiItem>[] = [
     },
     {
         accessorKey: "consumeSourceDesc",
-        header: t("web-personal-rights.rechargeCenter.detail.aiName"),
+        header: t("web-personal-rights.rechargeCenter.detail.consumeSourceDesc"),
     },
     {
         accessorKey: "changeAmount",
