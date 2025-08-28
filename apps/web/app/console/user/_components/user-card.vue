@@ -24,6 +24,7 @@ const emit = defineEmits<UserCardEmits>();
 const router = useRouter();
 const { t } = useI18n();
 const { hasAccessByCodes } = useAccessControl();
+const auth = useUserStore();
 
 /**
  * 处理选择状态变化
@@ -98,7 +99,11 @@ function getUserSourceInfo(source: number | undefined) {
 const dropdownActions = computed(() => {
     const items = [];
 
-    if (hasAccessByCodes(["users:update"])) {
+    if (
+        hasAccessByCodes(["users:update"]) &&
+        (props.user.isRoot !== 1 ||
+            (auth.userInfo?.isRoot === 1 && props.user.id === auth.userInfo.id))
+    ) {
         items.push({
             label: t("console-common.edit"),
             icon: "i-lucide-edit",
@@ -110,7 +115,7 @@ const dropdownActions = computed(() => {
         });
     }
 
-    if (hasAccessByCodes(["users:delete"])) {
+    if (hasAccessByCodes(["users:delete"]) && props.user.isRoot !== 1) {
         items.push({
             label: t("console-common.delete"),
             icon: "i-lucide-trash-2",
