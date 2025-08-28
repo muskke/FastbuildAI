@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useClipboard } from "@vueuse/core";
 import { computed } from "vue";
 
 import type { Agent } from "@/models/ai-agent";
@@ -18,9 +19,7 @@ const publishUrl = computed(() => {
 const isPublished = computed(() => props.agent?.isPublished || false);
 
 // 复制文本到剪贴板
-const copyText = (text: string) => {
-    navigator.clipboard.writeText(text);
-};
+const { copy } = useClipboard();
 
 // 打开链接
 const openLink = (url: string) => {
@@ -85,7 +84,7 @@ const openLink = (url: string) => {
                             v-if="publishUrl"
                             icon="i-lucide-copy"
                             variant="outline"
-                            @click="copyText(publishUrl)"
+                            @click="copy(publishUrl)"
                         />
                         <UButton
                             v-if="publishUrl"
@@ -112,7 +111,7 @@ const openLink = (url: string) => {
                             v-if="agent?.apiKey"
                             icon="i-lucide-copy"
                             variant="outline"
-                            @click="copyText(agent.apiKey || '')"
+                            @click="copy(agent.apiKey || '')"
                         />
                     </UFormField>
                 </div>
