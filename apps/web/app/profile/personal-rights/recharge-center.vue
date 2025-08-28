@@ -54,8 +54,11 @@ const rechargeInstructions = ref<string>();
 // 充值中心信息
 // const rechargeCenterInfo = ref<RechargeCenterInfo | null>(null);
 let interval: ReturnType<typeof setInterval> | null = null;
+let timeoutTimer: ReturnType<typeof setTimeout> | null = null;
 // 充值成功提示
 const rechargeSuccess = ref<boolean>(false);
+// 二维码是否失效
+const isQrCodeExpired = ref<boolean>(false);
 
 const { data: rechargeCenterInfo } = await useAsyncData(
     "rechargeCenterInfo",
@@ -121,6 +124,9 @@ const handleRecharge = async () => {
 
 // 轮询支付状态
 const startPolling = () => {
+    // 重置二维码失效状态
+    isQrCodeExpired.value = false;
+
     interval = setInterval(async () => {
         try {
             const res = await getPayResult({
@@ -129,6 +135,7 @@ const startPolling = () => {
             });
             if (res.payStatus === 1) {
                 clearInterval(interval!);
+                clearTimeout(timeoutTimer!);
                 prepaidData.value = null;
                 getRechargeInfo();
                 userStore.getUser();
@@ -138,6 +145,12 @@ const startPolling = () => {
             console.error(error);
         }
     }, 3000);
+
+    // 设置120秒超时
+    timeoutTimer = setTimeout(() => {
+        clearInterval(interval!);
+        isQrCodeExpired.value = true;
+    }, 120000); // 120秒
 };
 
 const tokenDetail = () => {
@@ -147,7 +160,39 @@ const tokenDetail = () => {
 const handleModalClose = () => {
     prepaidData.value = null;
     clearInterval(interval!);
+    clearTimeout(timeoutTimer!);
+    isQrCodeExpired.value = false;
     toast.warning(t("web-personal-rights.rechargeCenter.cancelPay"));
+};
+
+/**
+ * 刷新二维码
+ */
+const handleRefreshQrCode = async () => {
+    try {
+        // 清理现有定时器
+        clearInterval(interval!);
+        clearTimeout(timeoutTimer!);
+
+        // 检查订单ID是否存在
+        if (!orderInfo.value?.orderId) {
+            console.error("订单ID不存在");
+            return;
+        }
+
+        // 重新获取支付二维码
+        const prepaidInfo = await prepaid({
+            from: "recharge",
+            orderId: orderInfo.value.orderId,
+            payType: selectedPaymentMethod.value,
+        });
+        prepaidData.value = prepaidInfo;
+
+        // 重新开始轮询
+        startPolling();
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 // 跳转服务条款
@@ -188,7 +233,7 @@ definePageMeta({
                             }}</span>
                         </div>
                         <div
-                            class="text-muted-foreground flex items-center gap-1"
+                            class="text-muted-foreground flex cursor-pointer items-center gap-1"
                             @click="tokenDetail"
                         >
                             <span class="text-center">
@@ -343,9 +388,36 @@ definePageMeta({
             >
                 <template #default>
                     <div class="flex flex-col items-center justify-center gap-2">
-                        <img class="w-52" :src="prepaidData?.qrCode.code_url" alt="prepaidData" />
+                        <div class="relative h-52 w-52">
+                            <img
+                                class="w-full"
+                                :src="prepaidData?.qrCode.code_url"
+                                alt="微信支付码"
+                            />
+                            <div
+                                v-if="isQrCodeExpired"
+                                class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm dark:bg-gray-800/60"
+                            >
+                                <UIcon
+                                    name="i-lucide-alert-triangle"
+                                    class="mb-2 text-5xl text-yellow-500"
+                                />
+                                <p class="mb-2 text-sm text-gray-700 dark:text-gray-300">
+                                    {{ t("web-personal-rights.rechargeCenter.qrCodeExpired") }}
+                                </p>
+                                <UButton
+                                    class="cursor-pointer"
+                                    size="xs"
+                                    @click="handleRefreshQrCode"
+                                >
+                                    {{ t("web-personal-rights.rechargeCenter.refreshQrCode") }}
+                                </UButton>
+                            </div>
+                        </div>
                         <div>
-                            <span class="text-lg font-medium">合计：</span>
+                            <span class="text-lg font-medium">
+                                {{ t("web-personal-rights.rechargeCenter.total") }}：
+                            </span>
                             <span class="text-xl font-bold text-red-500">
                                 ¥{{ orderInfo?.orderAmount }}
                             </span>
@@ -369,7 +441,7 @@ definePageMeta({
                 :ui="{
                     content: 'max-w-xs overflow-y-auto h-fit',
                 }"
-                title="系统提示"
+                :title="t('web-personal-rights.rechargeCenter.systemTip')"
                 :model-value="rechargeSuccess"
                 @update:model-value="close"
             >

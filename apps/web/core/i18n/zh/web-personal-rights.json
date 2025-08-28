@@ -50,6 +50,9 @@
         "cancelPay": "取消支付",
         "notOpen": "暂未开放",
         "notOpenTip": "该功能网站管理员暂未开放，敬请期待。",
-        "back": "返回上一页"
+        "back": "返回上一页",
+        "qrCodeExpired": "二维码失效，请刷新",
+        "refreshQrCode": "刷新二维码",
+        "systemTip": "系统提示"
     }
 }
