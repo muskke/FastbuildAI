@@ -1,11 +1,18 @@
 import { BaseService } from "@common/base/services/base.service";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { UserPlayground } from "@common/interfaces/context.interface";
+import {
+    ACCOUNT_LOG_SOURCE,
+    ACCOUNT_LOG_TYPE,
+    ACTION,
+} from "@common/modules/account/constants/account-log.constants";
+import { AccountLogService } from "@common/modules/account/services/account-log.service";
+import { User } from "@common/modules/auth/entities/user.entity";
 import { StreamUtils } from "@common/utils/stream-utils.util";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Response } from "express";
-import { Repository } from "typeorm";
+import { PropertyType, Repository } from "typeorm";
 
 import { AiModelService } from "@/modules/console/ai/services/ai-model.service";
 import { TextGenerator } from "@/sdk/ai/core/generator/text";
@@ -63,12 +70,14 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         protected readonly chatRecordRepository: Repository<AgentChatRecord>,
         protected readonly chatMessageRepository: Repository<AgentChatMessage>,
         protected readonly agentRepository: Repository<Agent>,
+        protected readonly userRepository: Repository<User>,
         protected readonly agentService: AgentService,
         protected readonly agentChatRecordService: AgentChatRecordService,
         protected readonly datasetsRetrievalService: DatasetsRetrievalService,
         protected readonly datasetsService: DatasetsService,
         protected readonly aiModelService: AiModelService,
         protected readonly agentAnnotationService: AgentAnnotationService,
+        protected readonly accountLogService: AccountLogService,
     ) {
         super(chatRecordRepository);
     }
@@ -277,7 +286,7 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         anonymousIdentifier?: string,
     ): Promise<void> {
         try {
-            const messageData = {
+            const messageData: Partial<AgentChatMessage> = {
                 conversationId,
                 agentId,
                 userId: anonymousIdentifier ? null : userId,
@@ -719,23 +728,28 @@ export class AgentChatService extends BaseAgentChatService {
         chatMessageRepository: Repository<AgentChatMessage>,
         @InjectRepository(Agent)
         agentRepository: Repository<Agent>,
+        @InjectRepository(User)
+        userRepository: Repository<User>,
         agentService: AgentService,
         agentChatRecordService: AgentChatRecordService,
         datasetsRetrievalService: DatasetsRetrievalService,
         datasetsService: DatasetsService,
         aiModelService: AiModelService,
         agentAnnotationService: AgentAnnotationService,
+        accountLogService: AccountLogService,
     ) {
         super(
             chatRecordRepository,
             chatMessageRepository,
             agentRepository,
+            userRepository,
             agentService,
             agentChatRecordService,
             datasetsRetrievalService,
             datasetsService,
             aiModelService,
             agentAnnotationService,
+            accountLogService,
         );
     }
 
@@ -759,6 +773,20 @@ export class AgentChatService extends BaseAgentChatService {
             res!.setHeader("Connection", "keep-alive");
             res!.setHeader("Access-Control-Allow-Origin", "*");
             res!.setHeader("Access-Control-Allow-Headers", "Cache-Control");
+        }
+
+        const userInfo = await this.userRepository.findOne({
+            where: { id: user.id },
+        });
+
+        if (!userInfo) {
+            throw HttpExceptionFactory.notFound("用户不存在");
+        }
+
+        const agentInfo = await this.agentService.findOneById(agentId);
+
+        if (!agentInfo) {
+            throw HttpExceptionFactory.notFound("智能体不存在");
         }
 
         const startTime = Date.now();
@@ -788,6 +816,10 @@ export class AgentChatService extends BaseAgentChatService {
                     dto.formFieldsInputs,
                     this.isAnonymousUser(user) ? user.id : undefined,
                 );
+            }
+
+            if (agentInfo.billingConfig.price > userInfo.power) {
+                throw HttpExceptionFactory.forbidden("算力不足，请充值后重试");
             }
 
             const quickCommandResult = this.handleQuickCommand(dto, lastUserMessage);
@@ -1027,6 +1059,45 @@ export class AgentChatService extends BaseAgentChatService {
                         conversationRecord!.messageCount + 2,
                         conversationRecord!.totalTokens + (tokenUsage?.total_tokens || 0),
                     );
+
+                    if (agentInfo.billingConfig.price > 0) {
+                        try {
+                            // 计算需要扣除的算力
+                            const { price } = agentInfo.billingConfig;
+                            await this.userRepository.manager.transaction(async (entityManager) => {
+                                // 计算扣除后的算力，确保不会为负数
+                                const newPower = Math.max(0, userInfo.power - price);
+                                // 实际扣除的算力（可能小于powerToDeduct，如果用户算力不足）
+                                const actualDeducted = userInfo.power - newPower;
+
+                                await entityManager.update(User, user.id, {
+                                    power: newPower,
+                                });
+
+                                // 记录算力变动日志
+                                await this.accountLogService.recordWithTransaction(
+                                    entityManager,
+                                    user.id,
+                                    ACCOUNT_LOG_TYPE.AGENT_CHAT_DEC,
+                                    ACTION.DEC,
+                                    actualDeducted,
+                                    "", // 关联单号
+                                    user.id, // 关联用户ID
+                                    `智能体对话消耗算力，模型：${model.name}`, // 备注
+                                    {
+                                        type: ACCOUNT_LOG_SOURCE.AGENT_CHAT,
+                                        source: agentInfo.id,
+                                    },
+                                );
+
+                                this.logger.debug(
+                                    `用户 ${user.id} 对话扣除算力 ${actualDeducted} 成功`,
+                                );
+                            });
+                        } catch (error) {
+                            this.logger.error(`扣除用户算力失败: ${error.message}`, error.stack);
+                        }
+                    }
                 }
 
                 if (finalConfig.showContext) {
