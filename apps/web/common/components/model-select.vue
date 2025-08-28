@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ProScrollArea } from "@fastbuildai/ui";
 import type { ButtonProps } from "@nuxt/ui";
-import { computed, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import type { ModelType } from "@/models";
 import type { AiModel, AiProvider } from "@/models/ai-conversation";
@@ -35,6 +35,7 @@ const isOpen = ref(false);
 const search = ref("");
 const providers = ref<AiProvider[]>([]);
 const selected = ref<AiModel | null>(null);
+const scrollAreaRef = ref<any>(null);
 
 const allModels = computed(() => providers.value.flatMap((p) => p.models ?? []));
 const filteredProviders = computed(() => {
@@ -90,6 +91,30 @@ async function loadModels() {
     }
 }
 
+/**
+ * 滚动到选中的模型
+ */
+const scrollToSelectedModel = async () => {
+    if (!selected.value || !isOpen.value) return;
+
+    await nextTick();
+
+    const selectedElement = document.querySelector(`[data-model-id="${selected.value.id}"]`);
+    if (selectedElement && scrollAreaRef.value) {
+        selectedElement.scrollIntoView({
+            behavior: "instant",
+            block: "center",
+        });
+    }
+};
+
+// 监听弹窗打开状态，打开时自动定位到选中模型
+watch(isOpen, (newValue) => {
+    if (newValue) {
+        scrollToSelectedModel();
+    }
+});
+
 onMounted(loadModels);
 </script>
 
@@ -136,7 +161,7 @@ onMounted(loadModels);
                     class="flex h-[calc((100vh-15rem)/3)] flex-col gap-3 p-2"
                     :class="{ 'md:grid-cols-2': filteredProviders.length > 1 }"
                 >
-                    <ProScrollArea class="h-full" type="hover" :shadow="false">
+                    <ProScrollArea ref="scrollAreaRef" class="h-full" type="hover" :shadow="false">
                         <div
                             v-if="loading"
                             class="text-muted-foreground col-span-full py-10 text-center"
@@ -178,6 +203,7 @@ onMounted(loadModels);
                                 <li
                                     v-for="model in provider.models"
                                     :key="model.id"
+                                    :data-model-id="model.id"
                                     class="group hover:bg-muted flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors"
                                     :class="{ 'bg-secondary': selected?.id === model.id }"
                                     @click="select(model)"
