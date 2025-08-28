@@ -3,6 +3,9 @@ import { WebController } from "@common/decorators/controller.decorator";
 import { Playground } from "@common/decorators/playground.decorator";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { UserPlayground } from "@common/interfaces/context.interface";
+import { ACCOUNT_LOG_TYPE, ACTION } from "@common/modules/account/constants/account-log.constants";
+import { AccountLogService } from "@common/modules/account/services/account-log.service";
+import { User } from "@common/modules/auth/entities/user.entity";
 import { validateArrayItems } from "@common/utils/helper.util";
 import { ChatRequestDto } from "@modules/console/ai/dto/ai-chat-message.dto";
 import { MessageRole, MessageType } from "@modules/console/ai/dto/ai-chat-record.dto";
@@ -11,11 +14,14 @@ import { AiMcpServer } from "@modules/console/ai/entities/ai-mcp-server.entity";
 import { AiChatRecordService } from "@modules/console/ai/services/ai-chat-record.service";
 import { AiMcpServerService } from "@modules/console/ai/services/ai-mcp-server.service";
 import { AiModelService } from "@modules/console/ai/services/ai-model.service";
+import { UserService } from "@modules/console/user/services/user.service";
 import { Body, Post, Res } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
 import { getProvider, TextGenerator } from "@sdk/ai";
 import { convertMCPToolsToOpenAI, McpServer, MCPTool } from "@sdk/ai/utils/mcp/sse";
 import { Response } from "express";
 import { ChatCompletionFunctionTool, ChatCompletionMessageParam } from "openai/resources/index";
+import { DataSource, Repository } from "typeorm";
 
 /**
  * AI聊天控制器（前台）
@@ -28,6 +34,9 @@ export class AiChatMessageController extends BaseController {
         private readonly AiChatRecordService: AiChatRecordService,
         private readonly aiModelService: AiModelService,
         private readonly aiMcpServerService: AiMcpServerService,
+        private readonly accountLogService: AccountLogService,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
     ) {
         super();
     }
@@ -71,6 +80,24 @@ export class AiChatMessageController extends BaseController {
                 where: { id: dto.modelId },
                 relations: ["provider"],
             });
+
+            if (!model) {
+                throw HttpExceptionFactory.notFound("Model not found.");
+            }
+
+            // 获取用户信息，用于计费
+            const userInfo = await this.userRepository.findOne({
+                where: { id: playground.id },
+            });
+
+            if (!userInfo) {
+                throw HttpExceptionFactory.badRequest("User not found.");
+            }
+
+            // 检查用户算力是否足够
+            if (userInfo.power <= 0 && model.billingRule.power > 0) {
+                throw HttpExceptionFactory.badRequest("余额不足，请充值后重试");
+            }
 
             const provider = getProvider(model.provider.provider, {
                 apiKey: model.provider.apiKey,
@@ -337,6 +364,58 @@ export class AiChatMessageController extends BaseController {
                 });
             }
 
+            // 根据模型计费规则扣除用户算力
+            if (finalResponse?.usage?.total_tokens && model?.billingRule) {
+                try {
+                    // 计算需要扣除的算力
+                    const { power, tokens } = model.billingRule;
+                    if (power > 0 && tokens > 0) {
+                        const totalTokens = finalResponse.usage.total_tokens;
+                        const powerToDeduct = Math.ceil((totalTokens / tokens) * power);
+
+                        if (powerToDeduct > 0) {
+                            await this.userRepository.manager.transaction(async (entityManager) => {
+                                // 计算扣除后的算力，确保不会为负数
+                                const newPower = Math.max(0, userInfo.power - powerToDeduct);
+                                // 实际扣除的算力（可能小于powerToDeduct，如果用户算力不足）
+                                const actualDeducted = userInfo.power - newPower;
+
+                                await entityManager.update(User, playground.id, {
+                                    power: newPower,
+                                });
+
+                                // 记录算力变动日志
+                                await this.accountLogService.recordWithTransaction(
+                                    entityManager,
+                                    playground.id,
+                                    ACCOUNT_LOG_TYPE.CHAT_DEC,
+                                    ACTION.DEC,
+                                    actualDeducted,
+                                    "", // 关联单号
+                                    null, // 关联用户ID
+                                    `AI对话消耗算力，模型：${model.name}，Token数：${totalTokens}，实际扣除：${actualDeducted}`, // 备注
+                                );
+
+                                this.logger.debug(
+                                    `用户 ${playground.id} 对话扣除算力 ${actualDeducted} 成功`,
+                                );
+
+                                // 如果实际扣除的算力小于应扣除的算力，记录日志
+                                if (actualDeducted < powerToDeduct) {
+                                    this.logger.warn(
+                                        `用户 ${playground.id} 算力不足，应扣除 ${powerToDeduct}，实际扣除 ${actualDeducted}，当前算力为0`,
+                                    );
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {
+                    this.logger.error(`扣除用户算力失败: ${error.message}`, error.stack);
+                    // 这里不抛出异常，因为聊天已经完成，不应影响用户体验
+                    // 但可以记录错误日志，方便后续人工处理
+                }
+            }
+
             // 清理MCP连接资源
             try {
                 for (const mcpServer of mcpServers) {
@@ -393,7 +472,7 @@ export class AiChatMessageController extends BaseController {
     @Post("stream")
     async chatStream(
         @Body() dto: ChatRequestDto,
-        @Playground() playground: UserPlayground,
+        @Playground() user: UserPlayground,
         @Res() res: Response,
     ) {
         // 设置SSE响应头
@@ -413,6 +492,13 @@ export class AiChatMessageController extends BaseController {
         >();
         const usedTools = new Set<string>(); // 跟踪实际使用的工具
         const mcpToolCalls: McpToolCall[] = []; // 收集MCP工具调用记录
+        const userInfo = await this.userRepository.findOne({
+            where: { id: user.id },
+        });
+
+        if (!userInfo) {
+            throw HttpExceptionFactory.badRequest("User not found.");
+        }
 
         try {
             // 如果需要保存对话记录（默认保存，除非明确设置为false）
@@ -420,7 +506,7 @@ export class AiChatMessageController extends BaseController {
                 // 如果没有提供对话ID，创建新对话
                 if (!conversationId) {
                     const conversation = await this.AiChatRecordService.createConversation(
-                        playground.id,
+                        user.id,
                         {
                             title: dto.title || null,
                         },
@@ -469,6 +555,10 @@ export class AiChatMessageController extends BaseController {
 
             if (!model) {
                 throw HttpExceptionFactory.notFound("Model not found.");
+            }
+
+            if (userInfo.power <= 0 && model.billingRule.power > 0) {
+                throw HttpExceptionFactory.badRequest("余额不足，请充值后重试");
             }
 
             const provider = getProvider(model.provider.provider, {
@@ -875,9 +965,61 @@ export class AiChatMessageController extends BaseController {
                     );
                 }
 
-                await this.AiChatRecordService.updateConversation(conversationId, playground.id, {
+                await this.AiChatRecordService.updateConversation(conversationId, user.id, {
                     title,
                 });
+            }
+
+            // 根据模型计费规则扣除用户算力
+            if (finalChatCompletion?.usage?.total_tokens && model?.billingRule) {
+                try {
+                    // 计算需要扣除的算力
+                    const { power, tokens } = model.billingRule;
+                    if (power > 0 && tokens > 0) {
+                        const totalTokens = finalChatCompletion.usage.total_tokens;
+                        const powerToDeduct = Math.ceil((totalTokens / tokens) * power);
+
+                        if (powerToDeduct > 0) {
+                            await this.userRepository.manager.transaction(async (entityManager) => {
+                                // 计算扣除后的算力，确保不会为负数
+                                const newPower = Math.max(0, userInfo.power - powerToDeduct);
+                                // 实际扣除的算力（可能小于powerToDeduct，如果用户算力不足）
+                                const actualDeducted = userInfo.power - newPower;
+
+                                await entityManager.update(User, user.id, {
+                                    power: newPower,
+                                });
+
+                                // 记录算力变动日志
+                                await this.accountLogService.recordWithTransaction(
+                                    entityManager,
+                                    user.id,
+                                    ACCOUNT_LOG_TYPE.CHAT_DEC,
+                                    ACTION.DEC,
+                                    actualDeducted,
+                                    "", // 关联单号
+                                    null, // 关联用户ID
+                                    `AI对话消耗算力，模型：${model.name}，Token数：${totalTokens}，实际扣除：${actualDeducted}`, // 备注
+                                );
+
+                                this.logger.debug(
+                                    `用户 ${user.id} 对话扣除算力 ${actualDeducted} 成功`,
+                                );
+
+                                // 如果实际扣除的算力小于应扣除的算力，记录日志
+                                if (actualDeducted < powerToDeduct) {
+                                    this.logger.warn(
+                                        `用户 ${user.id} 算力不足，应扣除 ${powerToDeduct}，实际扣除 ${actualDeducted}，当前算力为0`,
+                                    );
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {
+                    this.logger.error(`扣除用户算力失败: ${error.message}`, error.stack);
+                    // 这里不抛出异常，因为聊天已经完成，不应影响用户体验
+                    // 但可以记录错误日志，方便后续人工处理
+                }
             }
 
             // 清理MCP连接
@@ -908,7 +1050,7 @@ export class AiChatMessageController extends BaseController {
                 conversationId,
                 modelId: dto.modelId,
                 role: MessageRole.ASSISTANT,
-                content: error.message,
+                content: "",
                 messageType: MessageType.TEXT,
                 errorMessage: error?.message,
                 tokens: {

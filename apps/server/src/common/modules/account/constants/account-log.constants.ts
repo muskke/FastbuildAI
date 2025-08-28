@@ -16,6 +16,10 @@ export enum ACCOUNT_LOG_TYPE {
      * 系统减扣算力
      */
     SYSTEM_MANUAL_DEC = 201,
+    /**
+     * 对话消耗算力
+     */
+    CHAT_DEC = 202,
 }
 export type ACCOUNT_LOG_TYPE_VALUE = (typeof ACCOUNT_LOG_TYPE)[keyof typeof ACCOUNT_LOG_TYPE];
 export enum ACTION {
@@ -33,4 +37,5 @@ export const ACCOUNT_LOG_TYPE_DESCRIPTION = {
     [ACCOUNT_LOG_TYPE.RECHARGEORDER_DEC]: "充值退款退回算力",
     [ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_INC]: "系统增加算力",
     [ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_DEC]: "系统减扣算力",
+    [ACCOUNT_LOG_TYPE.CHAT_DEC]: "对话消耗算力",
 } as const;
