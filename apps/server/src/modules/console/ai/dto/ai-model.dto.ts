@@ -15,7 +15,18 @@ import {
     IsUrl,
     MaxLength,
     Min,
+    ValidateNested,
 } from "class-validator";
+
+class BillingRuleDto {
+    @IsInt({ message: "power 必须是整数" })
+    @Min(0, { message: "power 不能小于 0" })
+    power: number;
+
+    @IsInt({ message: "tokens 必须是整数" })
+    @Min(0, { message: "tokens 不能小于 0" })
+    tokens: number;
+}
 
 /**
  * 创建AI模型DTO
@@ -81,13 +92,9 @@ export class CreateAiModelDto {
     /**
      * 模型定价信息
      */
-    @IsObject({ message: "定价信息必须是对象" })
-    @IsOptional()
-    pricing?: {
-        input?: number; // 输入token价格（每1K token）
-        output?: number; // 输出token价格（每1K token）
-        currency?: string; // 货币单位，默认USD
-    };
+    @ValidateNested()
+    @Type(() => BillingRuleDto)
+    billingRule: BillingRuleDto;
 
     /**
      * 是否启用该模型

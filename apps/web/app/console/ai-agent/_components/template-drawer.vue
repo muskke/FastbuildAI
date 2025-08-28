@@ -2,7 +2,7 @@
 import { useLockFn, useMessage } from "@fastbuildai/ui";
 import { computed, onMounted, ref } from "vue";
 
-import type { Agent } from "@/models/ai-agent";
+import type { AgentTemplateConfig } from "@/models/ai-agent";
 import {
     apiGetAgentTemplateCategories,
     apiGetAgentTemplates,
@@ -21,13 +21,13 @@ const toast = useMessage();
 const { t } = useI18n();
 
 // 状态管理
-const templates = ref<Agent[]>([]);
-const recommendedTemplates = ref<Agent[]>([]);
+const templates = ref<AgentTemplateConfig[]>([]);
+const recommendedTemplates = ref<AgentTemplateConfig[]>([]);
 const showCreateModal = ref(false);
 const searchKeyword = ref("");
 const selectedCategory = ref("all");
 const categories = ref<string[]>([]);
-const selectedTemplate = ref<Agent | null>(null);
+const selectedTemplate = ref<AgentTemplateConfig | null>(null);
 
 // 计算属性
 const isOpen = ref(true);
@@ -51,7 +51,7 @@ const { lockFn: loadTemplates, isLock: templatesLoading } = useLockFn(async () =
 
 // 过滤模板
 const filteredTemplates = computed(() => {
-    let filtered: Agent[];
+    let filtered: AgentTemplateConfig[];
 
     // 根据分类选择数据源
     if (selectedCategory.value === "recommended") {
@@ -78,7 +78,7 @@ const filteredTemplates = computed(() => {
 });
 
 // 选择模板 - 弹出创建表单
-const selectTemplate = (template: Agent) => {
+const selectTemplate = (template: AgentTemplateConfig) => {
     selectedTemplate.value = template;
     showCreateModal.value = true;
 };

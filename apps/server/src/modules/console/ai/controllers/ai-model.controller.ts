@@ -48,6 +48,17 @@ export class AiModelController extends BaseController {
                 throw HttpExceptionFactory.business("AI供应商不支持该模型类型");
             }
         }
+
+        // 验证计费规则
+        if (dto.billingRule) {
+            if (dto.billingRule.power < 0) {
+                throw HttpExceptionFactory.business("计费规则中的 power 不能小于 0");
+            }
+            if (dto.billingRule.tokens < 0) {
+                throw HttpExceptionFactory.business("计费规则中的 tokens 不能小于 0");
+            }
+        }
+
         return await this.aiModelService.createModel(dto);
     }
 
@@ -185,6 +196,16 @@ export class AiModelController extends BaseController {
 
             if (!provider.supportedModelTypes.includes(dto.modelType)) {
                 throw HttpExceptionFactory.business("AI供应商不支持该模型类型");
+            }
+        }
+
+        // 验证计费规则
+        if (dto.billingRule) {
+            if (dto.billingRule.power < 0) {
+                throw HttpExceptionFactory.business("计费规则中的 power 不能小于 0");
+            }
+            if (dto.billingRule.tokens < 0) {
+                throw HttpExceptionFactory.business("计费规则中的 tokens 不能小于 0");
             }
         }
 
