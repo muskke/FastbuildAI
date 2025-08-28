@@ -133,7 +133,7 @@ const sourceInfo = computed(() => getUserSourceInfo(props.user.source));
 
 <template>
     <ProCard
-        selectable
+        :selectable="props.user.isRoot !== 1"
         show-actions
         variant="outlined"
         :selected="selected"
