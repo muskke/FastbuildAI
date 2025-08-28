@@ -1,12 +1,17 @@
 import { BaseService } from "@common/base/services/base.service";
 import { UserCreateSource } from "@common/constants";
-import { ACCOUNT_LOG_TYPE_DESCRIPTION } from "@common/modules/account/constants/account-log.constants";
+import {
+    ACCOUNT_LOG_SOURCE,
+    ACCOUNT_LOG_TYPE_DESCRIPTION,
+} from "@common/modules/account/constants/account-log.constants";
 import { User } from "@common/modules/auth/entities/user.entity";
 import { AiChatMessage } from "@modules/console/ai/entities/ai-chat-message.entity";
+import { Agent } from "@modules/console/ai-agent/entities/agent.entity";
 import { RechargeOrder } from "@modules/console/recharge/entities/recharge-order.entity";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm/repository/Repository";
+import { In, Repository } from "typeorm";
+import { Repository as TypeOrmRepository } from "typeorm/repository/Repository";
 
 import { QueryAccountLogDto } from "../dto/query-account-log.dto";
 import { AccountLog } from "../entities/account-log.entity";
@@ -22,6 +27,8 @@ export class FinanceService extends BaseService<AccountLog> {
         private readonly rechargeOrderRepository: Repository<RechargeOrder>,
         @InjectRepository(AiChatMessage)
         private readonly aiChatRMessageRepository: Repository<AiChatMessage>,
+        @InjectRepository(Agent)
+        private readonly agentRepository: Repository<Agent>,
     ) {
         super(accountLogRepository);
     }
@@ -165,6 +172,7 @@ export class FinanceService extends BaseService<AccountLog> {
             "account-log.associationUserId",
             "account-log.leftAmount",
             "account-log.createdAt",
+            "account-log.sourceInfo",
             "user.username",
             "user.userNo",
             "user.avatar",
@@ -193,15 +201,65 @@ export class FinanceService extends BaseService<AccountLog> {
         // 创建用户ID到昵称的映射，提高查找效率
         const userNicknameMap = new Map(consoleUsers.map((user) => [user.id, user.nickname]));
 
+        // 收集所有需要查询的智能体ID
+        const agentIds = new Set<string>();
+        accountLogs.forEach((accountLog) => {
+            if (
+                accountLog.sourceInfo?.type === ACCOUNT_LOG_SOURCE.AGENT_CHAT &&
+                accountLog.sourceInfo?.source
+            ) {
+                agentIds.add(accountLog.sourceInfo.source);
+            }
+        });
+
+        // 如果有智能体ID，先批量查询
+        const agentMap = new Map<string, string>();
+        if (agentIds.size > 0) {
+            const agentIdArray = Array.from(agentIds);
+            try {
+                // 批量查询智能体信息
+                const agents = await this.agentRepository.find({
+                    where: { id: In(agentIdArray) },
+                    select: ["id", "name"],
+                });
+
+                // 构建ID到名称的映射
+                agents.forEach((agent) => {
+                    agentMap.set(agent.id, agent.name);
+                });
+            } catch (error) {
+                this.logger.error(`查询智能体信息失败: ${error.message}`);
+            }
+        }
+
         // 处理每条记录，添加描述信息
         return accountLogs.map((accountLog) => {
             const accountTypeDesc = ACCOUNT_LOG_TYPE_DESCRIPTION[accountLog.accountType];
             const associationUser = userNicknameMap.get(accountLog.associationUserId) || "";
+            let consumeSourceDesc = "";
+
+            // 根据来源类型处理
+            if (accountLog.sourceInfo) {
+                switch (accountLog.sourceInfo.type) {
+                    case ACCOUNT_LOG_SOURCE.AGENT_CHAT:
+                        // 如果是智能体对话，使用智能体名称
+                        if (agentMap.has(accountLog.sourceInfo.source)) {
+                            consumeSourceDesc = agentMap.get(accountLog.sourceInfo.source);
+                        } else {
+                            consumeSourceDesc = `智能体(${accountLog.sourceInfo.source})`;
+                        }
+                        break;
+
+                    default:
+                        consumeSourceDesc = accountLog.sourceInfo.source;
+                }
+            }
 
             return {
                 ...accountLog,
                 accountTypeDesc,
                 associationUser,
+                consumeSourceDesc,
             };
         });
     }

@@ -6,13 +6,18 @@ import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { Playground } from "@common/decorators/playground.decorator";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { UserPlayground } from "@common/interfaces/context.interface";
-import { ACCOUNT_LOG_TYPE_DESCRIPTION } from "@common/modules/account/constants/account-log.constants";
+import {
+    ACCOUNT_LOG_SOURCE,
+    ACCOUNT_LOG_TYPE_DESCRIPTION,
+} from "@common/modules/account/constants/account-log.constants";
 import { RolePermissionService } from "@common/modules/auth/services/role-permission.service";
+import { Agent } from "@modules/console/ai-agent/entities/agent.entity";
 import { AccountLog } from "@modules/console/finance/entities/account-log.entity";
-import { Body, Get, Inject, Patch, Query } from "@nestjs/common";
+import { Body, Get, Inject, Logger, Patch, Query } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, IsNull, Like, Not, Repository } from "typeorm";
 
+import { AgentService } from "../../console/ai-agent/services/agent.service";
 import { DatasetMemberService } from "../../console/ai-datasets/services/datasets-member.service";
 import { UserService } from "../../console/user/services/user.service";
 import { AccountLogDto } from "./dto/account-log-dto";
@@ -40,6 +45,8 @@ export class UserController extends BaseController {
         private readonly rolePermissionService: RolePermissionService,
         private readonly fileService: FileService,
         private readonly datasetMemberService: DatasetMemberService,
+        @InjectRepository(Agent)
+        private readonly agentRepository: Repository<Agent>,
         @InjectRepository(AccountLog)
         private readonly accountLogRepository: Repository<AccountLog>,
     ) {
@@ -217,28 +224,86 @@ export class UserController extends BaseController {
     @Get("account-log")
     async accountLog(@Query() accountLogDto: AccountLogDto, @Playground() user: UserPlayground) {
         const { action } = accountLogDto;
-        const queryBuilder = this.accountLogRepository.createQueryBuilder("account-log");
-        queryBuilder.where("account-log.userId = :userId", { userId: user.id });
-        console.log(action);
-        if ("" != action) {
-            queryBuilder.andWhere("account-log.action = :action", { action });
+
+        // 构建查询条件
+        const where: any = { userId: user.id };
+        if (action !== undefined && action !== "") {
+            where.action = action;
         }
+
+        // 获取用户信息
         const userInfo = await this.userService.findOne({
             where: { id: user.id },
             select: ["power"],
         });
-        queryBuilder
-            .orderBy("account-log.createdAt", "DESC")
-            .addOrderBy("account-log.accountType", "DESC");
-        const lists = await this.accountLogService.paginateQueryBuilder(
-            queryBuilder,
-            accountLogDto,
-        );
+
+        // 使用 paginate 方法进行分页查询
+        const lists = await this.accountLogService.paginate(accountLogDto, {
+            where,
+            order: {
+                createdAt: "DESC",
+                accountType: "DESC",
+            },
+        });
+
+        // 处理返回结果
+        const agentIds = new Set<string>();
+
+        // 先收集所有需要查询的智能体ID
+        lists.items.forEach((accountLog) => {
+            if (
+                accountLog.sourceInfo?.type === ACCOUNT_LOG_SOURCE.AGENT_CHAT &&
+                accountLog.sourceInfo?.source
+            ) {
+                agentIds.add(accountLog.sourceInfo.source);
+            }
+        });
+
+        // 如果有智能体ID，先批量查询
+        const agentMap = new Map<string, string>();
+        if (agentIds.size > 0) {
+            const agentIdArray = Array.from(agentIds);
+            try {
+                // 批量查询智能体信息
+                const agents = await this.agentRepository.find({
+                    where: { id: In(agentIdArray) },
+                    select: ["id", "name"],
+                });
+
+                // 构建ID到名称的映射
+                agents.forEach((agent) => {
+                    agentMap.set(agent.id, agent.name);
+                });
+            } catch (error) {
+                this.logger.error(`查询智能体信息失败: ${error.message}`);
+            }
+        }
+
+        // 处理每条记录
         lists.items = lists.items.map((accountLog) => {
             const accountTypeDesc = ACCOUNT_LOG_TYPE_DESCRIPTION[accountLog.accountType];
-            const consumeSourceDesc = "";
+            let consumeSourceDesc = "";
+
+            // 根据来源类型处理
+            if (accountLog.sourceInfo) {
+                switch (accountLog.sourceInfo.type) {
+                    case ACCOUNT_LOG_SOURCE.AGENT_CHAT:
+                        // 如果是智能体对话，使用智能体名称
+                        if (agentMap.has(accountLog.sourceInfo.source)) {
+                            consumeSourceDesc = agentMap.get(accountLog.sourceInfo.source);
+                        } else {
+                            consumeSourceDesc = `智能体(${accountLog.sourceInfo.source})`;
+                        }
+                        break;
+
+                    default:
+                        consumeSourceDesc = accountLog.sourceInfo.source;
+                }
+            }
+
             return { ...accountLog, accountTypeDesc, consumeSourceDesc };
         });
+
         return { ...lists, userInfo };
     }
 }

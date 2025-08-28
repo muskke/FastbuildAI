@@ -1,6 +1,10 @@
 import { BaseService } from "@common/base/services/base.service";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
-import { ACCOUNT_LOG_TYPE, ACTION } from "@common/modules/account/constants/account-log.constants";
+import {
+    ACCOUNT_LOG_SOURCE,
+    ACCOUNT_LOG_TYPE,
+    ACTION,
+} from "@common/modules/account/constants/account-log.constants";
 import { AccountLogService } from "@common/modules/account/services/account-log.service";
 import { User } from "@common/modules/auth/entities/user.entity";
 import { REFUND_ORDER_FROM } from "@common/modules/refund/constants/refund.constants";
@@ -219,9 +223,16 @@ export class RechargeOrderService extends BaseService<RechargeOrder> {
                 await this.accountLogService.recordWithTransaction(
                     entityManager,
                     order.userId,
-                    ACCOUNT_LOG_TYPE.RECHARGEORDER_DEC,
+                    ACCOUNT_LOG_TYPE.RECHARGE_DEC,
                     ACTION.INC,
                     userLetPower,
+                    "", // 关联单号
+                    null, // 关联用户ID
+                    `充值订单退款，退款金额：${order.orderAmount}`,
+                    {
+                        type: ACCOUNT_LOG_SOURCE.RECHARGE,
+                        source: "充值订单",
+                    },
                 );
             });
         } catch (error) {
