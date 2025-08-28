@@ -97,17 +97,16 @@ const formData = reactive({
     providerId: "",
     model: "",
     maxContext: 3 as number,
-    pricing: {
-        input: undefined as number | undefined,
-        output: undefined as number | undefined,
-        currency: "USD",
-    },
     modelConfig: getDefaultmodelConfig(),
     isActive: true,
     isDefault: false,
     description: "",
     sortOrder: 0,
     modelType: undefined,
+    billingRule: {
+        power: 0,
+        tokens: 0,
+    },
 });
 
 // 表单验证规则
@@ -155,16 +154,15 @@ watch(
                 maxContext: newData.maxContext,
                 maxTokens: newData.maxTokens,
                 modelConfig: newData.modelConfig,
-                pricing: {
-                    input: newData.pricing?.input,
-                    output: newData.pricing?.output,
-                    currency: newData.pricing?.currency || "USD",
-                },
                 isActive: newData.isActive ?? true,
                 isDefault: newData.isDefault ?? false,
                 description: newData.description || "",
                 sortOrder: newData.sortOrder || 0,
                 modelType: newData.modelType || "",
+                billingRule: {
+                    power: newData.billingRule?.power || 0,
+                    tokens: newData.billingRule?.tokens || 0,
+                },
             });
         }
     },
@@ -369,50 +367,58 @@ defineExpose({ resetForm });
                                         </span>
                                     </template>
                                 </UFormField>
+
+                                <!-- 对话消耗 -->
                                 <UFormField
-                                    :label="t('console-ai-provider.model.form.maxContext')"
-                                    name="maxContext"
+                                    :label="t('console-ai-provider.model.form.billing')"
+                                    name="billing"
                                 >
-                                    <UInput
-                                        v-model.number="formData.maxContext"
-                                        type="number"
-                                        :placeholder="
-                                            t(
-                                                'console-ai-provider.model.form.maxContextPlaceholder',
-                                            )
-                                        "
-                                        size="lg"
-                                        :min="1"
-                                        :ui="{ root: 'w-full', base: 'pr-15' }"
-                                    >
-                                        <template #trailing>
-                                            <span class="text-muted-foreground text-sm">{{
-                                                t("console-ai-provider.model.form.maxContextUnit")
-                                            }}</span>
-                                        </template>
-                                    </UInput>
+                                    <div class="flex w-full items-center gap-2">
+                                        <UInput
+                                            v-model.number="formData.billingRule.power"
+                                            type="number"
+                                            placeholder=""
+                                            size="lg"
+                                            :min="0"
+                                            class="flex-1"
+                                            :ui="{ base: 'pr-15' }"
+                                            @blur="
+                                                if (formData.billingRule.power < 0)
+                                                    formData.billingRule.power = 0;
+                                            "
+                                        >
+                                            <template #trailing>
+                                                <span class="text-muted-foreground text-sm">
+                                                    {{ t("console-ai-provider.model.form.power") }}
+                                                </span>
+                                            </template>
+                                        </UInput>
+                                        <span>/</span>
+                                        <UInput
+                                            v-model.number="formData.billingRule.tokens"
+                                            type="number"
+                                            placeholder=""
+                                            size="lg"
+                                            :min="0"
+                                            class="flex-1"
+                                            :ui="{ base: 'pr-15' }"
+                                            @blur="
+                                                if (formData.billingRule.tokens < 0)
+                                                    formData.billingRule.tokens = 0;
+                                            "
+                                        >
+                                            <template #trailing>
+                                                <span class="text-muted-foreground text-sm">
+                                                    Tokens
+                                                </span>
+                                            </template>
+                                        </UInput>
+                                    </div>
                                     <template #hint>
                                         <span class="text-muted-foreground text-xs">
-                                            {{ t("console-ai-provider.model.form.maxContextHelp") }}
+                                            {{ t("console-ai-provider.model.form.billingHelp") }}
                                         </span>
                                     </template>
-                                </UFormField>
-                            </div>
-                            <!-- 模型类型 -->
-                            <div>
-                                <UFormField
-                                    :label="t('console-ai-provider.model.form.modelType')"
-                                    name="modelType"
-                                    required
-                                >
-                                    <USelect
-                                        v-model="formData.modelType"
-                                        :items="modelTypes"
-                                        :placeholder="
-                                            t('console-ai-provider.model.form.modelTypePlaceholder')
-                                        "
-                                        class="w-full"
-                                    />
                                 </UFormField>
                             </div>
                         </div>
@@ -468,6 +474,50 @@ defineExpose({ resetForm });
                                     "
                                     size="lg"
                                     :maxlength="100"
+                                    class="w-full"
+                                />
+                            </UFormField>
+                        </div>
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <UFormField
+                                :label="t('console-ai-provider.model.form.maxContext')"
+                                name="maxContext"
+                            >
+                                <UInput
+                                    v-model.number="formData.maxContext"
+                                    type="number"
+                                    :placeholder="
+                                        t('console-ai-provider.model.form.maxContextPlaceholder')
+                                    "
+                                    size="lg"
+                                    :min="1"
+                                    :ui="{ root: 'w-full', base: 'pr-15' }"
+                                >
+                                    <template #trailing>
+                                        <span class="text-muted-foreground text-sm">{{
+                                            t("console-ai-provider.model.form.maxContextUnit")
+                                        }}</span>
+                                    </template>
+                                </UInput>
+                                <template #hint>
+                                    <span class="text-muted-foreground text-xs">
+                                        {{ t("console-ai-provider.model.form.maxContextHelp") }}
+                                    </span>
+                                </template>
+                            </UFormField>
+                            <!-- 模型类型 -->
+                            <UFormField
+                                :label="t('console-ai-provider.model.form.modelType')"
+                                name="modelType"
+                                required
+                            >
+                                <USelect
+                                    v-model="formData.modelType"
+                                    size="lg"
+                                    :items="modelTypes"
+                                    :placeholder="
+                                        t('console-ai-provider.model.form.modelTypePlaceholder')
+                                    "
                                     class="w-full"
                                 />
                             </UFormField>
