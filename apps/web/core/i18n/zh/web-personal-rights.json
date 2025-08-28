@@ -18,7 +18,8 @@
                 "all": "全部",
                 "consume": "消耗",
                 "get": "获取"
-            }
+            },
+            "consumeSourceDesc": "来源"
         },
         "powerBalance": "算力余额",
         "selectRechargePackage": "选择充值套餐",

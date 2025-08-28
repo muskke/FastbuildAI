@@ -34,6 +34,10 @@ const columns: TableColumn<AccountBalanceListItem>[] = [
         header: t("console-financial.accountBalance.table.accountTypeDesc"),
     },
     {
+        accessorKey: "consumeSourceDesc",
+        header: t("console-financial.accountBalance.table.consumeSourceDesc"),
+    },
+    {
         accessorKey: "associationUser",
         header: t("console-financial.accountBalance.table.associationUser"),
     },
