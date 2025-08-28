@@ -66,7 +66,17 @@
         "formReset": "表单已重置",
         "formValidationFailed": "表单验证失败",
         "getRoleListFailed": "获取角色列表失败",
-        "dateRangeInput": "请选择创建时间范围"
+        "dateRangeInput": "请选择创建时间范围",
+        "editPower": "编辑算力",
+        "currentPower": "当前算力",
+        "powerAdjust": "算力增减",
+        "add": "增加",
+        "reduce": "扣减",
+        "adjustAmount": "调整数量",
+        "adjustAmountInput": "请输入调整的数量",
+        "adjustedPower": "调整后算力",
+        "confirmPowerEdit": "确定编辑算力？",
+        "confirmPowerEditMessage": "确定要编辑算力吗？"
     },
     "messages": {
         "createSuccess": "用户创建成功",
@@ -74,6 +84,8 @@
         "updateSuccess": "用户更新成功",
         "updateFailed": "用户更新失败",
         "getUserDetailFailed": "获取用户详情失败",
-        "missingUserId": "缺少用户ID参数"
+        "missingUserId": "缺少用户ID参数",
+        "adjustAmountInput": "请输入有效的调整数量",
+        "success": "成功"
     }
 }
