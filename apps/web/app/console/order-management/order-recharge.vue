@@ -135,7 +135,6 @@ const columns: TableColumn<OrderListItem>[] = [
             return h(TimeDisplay, {
                 datetime: createdAt,
                 mode: "datetime",
-                timeZone: "UTC",
             });
         },
     },

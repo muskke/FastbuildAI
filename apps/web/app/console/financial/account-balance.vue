@@ -60,7 +60,6 @@ const columns: TableColumn<AccountBalanceListItem>[] = [
             return h(TimeDisplay, {
                 datetime: createdAt,
                 mode: "datetime",
-                timeZone: "UTC",
             });
         },
     },

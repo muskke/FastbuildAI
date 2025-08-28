@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ProPaginaction } from "@fastbuildai/ui";
 import type { TableColumn } from "@nuxt/ui";
 import { resolveComponent } from "vue";
 import { useI18n } from "vue-i18n";
@@ -26,7 +27,7 @@ const items = [
 
 const columns: TableColumn<PowerDetaiItem>[] = [
     {
-        accessorKey: "accountType",
+        accessorKey: "accountTypeDesc",
         header: t("web-personal-rights.rechargeCenter.detail.changeDetail"),
     },
     {
@@ -45,7 +46,6 @@ const columns: TableColumn<PowerDetaiItem>[] = [
             return h(TimeDisplay, {
                 datetime: createdAt,
                 mode: "datetime",
-                timeZone: "UTC",
             });
         },
     },
@@ -89,7 +89,7 @@ definePageMeta({
 </script>
 
 <template>
-    <div class="flex h-full flex-col space-y-8 p-2 pb-5">
+    <div class="flex h-full flex-col space-y-4 p-2 pb-5">
         <div class="h-fit">
             <UCard>
                 <div class="grid grid-cols-2 items-center text-center">
@@ -176,7 +176,7 @@ definePageMeta({
                 v-model="tab"
                 :content="false"
                 :items="items"
-                class="mt-4 w-fit"
+                class="mt-8 w-fit"
                 @update:model-value="getPowerDetailList"
             />
         </div>
@@ -189,15 +189,7 @@ definePageMeta({
                 :ui="{ root: 'border rounded-lg' }"
             >
                 <template #accountType-cell="{ row }">
-                    {{
-                        row.original.accountType === 100
-                            ? "充值增加算力"
-                            : row.original.accountType === 101
-                              ? "充值赠送算力"
-                              : row.original.accountType === 102
-                                ? "退款退回算力"
-                                : ""
-                    }}
+                    {{ row.original.accountTypeDesc }}
                 </template>
                 <template #changeAmount-cell="{ row }">
                     <span :class="row.original.action === 1 ? 'text-green-500' : 'text-red-500'">
@@ -207,11 +199,12 @@ definePageMeta({
                 </template>
             </UTable>
             <div class="flex items-center justify-end gap-3">
-                <UPagination
-                    v-model="paging.page"
+                <ProPaginaction
+                    v-model:page="paging.page"
+                    v-model:size="paging.pageSize"
                     :total="paging.total"
-                    :page-size="paging.pageSize"
                     :ui="{ root: 'mt-4' }"
+                    @change="getPowerDetailList"
                 />
             </div>
         </div>

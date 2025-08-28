@@ -15,7 +15,7 @@ import type {
     AgentChatResponse,
     AgentChatTestParams,
     AgentStatistics,
-    AgentTemplate,
+    AgentTemplateConfig,
     AnnotationMatchResult,
     BatchDeleteChatRecordParams,
     CreateAgentAnnotationParams,
@@ -278,7 +278,7 @@ export function apiGetAgentStatistics(
 /**
  * 获取智能体模板列表
  */
-export function apiGetAgentTemplates(params?: QueryTemplateParams): Promise<AgentTemplate[]> {
+export function apiGetAgentTemplates(params?: QueryTemplateParams): Promise<AgentTemplateConfig[]> {
     return useConsoleGet("/ai-agent/templates", params);
 }
 
@@ -292,7 +292,7 @@ export function apiGetAgentTemplateCategories(): Promise<string[]> {
 /**
  * 获取推荐模板
  */
-export function apiGetRecommendedTemplates(): Promise<AgentTemplate[]> {
+export function apiGetRecommendedTemplates(): Promise<AgentTemplateConfig[]> {
     return useConsoleGet("/ai-agent/templates/recommended");
 }
 
