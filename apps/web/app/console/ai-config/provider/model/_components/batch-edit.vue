@@ -53,84 +53,98 @@ const models = computed(() => {
         }"
         @update:model-value="(value) => !value && handleClose()"
     >
-        <UTable
-            :columns="columns"
-            :data="models"
-            :ui="{
-                base: 'table-fixed border-separate border-spacing-0',
-                thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
-                tbody: '[&>tr]:last:[&>td]:border-b-0',
-                th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
-                td: 'border-b border-default cursor-pointer',
-                tr: '[&:has(>td[colspan])]:hidden',
-            }"
-        >
-            <!-- 名称 -->
-            <template #name-cell="{ row }">
-                <UInput v-model="row.original.name" />
-            </template>
-            <!-- 模型 -->
-            <template #model-cell="{ row }">
-                <UInput v-model="row.original.model" />
-            </template>
-            <!-- 最大上下文 -->
-            <template #maxContext-cell="{ row }">
-                <UInput v-model="row.original.maxContext" type="number" />
-            </template>
-            <!-- 是否启用 -->
-            <template #isActive-cell="{ row }">
-                <USwitch v-model="row.original.isActive" />
-            </template>
-            <!-- 对话消耗 -->
-            <template #billingRule-cell="{ row }">
-                <div class="flex w-full items-center gap-2">
-                    <UInput
-                        v-model.number="row.original.billingRule.power"
-                        type="number"
-                        placeholder=""
-                        size="lg"
-                        :min="0"
-                        class="flex-1"
-                        :ui="{ base: 'pr-15' }"
-                        @blur="
-                            if (row.original.billingRule.power < 0)
-                                row.original.billingRule.power = 0;
-                        "
-                    >
-                        <template #trailing>
-                            <span class="text-muted-foreground text-sm">
-                                {{ t("console-ai-provider.model.form.power") }}
-                            </span>
-                        </template>
-                    </UInput>
-                    <span>/</span>
-                    <UInput
-                        v-model.number="row.original.billingRule.tokens"
-                        type="number"
-                        placeholder=""
-                        size="lg"
-                        :min="1"
-                        class="flex-1"
-                        :ui="{ base: 'pr-15' }"
-                        @blur="
-                            if (row.original.billingRule.tokens < 1)
-                                row.original.billingRule.tokens = 1;
-                        "
-                    >
-                        <template #trailing>
-                            <span class="text-muted-foreground text-sm"> Tokens </span>
-                        </template>
-                    </UInput>
-                </div>
-            </template>
-        </UTable>
-        <div class="flex w-full justify-end gap-2 px-4 py-3.5">
-            <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
-                {{ t("console-common.cancel") }}
-            </UButton>
-            <UButton color="primary" size="lg" @click="handleSubmit">
-                {{ t("console-common.save") }}
-            </UButton>
-        </div>
+        <UForm :state="models" @submit="handleSubmit">
+            <UTable
+                :columns="columns"
+                :data="models"
+                :ui="{
+                    base: 'table-fixed border-separate border-spacing-0',
+                    thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
+                    tbody: '[&>tr]:last:[&>td]:border-b-0',
+                    th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
+                    td: 'border-b border-default cursor-pointer',
+                    tr: '[&:has(>td[colspan])]:hidden',
+                }"
+            >
+                <!-- 名称 -->
+                <template #name-cell="{ row }">
+                    <UFormField :name="`rows.${row.index}.name`">
+                        <UInput v-model="row.original.name" />
+                    </UFormField>
+                </template>
+                <!-- 模型 -->
+                <template #model-cell="{ row }">
+                    <UFormField :name="`rows.${row.index}.model`">
+                        <UInput v-model="row.original.model" />
+                    </UFormField>
+                </template>
+                <!-- 最大上下文 -->
+                <template #maxContext-cell="{ row }">
+                    <UFormField :name="`rows.${row.index}.maxContext`">
+                        <UInput v-model="row.original.maxContext" type="number" />
+                    </UFormField>
+                </template>
+                <!-- 是否启用 -->
+                <template #isActive-cell="{ row }">
+                    <UFormField :name="`rows.${row.index}.isActive`">
+                        <USwitch v-model="row.original.isActive" />
+                    </UFormField>
+                </template>
+                <!-- 对话消耗 -->
+                <template #billingRule-cell="{ row }">
+                    <div class="flex w-full items-center gap-2">
+                        <UFormField :name="`rows.${row.index}.billingRule.power`">
+                            <UInput
+                                v-model.number="row.original.billingRule.power"
+                                type="number"
+                                placeholder=""
+                                size="lg"
+                                :min="0"
+                                class="flex-1"
+                                :ui="{ base: 'pr-15' }"
+                                @blur="
+                                    if (row.original.billingRule.power < 0)
+                                        row.original.billingRule.power = 0;
+                                "
+                            >
+                                <template #trailing>
+                                    <span class="text-muted-foreground text-sm">
+                                        {{ t("console-ai-provider.model.form.power") }}
+                                    </span>
+                                </template>
+                            </UInput>
+                        </UFormField>
+                        <span>/</span>
+                        <UFormField :name="`rows.${row.index}.billingRule.tokens`">
+                            <UInput
+                                v-model.number="row.original.billingRule.tokens"
+                                type="number"
+                                placeholder=""
+                                size="lg"
+                                :min="1"
+                                class="flex-1"
+                                :ui="{ base: 'pr-15' }"
+                                @blur="
+                                    if (row.original.billingRule.tokens < 1)
+                                        row.original.billingRule.tokens = 1;
+                                "
+                            >
+                                <template #trailing>
+                                    <span class="text-muted-foreground text-sm"> Tokens </span>
+                                </template>
+                            </UInput>
+                        </UFormField>
+                    </div>
+                </template>
+            </UTable>
+            <div class="flex w-full justify-end gap-2 px-4 py-3.5">
+                <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
+                    {{ t("console-common.cancel") }}
+                </UButton>
+                <UButton color="primary" size="lg" type="submit">
+                    {{ t("console-common.save") }}
+                </UButton>
+            </div>
+        </UForm>
     </ProModal>
 </template>
