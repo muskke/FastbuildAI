@@ -1,7 +1,10 @@
+import { AccountLogModule } from "@common/modules/account/account-log.module";
+import { User } from "@common/modules/auth/entities/user.entity";
 import { DictModule } from "@common/modules/dict/dict.module";
 import { AiConsoleModule } from "@modules/console/ai/ai.module";
 import { AiMcpServer } from "@modules/console/ai/entities/ai-mcp-server.entity";
 import { AiUserMcpServer } from "@modules/console/ai/entities/ai-user-mcp-server.entity";
+import { AccountLog } from "@modules/console/finance/entities/account-log.entity";
 import { AiAgentModule } from "@modules/web/ai-agent/ai-agent.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -24,7 +27,8 @@ import { UserMcpServerService } from "./services/user-mcp-server.service";
         AiConsoleModule,
         AiAgentModule,
         DictModule,
-        TypeOrmModule.forFeature([AiMcpServer, AiUserMcpServer]),
+        AccountLogModule,
+        TypeOrmModule.forFeature([AiMcpServer, AiUserMcpServer, User]),
     ],
     controllers: [
         AiChatMessageController,
