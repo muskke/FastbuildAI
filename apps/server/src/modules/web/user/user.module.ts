@@ -2,6 +2,7 @@ import { AccountLogService } from "@common/modules/account/services/account-log.
 import { Permission } from "@common/modules/auth/entities/permission.entity";
 import { Role } from "@common/modules/auth/entities/role.entity";
 import { User } from "@common/modules/auth/entities/user.entity";
+import { Agent } from "@modules/console/ai-agent/entities/agent.entity";
 import { AccountLog } from "@modules/console/finance/entities/account-log.entity";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -18,7 +19,7 @@ import { UserController } from "./user.controller";
  */
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Role, Permission, AccountLog]),
+        TypeOrmModule.forFeature([User, Role, Permission, AccountLog, Agent]),
         AuthModule,
         AiDatasetsModule,
     ],

@@ -1,7 +1,10 @@
 import { BaseService } from "@common/base/services/base.service";
 import { User } from "@common/modules/auth/entities/user.entity";
 import { generateNo } from "@common/utils/helper.util";
-import { AccountLog } from "@modules/console/finance/entities/account-log.entity";
+import {
+    AccountLog,
+    AccountLogSourceInfo,
+} from "@modules/console/finance/entities/account-log.entity";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm/entity-manager/EntityManager";
@@ -38,6 +41,7 @@ export class AccountLogService extends BaseService<AccountLog> {
         associationNo: string = "",
         associationUserId: string = null,
         remark: string = "",
+        sourceInfo: AccountLogSourceInfo,
     ) {
         const user = await manager.findOne(User, {
             where: { id: userId },
@@ -56,6 +60,7 @@ export class AccountLogService extends BaseService<AccountLog> {
             associationNo,
             associationUserId,
             remark,
+            sourceInfo,
         });
     }
 }

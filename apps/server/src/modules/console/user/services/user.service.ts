@@ -3,7 +3,11 @@ import { BaseService } from "@common/base/services/base.service";
 import { BooleanNumberType, UserCreateSource } from "@common/constants";
 import { BusinessCode } from "@common/constants/business-code.constant";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
-import { ACCOUNT_LOG_TYPE, ACTION } from "@common/modules/account/constants/account-log.constants";
+import {
+    ACCOUNT_LOG_SOURCE,
+    ACCOUNT_LOG_TYPE,
+    ACTION,
+} from "@common/modules/account/constants/account-log.constants";
 import { AccountLogService } from "@common/modules/account/services/account-log.service";
 import { Role } from "@common/modules/auth/entities/role.entity";
 import { User } from "@common/modules/auth/entities/user.entity";
@@ -94,9 +98,9 @@ export class UserService extends BaseService<User> {
         }
 
         // 如果没有任何查询条件，添加默认的排除超级管理员条件
-        if (where.length === 0) {
-            where.push({ isRoot: 0 });
-        }
+        // if (where.length === 0) {
+        //     where.push({ isRoot: 0 });
+        // }
 
         const result = await this.paginate(dto, {
             where: where.length > 0 ? where : undefined,
@@ -333,6 +337,12 @@ export class UserService extends BaseService<User> {
         return result;
     }
 
+    /**
+     * 更新用户余额
+     * @param userId 用户ID
+     * @param dto 更新数据
+     * @returns 更新后的用户
+     */
     async updateBalance(userId: string, dto: UpdateUserBalanceDto) {
         try {
             const user = await this.findOneById(userId);
@@ -368,6 +378,13 @@ export class UserService extends BaseService<User> {
                         : ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_DEC,
                     dto.action,
                     actualChangeAmount,
+                    "", // 关联单号
+                    null, // 关联用户ID
+                    `系统手动操作，操作金额：${dto.amount}`,
+                    {
+                        type: ACCOUNT_LOG_SOURCE.SYSTEM,
+                        source: "系统操作",
+                    },
                 );
             });
 

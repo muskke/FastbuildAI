@@ -3,7 +3,11 @@ import { WebController } from "@common/decorators/controller.decorator";
 import { Playground } from "@common/decorators/playground.decorator";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { UserPlayground } from "@common/interfaces/context.interface";
-import { ACCOUNT_LOG_TYPE, ACTION } from "@common/modules/account/constants/account-log.constants";
+import {
+    ACCOUNT_LOG_SOURCE,
+    ACCOUNT_LOG_TYPE,
+    ACTION,
+} from "@common/modules/account/constants/account-log.constants";
 import { AccountLogService } from "@common/modules/account/services/account-log.service";
 import { User } from "@common/modules/auth/entities/user.entity";
 import { validateArrayItems } from "@common/utils/helper.util";
@@ -46,7 +50,7 @@ export class AiChatMessageController extends BaseController {
      * 支持对话记录保存（通过saveConversation参数控制）
      */
     @Post()
-    async chat(@Body() dto: ChatRequestDto, @Playground() playground: UserPlayground) {
+    async chat(@Body() dto: ChatRequestDto, @Playground() user: UserPlayground) {
         try {
             let conversationId = dto.conversationId;
 
@@ -55,7 +59,7 @@ export class AiChatMessageController extends BaseController {
                 // 如果没有提供对话ID，创建新对话
                 if (!conversationId) {
                     const conversation = await this.AiChatRecordService.createConversation(
-                        playground.id,
+                        user.id,
                         {
                             title: dto.title || null,
                         },
@@ -87,7 +91,7 @@ export class AiChatMessageController extends BaseController {
 
             // 获取用户信息，用于计费
             const userInfo = await this.userRepository.findOne({
-                where: { id: playground.id },
+                where: { id: user.id },
             });
 
             if (!userInfo) {
@@ -359,7 +363,7 @@ export class AiChatMessageController extends BaseController {
                     );
                 }
 
-                await this.AiChatRecordService.updateConversation(conversationId, playground.id, {
+                await this.AiChatRecordService.updateConversation(conversationId, user.id, {
                     title,
                 });
             }
@@ -380,30 +384,34 @@ export class AiChatMessageController extends BaseController {
                                 // 实际扣除的算力（可能小于powerToDeduct，如果用户算力不足）
                                 const actualDeducted = userInfo.power - newPower;
 
-                                await entityManager.update(User, playground.id, {
+                                await entityManager.update(User, user.id, {
                                     power: newPower,
                                 });
 
                                 // 记录算力变动日志
                                 await this.accountLogService.recordWithTransaction(
                                     entityManager,
-                                    playground.id,
+                                    user.id,
                                     ACCOUNT_LOG_TYPE.CHAT_DEC,
                                     ACTION.DEC,
                                     actualDeducted,
                                     "", // 关联单号
                                     null, // 关联用户ID
                                     `AI对话消耗算力，模型：${model.name}，Token数：${totalTokens}，实际扣除：${actualDeducted}`, // 备注
+                                    {
+                                        type: ACCOUNT_LOG_SOURCE.CHAT,
+                                        source: "基本对话",
+                                    },
                                 );
 
                                 this.logger.debug(
-                                    `用户 ${playground.id} 对话扣除算力 ${actualDeducted} 成功`,
+                                    `用户 ${user.id} 对话扣除算力 ${actualDeducted} 成功`,
                                 );
 
                                 // 如果实际扣除的算力小于应扣除的算力，记录日志
                                 if (actualDeducted < powerToDeduct) {
                                     this.logger.warn(
-                                        `用户 ${playground.id} 算力不足，应扣除 ${powerToDeduct}，实际扣除 ${actualDeducted}，当前算力为0`,
+                                        `用户 ${user.id} 算力不足，应扣除 ${powerToDeduct}，实际扣除 ${actualDeducted}，当前算力为0`,
                                     );
                                 }
                             });
@@ -1000,6 +1008,10 @@ export class AiChatMessageController extends BaseController {
                                     "", // 关联单号
                                     null, // 关联用户ID
                                     `AI对话消耗算力，模型：${model.name}，Token数：${totalTokens}，实际扣除：${actualDeducted}`, // 备注
+                                    {
+                                        type: ACCOUNT_LOG_SOURCE.CHAT,
+                                        source: "基本对话",
+                                    },
                                 );
 
                                 this.logger.debug(

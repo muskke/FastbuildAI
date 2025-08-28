@@ -1,4 +1,5 @@
 import { AppEntity } from "@common/decorators/app-entity.decorator";
+import { ACCOUNT_LOG_SOURCE_VALUE } from "@common/modules/account/constants/account-log.constants";
 import { User } from "@common/modules/auth/entities/user.entity";
 import {
     Column,
@@ -9,6 +10,11 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from "typeorm";
+
+export type AccountLogSourceInfo = {
+    type: ACCOUNT_LOG_SOURCE_VALUE;
+    source: string;
+};
 @AppEntity({ name: "account_log", comment: "用户账户记录" })
 export class AccountLog {
     @PrimaryGeneratedColumn("uuid")
@@ -76,6 +82,13 @@ export class AccountLog {
     })
     @Index()
     associationUserId: string;
+
+    @Column({
+        type: "jsonb",
+        nullable: true,
+        comment: "来源",
+    })
+    sourceInfo: AccountLogSourceInfo;
 
     @Column({
         type: "varchar",

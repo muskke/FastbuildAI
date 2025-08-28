@@ -7,6 +7,7 @@ import { WxPayService } from "@common/modules/pay/services/wxpay.service";
 import { RefundLog } from "@common/modules/refund/entities/refund-log.entity";
 import { RefundService } from "@common/modules/refund/services/refund.service";
 import { CacheService } from "@core/cache/cache.service";
+import { Agent } from "@modules/console/ai-agent/entities/agent.entity";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
@@ -31,6 +32,7 @@ import { FinanceService } from "./services/finance.service";
             Payconfig,
             AiChatMessage,
             RefundLog,
+            Agent,
         ]),
     ],
     controllers: [FinanceController],

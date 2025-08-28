@@ -201,7 +201,7 @@ const shouldReasoningDefaultOpen = (message: AiMessage) => {
                     <!-- 错误状态消息 -->
                     <div
                         v-if="message.status === 'failed'"
-                        class="flex items-center gap-2 text-red-500"
+                        class="flex items-center gap-2 px-4 text-red-500"
                     >
                         <UIcon name="i-lucide-alert-circle" />
                         <span>

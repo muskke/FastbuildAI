@@ -1,6 +1,10 @@
 import { BaseService } from "@common/base/services/base.service";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
-import { ACCOUNT_LOG_TYPE, ACTION } from "@common/modules/account/constants/account-log.constants";
+import {
+    ACCOUNT_LOG_SOURCE,
+    ACCOUNT_LOG_TYPE,
+    ACTION,
+} from "@common/modules/account/constants/account-log.constants";
 import { AccountLogService } from "@common/modules/account/services/account-log.service";
 import { User } from "@common/modules/auth/entities/user.entity";
 import { PayfactoryService } from "@common/modules/pay/services/payfactory.service";
@@ -154,9 +158,16 @@ export class PayService extends BaseService<Payconfig> {
                 await this.accountLogService.recordWithTransaction(
                     entityManager,
                     order.userId,
-                    ACCOUNT_LOG_TYPE.RECHARGEORDER_INC,
+                    ACCOUNT_LOG_TYPE.RECHARGE_INC,
                     ACTION.INC,
                     power,
+                    order.orderNo,
+                    order.userId,
+                    "充值成功",
+                    {
+                        type: ACCOUNT_LOG_SOURCE.RECHARGE,
+                        source: "用户充值",
+                    },
                 );
             }
             if (givePower > 0) {
@@ -165,9 +176,16 @@ export class PayService extends BaseService<Payconfig> {
                 await this.accountLogService.recordWithTransaction(
                     entityManager,
                     order.userId,
-                    ACCOUNT_LOG_TYPE.RECHARGEORDER_GIVE_INC,
+                    ACCOUNT_LOG_TYPE.RECHARGE_GIVE_INC,
                     ACTION.INC,
                     givePower,
+                    order.orderNo,
+                    order.userId,
+                    "充值成功",
+                    {
+                        type: ACCOUNT_LOG_SOURCE.RECHARGE,
+                        source: "用户充值",
+                    },
                 );
             }
             //更新订单表，标记已支付
