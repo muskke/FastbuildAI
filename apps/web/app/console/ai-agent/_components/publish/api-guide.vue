@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useClipboard } from "@vueuse/core";
 import { computed, ref } from "vue";
 
 import type { Agent } from "@/models/ai-agent";
@@ -210,9 +211,7 @@ const generateCurlExample = (api: any) => {
 };
 
 // 复制代码
-const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-};
+const { copy } = useClipboard();
 </script>
 
 <template>
@@ -253,7 +252,7 @@ const copyCode = (code: string) => {
                             <UButton
                                 icon="i-lucide-copy"
                                 variant="outline"
-                                @click="copyCode(baseUrl)"
+                                @click="copy(baseUrl)"
                             />
                         </div>
                     </div>
@@ -264,7 +263,7 @@ const copyCode = (code: string) => {
                             <UButton
                                 icon="i-lucide-copy"
                                 variant="outline"
-                                @click="copyCode(agent.apiKey)"
+                                @click="copy(agent.apiKey)"
                             />
                         </div>
                     </div>
@@ -319,9 +318,7 @@ const copyCode = (code: string) => {
                                             size="sm"
                                             variant="outline"
                                             @click="
-                                                copyCode(
-                                                    JSON.stringify(api.requestExample, null, 2),
-                                                )
+                                                copy(JSON.stringify(api.requestExample, null, 2))
                                             "
                                         >
                                             {{ $t("console-ai-agent.publish.copy") }}
@@ -345,9 +342,7 @@ const copyCode = (code: string) => {
                                             size="sm"
                                             variant="outline"
                                             @click="
-                                                copyCode(
-                                                    JSON.stringify(api.responseExample, null, 2),
-                                                )
+                                                copy(JSON.stringify(api.responseExample, null, 2))
                                             "
                                         >
                                             {{ $t("console-ai-agent.publish.copy") }}
@@ -370,7 +365,7 @@ const copyCode = (code: string) => {
                                             icon="i-lucide-copy"
                                             size="sm"
                                             variant="outline"
-                                            @click="copyCode(generateCurlExample(api))"
+                                            @click="copy(generateCurlExample(api))"
                                         >
                                             {{ $t("console-ai-agent.publish.copy") }}
                                         </UButton>
