@@ -139,7 +139,7 @@ export class AiModel {
         type: "jsonb",
         nullable: false,
         comment: "计费规则",
-        default: { power: 0, tokens: 0 },
+        default: { power: 0, tokens: 1 },
     })
     billingRule: { power: number; tokens: number };
 
