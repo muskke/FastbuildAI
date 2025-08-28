@@ -553,31 +553,19 @@ export interface AgentStatistics {
 /**
  * 智能体模板配置接口
  */
-export interface AgentTemplateConfig {
-    /** 角色设定 */
-    rolePrompt?: string;
-    /** 是否显示对话上下文 */
-    showContext?: boolean;
-    /** 是否显示引用来源 */
-    showReference?: boolean;
-    /** 是否允许反馈 */
-    enableFeedback?: boolean;
-    /** 是否开启联网搜索 */
-    enableWebSearch?: boolean;
-    /** 开场白 */
-    openingStatement?: string;
-    /** 开场问题 */
-    openingQuestions?: string[];
-    /** 快捷指令配置 */
-    quickCommands?: Array<{ command: string; description: string }>;
-    /** 自动追问配置 */
-    autoQuestions?: Record<string, unknown>;
-    /** 表单字段配置 */
-    formFields?: Record<string, unknown>[];
-    /** 模型配置 */
-    modelConfig?: Record<string, unknown>;
-    /** 知识库ID列表 */
-    datasetIds?: string[];
+export interface AgentTemplateConfig extends UpdateAgentConfigParams {
+    /** 模板ID */
+    id: string;
+    /** 模板名称 */
+    name: string;
+    /** 模板描述 */
+    description?: string;
+    /** 模板分类 */
+    categories: string;
+    /** 模板标签 */
+    tags: string[];
+    /** 是否推荐 */
+    isRecommended: boolean;
 }
 
 /**

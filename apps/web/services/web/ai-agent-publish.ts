@@ -5,7 +5,11 @@ import {
     useConsolePut,
 } from "@/common/composables/useRequest";
 import type { AiMessage, PaginationResult } from "@/models";
-import type { CreateAgentAnnotationParams, UpdateAgentAnnotationParams } from "@/models/ai-agent";
+import type {
+    Agent,
+    CreateAgentAnnotationParams,
+    UpdateAgentAnnotationParams,
+} from "@/models/ai-agent";
 
 /**
  * 发布配置接口
@@ -93,8 +97,8 @@ export function apiGetEmbedCode(agentId: string): Promise<EmbedCodeResponse> {
  * @param accessToken 访问令牌
  * @returns 智能体公开信息
  */
-export function apiGetAgentInfo(publishToken: string, accessToken?: string): Promise<any> {
-    const headers: any = {};
+export function apiGetAgentInfo(publishToken: string, accessToken?: string): Promise<Agent> {
+    const headers: Record<string, string> = {};
     if (accessToken) {
         headers.Authorization = `Bearer ${accessToken}`;
     }

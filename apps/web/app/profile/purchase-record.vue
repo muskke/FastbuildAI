@@ -71,7 +71,6 @@ const columns: TableColumn<PurchaseRecordItem>[] = [
             return h(TimeDisplay, {
                 datetime: createdAt,
                 mode: "datetime",
-                timeZone: "UTC",
             });
         },
     },

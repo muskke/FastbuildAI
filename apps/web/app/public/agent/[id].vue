@@ -10,10 +10,10 @@ import { uuid } from "@/common/utils/helper";
 import type { AiMessage } from "@/models/ai-conversation";
 import type { PaginationResult } from "@/models/global";
 import {
+    apiChatStream,
     apiGenerateAccessToken,
     apiGetAgentInfo,
     apiGetMessages,
-    apiChatStream,
 } from "@/services/web/ai-agent-publish";
 
 import AgentAnnotationModal from "../../console/ai-agent/_components/logs/annotation-modal.vue";
@@ -142,10 +142,10 @@ const createNewConversation = () => {
     messages.value = [];
 };
 
-const switchConversation = async (conv: any) => {
+const switchConversation = async (conv: AiMessage) => {
     console.log("switchConversation", conv.id === conversationId.value, conv);
     if (conv.id === conversationId.value) return;
-    conversationId.value = conv.id;
+    conversationId.value = conv.id as string;
     queryPaging.page = 1;
 
     refreshMessagesData();
@@ -209,7 +209,7 @@ const loadMoreMessages = async () => {
         );
 
         const newMessages =
-            data.items?.reverse().map((item: any) => ({
+            data.items?.reverse().map((item: AiMessage) => ({
                 id: item.id || uuid(),
                 role: item.role,
                 content: item.content,
