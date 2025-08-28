@@ -11,12 +11,15 @@ import {
 import { AccountLogService } from "@common/modules/account/services/account-log.service";
 import { Role } from "@common/modules/auth/entities/role.entity";
 import { User } from "@common/modules/auth/entities/user.entity";
+import { RolePermissionService } from "@common/modules/auth/services/role-permission.service";
 import { generateNo } from "@common/utils/helper.util";
+import { isEnabled } from "@common/utils/is.util";
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
-import { Between, DeepPartial, Like, Repository } from "typeorm";
+import { Between, DeepPartial, In, Like, Repository } from "typeorm";
 
+import { BatchUpdateUserDto } from "../dto/batch-update-user.dto";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { QueryUserDto } from "../dto/query-user.dto";
 import { UpdateUserBalanceDto, UpdateUserDto } from "../dto/update-user.dto";
@@ -37,6 +40,8 @@ export class UserService extends BaseService<User> {
         private readonly userRepository: Repository<User>,
         @InjectRepository(Role)
         private readonly roleRepository: Repository<Role>,
+        @Inject(RolePermissionService)
+        private readonly rolePermissionService: RolePermissionService,
     ) {
         super(userRepository);
     }
@@ -393,5 +398,147 @@ export class UserService extends BaseService<User> {
         } catch (error) {
             throw HttpExceptionFactory.badRequest(error.message);
         }
+    }
+
+    /**
+     * 批量更新用户
+     *
+     * @param dto 批量更新用户DTO
+     * @param currentUserId 当前操作用户ID
+     * @returns 更新结果
+     */
+    async batchUpdate(
+        dto: BatchUpdateUserDto,
+        currentUserId: string,
+    ): Promise<{
+        success: boolean;
+        total: number;
+        succeeded: number;
+        failed: number;
+        errors: Array<{ id: string; message: string }>;
+    }> {
+        const { users, skipErrors = false } = dto;
+        const result = {
+            success: true,
+            total: users.length,
+            succeeded: 0,
+            failed: 0,
+            errors: [] as Array<{ id: string; message: string }>,
+        };
+
+        // 查询所有要更新的用户
+        const userIds = users.map((user) => user.id);
+        const existingUsers = await this.findAll({
+            where: {
+                id: In(userIds),
+            },
+        });
+
+        // 创建ID到用户的映射，方便后续查找
+        const userMap = new Map<string, User>();
+        existingUsers.forEach((user) => userMap.set(user.id, user));
+
+        // 查询当前操作用户
+        const currentUser = await this.findOneById(currentUserId);
+        const isCurrentUserRoot = isEnabled(currentUser?.isRoot);
+
+        // 逐个处理用户更新
+        for (const userItem of users) {
+            try {
+                const existingUser = userMap.get(userItem.id);
+
+                // 检查用户是否存在
+                if (!existingUser) {
+                    throw new Error(`ID为 ${userItem.id} 的用户不存在`);
+                }
+
+                // 检查权限：如果要修改的是超级管理员
+                if (isEnabled(existingUser.isRoot)) {
+                    // 只有超级管理员本人可以修改自己的信息
+                    if (currentUserId !== userItem.id) {
+                        throw new Error(`无权修改超级管理员(${userItem.id})的信息`);
+                    }
+                }
+
+                // 检查是否有算力变动
+                if (userItem.power !== undefined) {
+                    const user = await this.findOneById(userItem.id);
+                    if (user) {
+                        // 计算变动值
+                        const powerDiff = userItem.power - user.power;
+
+                        if (powerDiff !== 0) {
+                            // 确定是增加还是减少
+                            const action = powerDiff > 0 ? ACTION.INC : ACTION.DEC;
+                            const amount = Math.abs(powerDiff);
+
+                            await this.userRepository.manager.transaction(async (entityManager) => {
+                                // 更新用户算力
+                                await entityManager.update(
+                                    User,
+                                    { id: userItem.id },
+                                    { power: userItem.power },
+                                );
+
+                                // 记录账户变动
+                                await this.accountLogService.recordWithTransaction(
+                                    entityManager,
+                                    userItem.id,
+                                    action === ACTION.INC
+                                        ? ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_INC
+                                        : ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_DEC,
+                                    action,
+                                    amount,
+                                    "", // 关联单号
+                                    null, // 关联用户ID
+                                    `批量更新操作，算力变动：${powerDiff > 0 ? "+" : ""}${powerDiff}`,
+                                    {
+                                        type: ACCOUNT_LOG_SOURCE.SYSTEM,
+                                        source: "批量更新",
+                                    },
+                                );
+                            });
+
+                            // 从更新对象中移除power字段，因为已单独处理
+                            delete userItem.power;
+                        }
+                    }
+                }
+
+                // 执行其他字段的更新
+                if (Object.keys(userItem).length > 1) {
+                    // 至少有id和其他字段
+                    await this.updateById(userItem.id, userItem, {
+                        excludeFields: ["password"],
+                    });
+                }
+
+                // 更新成功后清理该用户的权限相关缓存（忽略清理失败，不影响主流程）
+                this.rolePermissionService
+                    .clearUserCache(userItem.id)
+                    .catch((e) => this.logger?.warn?.(`清理用户缓存失败: ${e.message}`));
+
+                result.succeeded++;
+            } catch (error) {
+                result.failed++;
+                result.errors.push({
+                    id: userItem.id,
+                    message: error.message,
+                });
+
+                // 如果不跳过错误，则立即返回
+                if (!skipErrors) {
+                    result.success = false;
+                    return result;
+                }
+            }
+        }
+
+        // 如果有失败的更新，设置整体结果为失败
+        if (result.failed > 0) {
+            result.success = false;
+        }
+
+        return result;
     }
 }
