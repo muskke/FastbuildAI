@@ -15,6 +15,7 @@ import { In } from "typeorm";
 
 import { MenuService } from "../../menu/menu.service";
 import { RoleService } from "../../role/role.service";
+import { BatchUpdateUserDto } from "../dto/batch-update-user.dto";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { BatchDeleteUserDto, DeleteUserDto } from "../dto/delete-user.dto";
 import { QueryUserDto } from "../dto/query-user.dto";
@@ -79,23 +80,6 @@ export class UserController extends BaseController {
             permissions: permissionCodes,
             menus: menuTree,
         };
-    }
-
-    /**
-     * 创建用户
-     *
-     * @param createUserDto 创建用户DTO
-     * @returns 创建的用户
-     */
-    @Post()
-    @Permissions({
-        code: "create",
-        name: "创建用户",
-        description: "创建新的用户账号",
-    })
-    @BuildFileUrl(["**.avatar"])
-    async create(@Body() createUserDto: CreateUserDto) {
-        return await this.userService.createUser(createUserDto);
     }
 
     /**
@@ -330,5 +314,39 @@ export class UserController extends BaseController {
         @Body() dto: UpdateUserBalanceDto,
     ) {
         return await this.userService.updateBalance(userId, dto);
+    }
+
+    /**
+     * 批量更新用户
+     *
+     * @param dto 批量更新用户DTO
+     * @param currentUser 当前登录用户
+     * @returns 更新结果
+     */
+    @Post("batch-update")
+    @Permissions({
+        code: "batch-update",
+        name: "批量更新用户",
+        description: "批量更新多个用户信息",
+    })
+    async batchUpdate(@Body() dto: BatchUpdateUserDto, @Playground() currentUser: UserPlayground) {
+        return await this.userService.batchUpdate(dto, currentUser.id);
+    }
+
+    /**
+     * 创建用户
+     *
+     * @param createUserDto 创建用户DTO
+     * @returns 创建的用户
+     */
+    @Post()
+    @Permissions({
+        code: "create",
+        name: "创建用户",
+        description: "创建新的用户账号",
+    })
+    @BuildFileUrl(["**.avatar"])
+    async create(@Body() createUserDto: CreateUserDto) {
+        return await this.userService.createUser(createUserDto);
     }
 }
