@@ -4,7 +4,7 @@ import { onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { object, string } from "yup";
 
-import type { Agent } from "@/models/ai-agent";
+import type { AgentTemplateConfig } from "@/models/ai-agent";
 import { apiCreateAgentFromTemplate } from "@/services/console/ai-agent";
 
 const { t } = useI18n();
@@ -13,7 +13,7 @@ const router = useRouter();
 
 const props = defineProps<{
     /** 选中的模板 */
-    template: Agent;
+    template: AgentTemplateConfig;
 }>();
 
 const emits = defineEmits<{
