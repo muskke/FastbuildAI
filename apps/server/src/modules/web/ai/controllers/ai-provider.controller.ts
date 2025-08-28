@@ -46,7 +46,7 @@ export class AiProviderController extends BaseController {
             const providers = await this.aiProviderService.findAll({
                 where,
                 relations: ["models"],
-                order: { sortOrder: "ASC", createdAt: "DESC" },
+                order: { sortOrder: "DESC", createdAt: "DESC" },
                 excludeFields: ["apiKey"],
             });
 
