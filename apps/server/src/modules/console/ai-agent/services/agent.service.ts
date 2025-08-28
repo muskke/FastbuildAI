@@ -98,6 +98,9 @@ export class AgentService extends BaseService<Agent> {
 
         return this.withErrorHandling(async () => {
             const updateData = { ...dto, avatar: dto.avatar || this.defaultAvatar };
+            if (updateData.billingConfig.price < 0) {
+                throw HttpExceptionFactory.business("算力消耗不能小于 0");
+            }
             const updated = await this.updateById(id, updateData);
             this.logger.log(`[+] 智能体配置更新成功: ${id}`);
             return updated as Agent;
