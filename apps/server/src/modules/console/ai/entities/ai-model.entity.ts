@@ -133,18 +133,15 @@ export class AiModel {
     sortOrder: number;
 
     /**
-     * 模型定价信息
+     * 模型计费规则
      */
     @Column({
         type: "jsonb",
-        nullable: true,
-        comment: "模型定价信息",
+        nullable: false,
+        comment: "计费规则",
+        default: { power: 0, tokens: 0 },
     })
-    pricing?: {
-        input?: number; // 输入token价格（每1K token）
-        output?: number; // 输出token价格（每1K token）
-        currency?: string; // 货币单位，默认USD
-    };
+    billingRule: { power: number; tokens: number };
 
     /**
      * 是否系统内置
