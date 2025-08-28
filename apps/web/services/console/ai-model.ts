@@ -104,6 +104,16 @@ export function apiSetAiModelIsActive(id: string, isActive: boolean): Promise<vo
 }
 
 /**
+ * 批量编辑AI模型
+ * @description 根据AI模型ID批量编辑模型配置信息
+ * @param {UpdateAiModelRequest[]} models 更新数据
+ * @returns {Promise<AiModelInfo[]>} 更新结果
+ */
+export function apiBatchUpdateAiModel(models: UpdateAiModelRequest[]): Promise<AiModelInfo[]> {
+    return useConsolePatch(`/ai-models/batch/update`, { models });
+}
+
+/**
  * 批量设置AI模型状态
  * @description 根据AI模型ID设置模型状态
  * @param {string[]} ids AI模型ID数组

@@ -9,12 +9,15 @@ import type { AiModelInfo, AiModelQueryRequest, ModelType } from "@/models/ai-pr
 import {
     apiBatchDeleteAiModel,
     apiBatchSetAiModelIsActive,
+    apiBatchUpdateAiModel,
     apiDeleteAiModel,
     apiGetAiModelList,
     apiSetAiModelIsActive,
     apiSetDefaultModel,
 } from "@/services/console/ai-model";
 import { apiGetAiProviderModelTypes } from "@/services/console/ai-provider";
+
+import BatchEdit from "./_components/batch-edit.vue";
 
 const ModelCard = defineAsyncComponent(() => import("./_components/model-card.vue"));
 
@@ -39,6 +42,8 @@ const searchForm = reactive<AiModelQueryRequest>({
 
 // 选中的AI模型
 const selectedModels = ref<Set<string>>(new Set());
+// 选中的AI模型数据
+const selectedModelsData = ref<Set<AiModelInfo>>(new Set());
 
 const modelTypes = ref<ModelType[]>([]);
 
@@ -123,6 +128,8 @@ const columns = ref<TableColumn<AiModelInfo>[]>([
     },
 ]);
 
+const showBatchEditModal = ref(false);
+
 // 获取行操作
 const getRowItems = (row: Row<AiModelInfo>) => {
     const items = [];
@@ -182,6 +189,11 @@ const getBatchItems = () => {
             color: "neutral",
             onSelect: () => handleBatchIsActiveChange(false),
         });
+        items.push({
+            label: t("console-common.batchEdit"),
+            icon: "i-lucide-edit",
+            onSelect: () => handleBatchEdit(),
+        });
     }
     if (hasAccessByCodes(["ai-models:delete"])) {
         items.push({
@@ -219,8 +231,10 @@ const handleModelSelect = (model: AiModelInfo, selected: boolean | "indeterminat
         const modelId = model.id as string;
         if (selected) {
             selectedModels.value.add(modelId);
+            selectedModelsData.value.add(model);
         } else {
             selectedModels.value.delete(modelId);
+            selectedModelsData.value.delete(model);
         }
     }
 };
@@ -235,10 +249,12 @@ const handleSelectAll = (value: boolean | "indeterminate") => {
         paging.items.forEach((model: AiModelInfo) => {
             if (model.id) {
                 selectedModels.value.add(model.id as string);
+                selectedModelsData.value.add(model);
             }
         });
     } else {
         selectedModels.value.clear();
+        selectedModelsData.value.clear();
     }
 };
 
@@ -351,6 +367,17 @@ const handleBatchIsActiveChange = async (isActive: boolean) => {
     }
 };
 
+/**
+ * 批量编辑AI模型
+ */
+const handleBatchEdit = () => {
+    showBatchEditModal.value = true;
+};
+
+const handleClose = () => {
+    showBatchEditModal.value = false;
+};
+
 // 设置操作列固定在右侧
 const columnPinning = ref({
     left: [],
@@ -363,6 +390,27 @@ const isIndeterminate = computed(() => {
     ).length;
     return selectedCount > 0 && selectedCount < paging.items.length;
 });
+
+/**
+ * 批量编辑提交
+ */
+const handleBatchEditSubmit = async (value: AiModelInfo[]) => {
+    const models = value.map((model) => {
+        return {
+            id: model.id,
+            name: model.name,
+            model: model.model,
+            maxContext: model.maxContext,
+            isActive: model.isActive,
+            billingRule: model.billingRule,
+        };
+    });
+    await apiBatchUpdateAiModel(models);
+    selectedModelsData.value.clear();
+    selectedModels.value.clear();
+    getLists();
+    showBatchEditModal.value = false;
+};
 
 // 初始化
 onMounted(async () => getLists());
@@ -603,5 +651,13 @@ onMounted(async () => getLists());
                 />
             </div>
         </div>
+
+        <!-- 批量编辑 -->
+        <BatchEdit
+            v-if="showBatchEditModal"
+            :models="selectedModelsData"
+            @close="handleClose"
+            @submit="handleBatchEditSubmit"
+        />
     </div>
 </template>

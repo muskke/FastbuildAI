@@ -16,6 +16,7 @@
     "submit": "提交",
     "delete": "删除",
     "batchDelete": "批量删除",
+    "batchEdit": "批量编辑",
     "showColumns": "显示字段",
     "edit": "编辑",
     "export": "导出",
