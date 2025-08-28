@@ -88,19 +88,18 @@ const handleCancelPowerEdit = () => {
  */
 const handleConfirmPowerEdit = async () => {
     if (!powerAdjustForm.amount || powerAdjustForm.amount <= 0) {
-        message.warning("请输入有效的调整数量");
+        message.warning(t("console-user.messages.adjustAmountInput"));
         return;
     }
     await apiUpdateUserAmount(props.id as string, powerAdjustForm.amount, powerAdjustForm.type);
     // 更新算力值
     formData.power = adjustedPower.value;
 
+    message.success(
+        `${powerAdjustForm.type === 1 ? t("console-user.form.add") : t("console-user.form.reduce")}${t("console-user.messages.success")}`,
+    );
     // 关闭弹窗并重置表单
     handleCancelPowerEdit();
-
-    message.success(
-        `算力${powerAdjustForm.type === 1 ? t("console-user.form.add") : t("console-user.form.reduce")}成功`,
-    );
 };
 
 // 表单数据
@@ -123,7 +122,6 @@ const roleOptions = ref<{ label: string; value: string }[]>([]);
 
 // 区号选项 - 使用公共配置
 const areaCodeOptions = computed(() => {
-    console.log(PHONE_AREA_CODES);
     return PHONE_AREA_CODES.map((item) => ({
         label: `${item.flag} ${t(item.i18nKey)} +${item.areaCode}`,
         value: item.areaCode,
