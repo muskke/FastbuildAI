@@ -138,7 +138,7 @@
         "noModels": "暂无模型数据",
         "setDefault": "设为默认",
         "modelTypeFilter": "模型类型筛选",
-
+        "batchEditTitle": "批量编辑AI模型",
         "form": {
             "name": "模型名称",
             "namePlaceholder": "请输入模型名称",
@@ -167,7 +167,17 @@
             "basicInfoTitle": "模型基本信息",
             "basicInfoDescription": "配置模型的基本信息和识别参数",
             "modelType": "模型类型",
-            "modelTypePlaceholder": "请输入模型类型"
+            "modelTypePlaceholder": "请输入模型类型",
+            "billing": "对话消耗",
+            "power": "算力",
+            "billingHelp": "每多少 tokens 消耗多少算力"
+        },
+        "batchEdit": {
+            "name": "名称",
+            "model": "模型标识",
+            "maxContext": "最大上下文",
+            "isActive": "是否启用",
+            "billingRule": "对话消耗"
         },
         "table": {
             "icon": "图标",
