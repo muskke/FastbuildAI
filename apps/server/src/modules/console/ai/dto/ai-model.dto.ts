@@ -24,7 +24,7 @@ class BillingRuleDto {
     power: number;
 
     @IsInt({ message: "tokens 必须是整数" })
-    @Min(0, { message: "tokens 不能小于 0" })
+    @Min(1, { message: "tokens 不能小于 1" })
     tokens: number;
 }
 
