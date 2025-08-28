@@ -155,14 +155,14 @@ export interface AiModelInfo {
     sortOrder: number;
     /** 模型类型 */
     modelType: string;
+    /** 最大上下文 */
+    maxContext: number;
     /** 定价信息 */
-    pricing: {
-        /** 输入价格 */
-        input: number;
-        /** 输出价格 */
-        output: number;
-        /** 货币单位 */
-        currency: string;
+    billingRule: {
+        /** 算力 */
+        power: number;
+        /** tokens */
+        tokens: number;
     };
     /** 创建时间 */
     createdAt: string;

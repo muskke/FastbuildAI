@@ -1,0 +1,71 @@
+{
+    "type": {
+        "addType": "新增类型",
+        "form": {
+            "name": "类型名称",
+            "fieldName": "字段名",
+            "isActived": "是否启用",
+            "createdAt": "创建时间",
+            "action": "操作",
+            "edit": "编辑类型",
+            "delete": "删除类型",
+            "enable": "启用",
+            "disable": "禁用"
+        },
+        "edit": {
+            "title": "编辑类型",
+            "name": "类型名称",
+            "status": "状态",
+            "enable": "启用",
+            "disable": "禁用",
+            "fieldName": "字段名",
+            "fieldType": "字段类型",
+            "singleLineText": "单行文本",
+            "multiLineText": "多行文本",
+            "fieldExample": "示例文字",
+            "action": "操作",
+            "add": "新增",
+            "nameRequired": "请输入字段名称",
+            "typeValueRequired": "请选择字段类型",
+            "exampleRequired": "请输入示例文字",
+            "toast": {
+                "nameRequired": "类型名称不能为空",
+                "customFieldRequired": "自定义字段不能为空",
+                "customFieldInvalid": "自定义字段校验失败：",
+                "no": "第",
+                "nameColumn": "行：名称不能为空",
+                "typeColumn": "行：类型不能为空",
+                "exampleColumn": "行：示例不能为空"
+            }
+        }
+    },
+    "list": {
+        "add": "新增密钥",
+        "batchDelete": "批量删除",
+        "placeholder": "请输入名称...",
+        "form": {
+            "name": "密钥名称",
+            "keyType": "密钥类型",
+            "remark": "备注",
+            "status": "状态",
+            "createdAt": "创建时间",
+            "action": "操作",
+            "edit": "编辑",
+            "delete": "删除",
+            "enable": "启用",
+            "disable": "禁用"
+        },
+        "edit": {
+            "title": "编辑密钥",
+            "name": "密钥名称",
+            "keyType": "密钥类型",
+            "remark": "备注",
+            "nameRequired": "请输入密钥名称",
+            "keyTypeRequired": "请选择密钥类型",
+            "remarkRequired": "请输入备注",
+            "fieldRequired": "请输入"
+        }
+    },
+    "save": "保存",
+    "cancel": "取消"
+}

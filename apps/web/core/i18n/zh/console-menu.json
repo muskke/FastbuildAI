@@ -39,6 +39,11 @@
         },
         "update": "更新"
     },
+    "apiKeyManage": {
+        "title": "密钥管理",
+        "apiKeyType": "密钥类型",
+        "apiKeyList": "密钥列表"
+    },
     "datasets": {
         "title": "知识库",
         "retry": "重试",
