@@ -9,6 +9,7 @@ import { isEnabled } from "@common/utils/is.util";
 import { Body, Delete, Get, Param, Patch, Post, Put, Query } from "@nestjs/common";
 import { getModelFeaturesWithDescriptions, getModelTypesWithDescriptions } from "@sdk/ai";
 
+import { BatchUpdateAiModelDto } from "../dto/batch-update-ai-model.dto";
 import { AiModel } from "../entities/ai-model.entity";
 import { AiProviderService } from "../services/ai-provider.service";
 import { CreateAiModelDto, QueryAiModelDto, UpdateAiModelDto } from "./../dto/ai-model.dto";
@@ -210,6 +211,90 @@ export class AiModelController extends BaseController {
         }
 
         return await this.aiModelService.updateModel(id, dto);
+    }
+
+    /**
+     * 批量更新AI模型配置
+     */
+    @Patch("batch/update")
+    @Permissions({
+        code: "update",
+        name: "批量更新AI模型",
+    })
+    async batchUpdate(@Body() dto: BatchUpdateAiModelDto) {
+        const { models, skipErrors = false } = dto;
+
+        if (!models || !Array.isArray(models) || models.length === 0) {
+            throw HttpExceptionFactory.business("参数 models 必须是非空数组");
+        }
+
+        const results = [];
+        const errors = [];
+
+        // 批量处理每个模型
+        for (const modelItem of models) {
+            try {
+                // 验证模型是否存在
+                const existingModel = await this.aiModelService.findOneById(modelItem.id);
+                if (!existingModel) {
+                    throw HttpExceptionFactory.business(`模型ID ${modelItem.id} 不存在`);
+                }
+
+                // 验证供应商和模型类型
+                if (modelItem.modelType && modelItem.providerId) {
+                    const provider = await this.aiProviderService.findOneById(modelItem.providerId);
+                    if (!provider) {
+                        throw HttpExceptionFactory.business(
+                            `AI供应商 ${modelItem.providerId} 不存在`,
+                        );
+                    }
+
+                    if (!provider.supportedModelTypes.includes(modelItem.modelType)) {
+                        throw HttpExceptionFactory.business(
+                            `AI供应商 ${modelItem.providerId} 不支持模型类型 ${modelItem.modelType}`,
+                        );
+                    }
+                }
+
+                // 验证计费规则
+                if (modelItem.billingRule) {
+                    if (modelItem.billingRule.power < 0) {
+                        throw HttpExceptionFactory.business(
+                            `模型ID ${modelItem.id} 的计费规则中 power 不能小于 0`,
+                        );
+                    }
+                    if (modelItem.billingRule.tokens < 0) {
+                        throw HttpExceptionFactory.business(
+                            `模型ID ${modelItem.id} 的计费规则中 tokens 不能小于 0`,
+                        );
+                    }
+                }
+
+                // 更新模型
+                const result = await this.aiModelService.updateModel(modelItem.id, modelItem);
+                results.push(result);
+            } catch (error) {
+                if (skipErrors) {
+                    // 记录错误但继续处理其他模型
+                    errors.push({
+                        modelId: modelItem.id,
+                        error: error.message || "更新失败",
+                    });
+                } else {
+                    // 不跳过错误，直接抛出异常终止处理
+                    throw error;
+                }
+            }
+        }
+
+        return {
+            success: true,
+            results,
+            errors: errors.length > 0 ? errors : undefined,
+            total: models.length,
+            successCount: results.length,
+            failCount: errors.length,
+        };
     }
 
     /**
