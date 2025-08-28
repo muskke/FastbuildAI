@@ -29,6 +29,11 @@ const { paging, getLists } = usePaging({
     params: searchForm,
 });
 
+// 过滤后的用户列表（排除 isRoot 为 1 的用户）
+const filteredUsers = computed(() => {
+    return paging.items.filter((user: UserInfo) => user.isRoot !== 1);
+});
+
 /** 处理用户选择 */
 const handleUserSelect = (user: UserInfo, selected: boolean | "indeterminate") => {
     if (typeof selected === "boolean") {
@@ -45,7 +50,7 @@ const handleUserSelect = (user: UserInfo, selected: boolean | "indeterminate") =
 const handleSelectAll = (value: boolean | "indeterminate") => {
     const isSelected = value === true;
     if (isSelected) {
-        paging.items.forEach((user: UserInfo) => {
+        filteredUsers.value.forEach((user: UserInfo) => {
             if (user.id) {
                 selectedUsers.value.add(user.id as string);
             }
@@ -100,8 +105,8 @@ const handleBatchDelete = () => {
 /** 计算选中状态 */
 const isAllSelected = computed(() => {
     return (
-        paging.items.length > 0 &&
-        paging.items.every(
+        filteredUsers.value.length > 0 &&
+        filteredUsers.value.every(
             (user: UserInfo) => user.id && selectedUsers.value.has(user.id as string),
         )
     );
