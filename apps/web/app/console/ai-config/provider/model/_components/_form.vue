@@ -399,12 +399,12 @@ defineExpose({ resetForm });
                                             type="number"
                                             placeholder=""
                                             size="lg"
-                                            :min="0"
+                                            :min="1"
                                             class="flex-1"
                                             :ui="{ base: 'pr-15' }"
                                             @blur="
-                                                if (formData.billingRule.tokens < 0)
-                                                    formData.billingRule.tokens = 0;
+                                                if (formData.billingRule.tokens < 1)
+                                                    formData.billingRule.tokens = 1;
                                             "
                                         >
                                             <template #trailing>
