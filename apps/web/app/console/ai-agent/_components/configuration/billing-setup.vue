@@ -18,7 +18,9 @@ const { t } = useI18n();
     <div>
         <div class="flex w-full flex-col gap-2">
             <div>
-                <span>{{ t("console-ai-agent.configuration.dialogueConsumption") }}</span>
+                <span class="text-sm">{{
+                    t("console-ai-agent.configuration.dialogueConsumption")
+                }}</span>
             </div>
             <UInput
                 type="number"
