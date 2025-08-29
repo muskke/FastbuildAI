@@ -47,7 +47,10 @@ const getTimelineItems = (item: McpToolCall): TimelineItem[] => {
 </script>
 
 <template>
-    <div v-if="toolCalls && toolCalls.length > 0" class="bg-muted mb-2 rounded-lg p-2">
+    <div
+        v-if="toolCalls && toolCalls.length > 0"
+        class="bg-muted mb-2 flex flex-col gap-1.5 rounded-lg p-2"
+    >
         <UCollapsible
             :unmountOnHide="false"
             class="group"
