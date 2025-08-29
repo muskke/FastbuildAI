@@ -405,11 +405,16 @@ const handleBatchEditSubmit = async (value: AiModelInfo[]) => {
             billingRule: model.billingRule,
         };
     });
-    await apiBatchUpdateAiModel(models);
-    selectedModelsData.value.clear();
-    selectedModels.value.clear();
-    getLists();
-    showBatchEditModal.value = false;
+    try {
+        await apiBatchUpdateAiModel(models);
+        selectedModelsData.value.clear();
+        selectedModels.value.clear();
+        getLists();
+        showBatchEditModal.value = false;
+        toast.success(t("console-ai-provider.model.messages.batchEditSuccess"));
+    } catch (error) {
+        console.error("Batch edit failed:", error);
+    }
 };
 
 // 初始化
