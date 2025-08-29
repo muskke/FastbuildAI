@@ -794,7 +794,7 @@ export class AgentChatService extends BaseAgentChatService {
             }
         } else {
             owner = await this.userRepository.findOne({
-                where: { id: agentInfo.createrId },
+                where: { id: agentInfo.createBy },
             });
 
             if (!owner) {

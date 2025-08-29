@@ -83,7 +83,7 @@ export class CreateAgentFromTemplateDto {
     /** 创建者ID */
     @IsOptional()
     @IsString({ message: "创建者ID必须是字符串" })
-    createrId?: string;
+    createBy?: string;
 
     /** 自定义配置覆盖 */
     customConfig?: Partial<AgentTemplateConfig>;

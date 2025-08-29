@@ -74,7 +74,7 @@ export class AgentController {
     async importAgent(@Body() dto: ImportAgentDto, @Playground() user: UserPlayground) {
         dto.avatar = dto.avatar || "/static/images/agent.png";
         // 添加创建者ID
-        dto.createrId = user.id;
+        dto.createBy = user.id;
         const agent = await this.agentService.createAgentFromTemplate(dto as ImportAgentDto);
 
         // 自动发布智能体
@@ -145,7 +145,7 @@ export class AgentController {
         const createAgentDto = await this.agentTemplateService.createAgentFromTemplate(dto);
 
         // 添加创建者ID
-        createAgentDto.createrId = user.id;
+        createAgentDto.createBy = user.id;
 
         const agent = await this.agentService.createAgentFromTemplate(
             createAgentDto as CreateAgentFromTemplateDto,
@@ -180,7 +180,7 @@ export class AgentController {
     })
     async create(@Body() dto: CreateAgentDto, @Playground() user: UserPlayground) {
         // 添加创建者ID
-        dto.createrId = user.id;
+        dto.createBy = user.id;
 
         // 创建智能体
         const agent = await this.agentService.createAgent(dto, user);
@@ -300,7 +300,7 @@ export class AgentController {
         @Playground() user: UserPlayground,
         @Res() res: Response,
     ) {
-        return this.agentChatService.handleChat(id, dto, user, "stream", false, res);
+        return this.agentChatService.handleChat(id, dto, user, "stream", true, res);
     }
 
     /**
