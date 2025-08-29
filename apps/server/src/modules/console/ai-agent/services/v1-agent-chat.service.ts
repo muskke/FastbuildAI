@@ -377,7 +377,7 @@ export class PublicAgentChatService {
             );
         } catch (error) {
             this.logger.error(`[!] 公开智能体流式对话失败: ${error.message}`, error.stack);
-            throw HttpExceptionFactory.business("流式对话处理失败");
+            throw HttpExceptionFactory.business(error.message);
         }
     }
 
@@ -504,7 +504,7 @@ export class PublicAgentChatService {
             );
         } catch (error) {
             this.logger.error(`[!] API Key流式对话失败: ${error.message}`, error.stack);
-            throw HttpExceptionFactory.business("流式对话处理失败");
+            throw HttpExceptionFactory.business(error.message);
         }
     }
 
