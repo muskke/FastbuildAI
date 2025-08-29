@@ -7,6 +7,7 @@ import { buildBreadcrumbs } from "@/common/utils/menu-helper";
 
 const SidebarTrigger = defineAsyncComponent(() => import("./trigger.vue"));
 const ReloadButton = defineAsyncComponent(() => import("../components/reload-button.vue"));
+const GoHomeButton = defineAsyncComponent(() => import("../components/goHome-button.vue"));
 
 const props = defineProps<{
     /** 是否折叠侧边栏 */
@@ -61,6 +62,11 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => {
                     <span class="bg-muted-foreground mx-2 rounded-full p-0.5"></span>
                 </template>
             </UBreadcrumb>
+        </div>
+
+        <!-- 右侧工具区域 -->
+        <div class="flex items-center gap-2">
+            <GoHomeButton />
         </div>
 
         <!-- 消息通知 -->
