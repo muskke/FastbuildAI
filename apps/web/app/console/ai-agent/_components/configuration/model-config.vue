@@ -166,10 +166,10 @@ defineShortcuts({ o: () => (open.value = !open.value) });
                         :model-value="modelId"
                         :disabled="props.disabled"
                         :button-ui="{
-                            variant: 'soft',
+                            variant: 'outline',
                             color: 'neutral',
                             size: 'lg',
-                            class: 'w-full justify-between',
+                            class: 'w-full justify-between bg-background',
                         }"
                         :supportedModelTypes="['llm']"
                         @update:model-value="handleModelChange"
