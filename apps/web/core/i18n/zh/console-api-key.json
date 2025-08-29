@@ -18,6 +18,7 @@
             "status": "状态",
             "enable": "启用",
             "disable": "禁用",
+            "customField": "自定义字段",
             "fieldName": "字段名",
             "fieldType": "字段类型",
             "singleLineText": "单行文本",

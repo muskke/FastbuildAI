@@ -206,7 +206,7 @@ watch(
             </div>
 
             <!-- 内容区域 -->
-            <div class="flex flex-1 flex-col">
+            <div class="flex w-full flex-1 flex-col overflow-hidden">
                 <!-- 返回按钮和标题 -->
                 <div class="flex h-fit items-center gap-2 pb-4">
                     <UButton
