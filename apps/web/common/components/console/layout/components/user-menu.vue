@@ -231,6 +231,15 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
     ],
     [
         {
+            label: t("console-common.officeLink"),
+            icon: "i-lucide-external-link",
+            onSelect() {
+                window.open("https://www.fastbuildai.com", "_blank");
+            },
+        },
+    ],
+    [
+        {
             label: t("console-common.logout"),
             icon: "i-lucide-log-out",
             onSelect(e: MouseEvent) {
@@ -246,6 +255,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
     <!-- Sidebar模式的容器 -->
     <div class="flex flex-col gap-1" :class="collapsed ? 'px-1' : 'px-1.5'">
         <div
+            v-if="controlsStore.consoleLayoutMode === 'side'"
             class="hover:bg-secondary dark:hover:bg-surface-800 flex cursor-pointer flex-col rounded-lg select-none"
         >
             <div class="flex h-10 items-center justify-between px-3 py-2 text-sm font-medium">

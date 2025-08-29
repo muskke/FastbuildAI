@@ -282,7 +282,8 @@
             "missingModelId": "缺少模型ID",
             "getModelDetailFailed": "获取模型详情失败",
             "isActiveEnabled": "模型已启用",
-            "isActiveDisabled": "模型已禁用"
+            "isActiveDisabled": "模型已禁用",
+            "batchEditSuccess": "批量编辑成功"
         }
     },
     "viewWebsite": "前往官网",
