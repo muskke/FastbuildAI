@@ -39,6 +39,10 @@ const columns: TableColumn<PowerDetaiItem>[] = [
         header: t("web-personal-rights.rechargeCenter.detail.changeAmount"),
     },
     {
+        accessorKey: "remark",
+        header: t("web-personal-rights.rechargeCenter.detail.remark"),
+    },
+    {
         accessorKey: "createdAt",
         header: t("web-personal-rights.rechargeCenter.detail.changeTime"),
         cell: ({ row }) => {
@@ -196,6 +200,11 @@ definePageMeta({
                         {{ row.original.action === 1 ? "+" : "-" }}
                         {{ row.original.changeAmount }}
                     </span>
+                </template>
+                <template #remark-cell="{ row }">
+                    <div>
+                        {{ row.original.remark }}
+                    </div>
                 </template>
             </UTable>
             <div class="flex items-center justify-end gap-3">

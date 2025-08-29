@@ -39,13 +39,19 @@ const quickActions = ref<MenuItem[]>([
     },
     {
         id: 2,
+        title: "menu.powerDetail",
+        icon: "i-lucide-database-zap",
+        click: () => router.push("/profile/power-detail"),
+    },
+    {
+        id: 3,
         title: "login.userAgreement",
         icon: "i-lucide-file-text",
         target: "_blank",
         path: "/agreement?type=agreement&item=service",
     },
     {
-        id: 3,
+        id: 4,
         title: "login.privacyPolicy",
         icon: "i-lucide-shield-check",
         target: "_blank",
@@ -159,7 +165,7 @@ const handleMenuClick = (item: MenuItem) => {
                 </div>
 
                 <!-- 快捷操作菜单 -->
-                <div class="mt-4 grid w-60 grid-cols-3 gap-6">
+                <div class="mt-4 grid w-72 grid-cols-4 gap-6">
                     <div
                         v-for="item in quickActions"
                         :key="item.id"
