@@ -37,6 +37,7 @@ export enum ACCOUNT_LOG_TYPE {
      * 智能体对话增减算力
      */
     AGENT_CHAT_DEC = Number(`${ACCOUNT_LOG_SOURCE.AGENT_CHAT}00`),
+    AGENT_GUEST_CHAT_DEC = Number(`${ACCOUNT_LOG_SOURCE.AGENT_CHAT}01`),
     /**
      * 插件增减算力
      */
@@ -53,11 +54,12 @@ export type ACTION_VALUE = (typeof ACTION)[keyof typeof ACTION];
  * 余额变动描述
  */
 export const ACCOUNT_LOG_TYPE_DESCRIPTION = {
-    [ACCOUNT_LOG_TYPE.RECHARGE_INC]: "充值增加算力",
-    [ACCOUNT_LOG_TYPE.RECHARGE_GIVE_INC]: "充值赠送增加算力",
-    [ACCOUNT_LOG_TYPE.RECHARGE_DEC]: "充值退款退回算力",
-    [ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_INC]: "系统增加算力",
-    [ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_DEC]: "系统减扣算力",
-    [ACCOUNT_LOG_TYPE.CHAT_DEC]: "对话消耗算力",
-    [ACCOUNT_LOG_TYPE.AGENT_CHAT_DEC]: "智能体对话消耗算力",
+    [ACCOUNT_LOG_TYPE.RECHARGE_INC]: "系统充值",
+    [ACCOUNT_LOG_TYPE.RECHARGE_GIVE_INC]: "系统充值赠送",
+    [ACCOUNT_LOG_TYPE.RECHARGE_DEC]: "系统充值退款",
+    [ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_INC]: "系统手动增加算力",
+    [ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_DEC]: "系统手动减扣算力",
+    [ACCOUNT_LOG_TYPE.CHAT_DEC]: "基本对话",
+    [ACCOUNT_LOG_TYPE.AGENT_CHAT_DEC]: "智能体对话",
+    [ACCOUNT_LOG_TYPE.AGENT_GUEST_CHAT_DEC]: "链接分享智能体对话",
 } as const;

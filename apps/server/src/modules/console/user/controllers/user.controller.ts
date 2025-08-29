@@ -312,8 +312,9 @@ export class UserController extends BaseController {
     async changeBalance(
         @Param("id", UUIDValidationPipe) userId: string,
         @Body() dto: UpdateUserBalanceDto,
+        @Playground() currentUser: UserPlayground,
     ) {
-        return await this.userService.updateBalance(userId, dto);
+        return await this.userService.updateBalance(userId, dto, currentUser);
     }
 
     /**
@@ -329,8 +330,8 @@ export class UserController extends BaseController {
         name: "批量更新用户",
         description: "批量更新多个用户信息",
     })
-    async batchUpdate(@Body() dto: BatchUpdateUserDto, @Playground() currentUser: UserPlayground) {
-        return await this.userService.batchUpdate(dto, currentUser.id);
+    async batchUpdate(@Body() dto: BatchUpdateUserDto, @Playground() user: UserPlayground) {
+        return await this.userService.batchUpdate(dto, user.id);
     }
 
     /**
