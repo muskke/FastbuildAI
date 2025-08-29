@@ -24,7 +24,11 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { getProvider, TextGenerator } from "@sdk/ai";
 import { convertMCPToolsToOpenAI, McpServer, MCPTool } from "@sdk/ai/utils/mcp/sse";
 import { Response } from "express";
-import { ChatCompletionFunctionTool, ChatCompletionMessageParam } from "openai/resources/index";
+import {
+    ChatCompletionCreateParams,
+    ChatCompletionFunctionTool,
+    ChatCompletionMessageParam,
+} from "openai/resources/index";
 import { DataSource, Repository } from "typeorm";
 
 /**
@@ -216,14 +220,19 @@ export class AiChatMessageController extends BaseController {
             do {
                 hasToolCalls = false;
 
-                // 调用AI服务获取响应
-                const response = await client.chat.create({
+                const chatCompletionCreateParams: ChatCompletionCreateParams = {
                     model: model.model,
                     messages: currentMessages,
-                    tools: tools.length > 0 ? tools : [],
-                    tool_choice: tools.length > 0 ? "auto" : "none",
                     ...opts,
-                });
+                };
+
+                if (tools.length > 0) {
+                    chatCompletionCreateParams.tools = tools;
+                    chatCompletionCreateParams.tool_choice = "auto";
+                }
+
+                // 调用AI服务获取响应
+                const response = await client.chat.create(chatCompletionCreateParams);
 
                 finalResponse = response;
 
@@ -683,13 +692,19 @@ export class AiChatMessageController extends BaseController {
 
             do {
                 hasToolCalls = false;
-                const stream = await client.chat.stream({
+
+                const chatCompletionCreateParams: ChatCompletionCreateParams = {
                     model: model.model,
                     messages: currentMessages,
-                    tools: tools.length > 0 ? tools : [],
-                    tool_choice: tools.length > 0 ? "auto" : "none",
                     ...opts,
-                });
+                };
+
+                if (tools.length > 0) {
+                    chatCompletionCreateParams.tools = tools;
+                    chatCompletionCreateParams.tool_choice = "auto";
+                }
+
+                const stream = await client.chat.stream(chatCompletionCreateParams);
 
                 // 收集流式响应
                 for await (const chunk of stream) {

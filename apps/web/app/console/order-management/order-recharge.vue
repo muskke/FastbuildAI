@@ -161,7 +161,7 @@ const refund = async (id?: string) => {
 // 操作栏
 function getRowItems(row: Row<OrderListItem>) {
     return [
-        hasAccessByCodes(["menu:add"])
+        hasAccessByCodes(["recharge-order:detail"])
             ? {
                   label: t("console-order-management.recharge.list.viewDetails"),
                   icon: "i-lucide-eye",
@@ -172,7 +172,7 @@ function getRowItems(row: Row<OrderListItem>) {
               }
             : null,
         row.original.payStatus === 1 &&
-        hasAccessByCodes(["menu:delete"]) &&
+        hasAccessByCodes(["recharge-order:refund"]) &&
         row.original.refundStatus === 0
             ? {
                   label: t("console-order-management.recharge.list.refund"),
