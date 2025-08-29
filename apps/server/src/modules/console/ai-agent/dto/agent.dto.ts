@@ -281,6 +281,13 @@ export class CreateAgentDto {
     @IsOptional()
     @IsString({ message: "智能体头像必须是字符串" })
     avatar?: string;
+
+    /**
+     * 创建者ID
+     */
+    @IsOptional()
+    @IsUUID(4, { message: "创建者ID必须是有效的UUID" })
+    createrId?: string;
 }
 
 /**
@@ -806,7 +813,14 @@ export class PublicAgentChatDto {
 /**
  * 导入智能体DTO
  */
-export class ImportAgentDto extends UpdateAgentConfigDto {}
+export class ImportAgentDto extends UpdateAgentConfigDto {
+    /**
+     * 创建者ID
+     */
+    @IsOptional()
+    @IsUUID(4, { message: "创建者ID必须是有效的UUID" })
+    createrId?: string;
+}
 
 /**
  * V1 API 对话请求 DTO

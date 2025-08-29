@@ -406,7 +406,7 @@ export class AiChatMessageController extends BaseController {
                                     actualDeducted,
                                     "", // 关联单号
                                     null, // 关联用户ID
-                                    `AI对话消耗算力，模型：${model.name}，Token数：${totalTokens}，实际扣除：${actualDeducted}`, // 备注
+                                    `基本对话消耗（模型：${model.name}，Token数：${totalTokens}）`, // 备注
                                     {
                                         type: ACCOUNT_LOG_SOURCE.CHAT,
                                         source: "基本对话",
@@ -1022,7 +1022,7 @@ export class AiChatMessageController extends BaseController {
                                     actualDeducted,
                                     "", // 关联单号
                                     null, // 关联用户ID
-                                    `AI对话消耗算力，模型：${model.name}，Token数：${totalTokens}，实际扣除：${actualDeducted}`, // 备注
+                                    `基本对话消耗（模型：${model.name}，Token数：${totalTokens}）`, // 备注
                                     {
                                         type: ACCOUNT_LOG_SOURCE.CHAT,
                                         source: "基本对话",

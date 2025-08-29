@@ -71,8 +71,10 @@ export class AgentController {
         code: "import",
         name: "导入智能体配置",
     })
-    async importAgent(@Body() dto: ImportAgentDto) {
+    async importAgent(@Body() dto: ImportAgentDto, @Playground() user: UserPlayground) {
         dto.avatar = dto.avatar || "/static/images/agent.png";
+        // 添加创建者ID
+        dto.createrId = user.id;
         const agent = await this.agentService.createAgentFromTemplate(dto as ImportAgentDto);
 
         // 自动发布智能体
@@ -136,8 +138,14 @@ export class AgentController {
         code: "create-from-template",
         name: "从模板创建智能体",
     })
-    async createFromTemplate(@Body() dto: CreateAgentFromTemplateDto) {
+    async createFromTemplate(
+        @Body() dto: CreateAgentFromTemplateDto,
+        @Playground() user: UserPlayground,
+    ) {
         const createAgentDto = await this.agentTemplateService.createAgentFromTemplate(dto);
+
+        // 添加创建者ID
+        createAgentDto.createrId = user.id;
 
         const agent = await this.agentService.createAgentFromTemplate(
             createAgentDto as CreateAgentFromTemplateDto,
@@ -171,6 +179,9 @@ export class AgentController {
         name: "创建智能体",
     })
     async create(@Body() dto: CreateAgentDto, @Playground() user: UserPlayground) {
+        // 添加创建者ID
+        dto.createrId = user.id;
+
         // 创建智能体
         const agent = await this.agentService.createAgent(dto, user);
 
@@ -265,7 +276,7 @@ export class AgentController {
         @Body() dto: AgentChatDto,
         @Playground() user: UserPlayground,
     ) {
-        return this.agentChatService.handleChat(id, dto, user, "sync");
+        return this.agentChatService.handleChat(id, dto, user, "sync", false);
     }
 
     /**
@@ -289,7 +300,7 @@ export class AgentController {
         @Playground() user: UserPlayground,
         @Res() res: Response,
     ) {
-        return this.agentChatService.handleChat(id, dto, user, "stream", res);
+        return this.agentChatService.handleChat(id, dto, user, "stream", false, res);
     }
 
     /**
