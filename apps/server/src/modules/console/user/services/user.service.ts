@@ -3,6 +3,7 @@ import { BaseService } from "@common/base/services/base.service";
 import { BooleanNumberType, UserCreateSource } from "@common/constants";
 import { BusinessCode } from "@common/constants/business-code.constant";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
+import { UserPlayground } from "@common/interfaces/context.interface";
 import {
     ACCOUNT_LOG_SOURCE,
     ACCOUNT_LOG_TYPE,
@@ -52,7 +53,7 @@ export class UserService extends BaseService<User> {
      * @param dto 查询条件
      * @returns 用户列表和分页信息
      */
-    async list(dto: QueryUserDto): Promise<any> {
+    async list(dto: QueryUserDto, user: UserPlayground): Promise<any> {
         const where: any[] = [];
 
         // 关键词模糊查询 - 搜索用户名、昵称、邮箱、手机号
@@ -103,9 +104,9 @@ export class UserService extends BaseService<User> {
         }
 
         // 如果没有任何查询条件，添加默认的排除超级管理员条件
-        // if (where.length === 0) {
-        //     where.push({ isRoot: 0 });
-        // }
+        if (!isEnabled(user.isRoot)) {
+            where.push({ isRoot: 0 });
+        }
 
         const result = await this.paginate(dto, {
             where: where.length > 0 ? where : undefined,
