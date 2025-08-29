@@ -101,7 +101,7 @@ onBeforeUnmount(() => {
 
             <div class="ml-6 flex items-center gap-1">
                 <!-- 侧边栏折叠按钮 -->
-                <UTooltip :text="collapsed ? '展开菜单' : '收起菜单'" :delay-duration="0">
+                <!-- <UTooltip :text="collapsed ? '展开菜单' : '收起菜单'" :delay-duration="0">
                     <UButton
                         data-sidebar="trigger"
                         variant="ghost"
@@ -118,7 +118,7 @@ onBeforeUnmount(() => {
                         </template>
                         <span class="sr-only">侧边栏切换</span>
                     </UButton>
-                </UTooltip>
+                </UTooltip> -->
 
                 <!-- 页面刷新按钮 -->
                 <ReloadButton />
