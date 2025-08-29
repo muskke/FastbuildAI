@@ -110,8 +110,8 @@ export class UserController extends BaseController {
         description: "分页查询用户列表",
     })
     @BuildFileUrl(["**.avatar"])
-    async findAll(@Query() queryUserDto: QueryUserDto) {
-        return await this.userService.list(queryUserDto);
+    async findAll(@Query() queryUserDto: QueryUserDto, @Playground() user: UserPlayground) {
+        return await this.userService.list(queryUserDto, user);
     }
 
     /**
