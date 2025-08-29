@@ -45,7 +45,7 @@
         "alipayPay": "支付宝支付",
         "qrCodeFailed": "二维码生成失败",
         "rechargeSuccess": "充值成功",
-        "rechargeSuccessTip": "充值成功，电力值已到账",
+        "rechargeSuccessTip": "充值成功，算力已到账",
         "paySuccess": "支付成功",
         "payFailed": "支付失败",
         "cancelPay": "取消支付",
