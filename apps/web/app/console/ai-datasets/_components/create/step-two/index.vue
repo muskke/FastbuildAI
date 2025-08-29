@@ -88,6 +88,7 @@ const EMBEDDING_MODELS = [
                             variant: 'outline',
                             color: 'neutral',
                             ui: { base: 'w-full' },
+                            class: 'bg-background',
                         }"
                         :defaultSelected="false"
                         capability="chat"
