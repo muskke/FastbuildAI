@@ -237,7 +237,7 @@ export class Agent {
      * 创建者ID
      */
     @Column({ type: "varchar", length: 255, nullable: true, comment: "创建者ID" })
-    createrId: string;
+    createBy: string;
 
     /**
      * 发布配置

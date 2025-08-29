@@ -287,7 +287,7 @@ export class CreateAgentDto {
      */
     @IsOptional()
     @IsUUID(4, { message: "创建者ID必须是有效的UUID" })
-    createrId?: string;
+    createBy?: string;
 }
 
 /**
@@ -819,7 +819,7 @@ export class ImportAgentDto extends UpdateAgentConfigDto {
      */
     @IsOptional()
     @IsUUID(4, { message: "创建者ID必须是有效的UUID" })
-    createrId?: string;
+    createBy?: string;
 }
 
 /**
