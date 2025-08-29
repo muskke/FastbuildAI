@@ -24,11 +24,12 @@ const { t } = useI18n();
                 type="number"
                 v-model="state.billingConfig!.price"
                 min="0"
-                :ui="{ base: 'pr-15' }"
+                :ui="{ base: 'pr-24' }"
                 @blur="if (state.billingConfig!.price < 0) state.billingConfig!.price = 0;"
             >
                 <template #trailing>
                     <div class="text-muted-foreground flex items-center justify-center gap-1">
+                        <span>{{ t("console-ai-provider.model.form.power") }}</span>
                         <span>/</span>
                         <span>{{ t("console-ai-agent.dashboard.times") }}</span>
                     </div>
