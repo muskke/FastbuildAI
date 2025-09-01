@@ -125,7 +125,10 @@
         "noChatContext": "会話コンテキストがありません",
         "editedAnswer": "編集済み回答",
         "billingSetup": "請求設定",
-        "dialogueConsumption": "対話の消費"
+        "dialogueConsumption": "対話の消費",
+        "billingDescription": "算力消費説明：",
+        "billingSquareConsumption": "エージェント広場での対話はユーザーの算力を消費します",
+        "billingShareConsumption": "公開共有リンク（およびその他の方法）は作成者の算力を消費します"
     },
     "publish": {
         "title": "エージェント公開",
