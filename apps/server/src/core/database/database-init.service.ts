@@ -21,6 +21,7 @@ import { DataSource, Repository } from "typeorm";
 
 import { AiModel } from "@/modules/console/ai/entities/ai-model.entity";
 import { AiProvider } from "@/modules/console/ai/entities/ai-provider.entity";
+import { KeyTemplate } from "@/modules/console/key-manager/entities/key-template.entity";
 import { Menu } from "@/modules/console/menu/entities/menu.entity";
 import { PermissionService } from "@/modules/console/permission/permission.service";
 
@@ -56,6 +57,8 @@ export class DatabaseInitService implements OnModuleInit {
         private readonly aiProviderRepository: Repository<AiProvider>,
         @InjectRepository(AiModel)
         private readonly aiModelRepository: Repository<AiModel>,
+        @InjectRepository(KeyTemplate)
+        private readonly keyTemplateRepository: Repository<KeyTemplate>,
     ) {}
 
     /**
@@ -91,6 +94,9 @@ export class DatabaseInitService implements OnModuleInit {
 
             // 初始化 AI 提供商和模型
             await this.initAiProviders();
+
+            // 初始化密钥模板
+            await this.initKeyTemplates();
 
             // 新增：自动执行自定义 SQL
             await this.initZhparserAndIndex();
@@ -534,6 +540,71 @@ export class DatabaseInitService implements OnModuleInit {
             this.logger.log(`✅ AI 提供商和模型数据初始化完成，共 ${results.length} 个提供商`);
         } catch (error) {
             this.logger.error(`❌ AI 提供商和模型数据初始化失败: ${error.message}`);
+            throw error;
+        }
+    }
+
+    /**
+     * 初始化密钥模板数据
+     *
+     * 从本地配置文件中读取密钥模板信息，并同步到数据库
+     */
+    private async initKeyTemplates(): Promise<void> {
+        this.logger.log("开始初始化密钥模板数据...");
+
+        try {
+            // 从本地配置文件获取密钥模板配置
+            const keyTemplateConfigPath = this.getConfigFilePath("key-template.json");
+            if (!keyTemplateConfigPath) {
+                throw new Error("无法找到 key-template.json 文件");
+            }
+
+            // 读取配置文件
+            const keyTemplateData = await fse.readJson(keyTemplateConfigPath);
+            if (!keyTemplateData || !Array.isArray(keyTemplateData)) {
+                throw new Error("key-template.json 格式不正确，应为数组格式");
+            }
+
+            this.logger.log(`从配置文件中读取到 ${keyTemplateData.length} 个密钥模板配置`);
+
+            let createdCount = 0;
+            let updatedCount = 0;
+
+            // 遍历每个密钥模板配置
+            for (const templateConfig of keyTemplateData) {
+                // 查找是否已存在该模板（根据名称判断）
+                let template = await this.keyTemplateRepository.findOne({
+                    where: { name: templateConfig.name },
+                });
+
+                // 准备模板数据
+                const templateData = {
+                    name: templateConfig.name,
+                    icon: templateConfig.icon,
+                    type: templateConfig.type,
+                    fieldConfig: templateConfig.fieldConfig,
+                    isEnabled: templateConfig.isEnabled,
+                    sortOrder: templateConfig.sortOrder,
+                };
+
+                // 如果不存在，则创建新模板
+                if (!template) {
+                    template = await this.keyTemplateRepository.save(templateData);
+                    this.logger.log(`创建密钥模板: ${template.name}`);
+                    createdCount++;
+                } else {
+                    // 如果存在，则更新模板信息
+                    await this.keyTemplateRepository.update(template.id, templateData);
+                    this.logger.log(`更新密钥模板: ${template.name}`);
+                    updatedCount++;
+                }
+            }
+
+            this.logger.log(
+                `✅ 密钥模板数据初始化完成，共创建 ${createdCount} 个，更新 ${updatedCount} 个模板`,
+            );
+        } catch (error) {
+            this.logger.error(`❌ 密钥模板数据初始化失败: ${error.message}`);
             throw error;
         }
     }
