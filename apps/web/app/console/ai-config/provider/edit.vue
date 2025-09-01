@@ -119,7 +119,7 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                 : t('console-ai-provider.form.addDescription')
         "
         :ui="{
-            content: 'max-w-2xl overflow-y-auto h-[60vh]',
+            content: 'max-w-2xl',
         }"
         @update:model-value="(value) => !value && handleClose()"
     >
@@ -206,20 +206,6 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                             }"
                         />
                     </UFormField>
-
-                    <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
-                        <USwitch
-                            v-model="formData.isActive"
-                            unchecked-icon="i-lucide-x"
-                            checked-icon="i-lucide-check"
-                            size="lg"
-                            :label="
-                                formData.isActive
-                                    ? t('console-ai-provider.form.isActiveEnabled')
-                                    : t('console-ai-provider.form.isActiveDisabled')
-                            "
-                        />
-                    </UFormField>
                 </div>
 
                 <!-- 模型类型 -->
@@ -251,6 +237,20 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                     />
                 </UFormField>
             </div>
+
+            <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
+                <USwitch
+                    v-model="formData.isActive"
+                    unchecked-icon="i-lucide-x"
+                    checked-icon="i-lucide-check"
+                    size="lg"
+                    :label="
+                        formData.isActive
+                            ? t('console-ai-provider.form.isActiveEnabled')
+                            : t('console-ai-provider.form.isActiveDisabled')
+                    "
+                />
+            </UFormField>
 
             <!-- 操作按钮 -->
             <div class="bottom-0 z-10 flex justify-end gap-2 py-4">
