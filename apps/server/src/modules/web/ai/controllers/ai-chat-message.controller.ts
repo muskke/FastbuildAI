@@ -10,7 +10,7 @@ import {
 } from "@common/modules/account/constants/account-log.constants";
 import { AccountLogService } from "@common/modules/account/services/account-log.service";
 import { User } from "@common/modules/auth/entities/user.entity";
-import { validateArrayItems } from "@common/utils/helper.util";
+import { getProviderKeyConfig, validateArrayItems } from "@common/utils/helper.util";
 import { ChatRequestDto } from "@modules/console/ai/dto/ai-chat-message.dto";
 import { MessageRole, MessageType } from "@modules/console/ai/dto/ai-chat-record.dto";
 import { McpToolCall } from "@modules/console/ai/entities/ai-chat-message.entity";
@@ -18,7 +18,7 @@ import { AiMcpServer } from "@modules/console/ai/entities/ai-mcp-server.entity";
 import { AiChatRecordService } from "@modules/console/ai/services/ai-chat-record.service";
 import { AiMcpServerService } from "@modules/console/ai/services/ai-mcp-server.service";
 import { AiModelService } from "@modules/console/ai/services/ai-model.service";
-import { UserService } from "@modules/console/user/services/user.service";
+import { KeyConfigService } from "@modules/console/key-manager/services/key-config.service";
 import { Body, Post, Res } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { getProvider, TextGenerator } from "@sdk/ai";
@@ -43,6 +43,7 @@ export class AiChatMessageController extends BaseController {
         private readonly aiModelService: AiModelService,
         private readonly aiMcpServerService: AiMcpServerService,
         private readonly accountLogService: AccountLogService,
+        private readonly keyConfigService: KeyConfigService,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ) {
@@ -109,9 +110,13 @@ export class AiChatMessageController extends BaseController {
                 throw HttpExceptionFactory.badRequest("余额不足，请充值后重试");
             }
 
+            const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
+                model.provider.bindKeyConfig,
+            );
+
             const provider = getProvider(model.provider.provider, {
-                apiKey: model.provider.apiKey,
-                baseURL: model.provider.baseUrl,
+                apiKey: getProviderKeyConfig("apiKey", providerKeyConfig),
+                baseURL: getProviderKeyConfig("baseUrl", providerKeyConfig),
             });
 
             // 初始化MCP服务器和工具（静默处理）
@@ -587,9 +592,13 @@ export class AiChatMessageController extends BaseController {
                 throw HttpExceptionFactory.badRequest("余额不足，请充值后重试");
             }
 
+            const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
+                model.provider.bindKeyConfig,
+            );
+
             const provider = getProvider(model.provider.provider, {
-                apiKey: model.provider.apiKey,
-                baseURL: model.provider.baseUrl,
+                apiKey: getProviderKeyConfig("apiKey", providerKeyConfig),
+                baseURL: getProviderKeyConfig("baseUrl", providerKeyConfig),
             });
 
             // 初始化MCP服务器和工具（静默处理）
@@ -1131,8 +1140,8 @@ export class AiChatMessageController extends BaseController {
             }
 
             const provider = getProvider(model.provider.provider, {
-                apiKey: model.provider.apiKey,
-                baseURL: model.provider.baseUrl,
+                apiKey: getProviderKeyConfig("apiKey", model.provider.bindKeyConfig),
+                baseURL: getProviderKeyConfig("baseUrl", model.provider.bindKeyConfig),
                 timeout: 10000,
             });
 

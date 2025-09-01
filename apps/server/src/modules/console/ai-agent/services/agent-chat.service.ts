@@ -385,8 +385,8 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         );
 
         const provider = getProvider(model.provider.provider, {
-            apiKey: getProviderKeyConfig(model.provider.apiKey, providerKeyConfig),
-            baseURL: getProviderKeyConfig(model.provider.baseUrl, providerKeyConfig),
+            apiKey: getProviderKeyConfig("apiKey", providerKeyConfig),
+            baseURL: getProviderKeyConfig("baseUrl", providerKeyConfig),
         });
 
         const client = new TextGenerator(provider);
@@ -1417,7 +1417,7 @@ export class AgentChatService extends BaseAgentChatService {
                         actualDeducted,
                         "", // 关联单号
                         null,
-                        `${isAnonymous ? "匿名用户" : "用户"}：${user.username} 调用（${model.name}）`,
+                        `${isAnonymous ? "匿名用户" : "用户"}：${user.username} 调用${agentInfo.name}智能体对话`,
                         {
                             type: ACCOUNT_LOG_SOURCE.AGENT_CHAT,
                             source: agentInfo.id,

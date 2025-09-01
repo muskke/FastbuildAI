@@ -119,8 +119,8 @@ export class VectorizationQueueService {
             embeddingModel.provider.bindKeyConfig,
         );
         const adapter = getProvider(embeddingModel.provider.provider, {
-            apiKey: getProviderKeyConfig(embeddingModel.provider.apiKey, providerKeyConfig),
-            baseURL: getProviderKeyConfig(embeddingModel.provider.baseUrl, providerKeyConfig),
+            apiKey: getProviderKeyConfig("apiKey", providerKeyConfig),
+            baseURL: getProviderKeyConfig("baseUrl", providerKeyConfig),
         });
 
         return embeddingGenerator(adapter);
