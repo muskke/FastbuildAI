@@ -23,7 +23,7 @@ const { t } = useI18n();
 const props = withDefaults(
     defineProps<{
         /**
-         * 受控内容，HTML 字符串
+         * 受控内容，HTML 字符串或 Markdown 字符串
          */
         modelValue: string;
         /**
@@ -38,11 +38,16 @@ const props = withDefaults(
          * 是否启用 Markdown 模式
          */
         enableMarkdown?: boolean;
+        /**
+         * 输出格式：'html' | 'markdown'
+         */
+        outputFormat?: 'html' | 'markdown';
     }>(),
     {
         customClass: "",
         placeholder: "console-common.proEditor.placeholder",
         enableMarkdown: true,
+        outputFormat: 'html',
     },
 );
 
@@ -89,7 +94,18 @@ onMounted(() => {
             attributes: { class: "focus:outline-none" },
         },
         onUpdate: ({ editor }: { editor: any }) => {
-            content.value = editor.getHTML();
+            if (props.outputFormat === 'markdown' && props.enableMarkdown) {
+                // 尝试获取 Markdown 格式
+                try {
+                    const markdown = editor.storage.markdown?.getMarkdown();
+                    content.value = markdown || editor.getHTML();
+                } catch {
+                    // 如果获取 Markdown 失败，回退到 HTML
+                    content.value = editor.getHTML();
+                }
+            } else {
+                content.value = editor.getHTML();
+            }
         },
     });
 
@@ -207,9 +223,22 @@ function getMarkdownContent(): string {
     
     // 如果安装了 Markdown 扩展，可以获取 Markdown 格式
     try {
-        return editor.value.storage.markdown?.getMarkdown() || '';
+        return editor.value.storage.markdown?.getMarkdown() || editor.value.getHTML();
     } catch {
         // 如果没有 Markdown 扩展或方法不存在，返回 HTML
+        return editor.value.getHTML();
+    }
+}
+
+/**
+ * 获取当前内容（根据 outputFormat 决定格式）
+ */
+function getCurrentContent(): string {
+    if (!editor.value) return '';
+    
+    if (props.outputFormat === 'markdown' && props.enableMarkdown) {
+        return getMarkdownContent();
+    } else {
         return editor.value.getHTML();
     }
 }
@@ -286,6 +315,7 @@ defineExpose({
     getMarkdownContent,
     setMarkdownContent,
     insertMarkdownSyntax,
+    getCurrentContent,
 });
 </script>
 
