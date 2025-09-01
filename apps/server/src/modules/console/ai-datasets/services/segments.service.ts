@@ -11,7 +11,6 @@ import { CreateSegmentDto, QuerySegmentDto, UpdateSegmentDto } from "../dto/segm
 import { Datasets } from "../entities/datasets.entity";
 import { DatasetsDocument } from "../entities/datasets-document.entity";
 import { DatasetsSegments } from "../entities/datasets-segments.entity";
-import { DatasetMemberService } from "./datasets-member.service";
 
 /**
  * 分段服务
@@ -28,7 +27,6 @@ export class SegmentsService extends BaseService<DatasetsSegments> {
         private readonly documentRepository: Repository<DatasetsDocument>,
         @InjectRepository(Datasets)
         private readonly datasetsRepository: Repository<Datasets>,
-        private readonly datasetMemberService: DatasetMemberService,
         private readonly queueService: QueueService,
         private readonly uploadService: UploadService,
     ) {
