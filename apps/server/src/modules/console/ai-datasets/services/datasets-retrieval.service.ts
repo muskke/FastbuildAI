@@ -292,7 +292,7 @@ export class DatasetsRetrievalService {
         // 简单预处理：过滤有效词汇，用&连接
         const tokens = keyword
             .split(" ")
-            .filter((token) => token.length >= 2 && /[\u4e00-\u9fa5a-zA-Z0-9]/.test(token))
+            .filter((token) => token.length >= 1 && /[\u4e00-\u9fa5a-zA-Z0-9]/.test(token))
             .slice(0, 3);
 
         return tokens.join(" & ") || keyword;

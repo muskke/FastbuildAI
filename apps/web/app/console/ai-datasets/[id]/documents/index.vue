@@ -23,7 +23,7 @@ const router = useRouter();
 const { t } = useI18n();
 const { hasAccessByCodes } = useAccessControl();
 
-const datasets = inject<Dataset>("datasets");
+const datasets = inject<Ref<Dataset>>("datasets");
 
 const { deleteDocument, renameDocument, retryDocument, toggleDocumentEnabled } =
     useDocumentActions();
@@ -346,7 +346,7 @@ const handleDelete = async (id: string) => {
 
 // 处理添加文件
 const handleAddFile = () => {
-    if (!datasets?.embeddingModelId) {
+    if (!datasets?.value?.embeddingModelId) {
         toast.error(t("console-ai-datasets.documents.noEmbeddingModel"));
         return;
     }
