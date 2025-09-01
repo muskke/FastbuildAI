@@ -265,7 +265,11 @@ const removeCommand = (index: number) => {
                     name="replyContent"
                     required
                 >
-                    <ProEditor v-model="state.replyContent" custom-class="!h-auto min-h-50" />
+                    <ProEditor
+                        v-model="state.replyContent"
+                        outputFormat="markdown"
+                        custom-class="!h-auto min-h-50"
+                    />
                 </UFormField>
 
                 <div class="mt-6 flex justify-end gap-2">

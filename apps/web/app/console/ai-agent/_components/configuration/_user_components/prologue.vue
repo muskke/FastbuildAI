@@ -26,7 +26,7 @@ const content = useVModel(props, "modelValue", emit);
         </div>
 
         <div class="grid h-auto w-full">
-            <ProEditor v-model="content" custom-class="!h-auto min-h-50" />
+            <ProEditor v-model="content" outputFormat="markdown" custom-class="!h-auto min-h-50" />
         </div>
     </div>
 </template>
