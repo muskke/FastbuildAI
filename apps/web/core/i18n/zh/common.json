@@ -2,6 +2,7 @@
     "loading": "加载中...",
     "noMoreData": "没有更多数据了",
     "updateAt": "更新时间",
+    "goHome": "返回前台",
     "menu": {
         "system": "设置",
         "workspace": "工作台"

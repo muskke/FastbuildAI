@@ -108,6 +108,7 @@ export class DatasetsController {
      * 获取知识库列表
      *
      * 支持关键词搜索知识库名称和描述
+     * 超级管理员可以看到所有知识库，普通用户只能看到自己创建的和作为成员的知识库
      *
      * @param dto 查询参数
      * @param user 当前用户信息
@@ -119,7 +120,7 @@ export class DatasetsController {
         name: "查询数据集列表",
     })
     async list(@Query() dto: QueryDatasetDto, @Playground() user: UserPlayground) {
-        return this.datasetsService.list(dto, user.id);
+        return this.datasetsService.list(dto, user);
     }
 
     /**
@@ -135,7 +136,7 @@ export class DatasetsController {
         name: "查看数据集详情",
     })
     async getById(@Param("id") id: string, @Playground() user: UserPlayground): Promise<Datasets> {
-        return this.datasetsService.getDatasetById(id, user.id);
+        return this.datasetsService.getDatasetById(id, user.id, user);
     }
 
     /**
@@ -203,7 +204,7 @@ export class DatasetsController {
         @Playground() user: UserPlayground,
     ) {
         // 验证知识库权限
-        await this.datasetsService.getDatasetById(id, user.id);
+        await this.datasetsService.getDatasetById(id, user.id, user);
 
         // 执行召回测试
         return this.datasetsRetrievalService.queryDatasetWithConfig(
