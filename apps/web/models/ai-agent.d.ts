@@ -532,6 +532,8 @@ export interface AgentStatistics {
         totalMessages: number;
         /** 总Token消耗 */
         totalTokens: number;
+        /** 总算力消耗 */
+        totalConsumedPower: number;
         /** 总标注数 */
         totalAnnotations: number;
         /** 活跃标注数 */
