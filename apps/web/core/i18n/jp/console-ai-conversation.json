@@ -1,4 +1,7 @@
 {
+    "common": {
+        "power": "計算力"
+    },
     "search": {
         "placeholder": "会話タイトルまたは内容を検索..."
     },
@@ -9,7 +12,8 @@
         "title": "対話タイトル",
         "userName": "ユーザー名",
         "messageCount": "対話回数",
-        "totalTokens": "トークン消耗",
+        "totalTokens": "トークン消費",
+        "totalPower": "計算力消費",
         "updatedAt": "更新日時",
         "action": "操作"
     },

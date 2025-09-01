@@ -108,6 +108,10 @@ const columns = ref<TableColumn<AiConversation>[]>([
         header: t("console-ai-conversation.list.totalTokens"),
     },
     {
+        accessorKey: "totalPower",
+        header: t("console-ai-conversation.list.totalPower"),
+    },
+    {
         accessorKey: "updatedAt",
         header: t("console-ai-conversation.list.updatedAt"),
         cell: ({ row }) => {
@@ -354,6 +358,9 @@ onMounted(() => getLists());
                     </template>
                     <template #totalTokens-cell="{ row }">
                         <span class="text-primary">{{ row.original.totalTokens }}</span>
+                    </template>
+                    <template #totalPower-cell="{ row }">
+                        <span class="text-success">{{ row.original.totalPower }}</span>
                     </template>
                     <template #action-cell="{ row }">
                         <UDropdownMenu :items="getRowItems(row)">

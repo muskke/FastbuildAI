@@ -89,6 +89,16 @@ export class AiChatRecord {
     totalTokens: number;
 
     /**
+     * 总Power消耗
+     */
+    @Column({
+        type: "int",
+        default: 0,
+        comment: "本次对话消耗的总Power数",
+    })
+    totalPower: number;
+
+    /**
      * 对话配置
      */
     @Column({

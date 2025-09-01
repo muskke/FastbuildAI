@@ -113,6 +113,7 @@ export class AiChatMessageService extends BaseService<AiChatMessage> {
     async getMessageStats(conversationId: string): Promise<{
         messageCount: number;
         totalTokens: number;
+        totalPower: number;
     }> {
         // 使用BaseService的count方法获取消息数量
         const messageCount = await this.count({
@@ -120,15 +121,18 @@ export class AiChatMessageService extends BaseService<AiChatMessage> {
         });
 
         // Token统计仍需要使用QueryBuilder，因为涉及JSON字段聚合
+        // 计算总Token数和总Power消耗
         const tokenStats = await this.repository
             .createQueryBuilder("message")
             .select("COALESCE(SUM((tokens->>'total_tokens')::int), 0)", "totalTokens")
-            .where("message.conversationId = :conversationId", { conversationId })
+            .addSelect("COALESCE(SUM(message.user_consumed_power), 0)", "totalPower")
+            .where("message.conversation_id = :conversationId", { conversationId })
             .getRawOne();
 
         return {
             messageCount,
             totalTokens: parseInt(tokenStats.totalTokens) || 0,
+            totalPower: parseInt(tokenStats.totalPower) || 0,
         };
     }
 }

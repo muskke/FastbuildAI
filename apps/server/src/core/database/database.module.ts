@@ -7,6 +7,7 @@ import { table3BorderStyle } from "@fastbuildai/config/ui/table";
 import { AiModel } from "@modules/console/ai/entities/ai-model.entity";
 import { AiProvider } from "@modules/console/ai/entities/ai-provider.entity";
 import { DecorateModule } from "@modules/console/decorate/decorate.module";
+import { KeyTemplate } from "@modules/console/key-manager/entities/key-template.entity";
 import { Payconfig } from "@modules/console/system/entities/payconfig.entity";
 import { AiModule } from "@modules/web/ai/ai.module";
 import { Module } from "@nestjs/common";
@@ -209,7 +210,7 @@ function getEntityModule(entity: EntityMetadata): string {
         PermissionModule,
         DictModule,
         DecorateModule,
-        TypeOrmModule.forFeature([User, Menu, Payconfig, Dict, AiProvider, AiModel]),
+        TypeOrmModule.forFeature([User, Menu, Payconfig, Dict, AiProvider, AiModel, KeyTemplate]),
     ],
     controllers: [],
     providers: [DatabaseInitService],
