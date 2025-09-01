@@ -250,6 +250,37 @@ export class KeyConfigService extends BaseService<KeyConfig> {
     }
 
     /**
+     * 获取配置的键值对
+     * @param id 配置ID
+     * @returns 配置的键值对对象
+     */
+    async getConfigKeyValuePairs(id: string): Promise<Record<string, string>> {
+        const config = await this.keyConfigRepository.findOne({
+            where: { id },
+            select: ["fieldValues"],
+        });
+
+        if (!config) {
+            throw HttpExceptionFactory.notFound("密钥配置不存在");
+        }
+
+        // 将字段配置转换为键值对
+        const keyValuePairs: Record<string, string> = {};
+
+        if (config.fieldValues && Array.isArray(config.fieldValues)) {
+            config.fieldValues.forEach((field) => {
+                if (field.name && field.value !== undefined) {
+                    // 如果字段被加密，先解密
+                    const value = field.encrypted ? this.decryptValue(field.value) : field.value;
+                    keyValuePairs[field.name] = value;
+                }
+            });
+        }
+
+        return keyValuePairs;
+    }
+
+    /**
      * 获取配置统计信息
      * @param templateId 可选的模板ID，用于筛选特定模板的统计
      * @returns 统计信息
