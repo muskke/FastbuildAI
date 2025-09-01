@@ -2,6 +2,7 @@
     "loading": "Loading...",
     "noMoreData": "No more data",
     "updateAt": "Updated at",
+    "goHome": "Return to the front desk",
     "menu": {
         "system": "Settings",
         "workspace": "Workspace"

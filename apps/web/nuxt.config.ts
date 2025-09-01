@@ -46,9 +46,6 @@ export default defineNuxtConfig({
 
     imports: {
         dirs: ["common/stores", "common/composables/**", "common/utils/**.ts"],
-        // 性能优化：按需导入
-        // scan: true,
-        // global: false, // 禁用全局导入以提升性能
     },
 
     devtools: { enabled: false },

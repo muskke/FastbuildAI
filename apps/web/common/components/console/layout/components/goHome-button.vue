@@ -13,7 +13,7 @@ function reloadPage() {
 
 <template>
     <div @click="reloadPage">
-        <UTooltip text="返回前台" :delay-duration="0">
+        <UTooltip :text="$t('common.goHome')" :delay-duration="0">
             <UButton
                 data-sidebar="trigger"
                 variant="ghost"
@@ -22,7 +22,7 @@ function reloadPage() {
                 :ui="{ base: 'py-2' }"
             >
                 <span class="sr-only">Go Home</span>
-                <UIcon name="i-lucide-globe" class="size-4" />
+                <UIcon name="i-lucide-house" class="size-4" />
             </UButton>
         </UTooltip>
     </div>
