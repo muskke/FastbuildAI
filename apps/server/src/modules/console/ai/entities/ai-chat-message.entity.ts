@@ -130,6 +130,16 @@ export class AiChatMessage {
     };
 
     /**
+     * 用户算力消耗
+     */
+    @Column({
+        type: "int",
+        nullable: true,
+        comment: "用户算力消耗",
+    })
+    userConsumedPower?: number;
+
+    /**
      * 消息状态
      */
     @Column({

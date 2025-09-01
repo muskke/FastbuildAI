@@ -5,7 +5,7 @@ import { PaginationDto } from "@common/dto/pagination.dto";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Raw, Repository } from "typeorm";
+import { Like, Raw, Repository } from "typeorm";
 
 import {
     CreateKeyConfigDto,
@@ -129,7 +129,7 @@ export class KeyConfigService extends BaseService<KeyConfig> {
 
         // 配置名称模糊查询
         if (name) {
-            whereConditions.name = this.ilike("name", name);
+            whereConditions.name = Like(`%${name}%`);
         }
 
         // 模板ID精确查询
