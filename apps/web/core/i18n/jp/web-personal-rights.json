@@ -18,7 +18,9 @@
                 "all": "すべて",
                 "consume": "消費",
                 "get": "獲得"
-            }
+            },
+            "consumeSourceDesc": "出所",
+            "remark": "備考"
         },
         "powerBalance": "計算力残高",
         "selectRechargePackage": "チャージプラン選択",
@@ -55,6 +57,9 @@
         "cancelPay": "支払いキャンセル",
         "notOpen": "準備中",
         "notOpenTip": "この機能は現在準備中です。公開まで今しばらくお待ちください。",
-        "back": "前のページに戻る"
+        "back": "前のページに戻る",
+        "qrCodeExpired": "QRコードが無効です。再読み込みしてください。",
+        "refreshQrCode": "QRコードを更新する",
+        "systemTip": "システム通知"
     }
 }

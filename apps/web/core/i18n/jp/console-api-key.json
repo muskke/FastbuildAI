@@ -1,0 +1,72 @@
+{
+    "type": {
+        "addType": "新しいタイプを追加",
+        "form": {
+            "name": "タイプ名",
+            "fieldName": "フィールド名",
+            "isActived": "使用しますか？",
+            "createdAt": "作成時間",
+            "action": "操作",
+            "edit": "編集タイプ",
+            "delete": "削除タイプ",
+            "enable": "有効化",
+            "disable": "禁止"
+        },
+        "edit": {
+            "title": "編集タイプ",
+            "name": "タイプ名",
+            "status": "状態",
+            "enable": "有効化",
+            "disable": "禁止",
+            "customField": "カスタムフィールド",
+            "fieldName": "フィールド名",
+            "fieldType": "フィールドタイプ",
+            "singleLineText": "単一行のテキスト",
+            "multiLineText": "マルチラインテキスト",
+            "fieldExample": "サンプル文字",
+            "action": "操作",
+            "add": "追加",
+            "nameRequired": "フィールド名を入力してください",
+            "typeValueRequired": "フィールドタイプを選択してください",
+            "exampleRequired": "例の文字を入力してください",
+            "toast": {
+                "nameRequired": "タイプ名は空であってはいけません",
+                "customFieldRequired": "カスタムフィールドは空にできません",
+                "customFieldInvalid": "カスタムフィールドの検証に失敗しました:",
+                "no": "第",
+                "nameColumn": "行：名前は空であってはいけません",
+                "typeColumn": "行：タイプは空であってはならない",
+                "exampleColumn": "行：例は空ではいけません"
+            }
+        }
+    },
+    "list": {
+        "add": "新しいキーを追加",
+        "batchDelete": "バルク削除",
+        "placeholder": "名前を入力してください...",
+        "form": {
+            "name": "キー名",
+            "keyType": "キーの種類",
+            "remark": "備考",
+            "status": "状態",
+            "createdAt": "作成時間",
+            "action": "操作",
+            "edit": "編集",
+            "delete": "削除する",
+            "enable": "有効化",
+            "disable": "禁止"
+        },
+        "edit": {
+            "title": "編集キー",
+            "name": "キー名",
+            "keyType": "キーの種類",
+            "remark": "備考",
+            "nameRequired": "キーの名前を入力してください",
+            "keyTypeRequired": "キータイプを選択してください",
+            "remarkRequired": "備考を入力してください",
+            "fieldRequired": "入力してください"
+        }
+    },
+    "save": "保存",
+    "cancel": "キャンセル"
+}

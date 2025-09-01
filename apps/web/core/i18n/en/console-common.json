@@ -16,6 +16,7 @@
     "submit": "Submit",
     "delete": "Delete",
     "batchDelete": "Batch Delete",
+    "batchEdit": "Batch editing",
     "showColumns": "Show Columns",
     "edit": "Edit",
     "export": "Export",
@@ -41,6 +42,8 @@
     "recharge": "Recharge",
     "officeLink": "Go to Website",
     "default": "default",
+    "remove": "Remove",
+    "exit": "quit",
     "tab": {
         "all": "All",
         "system": "System",
@@ -177,7 +180,8 @@
         "400": "Bad Request",
         "401": "Unauthorized",
         "403": "Forbidden",
-        "404": "Not Found"
+        "404": "Not Found",
+        "500": "Server error 500"
     },
     "time": {
         "justNow": "Just now",

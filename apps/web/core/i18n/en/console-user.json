@@ -54,6 +54,9 @@
         "passwordMinLength": "Min 6 chars",
         "passwordHelp": "Include letters & numbers",
         "role": "Role",
+        "power": "Remaining computing power",
+        "realName": "Real name",
+        "realNameInput": "Please enter your real name",
         "roleSelect": "Select role",
         "noRole": "No role",
         "statusLabel": "Status",
@@ -63,7 +66,17 @@
         "formReset": "Form reset",
         "formValidationFailed": "Validation failed",
         "getRoleListFailed": "Failed to load roles",
-        "dateRangeInput": "Select date range"
+        "dateRangeInput": "Select date range",
+        "editPower": "Edit hashrate",
+        "currentPower": "Current hashrate",
+        "powerAdjust": "Computing power increase or decrease",
+        "add": "increase",
+        "reduce": "Deduction",
+        "adjustAmount": "Adjust the quantity",
+        "adjustAmountInput": "Please enter the amount of adjustment",
+        "adjustedPower": "Adjusted hashrate",
+        "confirmPowerEdit": "Determine the editing power?",
+        "confirmPowerEditMessage": "Are you sure you want to edit the hashrate?"
     },
     "messages": {
         "createSuccess": "User created",
@@ -71,6 +84,8 @@
         "updateSuccess": "User updated",
         "updateFailed": "Update failed",
         "getUserDetailFailed": "Failed to load details",
-        "missingUserId": "Missing user ID"
+        "missingUserId": "Missing user ID",
+        "adjustAmountInput": "Please enter the number of valid adjustments",
+        "success": "succeed"
     }
 }

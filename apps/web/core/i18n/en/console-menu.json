@@ -39,6 +39,11 @@
         },
         "update": "Update"
     },
+    "apiKeyManage": {
+        "title": "Key management",
+        "apiKeyType": "Key type",
+        "apiKeyList": "List of keys"
+    },
     "datasets": {
         "title": "Knowledge",
         "retry": "Retry",

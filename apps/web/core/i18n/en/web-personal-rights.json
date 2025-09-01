@@ -18,7 +18,9 @@
                 "all": "All",
                 "consume": "Usage",
                 "get": "Earned"
-            }
+            },
+            "consumeSourceDesc": "source",
+            "remark": "remark"
         },
         "powerBalance": "Balance",
         "selectRechargePackage": "Select Plan",
@@ -55,6 +57,9 @@
         "cancelPay": "Cancel",
         "notOpen": "Coming Soon",
         "notOpenTip": "This feature is not yet available",
-        "back": "Go Back"
+        "back": "Go Back",
+        "qrCodeExpired": "The QR code is invalid, please refresh it",
+        "refreshQrCode": "Refresh the QR code",
+        "systemTip": "System prompt"
     }
 }

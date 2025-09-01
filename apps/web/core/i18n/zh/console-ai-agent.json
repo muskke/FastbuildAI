@@ -278,15 +278,18 @@
         "consumptionStatistics": "消耗统计",
         "annotationManagement": "标注管理",
         "totalAnnotations": "总标注数",
-        "activeAnnotations": "活跃标注",
         "annotationData": "标注数据",
-        "conversationTrend": "对话趋势",
+        "consumedPower": "算力消耗",
+        "consumedPowerTrend": "算力趋势",
         "messageTrend": "消息趋势",
         "tokenOutputCount": "Token输出数",
         "loadStatisticsFailed": "加载统计数据失败",
         "reload": "重新加载",
         "hits": "命中次数",
         "annotations": "标注数",
-        "times": "次"
+        "times": "次",
+        "power": "算力",
+        "totalConsumedPower": "总算力消耗",
+        "loading": "加载中"
     }
 }

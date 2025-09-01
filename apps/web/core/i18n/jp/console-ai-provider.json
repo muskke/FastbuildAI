@@ -6,6 +6,7 @@
         "basicInfo": "基本情報",
         "name": "プロバイダー名",
         "namePlaceholder": "プロバイダー名を入力してください",
+        "nameRequired": "供給者名を入力してください",
         "nameHelp": "表示用のプロバイダー名（簡潔な名称を推奨）",
         "provider": "プロバイダー識別子",
         "providerPlaceholder": "例：openai、anthropic",
@@ -130,6 +131,7 @@
         "noModels": "モデルデータがありません",
         "setDefault": "デフォルトに設定",
         "modelTypeFilter": "モデルタイプでフィルタ",
+        "batchEditTitle": "バッチ編集AIモデル",
         "form": {
             "name": "モデル名",
             "namePlaceholder": "モデル名を入力してください",
@@ -158,7 +160,17 @@
             "basicInfoTitle": "モデル基本情報",
             "basicInfoDescription": "モデルの基本情報と識別パラメータを設定",
             "modelType": "モデルタイプ",
-            "modelTypePlaceholder": "モデルタイプを入力してください"
+            "modelTypePlaceholder": "モデルタイプを入力してください",
+            "billing": "対話の消費",
+            "power": "計算能力",
+            "billingHelp": "何トークンごとにどれだけの計算力が消費されるか"
+        },
+        "batchEdit": {
+            "name": "名称",
+            "model": "モデル識別",
+            "maxContext": "最大コンテキスト",
+            "isActive": "使用しますか？",
+            "billingRule": "対話の消費"
         },
         "table": {
             "icon": "アイコン",
@@ -259,7 +271,8 @@
             "missingModelId": "モデルIDが不足しています",
             "getModelDetailFailed": "モデル詳細取得失敗",
             "isActiveEnabled": "モデルが有効になりました",
-            "isActiveDisabled": "モデルは無効になっています"
+            "isActiveDisabled": "モデルは無効になっています",
+            "batchEditSuccess": "バッチ編集が成功しました"
         }
     },
     "viewWebsite": "公式サイトへ",
