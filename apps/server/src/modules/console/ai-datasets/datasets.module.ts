@@ -1,4 +1,5 @@
 import { User } from "@common/modules/auth/entities/user.entity";
+import { KeyManagerModule } from "@modules/console/key-manager/key-manager.module";
 import { forwardRef, Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -39,6 +40,7 @@ import { VectorizationQueueService } from "./services/vectorization-queue.servic
         AiConsoleModule,
         forwardRef(() => QueueModule),
         UploadModule,
+        KeyManagerModule,
     ],
     controllers: [
         DatasetsController,

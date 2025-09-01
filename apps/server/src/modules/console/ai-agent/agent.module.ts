@@ -1,5 +1,6 @@
 import { AccountLogModule } from "@common/modules/account/account-log.module";
 import { User } from "@common/modules/auth/entities/user.entity";
+import { KeyManagerModule } from "@modules/console/key-manager/key-manager.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
@@ -33,6 +34,7 @@ import { PublicAgentChatService } from "./services/v1-agent-chat.service";
         AiConsoleModule, // 导入AI控制台模块，用于模型服务
         AiDatasetsModule, // 导入知识库模块，用于检索服务
         AccountLogModule,
+        KeyManagerModule,
     ],
     controllers: [
         AgentController,
