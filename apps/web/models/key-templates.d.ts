@@ -2,13 +2,16 @@
  * API密钥模板创建/更新请求
  */
 export interface KeyTemplateRequest {
-    id?: string;
+    id: string;
     fieldConfig: FieldConfig[];
     icon: string;
     isEnabled: number;
     name: string;
-    sortOrder?: number;
-    type?: string;
+    sortOrder: number;
+    type: string;
+    keyConfigs: KeyConfig[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 /**
@@ -19,6 +22,23 @@ export interface FieldConfig {
     placeholder: string;
     required: boolean;
     type: string;
+}
+
+/**
+ * API密钥配置
+ */
+export interface KeyConfig {
+    id: string;
+    name: string;
+    templateId: string;
+    fieldValues: { name: string; value: string }[];
+    remark: string;
+    status: number;
+    lastUsedAt: string | null;
+    usageCount: number;
+    sortOrder: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 /**

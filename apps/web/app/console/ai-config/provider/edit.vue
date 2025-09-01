@@ -36,8 +36,7 @@ const detail = ref<AiProviderInfo | null>(null);
 const formData = reactive<CreateAiProviderRequest>({
     provider: "",
     name: "",
-    apiKey: "",
-    baseUrl: "",
+    bindKeyConfig: "",
     websiteUrl: "",
     iconUrl: "",
     description: "",
@@ -50,7 +49,7 @@ const formData = reactive<CreateAiProviderRequest>({
 const providerSchema = object({
     provider: string().required(t("console-ai-provider.form.providerRequired")),
     name: string().required(t("console-ai-provider.form.nameRequired")),
-    apiKey: string().required(t("console-ai-provider.form.apiKeyRequired")),
+    bindKeyConfig: string().required(t("console-ai-provider.form.apiKeyRequired")),
     supportedModelTypes: array().min(1, t("console-ai-provider.form.supportedModelTypesRequired")),
 });
 
@@ -153,26 +152,6 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                         />
                     </UFormField>
 
-                    <UFormField :label="t('console-ai-provider.form.proxyUrl')" name="baseUrl">
-                        <template #hint>
-                            {{ t("console-ai-provider.form.proxyUrlDescription") }}
-                        </template>
-                        <UInput
-                            v-model="formData.baseUrl"
-                            :placeholder="t('console-ai-provider.form.baseUrlPlaceholder')"
-                            :ui="{ root: 'w-full' }"
-                        />
-                    </UFormField>
-
-                    <UFormField :label="t('console-ai-provider.form.sortOrder')" name="sortOrder">
-                        <UInput
-                            v-model="formData.sortOrder"
-                            type="number"
-                            :placeholder="t('console-ai-provider.form.sortOrderPlaceholder')"
-                            :ui="{ root: 'w-full' }"
-                        />
-                    </UFormField>
-
                     <UFormField :label="t('console-ai-provider.form.iconUrl')" name="iconUrl">
                         <ProUploader
                             v-model="formData.iconUrl"
@@ -198,62 +177,50 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                             />
                         </UFormField>
 
-                        <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
-                            <USwitch
-                                v-model="formData.isActive"
-                                unchecked-icon="i-lucide-x"
-                                checked-icon="i-lucide-check"
-                                size="lg"
-                                :label="
-                                    formData.isActive
-                                        ? t('console-ai-provider.form.isActiveEnabled')
-                                        : t('console-ai-provider.form.isActiveDisabled')
-                                "
+                        <UFormField
+                            :label="t('console-ai-provider.form.sortOrder')"
+                            name="sortOrder"
+                        >
+                            <UInput
+                                v-model="formData.sortOrder"
+                                type="number"
+                                :placeholder="t('console-ai-provider.form.sortOrderPlaceholder')"
+                                :ui="{ root: 'w-full' }"
                             />
                         </UFormField>
                     </div>
                 </div>
             </div>
 
-            <!-- API配置 -->
-            <div class="pb-2">
-                <UFormField :label="t('console-ai-provider.form.apiKey')" name="apiKey" required>
-                    <UInput
-                        v-model="formData.apiKey"
-                        :type="show ? 'text' : 'password'"
-                        :placeholder="t('console-ai-provider.form.apiKeyPlaceholder')"
-                        :ui="{ root: 'w-full' }"
-                    >
-                        <template #trailing>
-                            <UButton
-                                color="neutral"
-                                variant="link"
-                                size="sm"
-                                :icon="show ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-                                :aria-label="show ? 'Hide password' : 'Show password'"
-                                :aria-pressed="show"
-                                aria-controls="password"
-                                @click="show = !show"
-                            /> </template
-                    ></UInput>
-                </UFormField>
-            </div>
-
             <div class="grid grid-cols-1 gap-4 pb-2 md:grid-cols-2">
-                <!-- API 配置 -->
-                <UFormField label="API 配置" name="apiKey" required>
-                    <KeyPoolSelect
-                        v-model="formData.apiKey"
-                        :button-ui="{
-                            variant: 'outline',
-                            color: 'neutral',
-                            ui: { base: 'w-full' },
-                            class: 'bg-background',
-                        }"
-                        :defaultSelected="false"
-                        :supportedModelTypes="['llm']"
-                    />
-                </UFormField>
+                <div class="space-y-4">
+                    <!-- API 配置 -->
+                    <UFormField label="API 配置" name="bindKeyConfig" required>
+                        <KeyPoolSelect
+                            v-model="formData.bindKeyConfig"
+                            :button-ui="{
+                                variant: 'outline',
+                                color: 'neutral',
+                                ui: { base: 'w-full' },
+                                class: 'bg-background',
+                            }"
+                        />
+                    </UFormField>
+
+                    <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
+                        <USwitch
+                            v-model="formData.isActive"
+                            unchecked-icon="i-lucide-x"
+                            checked-icon="i-lucide-check"
+                            size="lg"
+                            :label="
+                                formData.isActive
+                                    ? t('console-ai-provider.form.isActiveEnabled')
+                                    : t('console-ai-provider.form.isActiveDisabled')
+                            "
+                        />
+                    </UFormField>
+                </div>
 
                 <!-- 模型类型 -->
                 <UFormField
