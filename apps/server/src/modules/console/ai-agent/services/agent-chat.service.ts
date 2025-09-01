@@ -927,7 +927,9 @@ export class AgentChatService extends BaseAgentChatService {
                             );
                         }
 
-                        await StreamUtils.wordStream(annotationMatch.annotation.answer, res!, 20);
+                        await StreamUtils.autoStream(annotationMatch.annotation.answer, res!, {
+                            speed: 100,
+                        });
 
                         const completeContext = [
                             ...modifiedDto.messages,
@@ -1312,7 +1314,9 @@ export class AgentChatService extends BaseAgentChatService {
             );
         }
 
-        await StreamUtils.wordStream(quickCommandResult.response!, res, 20);
+        await StreamUtils.autoStream(quickCommandResult.response!, res, {
+            speed: 100,
+        });
 
         const completeContext = [
             ...dto.messages,
