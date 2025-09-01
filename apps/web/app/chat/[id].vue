@@ -408,7 +408,7 @@ definePageMeta({ activePath: "/" });
                             :icon="quickMenu?.icon ? '' : 'tabler:tool'"
                             :ui="{ leadingIcon: 'size-4' }"
                             :class="{ 'bg-primary/15': isQuickMenu }"
-                            @click="handleQuickMenu"
+                            @click.stop="handleQuickMenu"
                         >
                             <UAvatar
                                 v-if="quickMenu?.icon"
