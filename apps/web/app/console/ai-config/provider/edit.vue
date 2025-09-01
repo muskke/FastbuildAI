@@ -153,11 +153,10 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                         />
                     </UFormField>
 
-                    <UFormField
-                        :label="t('console-ai-provider.form.proxyUrl')"
-                        name="baseUrl"
-                        :description="t('console-ai-provider.form.proxyUrlDescription')"
-                    >
+                    <UFormField :label="t('console-ai-provider.form.proxyUrl')" name="baseUrl">
+                        <template #hint>
+                            {{ t("console-ai-provider.form.proxyUrlDescription") }}
+                        </template>
                         <UInput
                             v-model="formData.baseUrl"
                             :placeholder="t('console-ai-provider.form.baseUrlPlaceholder')"
@@ -240,8 +239,23 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                 </UFormField>
             </div>
 
-            <!-- 模型类型 -->
-            <div class="pb-2">
+            <div class="grid grid-cols-1 gap-4 pb-2 md:grid-cols-2">
+                <!-- API 配置 -->
+                <UFormField label="API 配置" name="apiKey" required>
+                    <KeyPoolSelect
+                        v-model="formData.apiKey"
+                        :button-ui="{
+                            variant: 'outline',
+                            color: 'neutral',
+                            ui: { base: 'w-full' },
+                            class: 'bg-background',
+                        }"
+                        :defaultSelected="false"
+                        :supportedModelTypes="['llm']"
+                    />
+                </UFormField>
+
+                <!-- 模型类型 -->
                 <UFormField
                     :label="t('console-ai-provider.form.modelType')"
                     name="supportedModelTypes"
