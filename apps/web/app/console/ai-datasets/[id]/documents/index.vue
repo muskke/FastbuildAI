@@ -6,7 +6,7 @@ import { useDebounceFn } from "@vueuse/core";
 import { h, onMounted, reactive, resolveComponent, watch } from "vue";
 import { useRouter } from "vue-router";
 
-import type { DatasetDocument, QueryDocumentParams } from "@/models/ai-datasets";
+import type { Dataset, DatasetDocument, QueryDocumentParams } from "@/models/ai-datasets";
 import { apiGetDocumentList } from "@/services/console/ai-datasets";
 
 import { useDocumentActions } from "../useDatasets";
@@ -22,6 +22,8 @@ const TimeDisplay = resolveComponent("TimeDisplay");
 const router = useRouter();
 const { t } = useI18n();
 const { hasAccessByCodes } = useAccessControl();
+
+const datasets = inject<Dataset>("datasets");
 
 const { deleteDocument, renameDocument, retryDocument, toggleDocumentEnabled } =
     useDocumentActions();
@@ -342,6 +344,15 @@ const handleDelete = async (id: string) => {
     await deleteDocument(id, getLists);
 };
 
+// 处理添加文件
+const handleAddFile = () => {
+    if (!datasets?.embeddingModelId) {
+        toast.error(t("console-ai-datasets.documents.noEmbeddingModel"));
+        return;
+    }
+    router.push(useRoutePath("ai-datasets-documents:create", { id: datasetIdSafe.value }));
+};
+
 // 重命名文档
 const handleRename = async (document: DatasetDocument) => {
     await renameDocument(document, getLists);
@@ -416,15 +427,12 @@ definePageMeta({ layout: "full-screen" });
                 </UDropdownMenu>
 
                 <AccessControl :codes="['ai-datasets-documents:create']">
-                    <NuxtLink
-                        :to="useRoutePath('ai-datasets-documents:create', { id: datasetIdSafe })"
-                    >
-                        <UButton
-                            :label="t('console-ai-datasets.documents.addFile')"
-                            leading-icon="i-lucide-plus"
-                            color="primary"
-                        />
-                    </NuxtLink>
+                    <UButton
+                        :label="t('console-ai-datasets.documents.addFile')"
+                        leading-icon="i-lucide-plus"
+                        color="primary"
+                        @click="handleAddFile"
+                    />
                 </AccessControl>
             </div>
         </div>
