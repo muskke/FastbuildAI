@@ -1,7 +1,6 @@
 import { BaseService } from "@common/base/services/base.service";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { User } from "@common/modules/auth/entities/user.entity";
-import { getFileUrl } from "@common/utils/file.util";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
@@ -266,14 +265,6 @@ export class DatasetMemberService extends BaseService<DatasetMember> {
 
         // 4. 处理成员列表，添加权限相关字段
         members.items = members.items.map((item) => {
-            // 处理头像路径
-            if (item.user?.avatar) {
-                item.user.avatar = getFileUrl(item.user.avatar);
-            }
-            if (item.inviter?.avatar) {
-                item.inviter.avatar = getFileUrl(item.inviter.avatar);
-            }
-
             // 判断是否可以操作该成员
             return {
                 ...item,
