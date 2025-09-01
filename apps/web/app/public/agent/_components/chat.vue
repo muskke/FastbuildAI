@@ -19,6 +19,11 @@ import {
 import AgentAnnotationModal from "../../../console/ai-agent/_components/logs/annotation-modal.vue";
 import PublicAgentChatsList from "./public-agent-chats-list.vue";
 
+const props = defineProps<{
+    // 扣费模式：creator、user、all
+    billingMode: string;
+}>();
+
 const { t } = useI18n();
 const isMobile = useMediaQuery("(max-width: 768px)");
 // 路由参数
@@ -167,6 +172,9 @@ const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
         saveConversation: true,
         get conversationId() {
             return conversationId.value;
+        },
+        get billingMode() {
+            return props.billingMode;
         },
     },
     onToolCall(message) {},

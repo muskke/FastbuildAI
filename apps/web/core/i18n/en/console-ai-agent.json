@@ -231,6 +231,7 @@
         "user": "User Info",
         "messageCount": "Message Count",
         "totalTokens": "Token Usage",
+        "consumedPower": "Power Consumed",
         "updatedAt": "Updated At",
         "dialogTitle": "Conversation Title",
         "dialogMessage": "Conversation Message",

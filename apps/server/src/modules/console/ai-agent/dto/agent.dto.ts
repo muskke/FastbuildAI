@@ -144,6 +144,9 @@ export class ModelConfigDto {
     };
 }
 
+/**
+ * 模型计费配置DTO
+ */
 export class ModelBillingConfigDto {
     @IsOptional()
     @IsNumber({}, { message: "价格必须是数字" })
@@ -401,6 +404,15 @@ export class QueryAgentDto extends PaginationDto {
  */
 export class AgentChatDto extends AgentConfigBaseDto {
     /**
+     * 响应模式
+     * streaming: 流式模式（推荐）
+     * blocking: 阻塞模式，等待执行完毕后返回结果
+     */
+    @IsOptional()
+    @IsEnum(["streaming", "blocking"], { message: "响应模式必须是 streaming 或 blocking" })
+    responseMode?: "streaming" | "blocking" = "streaming";
+
+    /**
      * 消息列表（标准AI对话格式）
      */
     @IsNotEmpty({ message: "消息列表不能为空" })
@@ -481,6 +493,13 @@ export class AgentChatDto extends AgentConfigBaseDto {
     @IsOptional()
     @IsObject({ message: "表单字段输入值必须是对象" })
     formFieldsInputs?: Record<string, any>;
+
+    /**
+     * 扣费模式
+     */
+    @IsOptional()
+    @IsEnum(["creator", "user", "all"], { message: "扣费模式必须是 creator 或 user 或 all" })
+    billingMode?: "creator" | "user" | "all";
 }
 
 /**
@@ -755,62 +774,6 @@ export class PublicAgentInfoDto {
 }
 
 /**
- * 公开对话DTO
- */
-export class PublicAgentChatDto {
-    /**
-     * 消息列表（标准AI对话格式）
-     */
-    @IsNotEmpty({ message: "消息列表不能为空" })
-    @IsArray({ message: "消息必须是数组" })
-    @ValidateNested({ each: true })
-    @Type(() => AgentChatMessageDto)
-    messages: AgentChatMessageDto[];
-
-    /**
-     * 对话ID（可选，用于继续对话）
-     */
-    @IsOptional()
-    @IsUUID(4, { message: "对话ID格式不正确" })
-    conversationId?: string;
-
-    /**
-     * 对话标题（可选）
-     */
-    @IsOptional()
-    @IsString({ message: "对话标题必须是字符串" })
-    title?: string;
-
-    /**
-     * 表单变量（可选）
-     */
-    @IsOptional()
-    @IsObject({ message: "表单变量必须是对象" })
-    formVariables?: Record<string, string>;
-
-    /**
-     * 表单字段输入值（可选）
-     */
-    @IsOptional()
-    @IsObject({ message: "表单字段输入值必须是对象" })
-    formFieldsInputs?: Record<string, any>;
-
-    /**
-     * 是否保存对话记录
-     */
-    @IsOptional()
-    @IsBoolean({ message: "保存对话记录必须是布尔值" })
-    saveConversation?: boolean = true;
-
-    /**
-     * 是否包含引用来源
-     */
-    @IsOptional()
-    @IsBoolean({ message: "包含引用来源必须是布尔值" })
-    includeReferences?: boolean;
-}
-
-/**
  * 导入智能体DTO
  */
 export class ImportAgentDto extends UpdateAgentConfigDto {
@@ -820,68 +783,4 @@ export class ImportAgentDto extends UpdateAgentConfigDto {
     @IsOptional()
     @IsUUID(4, { message: "创建者ID必须是有效的UUID" })
     createBy?: string;
-}
-
-/**
- * V1 API 对话请求 DTO
- */
-export class V1ChatDto {
-    /**
-     * 消息列表（标准AI对话格式）
-     */
-    @IsNotEmpty({ message: "消息列表不能为空" })
-    @IsArray({ message: "消息必须是数组" })
-    @ValidateNested({ each: true })
-    @Type(() => AgentChatMessageDto)
-    messages: AgentChatMessageDto[];
-
-    /**
-     * 响应模式
-     * streaming: 流式模式（推荐）
-     * blocking: 阻塞模式，等待执行完毕后返回结果
-     */
-    @IsOptional()
-    @IsEnum(["streaming", "blocking"], { message: "响应模式必须是 streaming 或 blocking" })
-    responseMode?: "streaming" | "blocking" = "streaming";
-    /**
-     * 对话ID（可选，用于继续对话）
-     */
-    @IsOptional()
-    @IsString({ message: "对话ID必须是字符串" })
-    conversationId?: string;
-
-    /**
-     * 对话标题（可选）
-     */
-    @IsOptional()
-    @IsString({ message: "对话标题必须是字符串" })
-    title?: string;
-
-    /**
-     * 表单变量（可选）
-     */
-    @IsOptional()
-    @IsObject({ message: "表单变量必须是对象" })
-    formVariables?: Record<string, string>;
-
-    /**
-     * 表单字段输入值（可选）
-     */
-    @IsOptional()
-    @IsObject({ message: "表单字段输入值必须是对象" })
-    formFieldsInputs?: Record<string, any>;
-
-    /**
-     * 是否保存对话记录
-     */
-    @IsOptional()
-    @IsBoolean({ message: "保存对话记录必须是布尔值" })
-    saveConversation?: boolean = true;
-
-    /**
-     * 是否包含引用来源
-     */
-    @IsOptional()
-    @IsBoolean({ message: "包含引用来源必须是布尔值" })
-    includeReferences?: boolean;
 }

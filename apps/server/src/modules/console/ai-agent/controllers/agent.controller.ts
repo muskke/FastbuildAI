@@ -20,6 +20,7 @@ import {
     CreateAgentFromTemplateDto,
     QueryTemplateDto,
 } from "../dto/agent-template.dto";
+import { NoBillingStrategy } from "../interfaces/billing-strategy.interface";
 import { AgentService } from "../services/agent.service";
 import { AgentChatService } from "../services/agent-chat.service";
 import { AgentTemplateService } from "../services/agent-template.service";
@@ -276,7 +277,7 @@ export class AgentController {
         @Body() dto: AgentChatDto,
         @Playground() user: UserPlayground,
     ) {
-        return this.agentChatService.handleChat(id, dto, user, "sync", false);
+        return this.agentChatService.handleChat(id, dto, user, "blocking", new NoBillingStrategy());
     }
 
     /**
@@ -300,7 +301,14 @@ export class AgentController {
         @Playground() user: UserPlayground,
         @Res() res: Response,
     ) {
-        return this.agentChatService.handleChat(id, dto, user, "stream", true, res);
+        return this.agentChatService.handleChat(
+            id,
+            dto,
+            user,
+            "streaming",
+            new NoBillingStrategy(),
+            res,
+        );
     }
 
     /**

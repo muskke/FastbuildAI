@@ -103,6 +103,16 @@ export class AgentChatRecord {
     totalTokens: number;
 
     /**
+     * 累计消耗算力
+     */
+    @Column({
+        type: "int",
+        default: 0,
+        comment: "本次对话累计消耗的算力",
+    })
+    consumedPower: number;
+
+    /**
      * 对话配置
      */
     @Column({

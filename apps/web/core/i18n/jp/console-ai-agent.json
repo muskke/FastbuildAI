@@ -231,6 +231,7 @@
         "user": "ユーザー情報",
         "messageCount": "メッセージ数",
         "totalTokens": "トークン消費量",
+        "consumedPower": "算力消費",
         "updatedAt": "更新日",
         "dialogTitle": "会話タイトル",
         "dialogMessage": "会話メッセージ",
