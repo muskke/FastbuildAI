@@ -2,6 +2,8 @@
     "type": {
         "addType": "新增模板",
         "deleteSuccess": "删除模板成功",
+        "enableSuccess": "启用模板成功",
+        "disableSuccess": "禁用模板成功",
         "form": {
             "icon": "图标",
             "name": "类型名称",
@@ -52,6 +54,9 @@
         "add": "新增密钥",
         "batchDelete": "批量删除",
         "placeholder": "请输入名称...",
+        "enableSuccess": "启用成功",
+        "disableSuccess": "禁用成功",
+        "deleteSuccess": "批量删除成功",
         "form": {
             "name": "密钥名称",
             "keyType": "密钥模板",
@@ -71,6 +76,7 @@
             "remark": "备注",
             "nameRequired": "请输入密钥名称",
             "keyTypeRequired": "请选择密钥模板",
+            "submitSuccess": "提交成功",
             "remarkRequired": "请输入备注",
             "fieldRequired": "请输入"
         }
