@@ -223,10 +223,9 @@ export interface AiModel {
     isDefault: boolean;
     description?: string;
     sortOrder: number;
-    pricing: {
-        input: number;
-        output: number;
-        currency: string;
+    billingRule: {
+        power: number;
+        tokens: number;
     };
     createdAt: string;
     updatedAt: string;

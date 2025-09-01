@@ -41,7 +41,7 @@
     },
     "apiKeyManage": {
         "title": "密钥管理",
-        "apiKeyType": "密钥类型",
+        "apiKeyType": "密钥模板",
         "apiKeyList": "密钥列表"
     },
     "datasets": {

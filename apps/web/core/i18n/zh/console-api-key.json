@@ -1,19 +1,24 @@
 {
     "type": {
-        "addType": "新增类型",
+        "addType": "新增模板",
+        "deleteSuccess": "删除模板成功",
         "form": {
+            "icon": "图标",
             "name": "类型名称",
-            "fieldName": "字段名",
+            "type": "类型",
+            "system": "系统内置",
+            "custom": "自定义",
             "isActived": "是否启用",
             "createdAt": "创建时间",
             "action": "操作",
-            "edit": "编辑类型",
-            "delete": "删除类型",
-            "enable": "启用",
-            "disable": "禁用"
+            "edit": "编辑模板",
+            "delete": "删除模板",
+            "enable": "启用模板",
+            "disable": "禁用模板"
         },
         "edit": {
-            "title": "编辑类型",
+            "icon": "图标",
+            "title": "编辑模板",
             "name": "类型名称",
             "status": "状态",
             "enable": "启用",
@@ -23,7 +28,10 @@
             "fieldType": "字段类型",
             "singleLineText": "单行文本",
             "multiLineText": "多行文本",
+            "number": "数字类型",
             "fieldExample": "示例文字",
+            "fieldRequired": "是否必填",
+            "submitSuccess": "提交成功",
             "action": "操作",
             "add": "新增",
             "nameRequired": "请输入字段名称",
@@ -46,7 +54,7 @@
         "placeholder": "请输入名称...",
         "form": {
             "name": "密钥名称",
-            "keyType": "密钥类型",
+            "keyType": "密钥模板",
             "remark": "备注",
             "status": "状态",
             "createdAt": "创建时间",
@@ -59,10 +67,10 @@
         "edit": {
             "title": "编辑密钥",
             "name": "密钥名称",
-            "keyType": "密钥类型",
+            "keyType": "密钥模板",
             "remark": "备注",
             "nameRequired": "请输入密钥名称",
-            "keyTypeRequired": "请选择密钥类型",
+            "keyTypeRequired": "请选择密钥模板",
             "remarkRequired": "请输入备注",
             "fieldRequired": "请输入"
         }
