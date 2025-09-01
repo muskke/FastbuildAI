@@ -50,13 +50,18 @@ export class KeyConfigService extends BaseService<KeyConfig> {
             throw HttpExceptionFactory.business("所选模板不存在或已被禁用");
         }
 
-        // 检查配置名称是否已存在
+        // 检查在相同模板下配置名称是否已存在
         const existConfig = await super.findOne({
-            where: { name: createKeyConfigDto.name },
+            where: {
+                name: createKeyConfigDto.name,
+                templateId: createKeyConfigDto.templateId,
+            },
         });
 
         if (existConfig) {
-            throw HttpExceptionFactory.business(`配置名称 ${createKeyConfigDto.name} 已存在`);
+            throw HttpExceptionFactory.business(
+                `在模板 ${template.name} 下，配置名称 ${createKeyConfigDto.name} 已存在`,
+            );
         }
 
         // 验证字段值与模板字段配置的匹配性
@@ -94,14 +99,19 @@ export class KeyConfigService extends BaseService<KeyConfig> {
             throw HttpExceptionFactory.notFound("密钥配置不存在");
         }
 
-        // 如果更新了配置名称，检查新的配置名称是否已存在
+        // 如果更新了配置名称，检查在相同模板下新的配置名称是否已存在
         if (updateKeyConfigDto.name && updateKeyConfigDto.name !== config.name) {
             const existConfig = await super.findOne({
-                where: { name: updateKeyConfigDto.name },
+                where: {
+                    name: updateKeyConfigDto.name,
+                    templateId: config.templateId,
+                },
             });
 
             if (existConfig) {
-                throw HttpExceptionFactory.business(`配置名称 ${updateKeyConfigDto.name} 已存在`);
+                throw HttpExceptionFactory.business(
+                    `在模板 ${config.template.name} 下，配置名称 ${updateKeyConfigDto.name} 已存在`,
+                );
             }
         }
 
