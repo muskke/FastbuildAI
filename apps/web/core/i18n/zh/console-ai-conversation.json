@@ -1,4 +1,7 @@
 {
+    "common": {
+        "power": "算力"
+    },
     "search": {
         "placeholder": "搜索对话标题或内容..."
     },
@@ -10,6 +13,7 @@
         "userName": "用户名称",
         "messageCount": "对话次数",
         "totalTokens": "Token消耗",
+        "totalPower": "算力消耗",
         "updatedAt": "更新时间",
         "action": "操作"
     },

@@ -33,6 +33,8 @@ export interface AiConversation {
     messageCount: number;
     /** 总Token消耗 */
     totalTokens: number;
+    /** 总Power消耗 */
+    totalPower: number;
     /** 对话配置 */
     config?: Record<string, any>;
     /** 对话状态 */
@@ -145,6 +147,8 @@ export interface AiMessage {
     status?: "active" | "loading" | "failed" | "completed";
     /** 错误信息 */
     errorMessage?: string;
+    /** 用户消耗算力 */
+    userConsumedPower: number;
     /** 模型响应的原始数据 */
     rawResponse?: Record<string, any>;
     /** 扩展数据 */

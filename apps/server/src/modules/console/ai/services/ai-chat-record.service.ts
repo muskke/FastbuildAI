@@ -341,6 +341,7 @@ export class AiChatRecordService extends BaseService<AiChatRecord> {
             await this.updateById(conversationId, {
                 messageCount: stats.messageCount,
                 totalTokens: stats.totalTokens,
+                totalPower: stats.totalPower,
             });
         } catch (error) {
             this.logger.error(`更新对话统计信息失败: ${error.message}`, error.stack);
