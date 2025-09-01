@@ -15,6 +15,10 @@ interface Props {
     console?: boolean;
     supportedModelTypes?: ModelType[];
     buttonUi?: ButtonProps;
+    // 是否显示计费规则
+    showBillingRule?: boolean;
+    // 是否打开本地存储
+    openLocalStorage?: boolean;
 }
 
 const { t } = useI18n();
@@ -23,6 +27,8 @@ const props = withDefaults(defineProps<Props>(), {
     showDescription: true,
     defaultSelected: true,
     console: false,
+    showBillingRule: false,
+    openLocalStorage: false,
 });
 
 const emit = defineEmits<{
@@ -53,7 +59,9 @@ const filteredProviders = computed(() => {
 
 function select(model: AiModel | null) {
     selected.value = model;
-    localStorage.setItem("modelId", model?.id || "");
+    if (props.openLocalStorage) {
+        localStorage.setItem("modelId", model?.id || "");
+    }
     emit("update:modelValue", model?.id || "");
     emit("change", model);
     isOpen.value = false;
@@ -76,7 +84,7 @@ async function loadModels() {
         }
 
         selected.value =
-            findModel(localStorage.getItem("modelId") || "") ??
+            (props.openLocalStorage ? findModel(localStorage.getItem("modelId") || "") : null) ??
             findModel(props.modelValue) ??
             findModel((await apiGetDefaultAiModel().catch(() => null))?.id) ??
             allModels.value.find((m) => m.isDefault) ??
@@ -145,7 +153,7 @@ onMounted(loadModels);
         </UButton>
 
         <template #content>
-            <div class="bg-background w-80 overflow-hidden rounded-lg shadow-lg">
+            <div class="bg-background w-fit min-w-80 overflow-hidden rounded-lg shadow-lg">
                 <div class="border-b p-3">
                     <UInput
                         v-model="search"
@@ -179,7 +187,7 @@ onMounted(loadModels);
                         <section
                             v-for="provider in filteredProviders"
                             :key="provider.id"
-                            class="space-y-2"
+                            class="mb-2 space-y-2"
                         >
                             <div class="flex flex-row items-center justify-between px-2">
                                 <div class="flex flex-row items-center gap-2">
@@ -204,29 +212,68 @@ onMounted(loadModels);
                                     v-for="model in provider.models"
                                     :key="model.id"
                                     :data-model-id="model.id"
-                                    class="group hover:bg-muted flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors"
-                                    :class="{ 'bg-secondary': selected?.id === model.id }"
+                                    class="group flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 ring-1 ring-transparent transition-colors"
+                                    :class="[
+                                        selected?.id === model.id
+                                            ? 'bg-primary/10 dark:bg-primary/20 hover:bg-primary/15 dark:hover:bg-primary/25'
+                                            : 'hover:bg-muted',
+                                    ]"
                                     @click="select(model)"
                                 >
-                                    <div class="space-y-0.5 overflow-hidden">
-                                        <p
-                                            class="text-secondary-foreground truncate text-sm font-medium"
-                                        >
-                                            {{ model.name }}
-                                        </p>
+                                    <div class="w-full overflow-hidden">
+                                        <div class="flex items-start justify-between gap-2">
+                                            <p
+                                                class="max-w-54 text-sm font-medium break-all whitespace-normal"
+                                                :class="
+                                                    selected?.id === model.id
+                                                        ? 'text-primary'
+                                                        : 'text-secondary-foreground'
+                                                "
+                                            >
+                                                {{ model.name }}
+                                            </p>
+                                            <div v-if="props.showBillingRule">
+                                                <span
+                                                    v-if="model.billingRule.power === 0"
+                                                    class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium"
+                                                    :class="
+                                                        selected?.id === model.id
+                                                            ? 'bg-muted-foreground/10 dark:bg-green-800 dark:text-green-400'
+                                                            : 'bg-muted-foreground/10'
+                                                    "
+                                                >
+                                                    免费
+                                                </span>
+                                                <span
+                                                    v-else
+                                                    class="text-inverted inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium"
+                                                    :class="
+                                                        selected?.id === model.id
+                                                            ? 'bg-primary dark:bg-primary-800'
+                                                            : 'bg-primary/10 text-primary'
+                                                    "
+                                                >
+                                                    <span>{{ model.billingRule.power }}算力</span>
+                                                    <span>/</span>
+                                                    <span
+                                                        >{{ model.billingRule.tokens }}Tokens</span
+                                                    >
+                                                </span>
+                                            </div>
+                                        </div>
                                         <p
                                             v-if="props.showDescription && model.description"
-                                            class="text-muted-foreground line-clamp-1 text-xs"
+                                            class="text-muted-foreground mt-0.5 line-clamp-1 text-xs"
                                         >
                                             {{ model.description }}
                                         </p>
                                     </div>
-                                    <UIcon
+                                    <!-- <UIcon
                                         v-if="selected?.id === model.id"
                                         name="i-lucide-check-circle"
                                         class="text-primary flex-none"
                                         size="lg"
-                                    />
+                                    /> -->
                                 </li>
                             </ul>
                         </section>

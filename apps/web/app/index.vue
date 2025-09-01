@@ -213,6 +213,8 @@ definePageMeta({
                                 v-model="selectedModelId"
                                 :modelId="selectedModelId || ''"
                                 :supportedModelTypes="['llm']"
+                                :show-billingRule="true"
+                                :open-local-storage="true"
                                 placeholder="选择AI模型开始对话"
                             />
                             <McpSelect
