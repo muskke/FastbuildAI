@@ -508,6 +508,46 @@
                         "pluginPackName": null
                     }
                 ]
+            },
+            {
+                "name": "console-menu.apiKeyManage.title",
+                "code": "api-key-manage",
+                "path": "apiKeyManage",
+                "icon": "i-lucide-key-round",
+                "component": "",
+                "permissionCode": null,
+                "sort": 500,
+                "isHidden": 0,
+                "type": 1,
+                "sourceType": 1,
+                "pluginPackName": "",
+                "children": [
+                    {
+                        "name": "console-menu.apiKeyManage.apiKeyType",
+                        "code": "api-key-type",
+                        "path": "apiKeyType",
+                        "icon": "",
+                        "component": "/console/api-key-manage/type",
+                        "permissionCode": "ai-api-keys:type",
+                        "sort": 0,
+                        "isHidden": 0,
+                        "type": 2,
+                        "sourceType": 1,
+                        "pluginPackName": null
+                    },{
+                        "name": "console-menu.apiKeyManage.apiKeyList",
+                        "code": "api-key-list",
+                        "path": "apiKeyList",
+                        "icon": "",
+                        "component": "/console/api-key-manage/list",
+                        "permissionCode": "ai-api-keys:list",
+                        "sort": 10,
+                        "isHidden": 0,
+                        "type": 2,
+                        "sourceType": 1,
+                        "pluginPackName": null
+                    }
+                ]
             }
         ]
     },
