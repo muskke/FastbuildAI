@@ -8,7 +8,9 @@ import {
 } from "@common/modules/account/constants/account-log.constants";
 import { AccountLogService } from "@common/modules/account/services/account-log.service";
 import { User } from "@common/modules/auth/entities/user.entity";
+import { getProviderKeyConfig } from "@common/utils/helper.util";
 import { StreamUtils } from "@common/utils/stream-utils.util";
+import { KeyConfigService } from "@modules/console/key-manager/services/key-config.service";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Response } from "express";
@@ -79,6 +81,7 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         protected readonly aiModelService: AiModelService,
         protected readonly agentAnnotationService: AgentAnnotationService,
         protected readonly accountLogService: AccountLogService,
+        private readonly keyConfigService: KeyConfigService,
     ) {
         super(chatRecordRepository);
     }
@@ -377,9 +380,13 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
             throw new Error("无法创建AI客户端：模型或provider配置无效");
         }
 
+        const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
+            model.provider.bindKeyConfig,
+        );
+
         const provider = getProvider(model.provider.provider, {
-            apiKey: model.provider.apiKey,
-            baseURL: model.provider.baseUrl,
+            apiKey: getProviderKeyConfig(model.provider.apiKey, providerKeyConfig),
+            baseURL: getProviderKeyConfig(model.provider.baseUrl, providerKeyConfig),
         });
 
         const client = new TextGenerator(provider);
@@ -738,6 +745,7 @@ export class AgentChatService extends BaseAgentChatService {
         aiModelService: AiModelService,
         agentAnnotationService: AgentAnnotationService,
         accountLogService: AccountLogService,
+        keyConfigService: KeyConfigService,
     ) {
         super(
             chatRecordRepository,
@@ -751,6 +759,7 @@ export class AgentChatService extends BaseAgentChatService {
             aiModelService,
             agentAnnotationService,
             accountLogService,
+            keyConfigService,
         );
     }
 

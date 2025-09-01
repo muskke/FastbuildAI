@@ -1,3 +1,5 @@
+import { getProviderKeyConfig } from "@common/utils/helper.util";
+import { KeyConfigService } from "@modules/console/key-manager/services/key-config.service";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
@@ -26,6 +28,7 @@ export class VectorizationQueueService {
         @InjectRepository(DatasetsDocument)
         private readonly documentRepository: Repository<DatasetsDocument>,
         private readonly aiModelService: AiModelService,
+        private readonly keyConfigService: KeyConfigService,
     ) {}
 
     /**
@@ -112,9 +115,12 @@ export class VectorizationQueueService {
         const { embeddingGenerator } = await import("@sdk/ai/core/embedding");
         const { getProvider } = await import("@sdk/ai/utils/get-provider");
 
+        const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
+            embeddingModel.provider.bindKeyConfig,
+        );
         const adapter = getProvider(embeddingModel.provider.provider, {
-            apiKey: embeddingModel.provider.apiKey,
-            baseURL: embeddingModel.provider.baseUrl,
+            apiKey: getProviderKeyConfig(embeddingModel.provider.apiKey, providerKeyConfig),
+            baseURL: getProviderKeyConfig(embeddingModel.provider.baseUrl, providerKeyConfig),
         });
 
         return embeddingGenerator(adapter);

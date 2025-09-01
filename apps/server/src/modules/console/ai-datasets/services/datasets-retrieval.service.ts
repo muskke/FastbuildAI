@@ -1,4 +1,6 @@
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
+import { getProviderKeyConfig } from "@common/utils/helper.util";
+import { KeyConfigService } from "@modules/console/key-manager/services/key-config.service";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Jieba } from "@node-rs/jieba";
@@ -54,6 +56,7 @@ export class DatasetsRetrievalService {
         @InjectRepository(DatasetsSegments)
         private readonly segmentsRepository: Repository<DatasetsSegments>,
         private readonly aiModelService: AiModelService,
+        private readonly keyConfigService: KeyConfigService,
     ) {}
 
     /**
@@ -493,9 +496,13 @@ export class DatasetsRetrievalService {
         }
 
         try {
+            const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
+                rerankModel.provider.bindKeyConfig,
+            );
+
             const adapter = getProvider(rerankModel.provider.provider, {
-                apiKey: rerankModel.provider.apiKey,
-                baseURL: rerankModel.provider.baseUrl,
+                apiKey: getProviderKeyConfig(rerankModel.provider.apiKey, providerKeyConfig),
+                baseURL: getProviderKeyConfig(rerankModel.provider.baseUrl, providerKeyConfig),
             });
 
             const generator = rerankGenerator(adapter);
@@ -528,9 +535,12 @@ export class DatasetsRetrievalService {
      * Generates embedding for query
      */
     private async generateEmbedding(query: string, model: any): Promise<number[]> {
+        const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
+            model.provider.bindKeyConfig,
+        );
         const adapter = getProvider(model.provider.provider, {
-            apiKey: model.provider.apiKey,
-            baseURL: model.provider.baseUrl,
+            apiKey: getProviderKeyConfig(model.provider.apiKey, providerKeyConfig),
+            baseURL: getProviderKeyConfig(model.provider.baseUrl, providerKeyConfig),
         });
         const generator = embeddingGenerator(adapter);
         const embeddingResponse: CreateEmbeddingResponse = await generator.embeddings.create({
