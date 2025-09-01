@@ -338,6 +338,24 @@ definePageMeta({ layout: "full-screen" });
                                             <span class="text-2xl font-bold">
                                                 {{
                                                     formatCompactNumber(
+                                                        statistics.overview.totalConsumedPower,
+                                                    )
+                                                }}
+                                            </span>
+                                            <span class="text-muted-foreground ml-1 text-xs">
+                                                {{ t("console-ai-agent.dashboard.power") }}
+                                            </span>
+                                        </div>
+                                        <div class="text-muted-foreground text-xs">
+                                            {{ t("console-ai-agent.dashboard.totalConsumedPower") }}
+                                        </div>
+                                    </div>
+                                    <USeparator orientation="vertical" class="h-6" />
+                                    <div>
+                                        <div>
+                                            <span class="text-2xl font-bold">
+                                                {{
+                                                    formatCompactNumber(
                                                         statistics.overview.totalTokens,
                                                     )
                                                 }}
@@ -352,24 +370,6 @@ definePageMeta({ layout: "full-screen" });
                                                     "console-ai-agent.dashboard.totalTokenConsumption",
                                                 )
                                             }}
-                                        </div>
-                                    </div>
-                                    <USeparator orientation="vertical" class="h-6" />
-                                    <div>
-                                        <div>
-                                            <span class="text-2xl font-bold">
-                                                {{
-                                                    formatCompactNumber(
-                                                        statistics.overview.annotationHitCount,
-                                                    )
-                                                }}
-                                            </span>
-                                            <span class="text-muted-foreground ml-1 text-xs">
-                                                {{ t("console-ai-agent.dashboard.hits") }}
-                                            </span>
-                                        </div>
-                                        <div class="text-muted-foreground text-xs">
-                                            {{ t("console-ai-agent.dashboard.annotationHits") }}
                                         </div>
                                     </div>
                                 </div>
@@ -417,14 +417,14 @@ definePageMeta({ layout: "full-screen" });
                                     <div>
                                         <div>
                                             <span class="text-2xl font-bold">
-                                                {{ statistics.overview.activeAnnotations }}
+                                                {{ statistics.overview.annotationHitCount }}
                                             </span>
                                             <span class="text-muted-foreground ml-1 text-xs">
                                                 {{ t("console-ai-agent.dashboard.annotations") }}
                                             </span>
                                         </div>
                                         <div class="text-muted-foreground text-xs">
-                                            {{ t("console-ai-agent.dashboard.activeAnnotations") }}
+                                            {{ t("console-ai-agent.dashboard.annotationHits") }}
                                         </div>
                                     </div>
                                 </div>

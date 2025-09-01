@@ -154,6 +154,7 @@ export class AgentService extends BaseService<Agent> {
             totalConversations: number;
             totalMessages: number;
             totalTokens: number;
+            totalConsumedPower: number;
             totalAnnotations: number;
             activeAnnotations: number;
             annotationHitCount: number;
@@ -219,6 +220,7 @@ export class AgentService extends BaseService<Agent> {
             totalConversations,
             totalMessages,
             { total: totalTokens },
+            { total: totalConsumedPower },
             totalAnnotations,
             activeAnnotations,
             { total: annotationHitCount },
@@ -228,6 +230,11 @@ export class AgentService extends BaseService<Agent> {
             this.chatRecordRepository
                 .createQueryBuilder("record")
                 .select("SUM(record.totalTokens)", "total")
+                .where("record.agentId = :agentId AND record.isDeleted = false", { agentId })
+                .getRawOne(),
+            this.chatRecordRepository
+                .createQueryBuilder("record")
+                .select("SUM(record.consumedPower)", "total")
                 .where("record.agentId = :agentId AND record.isDeleted = false", { agentId })
                 .getRawOne(),
             this.annotationRepository.count({ where: { agentId } }),
@@ -243,6 +250,7 @@ export class AgentService extends BaseService<Agent> {
             totalConversations,
             totalMessages,
             totalTokens: parseInt(totalTokens || "0"),
+            totalConsumedPower: parseInt(totalConsumedPower || "0"),
             totalAnnotations,
             activeAnnotations,
             annotationHitCount: parseInt(annotationHitCount || "0"),
