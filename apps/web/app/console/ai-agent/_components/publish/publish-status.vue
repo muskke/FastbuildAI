@@ -13,7 +13,7 @@ const props = defineProps<Props>();
 const publishUrl = computed(() => {
     if (!props.agent?.publishToken) return "";
     const baseUrl = window.location.origin;
-    return `${baseUrl}/public/agent/${props.agent.publishToken}`;
+    return `${baseUrl}/public/agent/shared/${props.agent.publishToken}`;
 });
 
 const isPublished = computed(() => props.agent?.isPublished || false);

@@ -27,6 +27,8 @@
         "expandSidebar": "Expand sidebar",
         "collapseSidebar": "Collapse sidebar",
         "selectModel": "Please select the model first",
+        "singleRunConsumption": "Consumes {price} power/Once",
+        "and": "and {name} chat...",
         "messages": {
             "thinking": "Thinking...",
             "typing": "Typing...",
