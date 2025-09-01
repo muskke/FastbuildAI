@@ -214,7 +214,7 @@ const handleSelect = (row: Row<any>, selected: boolean | "indeterminate") => {
 const handleSelectAll = (selected: boolean | "indeterminate") => {
     if (typeof selected === "boolean") {
         if (selected) {
-            selectedIds.value = ApiKeyList.value.map((item) => item.id);
+            selectedIds.value = paging.items.map((item) => item.id);
         } else {
             selectedIds.value = [];
         }
