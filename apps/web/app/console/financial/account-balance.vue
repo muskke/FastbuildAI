@@ -118,15 +118,15 @@ onMounted(() => {
                         value: null,
                     },
                     {
-                        label: t('console-financial.accountBalance.rechargeIncreasePower'),
+                        label: t('console-financial.accountBalance.systemRecharge'),
                         value: '100',
                     },
                     {
-                        label: t('console-financial.accountBalance.rechargeGiftPower'),
+                        label: t('console-financial.accountBalance.systemRechargeGift'),
                         value: '101',
                     },
                     {
-                        label: t('console-financial.accountBalance.rechargeRefundPower'),
+                        label: t('console-financial.accountBalance.systemRechargeRefund'),
                         value: '102',
                     },
                     {
@@ -136,6 +136,22 @@ onMounted(() => {
                     {
                         label: t('console-financial.accountBalance.systemDecreasePower'),
                         value: '201',
+                    },
+                    {
+                        label: t('console-financial.accountBalance.basicConversation'),
+                        value: '300',
+                    },
+                    {
+                        label: t('console-financial.accountBalance.agentConversation'),
+                        value: '400',
+                    },
+                    {
+                        label: t('console-financial.accountBalance.sharedAgentConversation'),
+                        value: '401',
+                    },
+                    {
+                        label: t('console-financial.accountBalance.pluginConsumption'),
+                        value: '500',
                     },
                 ]"
                 @update:model-value="getLists"
