@@ -1,6 +1,5 @@
 import { CacheModule as NestCacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
 
 import { CacheService } from "./cache.service";
 
@@ -15,13 +14,13 @@ import { CacheService } from "./cache.service";
     imports: [
         NestCacheModule.registerAsync({
             isGlobal: true,
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (configService: ConfigService) => {
+            imports: [],
+            inject: [],
+            useFactory: () => {
                 return {
                     // 使用默认的内存存储
-                    ttl: configService.get<number>("CACHE_TTL", 60 * 60 * 24), // 默认缓存时间为24小时
-                    max: configService.get<number>("CACHE_MAX_ITEMS", 100), // 最大缓存项数
+                    ttl: Number(process.env.CACHE_TTL) || 60 * 60 * 24, // 默认缓存时间为24小时
+                    max: Number(process.env.CACHE_MAX_ITEMS) || 100, // 最大缓存项数
                 };
             },
         }),
