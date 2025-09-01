@@ -128,6 +128,6 @@ export class DatasetsDocument {
     /**
      * 文档下的分段列表
      */
-    @OneToMany(() => DatasetsSegments, "document")
+    @OneToMany(() => DatasetsSegments, (segment) => segment.document)
     segments?: Awaited<DatasetsSegments[]>;
 }
