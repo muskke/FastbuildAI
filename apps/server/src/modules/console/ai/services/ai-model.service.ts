@@ -10,7 +10,7 @@ import { DictService } from "@common/modules/dict/services/dict.service";
 import { buildWhere } from "@common/utils/helper.util";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsWhere, In, Repository } from "typeorm";
+import { FindOptionsWhere, In, Like, Repository } from "typeorm";
 
 import { CreateAiModelDto, QueryAiModelDto, UpdateAiModelDto } from "../dto/ai-model.dto";
 import { AiModel } from "../entities/ai-model.entity";
@@ -165,8 +165,8 @@ export class AiModelService extends BaseService<AiModel> {
         const whereConditions: FindOptionsWhere<AiModel>[] = [];
         if (queryDto.keyword) {
             whereConditions.push(
-                { ...where, ...this.ilike("name", queryDto.keyword) },
-                { ...where, ...this.ilike("description", queryDto.keyword) },
+                { ...where, ...{ name: Like(`%${queryDto.keyword}%`) } },
+                { ...where, ...{ description: Like(`%${queryDto.keyword}%`) } },
             );
         } else {
             whereConditions.push(where);

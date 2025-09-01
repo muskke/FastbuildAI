@@ -3,7 +3,7 @@ import { PaginationDto } from "@common/dto/pagination.dto";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 
 import { CreateAiProviderDto, UpdateAiProviderDto } from "../dto/ai-provider.dto";
 import { AiProvider } from "../entities/ai-provider.entity";
@@ -103,11 +103,11 @@ export class AiProviderService extends BaseService<AiProvider> {
         const whereConditions: any[] = [];
         if (queryOptions.keyword) {
             whereConditions.push(
-                { ...where, ...this.ilike("name" as keyof AiProvider, queryOptions.keyword) },
-                { ...where, ...this.ilike("provider" as keyof AiProvider, queryOptions.keyword) },
+                { ...where, ...{ name: Like(`%${queryOptions.keyword}%`) } },
+                { ...where, ...{ provider: Like(`%${queryOptions.keyword}%`) } },
                 {
                     ...where,
-                    ...this.ilike("description" as keyof AiProvider, queryOptions.keyword),
+                    ...{ description: Like(`%${queryOptions.keyword}%`) },
                 },
             );
         } else {

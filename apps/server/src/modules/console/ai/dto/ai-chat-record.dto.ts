@@ -294,6 +294,15 @@ export class CreateMessageDto {
     conversationId: string;
 
     /**
+     * 用户算力消耗
+     */
+    @IsInt({ message: "用户算力消耗必须是整数" })
+    @Min(0, { message: "用户算力消耗不能小于0" })
+    @IsOptional()
+    @Type(() => Number)
+    userConsumedPower?: number;
+
+    /**
      * 消息角色
      */
     @IsEnum(MessageRole, { message: "消息角色必须是有效的枚举值" })

@@ -6,7 +6,7 @@ import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory"
 import { isEnabled } from "@common/utils/is.util";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 
 import {
     CreateKeyTemplateDto,
@@ -107,7 +107,7 @@ export class KeyTemplateService extends BaseService<KeyTemplate> {
 
         // 模板名称模糊查询
         if (name) {
-            whereConditions.name = this.ilike("name", name);
+            whereConditions.name = Like(`%${name}%`);
         }
 
         // 模板类型精确查询
