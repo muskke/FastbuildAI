@@ -234,6 +234,12 @@ export class Agent {
     apiKey?: string;
 
     /**
+     * 创建者ID
+     */
+    @Column({ type: "varchar", length: 255, nullable: true, comment: "创建者ID" })
+    createBy: string;
+
+    /**
      * 发布配置
      * 包含访问控制、功能开关等配置信息
      */
