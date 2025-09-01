@@ -92,7 +92,7 @@ onMounted(async () => await Promise.all([fetchDetail(), fetchMessages()]));
             content: 'max-w-4xl',
             body: 'max-h-[80vh] overflow-y-auto',
         }"
-        @update:model-value="(value) => !value && emits('close')"
+        @update:model-value="(value: boolean) => !value && emits('close')"
     >
         <div
             v-if="detailLoading && messagesLoading"
@@ -192,10 +192,22 @@ onMounted(async () => await Promise.all([fetchDetail(), fetchMessages()]));
                                     <div
                                         class="text-muted-foreground flex items-center gap-4 text-xs"
                                     >
+                                        <span
+                                            v-if="
+                                                message.userConsumedPower !== undefined &&
+                                                message.role === 'assistant'
+                                            "
+                                            class="flex items-center gap-1"
+                                        >
+                                            <UIcon name="i-lucide-hash" class="h-3 w-3" />
+                                            {{ t("console-ai-conversation.detail.total") }}
+                                            {{ message.userConsumedPower || 0 }}
+                                            {{ t("console-ai-conversation.common.power") }}
+                                        </span>
                                         <span v-if="message.tokens" class="flex items-center gap-1">
                                             <UIcon name="i-lucide-hash" class="h-3 w-3" />
                                             {{ t("console-ai-conversation.detail.total") }}
-                                            {{ message.tokens.total_tokens }} tokens
+                                            {{ message.tokens.total_tokens }} Tokens
                                         </span>
                                         <span v-if="message.cost" class="flex items-center gap-1">
                                             <UIcon name="i-lucide-dollar-sign" class="h-3 w-3" />
