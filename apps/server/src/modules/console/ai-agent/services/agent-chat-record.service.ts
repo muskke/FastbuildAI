@@ -181,6 +181,18 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
     }
 
     /**
+     * 增加本次会话的算力消耗
+     * @param id 对话记录ID
+     * @param amount 本次增加的算力（>=0）
+     */
+    async incrementConsumedPower(id: string, amount: number): Promise<void> {
+        if (!amount || amount <= 0) return;
+        await this.chatRecordRepository.increment({ id }, "consumedPower", amount);
+        await this.chatRecordRepository.update(id, { updatedAt: new Date() });
+        this.logger.log(`[+] 对话记录消耗算力增加: ${id} +${amount}`);
+    }
+
+    /**
      * 获取对话记录的消息列表
      * @param conversationId 对话记录ID
      * @param paginationDto 分页参数

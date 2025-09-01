@@ -42,6 +42,7 @@ const columnLabels = computed(() => ({
     user: t("console-ai-agent.logs.user"),
     messageCount: t("console-ai-agent.logs.messageCount"),
     totalTokens: t("console-ai-agent.logs.totalTokens"),
+    consumedPower: t("console-ai-agent.logs.consumedPower"),
     updatedAt: t("console-ai-agent.logs.updatedAt"),
 }));
 
@@ -141,6 +142,18 @@ const columns: TableColumn<AgentChatRecord>[] = [
                 "span",
                 { class: "text-sm text-primary" },
                 `${formatCompactNumber(totalTokens)}`,
+            );
+        },
+    },
+    {
+        accessorKey: "consumedPower",
+        header: () => h("p", { class: "whitespace-nowrap" }, `${columnLabels.value.consumedPower}`),
+        cell: ({ row }) => {
+            const consumedPower = row.original.consumedPower || 0;
+            return h(
+                "span",
+                { class: "text-sm text-orange-600 font-medium" },
+                `${formatCompactNumber(consumedPower)}`,
             );
         },
     },

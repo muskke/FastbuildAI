@@ -233,6 +233,7 @@
         "user": "用户信息",
         "messageCount": "消息数量",
         "totalTokens": "Token消耗",
+        "consumedPower": "算力消耗",
         "updatedAt": "更新时间",
         "dialogTitle": "对话标题",
         "dialogMessage": "对话消息",

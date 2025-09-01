@@ -157,6 +157,8 @@ export interface AgentChatRecord extends BaseEntity {
     anonymousIdentifier?: string;
     /** 总Token消耗 */
     totalTokens: number;
+    /** 消耗算力 */
+    consumedPower: number;
     /** 对话配置 */
     config?: Record<string, any>;
     /** 是否删除 */

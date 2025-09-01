@@ -5,5 +5,5 @@ definePageMeta({ layout: "full-screen", auth: false });
 </script>
 
 <template>
-    <Chat />
+    <Chat billingMode="creator" />
 </template>

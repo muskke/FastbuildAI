@@ -4,15 +4,13 @@ import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory"
 import { UserPlayground } from "@common/interfaces/context.interface";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Response } from "express";
 import { Repository } from "typeorm";
 
-import { AgentChatDto, PublicAgentChatDto } from "../dto/agent.dto";
+import { AgentChatDto } from "../dto/agent.dto";
 import { Agent } from "../entities/agent.entity";
 import { AgentChatMessage } from "../entities/agent-chat-message.entity";
 import { AgentChatRecord } from "../entities/agent-chat-record.entity";
 import { AgentService } from "./agent.service";
-import { AgentChatService } from "./agent-chat.service";
 
 /**
  * 公开访问智能体聊天服务
@@ -32,7 +30,6 @@ export class PublicAgentChatService {
         @InjectRepository(AgentChatMessage)
         private readonly chatMessageRepository: Repository<AgentChatMessage>,
         private readonly agentService: AgentService,
-        private readonly agentChatService: AgentChatService,
     ) {
         this.chatRecordService = new BaseService<AgentChatRecord>(chatRecordRepository);
         this.chatMessageService = new BaseService<AgentChatMessage>(chatMessageRepository);
@@ -56,35 +53,6 @@ export class PublicAgentChatService {
             agentName: agent.name,
             description: "访问令牌永不过期，请妥善保管",
         };
-    }
-
-    /**
-     * API认证方式对话
-     * @param apiKey API密钥
-     * @param dto 对话请求数据
-     */
-    async chatWithApiKey(apiKey: string, dto: PublicAgentChatDto) {
-        if (!apiKey) {
-            throw HttpExceptionFactory.unauthorized("API密钥不能为空");
-        }
-
-        const agent = await this.agentService.getAgentByApiKey(apiKey);
-        return this.performApiKeyChat(agent, dto, apiKey);
-    }
-
-    /**
-     * API认证方式流式对话
-     * @param apiKey API密钥
-     * @param dto 对话请求数据
-     * @param res 响应对象
-     */
-    async chatStreamWithApiKey(apiKey: string, dto: PublicAgentChatDto, res: Response) {
-        if (!apiKey) {
-            throw HttpExceptionFactory.unauthorized("API密钥不能为空");
-        }
-
-        const agent = await this.agentService.getAgentByApiKey(apiKey);
-        return this.performApiKeyChatStream(agent, dto, res, apiKey);
     }
 
     /**
@@ -277,7 +245,6 @@ export class PublicAgentChatService {
         // 删除对话消息
         await this.chatMessageRepository.delete({ conversationId });
 
-        this.logUserAction("删除对话记录", agent.id, conversationId, accessToken, loggedInUser);
         return { message: "对话记录删除成功" };
     }
 
@@ -304,88 +271,7 @@ export class PublicAgentChatService {
             await this.chatRecordRepository.update(conversationId, { title: updateData.title });
         }
 
-        this.logUserAction(
-            `更新对话记录`,
-            agent.id,
-            conversationId,
-            accessToken,
-            loggedInUser,
-            `标题: ${updateData.title}`,
-        );
         return { message: "对话记录更新成功" };
-    }
-
-    /**
-     * 公开智能体阻塞对话
-     * @param publishToken 发布令牌
-     * @param accessToken 访问令牌
-     * @param dto 对话请求数据
-     * @param loggedInUser 可选的登录用户信息
-     */
-    async chatByAccessToken(
-        publishToken: string,
-        accessToken: string,
-        dto: PublicAgentChatDto,
-        loggedInUser?: UserPlayground,
-    ) {
-        const agent = await this.getAgentByPublishToken(publishToken);
-        await this.checkRateLimit(agent);
-
-        const agentChatDto = this.convertToAgentChatDto(dto, agent);
-        const user = this.createEnhancedUser(accessToken, loggedInUser);
-
-        this.logger.debug(`[+] 公开智能体阻塞对话用户: ${JSON.stringify(agentChatDto)}`);
-
-        try {
-            return await this.agentChatService.handleChat(
-                agent.id,
-                agentChatDto,
-                user,
-                "sync",
-                true,
-            );
-        } catch (error) {
-            this.logger.error(`[!] 公开智能体阻塞对话失败: ${error.message}`, error.stack);
-            throw HttpExceptionFactory.business("阻塞对话处理失败");
-        }
-    }
-
-    /**
-     * 公开智能体流式对话
-     * @param publishToken 发布令牌
-     * @param accessToken 访问令牌
-     * @param dto 对话请求数据
-     * @param res 响应对象
-     * @param loggedInUser 可选的登录用户信息
-     */
-    async chatStreamByAccessToken(
-        publishToken: string,
-        accessToken: string,
-        dto: PublicAgentChatDto,
-        res: Response,
-        loggedInUser?: UserPlayground,
-    ) {
-        const agent = await this.getAgentByPublishToken(publishToken);
-        await this.checkRateLimit(agent);
-
-        const agentChatDto = this.convertToAgentChatDto(dto, agent);
-        const user = this.createEnhancedUser(accessToken, loggedInUser);
-
-        this.logger.log(`[+] 公开智能体对话用户: ${JSON.stringify(agentChatDto)}`);
-
-        try {
-            return await this.agentChatService.handleChat(
-                agent.id,
-                agentChatDto,
-                user,
-                "stream",
-                true,
-                res,
-            );
-        } catch (error) {
-            this.logger.error(`[!] 公开智能体流式对话失败: ${error.message}`, error.stack);
-            throw HttpExceptionFactory.business(error.message);
-        }
     }
 
     /**
@@ -430,14 +316,14 @@ export class PublicAgentChatService {
     /**
      * 转换公开DTO为内部DTO
      */
-    private convertToAgentChatDto(dto: PublicAgentChatDto, agent: Agent): AgentChatDto {
+    public convertToAgentChatDto(dto: AgentChatDto, agent: Agent): AgentChatDto {
         return Object.assign(dto, agent);
     }
 
     /**
      * 通过发布令牌获取完整智能体信息
      */
-    private async getAgentByPublishToken(publishToken: string): Promise<Agent> {
+    public async getAgentByPublishToken(publishToken: string): Promise<Agent> {
         const agent = await this.agentRepository.findOne({
             where: { publishToken, isPublished: true },
         });
@@ -452,7 +338,7 @@ export class PublicAgentChatService {
     /**
      * 检查频率限制
      */
-    private async checkRateLimit(agent: Agent): Promise<void> {
+    public async checkRateLimit(agent: Agent): Promise<void> {
         const rateLimitPerMinute = agent.publishConfig?.rateLimitPerMinute;
 
         if (!rateLimitPerMinute || rateLimitPerMinute <= 0) {
@@ -466,58 +352,6 @@ export class PublicAgentChatService {
     }
 
     /**
-     * 执行API Key认证的对话逻辑
-     */
-    private async performApiKeyChat(agent: Agent, dto: PublicAgentChatDto, apiKey: string) {
-        await this.checkRateLimit(agent);
-        const agentChatDto = this.convertToAgentChatDto(dto, agent);
-        const apiKeyUser = this.createApiKeyUser(apiKey);
-
-        try {
-            const result = await this.agentChatService.handleChat(
-                agent.id,
-                agentChatDto,
-                apiKeyUser,
-                "sync",
-                false,
-            );
-            this.logger.log(`[+] API Key对话完成: ${agent.id} - ${agent.name}`);
-            return result;
-        } catch (error) {
-            this.logger.error(`[!] API Key对话失败: ${error.message}`, error.stack);
-            throw HttpExceptionFactory.business("对话处理失败");
-        }
-    }
-
-    /**
-     * 执行API Key认证的流式对话逻辑
-     */
-    private async performApiKeyChatStream(
-        agent: Agent,
-        dto: PublicAgentChatDto,
-        res: Response,
-        apiKey: string,
-    ) {
-        await this.checkRateLimit(agent);
-        const agentChatDto = this.convertToAgentChatDto(dto, agent);
-        const apiKeyUser = this.createApiKeyUser(apiKey);
-
-        try {
-            return await this.agentChatService.handleChat(
-                agent.id,
-                agentChatDto,
-                apiKeyUser,
-                "stream",
-                false,
-                res,
-            );
-        } catch (error) {
-            this.logger.error(`[!] API Key流式对话失败: ${error.message}`, error.stack);
-            throw HttpExceptionFactory.business(error.message);
-        }
-    }
-
-    /**
      * 为API Key生成固定的匿名标识符
      * 用于区分不同API Key的对话记录
      */
@@ -528,12 +362,12 @@ export class PublicAgentChatService {
     /**
      * 创建基于API Key的匿名用户上下文
      */
-    private createApiKeyUser(apiKey: string): UserPlayground {
+    public createApiKeyUser(apiKey: string): UserPlayground {
         const anonymousIdentifier = this.generateApiKeyIdentifier(apiKey);
 
         return {
-            id: anonymousIdentifier, // 使用匿名标识符作为 ID，这样 isAnonymousUser 逻辑就能正常工作
-            username: `anonymous_api_${apiKey.substring(3, 11)}`, // 以 anonymous_ 开头确保被识别为匿名用户
+            id: anonymousIdentifier,
+            username: `anonymous_api_${apiKey.substring(3, 11)}`,
             isRoot: 0,
             role: {} as any,
             permissions: [],
@@ -545,7 +379,7 @@ export class PublicAgentChatService {
     /**
      * 创建增强的用户对象
      */
-    private createEnhancedUser(accessToken: string, loggedInUser?: UserPlayground): UserPlayground {
+    public createEnhancedUser(accessToken: string, loggedInUser?: UserPlayground): UserPlayground {
         const anonymousIdentifier = this.generateUserIdFromAccessToken(accessToken);
         return loggedInUser
             ? ({ ...loggedInUser, anonymousIdentifier } as UserPlayground)
@@ -603,23 +437,5 @@ export class PublicAgentChatService {
         }
 
         return chatRecord;
-    }
-
-    /**
-     * 记录用户操作日志
-     */
-    private logUserAction(
-        action: string,
-        agentId: string,
-        conversationId: string,
-        accessToken: string,
-        loggedInUser?: UserPlayground,
-        extra?: string,
-    ) {
-        const userInfo = loggedInUser
-            ? `登录用户(${loggedInUser.username})`
-            : `匿名用户(${accessToken.substring(0, 8)}...)`;
-        const extraInfo = extra ? ` - ${extra}` : "";
-        this.logger.log(`[+] ${action}: ${agentId} - ${userInfo} - ${conversationId}${extraInfo}`);
     }
 }

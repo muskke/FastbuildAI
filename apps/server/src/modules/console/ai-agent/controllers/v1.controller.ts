@@ -2,14 +2,21 @@ import { Public } from "@common/decorators";
 import { ConsoleController } from "@common/decorators/controller.decorator";
 import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { PaginationDto } from "@common/dto/pagination.dto";
+import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { PublicAccessTokenGuard } from "@common/guards/public-access-token.guard";
 import { Body, Delete, Get, Param, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { Request, Response } from "express";
 
-import { V1ChatDto } from "../dto/agent.dto";
+import { AgentChatDto } from "../dto/agent.dto";
 import { CreateAgentAnnotationDto, UpdateAgentAnnotationDto } from "../dto/agent-annotation.dto";
+import {
+    CreatorBillingStrategy,
+    SmartUserBillingStrategy,
+    UserBillingStrategy,
+} from "../interfaces/billing-strategy.interface";
 import { AgentService } from "../services/agent.service";
 import { AgentAnnotationService } from "../services/agent-annotation.service";
+import { AgentChatService } from "../services/agent-chat.service";
 import { PublicAgentChatService } from "../services/v1-agent-chat.service";
 
 /**
@@ -20,6 +27,7 @@ import { PublicAgentChatService } from "../services/v1-agent-chat.service";
 export class V1Controller {
     constructor(
         private readonly agentService: AgentService,
+        private readonly agentChatService: AgentChatService,
         private readonly publicAgentChatService: PublicAgentChatService,
         private readonly annotationService: AgentAnnotationService,
     ) {}
@@ -63,30 +71,48 @@ export class V1Controller {
     @UseGuards(PublicAccessTokenGuard)
     async chat(
         @Param("publishToken") publishToken: string,
-        @Body() dto: V1ChatDto,
+        @Body() dto: AgentChatDto,
         @Res() res: Response,
         @Req() req: Request,
     ) {
-        const { responseMode = "streaming", ...chatDto } = dto;
+        const agent = await this.publicAgentChatService.getAgentByPublishToken(publishToken);
+        await this.publicAgentChatService.checkRateLimit(agent);
 
-        if (responseMode === "streaming") {
-            // 流式响应
-            return this.publicAgentChatService.chatStreamByAccessToken(
-                publishToken,
-                req.accessToken!,
-                chatDto,
-                res,
-                req.user,
-            );
-        } else {
-            // 阻塞响应
-            const result = await this.publicAgentChatService.chatByAccessToken(
-                publishToken,
-                req.accessToken!,
-                chatDto,
-                req.user,
-            );
-            return res.json(result);
+        const agentChatDto = this.publicAgentChatService.convertToAgentChatDto(dto, agent);
+        const user = this.publicAgentChatService.createEnhancedUser(req.accessToken, req.user);
+
+        // 根据扣费模式选择计费策略
+        const billingStrategy =
+            dto.billingMode === "creator"
+                ? new CreatorBillingStrategy()
+                : dto.billingMode === "user"
+                  ? new UserBillingStrategy()
+                  : new SmartUserBillingStrategy();
+
+        try {
+            if (dto.responseMode === "streaming") {
+                // 流式响应
+                return await this.agentChatService.handleChat(
+                    agent.id,
+                    agentChatDto,
+                    user,
+                    "streaming",
+                    billingStrategy,
+                    res,
+                );
+            } else {
+                // 阻塞响应
+                const result = await this.agentChatService.handleChat(
+                    agent.id,
+                    agentChatDto,
+                    user,
+                    "blocking",
+                    billingStrategy,
+                );
+                return res.json(result);
+            }
+        } catch (error) {
+            throw HttpExceptionFactory.business(error.message);
         }
     }
 
@@ -100,21 +126,37 @@ export class V1Controller {
     @Post("chat")
     @Public()
     @UseGuards(PublicAccessTokenGuard)
-    async apiChat(@Body() dto: V1ChatDto, @Res() res: Response, @Req() req: Request) {
+    async apiChat(@Body() dto: AgentChatDto, @Res() res: Response, @Req() req: Request) {
         const { responseMode = "streaming", ...chatData } = dto;
+
+        if (!req.accessToken) {
+            throw HttpExceptionFactory.unauthorized("API密钥不能为空");
+        }
+
+        const agent = await this.agentService.getAgentByApiKey(req.accessToken);
+
+        await this.publicAgentChatService.checkRateLimit(agent);
+        const agentChatDto = this.publicAgentChatService.convertToAgentChatDto(dto, agent);
+        const apiKeyUser = this.publicAgentChatService.createApiKeyUser(req.accessToken);
 
         if (responseMode === "streaming") {
             // 流式响应
-            return this.publicAgentChatService.chatStreamWithApiKey(
-                req.accessToken!,
-                chatData,
+            return await this.agentChatService.handleChat(
+                agent.id,
+                agentChatDto,
+                apiKeyUser,
+                "streaming",
+                new CreatorBillingStrategy(),
                 res,
             );
         } else {
             // 阻塞响应
-            const result = await this.publicAgentChatService.chatWithApiKey(
-                req.accessToken!,
-                chatData,
+            const result = await this.agentChatService.handleChat(
+                agent.id,
+                agentChatDto,
+                apiKeyUser,
+                "blocking",
+                new CreatorBillingStrategy(),
             );
             return res.json(result);
         }
@@ -373,9 +415,6 @@ export class V1Controller {
         @Body() dto: UpdateAgentAnnotationDto,
         @Req() req: Request,
     ) {
-        // 获取智能体信息
-        const agent = await this.agentService.getPublicAgentByToken(publishToken);
-
         // 创建匿名用户上下文
         const anonymousUser = {
             id: req.accessToken!,

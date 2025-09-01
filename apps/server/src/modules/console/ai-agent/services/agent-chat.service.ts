@@ -35,6 +35,7 @@ import {
     MessageMetadata,
     TokenUsage,
 } from "../interfaces/agent-config.interface";
+import { BillingResult, BillingStrategy } from "../interfaces/billing-strategy.interface";
 import { AgentService } from "./agent.service";
 import { AgentAnnotationService } from "./agent-annotation.service";
 import { AgentChatRecordService } from "./agent-chat-record.service";
@@ -754,21 +755,28 @@ export class AgentChatService extends BaseAgentChatService {
     }
 
     /**
-     * Unified chat handler for both synchronous and streaming responses
+     * 统一的对话处理器，支持同步和流式响应
+     * @param agentId 智能体ID
+     * @param dto 对话DTO
+     * @param user 当前用户信息
+     * @param responseMode 响应模式
+     * @param billingStrategy 计费策略
+     * @param res 响应对象（流式模式必需）
+     * @returns 对话响应结果
      */
     async handleChat(
         agentId: string,
         dto: AgentChatDto,
         user: UserPlayground,
-        responseMode: "sync" | "stream",
-        isPublic: boolean,
+        responseMode: "blocking" | "streaming",
+        billingStrategy: BillingStrategy,
         res?: Response,
     ): Promise<AgentChatResponse | void> {
-        if (responseMode === "stream" && !res) {
+        if (responseMode === "streaming" && !res) {
             throw new Error("Response object is required for streaming mode");
         }
 
-        if (responseMode === "stream") {
+        if (responseMode === "streaming") {
             res!.setHeader("Content-Type", "text/event-stream");
             res!.setHeader("Cache-Control", "no-cache");
             res!.setHeader("Connection", "keep-alive");
@@ -780,26 +788,6 @@ export class AgentChatService extends BaseAgentChatService {
 
         if (!agentInfo) {
             throw HttpExceptionFactory.notFound("智能体不存在");
-        }
-
-        let owner: User;
-
-        if (!isPublic) {
-            owner = await this.userRepository.findOne({
-                where: { id: user.id },
-            });
-
-            if (!owner) {
-                throw HttpExceptionFactory.notFound("用户不存在");
-            }
-        } else {
-            owner = await this.userRepository.findOne({
-                where: { id: agentInfo.createBy },
-            });
-
-            if (!owner) {
-                throw HttpExceptionFactory.notFound("用户不存在");
-            }
         }
 
         const startTime = Date.now();
@@ -831,15 +819,25 @@ export class AgentChatService extends BaseAgentChatService {
                 );
             }
 
-            if (agentInfo.billingConfig.price > owner.power) {
+            // 使用计费策略确定谁来承担费用
+            const billingResult = await billingStrategy.determineBillTo(
+                agentInfo as Agent,
+                user,
+                this.userRepository,
+            );
+
+            if (
+                billingResult.billToUser &&
+                agentInfo.billingConfig?.price > billingResult.billToUser.power
+            ) {
                 throw HttpExceptionFactory.forbidden(
-                    `${isPublic ? "分享者" : ""}算力不足，请充值后重试`,
+                    `${billingResult.billingContext}不足，请充值后重试`,
                 );
             }
 
             const quickCommandResult = this.handleQuickCommand(dto, lastUserMessage);
             if (quickCommandResult.matched && quickCommandResult.response) {
-                if (responseMode === "stream") {
+                if (responseMode === "streaming") {
                     await this.handleStreamQuickCommand(
                         dto,
                         conversationId || conversationRecord?.id || "",
@@ -886,7 +884,7 @@ export class AgentChatService extends BaseAgentChatService {
 
                 if (annotationMatch.matched && annotationMatch.annotation) {
                     this.logger.log(
-                        `[标注命中${responseMode === "stream" ? "-流式" : ""}] 问题: "${updatedLastUserMessage.content}" -> 答案: "${annotationMatch.annotation.answer}"`,
+                        `[标注命中${responseMode === "streaming" ? "-流式" : ""}] 问题: "${updatedLastUserMessage.content}" -> 答案: "${annotationMatch.annotation.answer}"`,
                     );
 
                     const annotations = {
@@ -921,7 +919,7 @@ export class AgentChatService extends BaseAgentChatService {
                         );
                     }
 
-                    if (responseMode === "stream") {
+                    if (responseMode === "streaming") {
                         if (!conversationId && conversationRecord) {
                             conversationId = conversationRecord.id;
                             res!.write(
@@ -973,7 +971,7 @@ export class AgentChatService extends BaseAgentChatService {
             if (
                 shouldIncludeReferences &&
                 retrievalResults.length > 0 &&
-                responseMode === "stream"
+                responseMode === "streaming"
             ) {
                 const referenceSources = this.formatReferenceSources(
                     retrievalResults,
@@ -984,7 +982,7 @@ export class AgentChatService extends BaseAgentChatService {
                 );
             }
 
-            if (!conversationId && conversationRecord && responseMode === "stream") {
+            if (!conversationId && conversationRecord && responseMode === "streaming") {
                 conversationId = conversationRecord.id;
                 res!.write(
                     `data: ${JSON.stringify({ type: "conversation_id", data: conversationId })}\n\n`,
@@ -1001,7 +999,7 @@ export class AgentChatService extends BaseAgentChatService {
             let tokenUsage: TokenUsage | undefined;
             let rawResponse: AIRawResponse | undefined;
 
-            if (responseMode === "stream") {
+            if (responseMode === "streaming") {
                 const stream = await client.chat.stream({
                     model: modelName,
                     messages: messages as any,
@@ -1076,7 +1074,14 @@ export class AgentChatService extends BaseAgentChatService {
                     );
                 }
 
-                await this.deductAgentChatPower(agentInfo, owner, user, model, isPublic);
+                // 执行扣费逻辑
+                await this.deductAgentChatPower(
+                    agentInfo,
+                    billingResult.billToUser,
+                    user,
+                    model,
+                    conversationRecord,
+                );
 
                 if (finalConfig.showContext) {
                     const completeContext = [
@@ -1138,7 +1143,13 @@ export class AgentChatService extends BaseAgentChatService {
                 }
 
                 // 执行扣费逻辑
-                await this.deductAgentChatPower(agentInfo, owner, user, model, isPublic);
+                await this.deductAgentChatPower(
+                    agentInfo,
+                    billingResult.billToUser,
+                    user,
+                    model,
+                    conversationRecord,
+                );
 
                 result = {
                     conversationId: conversationRecord?.id || null,
@@ -1171,7 +1182,7 @@ export class AgentChatService extends BaseAgentChatService {
                 );
             }
 
-            if (responseMode === "stream") {
+            if (responseMode === "streaming") {
                 try {
                     res!.write(
                         `data: ${JSON.stringify({
@@ -1350,55 +1361,65 @@ export class AgentChatService extends BaseAgentChatService {
     /**
      * 扣除智能体对话算力
      * @param agentInfo 智能体信息
-     * @param owner 算力扣除的用户
+     * @param billToUser 承担费用的用户（null表示不扣费）
      * @param user 当前操作用户
      * @param model 使用的模型
-     * @param isPublic 是否是公开链接访问
+     * @param conversationRecord 对话记录（用于记录消耗算力）
      */
     private async deductAgentChatPower(
         agentInfo: Partial<Agent>,
-        owner: User,
+        billToUser: User | null,
         user: UserPlayground,
         model: any,
-        isPublic: boolean,
+        conversationRecord?: AgentChatRecord | null,
     ): Promise<void> {
+        // 如果没有指定扣费用户，则跳过扣费
+        if (!billToUser) {
+            return;
+        }
+
         if (agentInfo.billingConfig.price && agentInfo.billingConfig.price > 0) {
             try {
                 // 计算需要扣除的算力
                 const { price } = agentInfo.billingConfig;
                 await this.userRepository.manager.transaction(async (entityManager) => {
                     // 计算扣除后的算力，确保不会为负数
-                    const newPower = Math.max(0, owner.power - price);
+                    const newPower = Math.max(0, billToUser.power - price);
                     // 实际扣除的算力（可能小于powerToDeduct，如果用户算力不足）
-                    const actualDeducted = owner.power - newPower;
+                    const actualDeducted = billToUser.power - newPower;
 
-                    await entityManager.update(User, owner.id, {
+                    await entityManager.update(User, billToUser.id, {
                         power: newPower,
                     });
 
                     // 记录算力变动日志
+                    const isAnonymous = this.isAnonymousUser(user);
                     await this.accountLogService.recordWithTransaction(
                         entityManager,
-                        owner.id,
-                        isPublic
+                        billToUser.id,
+                        isAnonymous
                             ? ACCOUNT_LOG_TYPE.AGENT_GUEST_CHAT_DEC
                             : ACCOUNT_LOG_TYPE.AGENT_CHAT_DEC,
                         ACTION.DEC,
                         actualDeducted,
                         "", // 关联单号
                         null,
-                        isPublic
-                            ? `游客：${user.username}调用（${model.name}）`
-                            : `用户：${user.username}调用（${model.name}）`,
+                        `${isAnonymous ? "匿名用户" : "用户"}：${user.username} 调用（${model.name}）`,
                         {
                             type: ACCOUNT_LOG_SOURCE.AGENT_CHAT,
                             source: agentInfo.id,
                         },
                     );
 
-                    this.logger.debug(
-                        `${isPublic ? "游客" : "用户"} ${owner.id} 对话扣除算力 ${actualDeducted} 成功`,
-                    );
+                    this.logger.debug(`用户 ${billToUser.id} 对话扣除算力 ${actualDeducted} 成功`);
+
+                    // 扣费成功后，记录到对话记录中
+                    if (conversationRecord && actualDeducted > 0) {
+                        await this.agentChatRecordService.incrementConsumedPower(
+                            conversationRecord.id,
+                            actualDeducted,
+                        );
+                    }
                 });
             } catch (error) {
                 this.logger.error(`扣除用户算力失败: ${error.message}`, error.stack);
