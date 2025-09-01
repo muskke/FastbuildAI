@@ -1,4 +1,7 @@
 {
+    "common": {
+        "power": "Power"
+    },
     "search": {
         "placeholder": "Search chat title or content..."
     },
@@ -9,7 +12,8 @@
         "title": "Conversation title",
         "userName": "Username",
         "messageCount": "Number of conversations",
-        "totalTokens": "Token consumption",
+        "totalTokens": "Token usage",
+        "totalPower": "Power usage",
         "updatedAt": "Update time",
         "action": "operate"
     },
