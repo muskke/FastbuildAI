@@ -1,4 +1,5 @@
 import { ConsoleController } from "@common/decorators/controller.decorator";
+import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { Permissions } from "@common/decorators/permissions.decorator";
 import { Playground } from "@common/decorators/playground.decorator";
 import { UserPlayground } from "@common/interfaces/context.interface";
@@ -91,6 +92,7 @@ export class TeamMemberController {
      * 返回团队成员列表，并标记当前用户是否可以操作每个成员
      */
     @Get("")
+    @BuildFileUrl(["**.avatar"])
     @Permissions({
         code: "list",
         name: "查询团队成员列表",

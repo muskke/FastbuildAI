@@ -38,7 +38,7 @@ export class HealthController extends BaseController {
      * @returns 应用的完整URL
      */
     private getAppUrl(): string {
-        const port = this.configService.get<number>("SERVER_PORT", 4090);
+        const port = process.env.SERVER_PORT || 4090;
         const host = "localhost";
         return `http://${host}:${port}`;
     }

@@ -323,7 +323,7 @@ export class UserTokenService extends BaseService<UserToken> {
             }
 
             // 否则从环境变量中读取
-            const jwtExpiresIn = this.configService.get<string>("JWT_EXPIRES_IN", "1d");
+            const jwtExpiresIn = process.env.JWT_EXPIRES_IN || "1d";
 
             // 将时间字符串转换为秒数
             const expiresIn = this.parseTimeToSeconds(jwtExpiresIn);

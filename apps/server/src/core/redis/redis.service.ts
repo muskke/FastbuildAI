@@ -24,12 +24,12 @@ export class RedisService implements OnModuleDestroy {
     private async initRedisClient() {
         this.redisClient = createClient({
             socket: {
-                host: this.configService.get("REDIS_HOST", "localhost"),
-                port: this.configService.get<number>("REDIS_PORT", 6379),
+                host: process.env.REDIS_HOST || "localhost",
+                port: Number(process.env.REDIS_PORT) || 6379,
             },
-            username: this.configService.get("REDIS_USERNAME", ""),
-            password: this.configService.get("REDIS_PASSWORD", ""),
-            database: this.configService.get<number>("REDIS_DB", 0),
+            username: process.env.REDIS_USERNAME || "",
+            password: process.env.REDIS_PASSWORD || "",
+            database: Number(process.env.REDIS_DB) || 0,
         });
 
         this.redisClient.on("error", (err) => {

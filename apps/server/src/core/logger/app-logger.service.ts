@@ -51,14 +51,13 @@ export class AppLoggerService implements LoggerService {
         // 从配置服务读取日志级别和文件配置，如果没有配置服务，则使用默认值
         if (this.configService) {
             // 读取日志级别
-            const configLevels = this.configService.get<string>("LOG_LEVELS");
+            const configLevels = process.env.LOG_LEVELS;
             if (configLevels) {
                 this.logLevels = configLevels.split(",") as LogLevel[];
             }
 
             // 读取是否启用文件日志
-            this.isFileLogEnabled =
-                this.configService.get<string>("LOG_TO_FILE", "false") === "true";
+            this.isFileLogEnabled = process.env.LOG_TO_FILE === "true";
         } else {
             // 默认不启用文件日志
             this.isFileLogEnabled = false;
