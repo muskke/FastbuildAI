@@ -5,6 +5,7 @@ import { AiConsoleModule } from "@modules/console/ai/ai.module";
 import { AiMcpServer } from "@modules/console/ai/entities/ai-mcp-server.entity";
 import { AiUserMcpServer } from "@modules/console/ai/entities/ai-user-mcp-server.entity";
 import { AccountLog } from "@modules/console/finance/entities/account-log.entity";
+import { KeyManagerModule } from "@modules/console/key-manager/key-manager.module";
 import { AiAgentModule } from "@modules/web/ai-agent/ai-agent.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -28,6 +29,7 @@ import { UserMcpServerService } from "./services/user-mcp-server.service";
         AiAgentModule,
         DictModule,
         AccountLogModule,
+        KeyManagerModule,
         TypeOrmModule.forFeature([AiMcpServer, AiUserMcpServer, User]),
     ],
     controllers: [

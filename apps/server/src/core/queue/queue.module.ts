@@ -1,4 +1,5 @@
 import { User } from "@common/modules/auth/entities/user.entity";
+import { KeyManagerModule } from "@modules/console/key-manager/key-manager.module";
 import { BullModule } from "@nestjs/bull";
 import { forwardRef, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
@@ -56,6 +57,7 @@ import { QueueService } from "./queue.service";
         ),
         // 导入AI模块（用于AiModelService）
         AiConsoleModule,
+        KeyManagerModule,
         // 导入数据库实体
         TypeOrmModule.forFeature([User, Datasets, DatasetsDocument, DatasetsSegments]),
         // 导入 AiDatasetsModule 以便注入 DatasetStatusService

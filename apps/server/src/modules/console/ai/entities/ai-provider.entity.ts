@@ -64,16 +64,6 @@ export class AiProvider {
     description?: string;
 
     /**
-     * API密钥
-     */
-    @Column({
-        type: "text",
-        nullable: true,
-        comment: "供应商API密钥",
-    })
-    apiKey?: string;
-
-    /**
      * 绑定的密钥配置
      */
     @Column({
@@ -83,16 +73,6 @@ export class AiProvider {
         comment: "绑定的密钥配置",
     })
     bindKeyConfig?: string;
-
-    /**
-     * API基础URL
-     */
-    @Column({
-        type: "text",
-        nullable: true,
-        comment: "API代理URL地址",
-    })
-    baseUrl?: string;
 
     /**
      * 供应商图标URL

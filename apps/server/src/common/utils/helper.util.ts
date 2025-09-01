@@ -529,5 +529,5 @@ export const getProviderKeyConfig = (key: string, config: Record<string, string>
         throw HttpExceptionFactory.business(`${key} 键内容为空`, BusinessCode.PARAM_INVALID);
     }
 
-    return value;
+    return value.trim();
 };
