@@ -182,12 +182,9 @@ const openEditModal = async (conversation: any): Promise<void> => {
 // 更新对话标题
 const updateConversationTitle = async (conversationId: string, title: string): Promise<void> => {
     try {
-        await apiUpdateConversation(
-            props.publishToken,
-            props.accessToken,
-            conversationId,
-            { title },
-        );
+        await apiUpdateConversation(props.publishToken, props.accessToken, conversationId, {
+            title,
+        });
         await refreshNuxtData(
             `public-agent-conversations-${props.publishToken}-${props.accessToken}`,
         );
@@ -202,11 +199,7 @@ const deleteConversation = async (conversation: AiConversation) => {
     if (!props.accessToken) return;
 
     try {
-        await apiDeleteConversation(
-            props.publishToken,
-            props.accessToken,
-            conversation.id,
-        );
+        await apiDeleteConversation(props.publishToken, props.accessToken, conversation.id);
         await refreshNuxtData(
             `public-agent-conversations-${props.publishToken}-${props.accessToken}`,
         );

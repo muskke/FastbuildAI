@@ -16,8 +16,8 @@ import {
     apiGetMessages,
 } from "@/services/web/ai-agent-publish";
 
-import AgentAnnotationModal from "../../console/ai-agent/_components/logs/annotation-modal.vue";
-import PublicAgentChatsList from "./_components/public-agent-chats-list.vue";
+import AgentAnnotationModal from "../../../console/ai-agent/_components/logs/annotation-modal.vue";
+import PublicAgentChatsList from "./public-agent-chats-list.vue";
 
 const { t } = useI18n();
 const isMobile = useMediaQuery("(max-width: 768px)");
@@ -414,8 +414,6 @@ useHead({
         { rel: "apple-touch-icon", href: computed(() => agent.value?.avatar || "/favicon.ico") },
     ],
 });
-
-definePageMeta({ layout: "full-screen", auth: false });
 </script>
 
 <template>
