@@ -5,7 +5,7 @@ import { PaginationDto } from "@common/dto/pagination.dto";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Raw, Repository } from "typeorm";
+import { Like, Raw, Repository } from "typeorm";
 
 import {
     CreateKeyConfigDto,
@@ -129,7 +129,7 @@ export class KeyConfigService extends BaseService<KeyConfig> {
 
         // 配置名称模糊查询
         if (name) {
-            whereConditions.name = this.ilike("name", name);
+            whereConditions.name = Like(`%${name}%`);
         }
 
         // 模板ID精确查询
@@ -247,6 +247,37 @@ export class KeyConfigService extends BaseService<KeyConfig> {
     async checkAndUpdateExpiredConfigs(): Promise<number> {
         // 状态改为布尔值后，不再有过期状态的概念
         return 0;
+    }
+
+    /**
+     * 获取配置的键值对
+     * @param id 配置ID
+     * @returns 配置的键值对对象
+     */
+    async getConfigKeyValuePairs(id: string): Promise<Record<string, string>> {
+        const config = await this.keyConfigRepository.findOne({
+            where: { id },
+            select: ["fieldValues"],
+        });
+
+        if (!config) {
+            throw HttpExceptionFactory.notFound("密钥配置不存在");
+        }
+
+        // 将字段配置转换为键值对
+        const keyValuePairs: Record<string, string> = {};
+
+        if (config.fieldValues && Array.isArray(config.fieldValues)) {
+            config.fieldValues.forEach((field) => {
+                if (field.name && field.value !== undefined) {
+                    // 如果字段被加密，先解密
+                    const value = field.encrypted ? this.decryptValue(field.value) : field.value;
+                    keyValuePairs[field.name] = value;
+                }
+            });
+        }
+
+        return keyValuePairs;
     }
 
     /**

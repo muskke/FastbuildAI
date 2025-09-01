@@ -386,7 +386,7 @@ export class UserService extends BaseService<User> {
                     actualChangeAmount,
                     "", // 关联单号
                     currentUser.id, // 关联用户ID
-                    `系统手动操作，操作金额：${dto.amount}`,
+                    "系统调整用户算力",
                     {
                         type: ACCOUNT_LOG_SOURCE.SYSTEM,
                         source: "系统操作",

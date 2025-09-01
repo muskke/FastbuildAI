@@ -57,6 +57,7 @@ export class AiChatMessageController extends BaseController {
     async chat(@Body() dto: ChatRequestDto, @Playground() user: UserPlayground) {
         try {
             let conversationId = dto.conversationId;
+            let userConsumedPower = 0;
 
             // 如果需要保存对话记录（默认保存，除非明确设置为false）
             if (dto.saveConversation !== false) {
@@ -80,6 +81,7 @@ export class AiChatMessageController extends BaseController {
                         role: this.mapChatRoleToMessageRole(userMessage.role),
                         content: userMessage.content,
                         messageType: MessageType.TEXT,
+                        userConsumedPower: 0,
                     });
                 }
             }
@@ -326,6 +328,11 @@ export class AiChatMessageController extends BaseController {
                 }
             } while (hasToolCalls); // 继续循环直到没有更多工具调用
 
+            userConsumedPower = Math.ceil(
+                (finalResponse.usage.total_tokens / model.billingRule.tokens) *
+                    model.billingRule.power,
+            );
+
             // 如果需要保存对话记录，保存AI响应
             if (
                 dto.saveConversation !== false &&
@@ -343,6 +350,7 @@ export class AiChatMessageController extends BaseController {
                         completion_tokens: finalResponse.usage?.completion_tokens,
                         total_tokens: finalResponse.usage?.total_tokens,
                     },
+                    userConsumedPower,
                     rawResponse: finalResponse,
                     mcpToolCalls: mcpToolCalls.length > 0 ? mcpToolCalls : null,
                 });
@@ -384,13 +392,12 @@ export class AiChatMessageController extends BaseController {
                     const { power, tokens } = model.billingRule;
                     if (power > 0 && tokens > 0) {
                         const totalTokens = finalResponse.usage.total_tokens;
-                        const powerToDeduct = Math.ceil((totalTokens / tokens) * power);
 
-                        if (powerToDeduct > 0) {
+                        if (userConsumedPower > 0) {
                             await this.userRepository.manager.transaction(async (entityManager) => {
                                 // 计算扣除后的算力，确保不会为负数
-                                const newPower = Math.max(0, userInfo.power - powerToDeduct);
-                                // 实际扣除的算力（可能小于powerToDeduct，如果用户算力不足）
+                                const newPower = Math.max(0, userInfo.power - userConsumedPower);
+                                // 实际扣除的算力（可能小于userConsumedPower，如果用户算力不足）
                                 const actualDeducted = userInfo.power - newPower;
 
                                 await entityManager.update(User, user.id, {
@@ -418,9 +425,9 @@ export class AiChatMessageController extends BaseController {
                                 );
 
                                 // 如果实际扣除的算力小于应扣除的算力，记录日志
-                                if (actualDeducted < powerToDeduct) {
+                                if (actualDeducted < userConsumedPower) {
                                     this.logger.warn(
-                                        `用户 ${user.id} 算力不足，应扣除 ${powerToDeduct}，实际扣除 ${actualDeducted}，当前算力为0`,
+                                        `用户 ${user.id} 算力不足，应扣除 ${userConsumedPower}，实际扣除 ${actualDeducted}，当前算力为0`,
                                     );
                                 }
                             });
@@ -501,6 +508,7 @@ export class AiChatMessageController extends BaseController {
 
         let conversationId = dto.conversationId;
         let fullResponse = "";
+        let userConsumedPower = 0;
         const tools: ChatCompletionFunctionTool[] = [];
         const mcpServers: McpServer[] = [];
         const toolToServerMap = new Map<
@@ -547,6 +555,7 @@ export class AiChatMessageController extends BaseController {
                         modelId: dto.modelId,
                         role: this.mapChatRoleToMessageRole(userMessage.role),
                         content: userMessage.content,
+                        userConsumedPower: 0,
                         messageType: MessageType.TEXT,
                     });
                 }
@@ -929,6 +938,11 @@ export class AiChatMessageController extends BaseController {
                 }
             } while (hasToolCalls); // 继续循环直到没有更多工具调用
 
+            userConsumedPower = Math.ceil(
+                (finalChatCompletion.usage.total_tokens / model.billingRule.tokens) *
+                    model.billingRule.power,
+            );
+
             // 如果需要保存对话记录，保存AI完整响应
             if (dto.saveConversation !== false && conversationId && fullResponse) {
                 // 打印AI完整回复
@@ -951,6 +965,7 @@ export class AiChatMessageController extends BaseController {
                     role: MessageRole.ASSISTANT,
                     content: fullResponse,
                     messageType: MessageType.TEXT,
+                    userConsumedPower,
                     tokens: {
                         prompt_tokens: finalChatCompletion.usage?.prompt_tokens,
                         completion_tokens: finalChatCompletion.usage?.completion_tokens,
@@ -999,13 +1014,10 @@ export class AiChatMessageController extends BaseController {
                     // 计算需要扣除的算力
                     const { power, tokens } = model.billingRule;
                     if (power > 0 && tokens > 0) {
-                        const totalTokens = finalChatCompletion.usage.total_tokens;
-                        const powerToDeduct = Math.ceil((totalTokens / tokens) * power);
-
-                        if (powerToDeduct > 0) {
+                        if (userConsumedPower > 0) {
                             await this.userRepository.manager.transaction(async (entityManager) => {
                                 // 计算扣除后的算力，确保不会为负数
-                                const newPower = Math.max(0, userInfo.power - powerToDeduct);
+                                const newPower = Math.max(0, userInfo.power - userConsumedPower);
                                 // 实际扣除的算力（可能小于powerToDeduct，如果用户算力不足）
                                 const actualDeducted = userInfo.power - newPower;
 
@@ -1022,7 +1034,7 @@ export class AiChatMessageController extends BaseController {
                                     actualDeducted,
                                     "", // 关联单号
                                     null, // 关联用户ID
-                                    `基本对话消耗（模型：${model.name}，Token数：${totalTokens}）`, // 备注
+                                    `基本对话消耗（模型：${model.name}，Token数：${finalChatCompletion.usage.total_tokens}）`, // 备注
                                     {
                                         type: ACCOUNT_LOG_SOURCE.CHAT,
                                         source: "基本对话",
@@ -1034,9 +1046,9 @@ export class AiChatMessageController extends BaseController {
                                 );
 
                                 // 如果实际扣除的算力小于应扣除的算力，记录日志
-                                if (actualDeducted < powerToDeduct) {
+                                if (actualDeducted < finalChatCompletion.usage.total_tokens) {
                                     this.logger.warn(
-                                        `用户 ${user.id} 算力不足，应扣除 ${powerToDeduct}，实际扣除 ${actualDeducted}，当前算力为0`,
+                                        `用户 ${user.id} 算力不足，应扣除 ${finalChatCompletion.usage.total_tokens}，实际扣除 ${actualDeducted}，当前算力为0`,
                                     );
                                 }
                             });
@@ -1085,6 +1097,7 @@ export class AiChatMessageController extends BaseController {
                     completion_tokens: 0,
                     total_tokens: 0,
                 },
+                userConsumedPower: 0,
                 rawResponse: error,
                 mcpToolCalls: mcpToolCalls.length > 0 ? mcpToolCalls : null,
             });

@@ -152,6 +152,7 @@ onMounted(() => getLists());
             <UCheckbox
                 v-model="searchForm.showAll"
                 :label="$t('console-ai-datasets.dataset.allDatasets')"
+                @change="getLists"
             />
         </div>
 

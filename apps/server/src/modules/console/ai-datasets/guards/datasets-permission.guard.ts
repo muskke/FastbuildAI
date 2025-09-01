@@ -1,5 +1,6 @@
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { getContextPlayground } from "@common/utils/helper.util";
+import { isEnabled } from "@common/utils/is.util";
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -89,6 +90,11 @@ export class DatasetPermissionGuard implements CanActivate {
         const { request, user } = getContextPlayground(context);
         if (!user) {
             throw HttpExceptionFactory.unauthorized("未授权访问");
+        }
+
+        // 超级管理员直接通过，不需要权限检查
+        if (isEnabled(user.isRoot)) {
+            return true;
         }
 
         const {

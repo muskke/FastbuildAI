@@ -96,6 +96,7 @@ const groups = computed(() => [
 // 重置表单
 const resetForm = () => {
     selectedUsers.value = [];
+    userRoles.value = {};
     formData.note = "";
     searchResults.value = [];
     searchValue.value = "";
@@ -109,9 +110,12 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
             return;
         }
 
-        const members = selectedUsers.value.map((user) => ({
-            userId: user.id,
-            role: user.role as unknown as TeamRole,
+        // 去重并使用角色状态
+        const uniqueUserIds = [...new Set(selectedUsers.value.map((user) => user.id))];
+
+        const members = uniqueUserIds.map((userId) => ({
+            userId,
+            role: userRoles.value[userId] || "viewer",
             note: formData.note || undefined,
         }));
 
@@ -132,6 +136,9 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
         console.error(t("console-ai-datasets.members.addModal.addMemberFailedLog"), error);
     }
 });
+
+// 用户角色状态管理（独立于选择状态）
+const userRoles = ref<Record<string, TeamRole>>({});
 
 // 关闭弹窗
 const handleClose = () => {
@@ -156,14 +163,14 @@ watch(
         v-model="isOpen"
         :title="t('console-ai-datasets.members.addModal.title')"
         :description="t('console-ai-datasets.members.addModal.description')"
-        :ui="{ content: 'max-w-2xl' }"
+        :ui="{ content: 'max-w-xl' }"
         @close="handleClose"
     >
         <UCommandPalette
             v-model:search-term="searchValue"
             v-model="selectedUsers"
             :groups="groups"
-            class="min-h-64 pt-4"
+            class="min-h-72 pt-4"
             :multiple="true"
             :ui="{ itemTrailingIcon: 'px-6 text-green-500' }"
             :empty-state="t('console-ai-datasets.members.addModal.emptyState')"
@@ -172,10 +179,11 @@ watch(
             <template #item-trailing="{ item }">
                 <div class="flex items-center gap-2">
                     <USelect
-                        v-model="item.role"
+                        v-model="userRoles[item.id]"
                         :items="roleOptions"
                         label-key="label"
                         value-key="value"
+                        :placeholder="'viewer'"
                         @click.stop
                     />
                     <UInput

@@ -508,3 +508,26 @@ export function buildWhere<T extends Record<string, any> = Record<string, any>>(
 
     return result;
 }
+
+/**
+ * 获取供应商密钥配置
+ * @param key 键名
+ * @param config 配置对象
+ * @returns 配置值
+ * @throws 当键不存在或值为空时抛出异常
+ */
+export const getProviderKeyConfig = (key: string, config: Record<string, string>): string => {
+    // 检查键是否存在
+    if (!(key in config)) {
+        throw HttpExceptionFactory.business(`${key} 字段不存在`, BusinessCode.PARAM_MISSING);
+    }
+
+    const value = config[key];
+
+    // 检查值是否为空
+    if (!value || value.trim() === "") {
+        throw HttpExceptionFactory.business(`${key} 键内容为空`, BusinessCode.PARAM_INVALID);
+    }
+
+    return value;
+};
