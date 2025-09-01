@@ -210,8 +210,11 @@ const handleSubmit = () => {
     emits("submit", formData, props.id);
 };
 
-onMounted(() => {
-    props.id && fetchDetail();
+onMounted(async () => {
+    if (props.id) {
+        await fetchDetail();
+        addField();
+    }
 });
 </script>
 <template>
@@ -338,7 +341,7 @@ onMounted(() => {
                     </template>
                     <template #action-cell="{ row }">
                         <UButton
-                            v-if="row.index !== formData.fieldConfig.length - 1"
+                            v-if="row.index !== formData.fieldConfig.length - 1 || props.id"
                             class="cursor-pointer px-3"
                             icon="i-tabler-trash"
                             color="error"
