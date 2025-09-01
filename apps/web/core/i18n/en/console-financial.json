@@ -5,6 +5,8 @@
         "rechargeIncreasePower": "Recharge Power",
         "rechargeGiftPower": "Bonus Power",
         "rechargeRefundPower": "Refunded Power",
+        "systemIncreasePower": "The system increases computing power",
+        "systemDecreasePower": "The system deducts computing power",
         "table": {
             "userNo": "User ID",
             "nickname": "Nickname",
@@ -12,7 +14,8 @@
             "leftAmount": "Balance",
             "accountTypeDesc": "Type",
             "associationUser": "Admin",
-            "createdAt": "Time"
+            "createdAt": "Time",
+            "consumeSourceDesc": "source"
         }
     },
     "financialCenter": {

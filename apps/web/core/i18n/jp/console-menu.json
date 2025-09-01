@@ -39,6 +39,11 @@
         },
         "update": "更新"
     },
+    "apiKeyManage": {
+        "title": "キー管理",
+        "apiKeyType": "キーの種類",
+        "apiKeyList": "キーのリスト"
+    },
     "datasets": {
         "title": "ナレッジベース",
         "retry": "再試行",

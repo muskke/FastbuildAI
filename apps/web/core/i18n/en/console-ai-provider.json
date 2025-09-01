@@ -6,6 +6,7 @@
         "basicInfo": "Basic Info",
         "name": "Provider Name",
         "namePlaceholder": "Enter provider name",
+        "nameRequired": "Please enter the vendor name",
         "nameHelp": "Display name (keep it concise)",
         "provider": "Provider ID",
         "providerPlaceholder": "E.g. openai, anthropic",
@@ -130,6 +131,7 @@
         "noModels": "No models",
         "setDefault": "Set Default",
         "modelTypeFilter": "Filter by type",
+        "batchEditTitle": "Batch edit AI models",
         "form": {
             "name": "Model Name",
             "namePlaceholder": "Enter model name",
@@ -158,7 +160,17 @@
             "basicInfoTitle": "Basic Info",
             "basicInfoDescription": "Configure model identification",
             "modelType": "Model Type",
-            "modelTypePlaceholder": "Please enter the model type"
+            "modelTypePlaceholder": "Please enter the model type",
+            "billing": "Conversation consumption",
+            "power": "Hashrate",
+            "billingHelp": "How much hash power is consumed for each token"
+        },
+        "batchEdit": {
+            "name": "name",
+            "model": "Model identification",
+            "maxContext": "Maximum context",
+            "isActive": "Whether enabled or not",
+            "billingRule": "Conversation consumption"
         },
         "table": {
             "icon": "icon",
@@ -259,7 +271,8 @@
             "missingModelId": "Missing model ID",
             "getModelDetailFailed": "Failed to load details",
             "isActiveEnabled": "The model is enabled",
-            "isActiveDisabled": "The model is disabled"
+            "isActiveDisabled": "The model is disabled",
+            "batchEditSuccess": "Batch editing is successful"
         }
     },
     "viewWebsite": "Visit Website",

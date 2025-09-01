@@ -123,7 +123,9 @@
         "youCanAskMe": "You can ask me like this",
         "chatContext": "Chat Context",
         "noChatContext": "No chat context available",
-        "editedAnswer": "Edited Answer"
+        "editedAnswer": "Edited Answer",
+        "billingSetup": "Billing configuration",
+        "dialogueConsumption": "Conversation consumption"
     },
     "publish": {
         "title": "Agent Publishing",
@@ -276,15 +278,18 @@
         "consumptionStatistics": "Usage Statistics",
         "annotationManagement": "Annotation Management",
         "totalAnnotations": "Total Annotations",
-        "activeAnnotations": "Active Annotations",
         "annotationData": "Annotation Data",
-        "conversationTrend": "Conversation Trend",
+        "consumedPower": "Power Consumption",
+        "consumedPowerTrend": "Power Consumption Trend",
         "messageTrend": "Message Trend",
         "tokenOutputCount": "Token Output",
         "loadStatisticsFailed": "Failed to load statistics",
         "reload": "Reload",
         "hits": "Hit Count",
         "annotations": "Annotations",
-        "times": "times"
+        "times": "times",
+        "power": "Power",
+        "totalConsumedPower": "Total Power Consumed",
+        "loading": "Loading"
     }
 }

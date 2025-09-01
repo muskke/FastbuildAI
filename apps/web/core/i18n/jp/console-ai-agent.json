@@ -123,7 +123,9 @@
         "youCanAskMe": "以下のように質問できます",
         "chatContext": "会話コンテキスト",
         "noChatContext": "会話コンテキストがありません",
-        "editedAnswer": "編集済み回答"
+        "editedAnswer": "編集済み回答",
+        "billingSetup": "請求設定",
+        "dialogueConsumption": "対話の消費"
     },
     "publish": {
         "title": "エージェント公開",
@@ -276,15 +278,18 @@
         "consumptionStatistics": "消費統計",
         "annotationManagement": "注釈管理",
         "totalAnnotations": "総注釈数",
-        "activeAnnotations": "有効注釈",
         "annotationData": "注釈データ",
-        "conversationTrend": "会話トレンド",
+        "consumedPower": "算力消費",
+        "consumedPowerTrend": "算力トレンド",
         "messageTrend": "メッセージトレンド",
         "tokenOutputCount": "トークン出力数",
         "loadStatisticsFailed": "統計の読み込みに失敗",
         "reload": "再読み込み",
         "hits": "ヒット数",
         "annotations": "注釈数",
-        "times": "回"
+        "times": "回",
+        "power": "算力",
+        "totalConsumedPower": "総算力消費",
+        "loading": "ロード中"
     }
 }

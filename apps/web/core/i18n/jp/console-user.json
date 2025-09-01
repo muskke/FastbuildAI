@@ -54,6 +54,9 @@
         "passwordMinLength": "パスワードは6文字以上必要",
         "passwordHelp": "パスワードは6文字以上で、英字と数字を含めることを推奨",
         "role": "ロール",
+        "power": "残余の計算能力",
+        "realName": "本名",
+        "realNameInput": "本名を入力してください",
         "roleSelect": "ロールを選択",
         "noRole": "ロール未設定",
         "statusLabel": "ユーザーステータス",
@@ -63,7 +66,17 @@
         "formReset": "フォームをリセット",
         "formValidationFailed": "フォーム検証エラー",
         "getRoleListFailed": "ロールリストの取得に失敗",
-        "dateRangeInput": "登録日時範囲を選択"
+        "dateRangeInput": "登録日時範囲を選択",
+        "editPower": "編集算力",
+        "currentPower": "現在の計算能力",
+        "powerAdjust": "計算力の増減",
+        "add": "増加する",
+        "reduce": "控除",
+        "adjustAmount": "数量を調整する",
+        "adjustAmountInput": "調整する数を入力してください",
+        "adjustedPower": "調整された計算能力",
+        "confirmPowerEdit": "編集の計算能力を確定しますか？",
+        "confirmPowerEditMessage": "計算能力を編集してもいいですか？"
     },
     "messages": {
         "createSuccess": "ユーザー作成成功",
@@ -71,6 +84,8 @@
         "updateSuccess": "ユーザー更新成功",
         "updateFailed": "ユーザー更新失敗",
         "getUserDetailFailed": "ユーザー詳細の取得に失敗",
-        "missingUserId": "ユーザーIDパラメータが不足しています"
+        "missingUserId": "ユーザーIDパラメータが不足しています",
+        "adjustAmountInput": "有効な調整数量を入力してください",
+        "success": "成功"
     }
 }

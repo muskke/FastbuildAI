@@ -5,6 +5,8 @@
         "rechargeIncreasePower": "チャージで算力を増加",
         "rechargeGiftPower": "チャージ特典で算力を増加",
         "rechargeRefundPower": "チャージ返金で算力を返還",
+        "systemIncreasePower": "システムが計算能力を増強しました",
+        "systemDecreasePower": "システムによる計算能力の削減",
         "table": {
             "userNo": "ユーザー番号",
             "nickname": "ユーザー名",
@@ -12,7 +14,8 @@
             "leftAmount": "残数量",
             "accountTypeDesc": "変動タイプ",
             "associationUser": "管理者",
-            "createdAt": "記録時間"
+            "createdAt": "記録時間",
+            "consumeSourceDesc": "出所"
         }
     },
     "financialCenter": {
