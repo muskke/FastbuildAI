@@ -349,7 +349,7 @@ export class UserService extends BaseService<User> {
      * @param dto 更新数据
      * @returns 更新后的用户
      */
-    async updateBalance(userId: string, dto: UpdateUserBalanceDto) {
+    async updateBalance(userId: string, dto: UpdateUserBalanceDto, currentUser: UserPlayground) {
         try {
             const user = await this.findOneById(userId);
 
@@ -385,7 +385,7 @@ export class UserService extends BaseService<User> {
                     dto.action,
                     actualChangeAmount,
                     "", // 关联单号
-                    null, // 关联用户ID
+                    currentUser.id, // 关联用户ID
                     `系统手动操作，操作金额：${dto.amount}`,
                     {
                         type: ACCOUNT_LOG_SOURCE.SYSTEM,
@@ -491,7 +491,7 @@ export class UserService extends BaseService<User> {
                                     action,
                                     amount,
                                     "", // 关联单号
-                                    null, // 关联用户ID
+                                    currentUserId, // 关联用户ID
                                     `批量更新操作，算力变动：${powerDiff > 0 ? "+" : ""}${powerDiff}`,
                                     {
                                         type: ACCOUNT_LOG_SOURCE.SYSTEM,

@@ -337,7 +337,13 @@ export class PublicAgentChatService {
         this.logger.debug(`[+] 公开智能体阻塞对话用户: ${JSON.stringify(agentChatDto)}`);
 
         try {
-            return await this.agentChatService.handleChat(agent.id, agentChatDto, user, "sync");
+            return await this.agentChatService.handleChat(
+                agent.id,
+                agentChatDto,
+                user,
+                "sync",
+                true,
+            );
         } catch (error) {
             this.logger.error(`[!] 公开智能体阻塞对话失败: ${error.message}`, error.stack);
             throw HttpExceptionFactory.business("阻塞对话处理失败");
@@ -365,7 +371,7 @@ export class PublicAgentChatService {
         const agentChatDto = this.convertToAgentChatDto(dto, agent);
         const user = this.createEnhancedUser(accessToken, loggedInUser);
 
-        this.logger.debug(`[+] 公开智能体对话用户: ${JSON.stringify(agentChatDto)}`);
+        this.logger.log(`[+] 公开智能体对话用户: ${JSON.stringify(agentChatDto)}`);
 
         try {
             return await this.agentChatService.handleChat(
@@ -373,6 +379,7 @@ export class PublicAgentChatService {
                 agentChatDto,
                 user,
                 "stream",
+                true,
                 res,
             );
         } catch (error) {
@@ -472,6 +479,7 @@ export class PublicAgentChatService {
                 agentChatDto,
                 apiKeyUser,
                 "sync",
+                false,
             );
             this.logger.log(`[+] API Key对话完成: ${agent.id} - ${agent.name}`);
             return result;
@@ -500,6 +508,7 @@ export class PublicAgentChatService {
                 agentChatDto,
                 apiKeyUser,
                 "stream",
+                false,
                 res,
             );
         } catch (error) {

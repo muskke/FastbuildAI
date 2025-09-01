@@ -113,7 +113,7 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
                     ? `1.用户的问题是：${lastUserMessage} \n\n2.最多只能生成3条建议，无论后面说了几条，都是只有3条并且不能超过 20 个字。\n\n3.${dto.autoQuestions.customRule}`
                     : basePrompt;
 
-            console.log(prompt);
+            // console.log(prompt);
 
             const response = await client.chat.create({
                 model: modelName,
@@ -761,6 +761,7 @@ export class AgentChatService extends BaseAgentChatService {
         dto: AgentChatDto,
         user: UserPlayground,
         responseMode: "sync" | "stream",
+        isPublic: boolean,
         res?: Response,
     ): Promise<AgentChatResponse | void> {
         if (responseMode === "stream" && !res) {
@@ -775,18 +776,30 @@ export class AgentChatService extends BaseAgentChatService {
             res!.setHeader("Access-Control-Allow-Headers", "Cache-Control");
         }
 
-        const userInfo = await this.userRepository.findOne({
-            where: { id: user.id },
-        });
-
-        if (!userInfo) {
-            throw HttpExceptionFactory.notFound("用户不存在");
-        }
-
         const agentInfo = await this.agentService.findOneById(agentId);
 
         if (!agentInfo) {
             throw HttpExceptionFactory.notFound("智能体不存在");
+        }
+
+        let owner: User;
+
+        if (!isPublic) {
+            owner = await this.userRepository.findOne({
+                where: { id: user.id },
+            });
+
+            if (!owner) {
+                throw HttpExceptionFactory.notFound("用户不存在");
+            }
+        } else {
+            owner = await this.userRepository.findOne({
+                where: { id: agentInfo.createBy },
+            });
+
+            if (!owner) {
+                throw HttpExceptionFactory.notFound("用户不存在");
+            }
         }
 
         const startTime = Date.now();
@@ -818,8 +831,10 @@ export class AgentChatService extends BaseAgentChatService {
                 );
             }
 
-            if (agentInfo.billingConfig.price > userInfo.power) {
-                throw HttpExceptionFactory.forbidden("算力不足，请充值后重试");
+            if (agentInfo.billingConfig.price > owner.power) {
+                throw HttpExceptionFactory.forbidden(
+                    `${isPublic ? "分享者" : ""}算力不足，请充值后重试`,
+                );
             }
 
             const quickCommandResult = this.handleQuickCommand(dto, lastUserMessage);
@@ -1059,46 +1074,9 @@ export class AgentChatService extends BaseAgentChatService {
                         conversationRecord!.messageCount + 2,
                         conversationRecord!.totalTokens + (tokenUsage?.total_tokens || 0),
                     );
-
-                    if (agentInfo.billingConfig.price > 0) {
-                        try {
-                            // 计算需要扣除的算力
-                            const { price } = agentInfo.billingConfig;
-                            await this.userRepository.manager.transaction(async (entityManager) => {
-                                // 计算扣除后的算力，确保不会为负数
-                                const newPower = Math.max(0, userInfo.power - price);
-                                // 实际扣除的算力（可能小于powerToDeduct，如果用户算力不足）
-                                const actualDeducted = userInfo.power - newPower;
-
-                                await entityManager.update(User, user.id, {
-                                    power: newPower,
-                                });
-
-                                // 记录算力变动日志
-                                await this.accountLogService.recordWithTransaction(
-                                    entityManager,
-                                    user.id,
-                                    ACCOUNT_LOG_TYPE.AGENT_CHAT_DEC,
-                                    ACTION.DEC,
-                                    actualDeducted,
-                                    "", // 关联单号
-                                    user.id, // 关联用户ID
-                                    `智能体对话消耗算力，模型：${model.name}`, // 备注
-                                    {
-                                        type: ACCOUNT_LOG_SOURCE.AGENT_CHAT,
-                                        source: agentInfo.id,
-                                    },
-                                );
-
-                                this.logger.debug(
-                                    `用户 ${user.id} 对话扣除算力 ${actualDeducted} 成功`,
-                                );
-                            });
-                        } catch (error) {
-                            this.logger.error(`扣除用户算力失败: ${error.message}`, error.stack);
-                        }
-                    }
                 }
+
+                await this.deductAgentChatPower(agentInfo, owner, user, model, isPublic);
 
                 if (finalConfig.showContext) {
                     const completeContext = [
@@ -1158,6 +1136,9 @@ export class AgentChatService extends BaseAgentChatService {
                         conversationRecord.totalTokens + (tokenUsage?.total_tokens || 0),
                     );
                 }
+
+                // 执行扣费逻辑
+                await this.deductAgentChatPower(agentInfo, owner, user, model, isPublic);
 
                 result = {
                     conversationId: conversationRecord?.id || null,
@@ -1364,5 +1345,64 @@ export class AgentChatService extends BaseAgentChatService {
             datasetName: ref.datasetName || "知识库",
             chunks: ref.chunks,
         }));
+    }
+
+    /**
+     * 扣除智能体对话算力
+     * @param agentInfo 智能体信息
+     * @param owner 算力扣除的用户
+     * @param user 当前操作用户
+     * @param model 使用的模型
+     * @param isPublic 是否是公开链接访问
+     */
+    private async deductAgentChatPower(
+        agentInfo: Partial<Agent>,
+        owner: User,
+        user: UserPlayground,
+        model: any,
+        isPublic: boolean,
+    ): Promise<void> {
+        if (agentInfo.billingConfig.price && agentInfo.billingConfig.price > 0) {
+            try {
+                // 计算需要扣除的算力
+                const { price } = agentInfo.billingConfig;
+                await this.userRepository.manager.transaction(async (entityManager) => {
+                    // 计算扣除后的算力，确保不会为负数
+                    const newPower = Math.max(0, owner.power - price);
+                    // 实际扣除的算力（可能小于powerToDeduct，如果用户算力不足）
+                    const actualDeducted = owner.power - newPower;
+
+                    await entityManager.update(User, owner.id, {
+                        power: newPower,
+                    });
+
+                    // 记录算力变动日志
+                    await this.accountLogService.recordWithTransaction(
+                        entityManager,
+                        owner.id,
+                        isPublic
+                            ? ACCOUNT_LOG_TYPE.AGENT_GUEST_CHAT_DEC
+                            : ACCOUNT_LOG_TYPE.AGENT_CHAT_DEC,
+                        ACTION.DEC,
+                        actualDeducted,
+                        "", // 关联单号
+                        null,
+                        isPublic
+                            ? `游客：${user.username}调用（${model.name}）`
+                            : `用户：${user.username}调用（${model.name}）`,
+                        {
+                            type: ACCOUNT_LOG_SOURCE.AGENT_CHAT,
+                            source: agentInfo.id,
+                        },
+                    );
+
+                    this.logger.debug(
+                        `${isPublic ? "游客" : "用户"} ${owner.id} 对话扣除算力 ${actualDeducted} 成功`,
+                    );
+                });
+            } catch (error) {
+                this.logger.error(`扣除用户算力失败: ${error.message}`, error.stack);
+            }
+        }
     }
 }
