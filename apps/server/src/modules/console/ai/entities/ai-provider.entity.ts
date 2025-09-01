@@ -74,6 +74,17 @@ export class AiProvider {
     apiKey?: string;
 
     /**
+     * 绑定的密钥配置
+     */
+    @Column({
+        type: "varchar",
+        length: 500,
+        nullable: true,
+        comment: "绑定的密钥配置",
+    })
+    bindKeyConfig?: string;
+
+    /**
      * API基础URL
      */
     @Column({
