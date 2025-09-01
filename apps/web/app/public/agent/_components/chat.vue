@@ -16,8 +16,8 @@ import {
     apiGetMessages,
 } from "@/services/web/ai-agent-publish";
 
-import AgentAnnotationModal from "../../console/ai-agent/_components/logs/annotation-modal.vue";
-import PublicAgentChatsList from "./_components/public-agent-chats-list.vue";
+import AgentAnnotationModal from "../../../console/ai-agent/_components/logs/annotation-modal.vue";
+import PublicAgentChatsList from "./public-agent-chats-list.vue";
 
 const { t } = useI18n();
 const isMobile = useMediaQuery("(max-width: 768px)");
@@ -414,8 +414,6 @@ useHead({
         { rel: "apple-touch-icon", href: computed(() => agent.value?.avatar || "/favicon.ico") },
     ],
 });
-
-definePageMeta({ layout: "full-screen", auth: false });
 </script>
 
 <template>
@@ -668,12 +666,22 @@ definePageMeta({ layout: "full-screen", auth: false });
                     <ChatPrompt
                         v-model="input"
                         :is-loading="isLoading"
-                        :placeholder="`与 ${agent.name} 对话...`"
+                        :placeholder="t('common.chat.and', { name: agent.name })"
                         class="sticky bottom-0 z-10 [view-transition-name:chat-prompt]"
                         :rows="1"
                         @stop="stop"
                         @submit="handleSubmitMessage"
-                    />
+                    >
+                        <template #panel-right-item>
+                            <span class="text-muted-foreground text-xs">
+                                {{
+                                    t("common.chat.singleRunConsumption", {
+                                        price: agent.billingConfig.price,
+                                    })
+                                }}
+                            </span>
+                        </template>
+                    </ChatPrompt>
                 </div>
             </template>
         </div>

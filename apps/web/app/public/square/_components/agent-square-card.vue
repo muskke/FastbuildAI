@@ -21,25 +21,6 @@ const { t } = useI18n();
 const handleClick = () => {
     emit("click", props.agent);
 };
-
-const badgeConfig = computed(() => {
-    switch (props.variant) {
-        case "hot":
-            return {
-                icon: "i-lucide-fire",
-                color: "warning" as const,
-                text: `${props.agent.userCount} ${t("square.users")}`,
-            };
-        case "latest":
-            return {
-                icon: "i-lucide-sparkles",
-                color: "primary" as const,
-                text: t("square.new"),
-            };
-        default:
-            return null;
-    }
-});
 </script>
 
 <template>

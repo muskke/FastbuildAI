@@ -27,12 +27,12 @@ import { QueueService } from "./queue.service";
         // 注册 Bull 模块，使用 Redis 作为后端存储
         BullModule.forRootAsync({
             imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => ({
+            useFactory: async () => ({
                 redis: {
-                    host: configService.get<string>("REDIS_HOST", "localhost"),
-                    port: configService.get<number>("REDIS_PORT", 6379),
-                    password: configService.get<string>("REDIS_PASSWORD", ""),
-                    db: configService.get<number>("REDIS_DB", 0),
+                    host: process.env.REDIS_HOST || "localhost",
+                    port: Number(process.env.REDIS_PORT) || 6379,
+                    password: process.env.REDIS_PASSWORD || "",
+                    db: Number(process.env.REDIS_DB) || 0,
                 },
                 defaultJobOptions: {
                     attempts: 3, // 默认重试3次

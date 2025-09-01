@@ -8,7 +8,7 @@ import { apiGetPublicAgents, type QueryPublicAgentParams } from "@/services/web/
 
 import AgentSquareCard from "./_components/agent-square-card.vue";
 
-const toast = useMessage();
+const router = useRouter();
 
 // 搜索和筛选参数
 const searchForm = reactive<QueryPublicAgentParams>({
@@ -93,7 +93,7 @@ const handleSortChange = (sortBy: "latest" | "popular") => {
 // 智能体卡片点击
 const handleAgentClick = (agent: Agent) => {
     if (agent.publishToken) {
-        window.open(`/public/agent/${agent.publishToken}`, "_blank");
+        router.push(`/public/agent/explore/${agent.publishToken}`);
     }
 };
 
