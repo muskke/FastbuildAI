@@ -172,9 +172,9 @@ const chartOptions = computed(() => {
     if (!statistics.value?.trends) return {};
 
     return {
-        conversations: createChartConfig(
-            t("console-ai-agent.dashboard.conversations"),
-            statistics.value.trends.conversations,
+        consumedPower: createChartConfig(
+            t("console-ai-agent.dashboard.consumedPower"),
+            statistics.value.trends.consumedPower,
             currentColor.value,
         ),
         messages: createChartConfig(
@@ -446,7 +446,7 @@ definePageMeta({ layout: "full-screen" });
                             <template #header>
                                 <div class="flex items-center justify-between">
                                     <h3 class="text-lg font-medium">
-                                        {{ t("console-ai-agent.dashboard.conversationTrend") }}
+                                        {{ t("console-ai-agent.dashboard.consumedPowerTrend") }}
                                     </h3>
                                 </div>
                                 <div class="text-muted-foreground mb-1 flex items-center gap-1">
@@ -466,8 +466,8 @@ definePageMeta({ layout: "full-screen" });
                             </template>
                             <div class="h-80">
                                 <ProEcharts
-                                    v-if="statistics?.trends?.conversations"
-                                    :options="chartOptions.conversations as EChartsOption"
+                                    v-if="statistics?.trends?.consumedPower"
+                                    :options="chartOptions.consumedPower as EChartsOption"
                                     height="100%"
                                 />
                             </div>

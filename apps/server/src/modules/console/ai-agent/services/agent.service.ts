@@ -160,7 +160,7 @@ export class AgentService extends BaseService<Agent> {
             annotationHitCount: number;
         };
         trends: {
-            conversations: Array<{ date: string; count: number }>;
+            consumedPower: Array<{ date: string; count: number }>;
             messages: Array<{ date: string; count: number }>;
             tokens: Array<{ date: string; count: number }>;
             activeUsers: Array<{ date: string; count: number }>;
@@ -259,10 +259,10 @@ export class AgentService extends BaseService<Agent> {
 
     // 获取趋势数据
     private async fetchTrends(agentId: string, startDate: Date, endDate: Date) {
-        const [conversations, messages, tokens, activeUsers] = await Promise.all([
+        const [consumedPower, messages, tokens, activeUsers] = await Promise.all([
             this.chatRecordRepository
                 .createQueryBuilder("record")
-                .select("DATE(record.createdAt) as date, COUNT(*) as count")
+                .select("DATE(record.createdAt) as date, SUM(record.consumedPower) as count")
                 .where(
                     "record.agentId = :agentId AND record.createdAt BETWEEN :startDate AND :endDate AND record.isDeleted = false",
                     { agentId, startDate, endDate },
@@ -303,7 +303,7 @@ export class AgentService extends BaseService<Agent> {
         ]);
 
         return {
-            conversations: this.formatTrendData(conversations, startDate, endDate),
+            consumedPower: this.formatTrendData(consumedPower, startDate, endDate),
             messages: this.formatTrendData(messages, startDate, endDate),
             tokens: this.formatTrendData(tokens, startDate, endDate),
             activeUsers: this.formatTrendData(activeUsers, startDate, endDate),
