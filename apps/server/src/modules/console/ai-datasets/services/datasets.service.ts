@@ -1,6 +1,7 @@
 import { BaseService } from "@common/base/services/base.service";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { UserPlayground } from "@common/interfaces/context.interface";
+import { isEnabled } from "@common/utils/is.util";
 import { QueueService } from "@core/queue/queue.service";
 import { UploadService } from "@modules/web/upload/services/upload.service";
 import { Injectable, Logger } from "@nestjs/common";
@@ -524,16 +525,20 @@ export class DatasetsService extends BaseService<Datasets> {
     /**
      * 分页查询知识库列表
      */
-    async list(dto: QueryDatasetDto, userId?: string) {
-        const memberIds = await this.datasetMemberService.getUserMemberDatasetIds(userId);
+    async list(dto: QueryDatasetDto, user: UserPlayground) {
         const qb = this.datasetsRepository.createQueryBuilder("dataset");
 
-        if (userId) {
-            qb.where("dataset.createdBy = :userId", { userId });
-        }
-
-        if (memberIds.length) {
-            qb.orWhere("dataset.id IN (:...memberIds)", { memberIds });
+        // 超级管理员看所有，普通用户看自己的
+        if (!isEnabled(user.isRoot)) {
+            const memberIds = await this.datasetMemberService.getUserMemberDatasetIds(user.id);
+            if (memberIds.length > 0) {
+                qb.where("(dataset.createdBy = :userId OR dataset.id IN (:...memberIds))", {
+                    userId: user.id,
+                    memberIds,
+                });
+            } else {
+                qb.where("dataset.createdBy = :userId", { userId: user.id });
+            }
         }
 
         if (dto.keyword) {
@@ -543,7 +548,7 @@ export class DatasetsService extends BaseService<Datasets> {
         }
 
         if (dto.showAll) {
-            qb.andWhere("dataset.createdBy = :userId", { userId });
+            qb.andWhere("dataset.createdBy = :userId", { userId: user.id });
         }
 
         if (dto.status) {
@@ -609,11 +614,12 @@ export class DatasetsService extends BaseService<Datasets> {
     /**
      * 获取知识库详情并校验访问权限
      */
-    async getDatasetById(id: string, userId: string): Promise<Datasets> {
+    async getDatasetById(id: string, userId: string, user?: UserPlayground): Promise<Datasets> {
         const dataset = await this.findOneById(id);
         if (!dataset) throw HttpExceptionFactory.notFound("知识库不存在");
 
-        if (dataset.createdBy !== userId) {
+        // 超级管理员或知识库创建者可以直接访问
+        if (!isEnabled(user?.isRoot) && dataset.createdBy !== userId) {
             const isMember = await this.datasetMemberService.isDatasetMember(id, userId);
             if (!isMember) throw HttpExceptionFactory.notFound("知识库不存在或无权限访问");
         }
