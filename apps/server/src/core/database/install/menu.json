@@ -528,19 +528,20 @@
                         "path": "apiKeyType",
                         "icon": "",
                         "component": "/console/api-key-manage/type",
-                        "permissionCode": "ai-api-keys:type",
+                        "permissionCode": "key-templates:list",
                         "sort": 0,
                         "isHidden": 0,
                         "type": 2,
                         "sourceType": 1,
                         "pluginPackName": null
-                    },{
+                    },
+                    {
                         "name": "console-menu.apiKeyManage.apiKeyList",
                         "code": "api-key-list",
                         "path": "apiKeyList",
                         "icon": "",
                         "component": "/console/api-key-manage/list",
-                        "permissionCode": "ai-api-keys:list",
+                        "permissionCode": "key-configs:list",
                         "sort": 10,
                         "isHidden": 0,
                         "type": 2,
