@@ -389,6 +389,8 @@ definePageMeta({ activePath: "/" });
                     <template #panel-left>
                         <ModelSelect
                             :supportedModelTypes="['llm']"
+                            :show-billingRule="true"
+                            :open-local-storage="true"
                             placeholder="选择AI模型开始对话"
                             @change="(e) => (selectedModel = e)"
                         />
