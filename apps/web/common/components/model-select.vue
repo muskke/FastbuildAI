@@ -246,7 +246,7 @@ onMounted(loadModels);
                                                 </span>
                                                 <span
                                                     v-else
-                                                    class="text-inverted inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium"
+                                                    class="text-inverted flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium"
                                                     :class="
                                                         selected?.id === model.id
                                                             ? 'bg-primary dark:bg-primary-800'
