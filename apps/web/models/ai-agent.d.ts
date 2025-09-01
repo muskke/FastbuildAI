@@ -543,8 +543,8 @@ export interface AgentStatistics {
     };
     /** 趋势数据 */
     trends: {
-        /** 对话数趋势 */
-        conversations: Array<{ date: string; count: number }>;
+        /** 算力消耗趋势 */
+        consumedPower: Array<{ date: string; count: number }>;
         /** 消息数趋势 */
         messages: Array<{ date: string; count: number }>;
         /** Token消耗趋势 */
