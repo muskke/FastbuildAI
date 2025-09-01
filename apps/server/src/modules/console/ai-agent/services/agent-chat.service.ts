@@ -385,8 +385,8 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         );
 
         const provider = getProvider(model.provider.provider, {
-            apiKey: getProviderKeyConfig(model.provider.apiKey, providerKeyConfig),
-            baseURL: getProviderKeyConfig(model.provider.baseUrl, providerKeyConfig),
+            apiKey: getProviderKeyConfig("apiKey", providerKeyConfig),
+            baseURL: getProviderKeyConfig("baseUrl", providerKeyConfig),
         });
 
         const client = new TextGenerator(provider);
