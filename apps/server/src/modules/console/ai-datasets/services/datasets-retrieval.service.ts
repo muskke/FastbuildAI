@@ -501,8 +501,8 @@ export class DatasetsRetrievalService {
             );
 
             const adapter = getProvider(rerankModel.provider.provider, {
-                apiKey: getProviderKeyConfig(rerankModel.provider.apiKey, providerKeyConfig),
-                baseURL: getProviderKeyConfig(rerankModel.provider.baseUrl, providerKeyConfig),
+                apiKey: getProviderKeyConfig("apiKey", providerKeyConfig),
+                baseURL: getProviderKeyConfig("baseUrl", providerKeyConfig),
             });
 
             const generator = rerankGenerator(adapter);
@@ -539,8 +539,8 @@ export class DatasetsRetrievalService {
             model.provider.bindKeyConfig,
         );
         const adapter = getProvider(model.provider.provider, {
-            apiKey: getProviderKeyConfig(model.provider.apiKey, providerKeyConfig),
-            baseURL: getProviderKeyConfig(model.provider.baseUrl, providerKeyConfig),
+            apiKey: getProviderKeyConfig("apiKey", providerKeyConfig),
+            baseURL: getProviderKeyConfig("baseUrl", providerKeyConfig),
         });
         const generator = embeddingGenerator(adapter);
         const embeddingResponse: CreateEmbeddingResponse = await generator.embeddings.create({

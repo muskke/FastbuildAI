@@ -5,13 +5,10 @@ import { ModelType } from "@sdk/ai";
 import { Transform, Type } from "class-transformer";
 import {
     IsArray,
-    isArray,
     IsBoolean,
     IsDefined,
-    IsIn,
     IsNotEmpty,
     IsNumber,
-    IsObject,
     IsOptional,
     IsString,
     IsUrl,
@@ -56,20 +53,10 @@ export class CreateAiProviderDto {
     description?: string;
 
     /**
-     * API密钥
+     * 绑定的密钥配置
      */
-    @IsOptional()
-    @ValidateIf((o) => o.apiKey !== "" || o.apiKey !== undefined)
-    @IsString({ message: "API密钥必须是字符串" })
-    @MinLength(1, { message: "API密钥不能为空" })
-    apiKey?: string;
-
-    /**
-     * API基础URL地址
-     */
-    @ValidateIf((o) => !o.baseUrl?.includes("://localhost") && o.baseUrl)
-    @IsUrl({}, { message: "API基础URL格式不正确" })
-    baseUrl?: string;
+    @IsString({ message: "绑定的密钥配置必须是字符串" })
+    bindKeyConfig: string;
 
     /**
      * 支持的模型类型
