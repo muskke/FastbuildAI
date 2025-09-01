@@ -136,6 +136,7 @@ export class KeyTemplateService extends BaseService<KeyTemplate> {
     async getEnabledTemplates(): Promise<KeyTemplate[]> {
         return await super.findAll({
             where: { isEnabled: BooleanNumber.YES },
+            relations: ["keyConfigs"],
             order: {
                 sortOrder: "DESC",
                 createdAt: "DESC",
