@@ -12,6 +12,7 @@ import {
 } from "typeorm";
 
 import { Agent } from "./agent.entity";
+import { AgentChatMessage } from "./agent-chat-message.entity";
 
 /**
  * 智能体对话记录实体
@@ -183,8 +184,8 @@ export class AgentChatRecord {
     /**
      * 对话中的消息列表
      */
-    @OneToMany("AgentChatMessage", "conversation", {
+    @OneToMany(() => AgentChatMessage, (message) => message.conversation, {
         cascade: true,
     })
-    messages?: import("./agent-chat-message.entity").AgentChatMessage[];
+    messages?: Awaited<AgentChatMessage[]>;
 }
