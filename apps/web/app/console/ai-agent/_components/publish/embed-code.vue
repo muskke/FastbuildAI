@@ -15,7 +15,7 @@ const activeTab = ref("iframe");
 const publishUrl = computed(() => {
     if (!props.agent?.publishToken) return "";
     const baseUrl = window.location.origin;
-    return `${baseUrl}/public/agent/${props.agent.publishToken}`;
+    return `${baseUrl}/public/agent/shared/${props.agent.publishToken}`;
 });
 
 const iframeCode = computed(() => {

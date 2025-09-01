@@ -27,6 +27,8 @@
         "expandSidebar": "サイドバーを展開",
         "collapseSidebar": "サイドバーを折りたたむ",
         "selectModel": "モデルを選択してください",
+        "singleRunConsumption": "消費 {price} 算力/回",
+        "and": "and {name} 会話...",
         "messages": {
             "thinking": "AIが考え中...",
             "typing": "入力中...",

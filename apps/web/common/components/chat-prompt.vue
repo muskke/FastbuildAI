@@ -125,28 +125,31 @@ onMounted(() =>
             </div>
             <!-- 发送 -->
             <slot name="panel-right">
-                <UTooltip
-                    :content="{ align: 'center', side: 'top', sideOffset: 8 }"
-                    :text="
-                        isLoading
-                            ? t('common.chat.messages.stopGeneration')
-                            : !inputValue?.length
-                              ? t('common.chat.messages.enterQuestion')
-                              : t('common.chat.messages.sendMessage')
-                    "
-                    :delay-duration="0"
-                    :arrow="true"
-                    :disabled="isLoading || !!inputValue?.length"
-                >
-                    <UButton
-                        :icon="isLoading ? 'i-lucide-square' : 'i-lucide-arrow-up'"
-                        class="rounded-full font-bold"
-                        size="xl"
-                        :disabled="!isLoading && !inputValue?.length"
-                        :color="isLoading ? 'error' : 'primary'"
-                        @click.stop="handleSubmit"
-                    />
-                </UTooltip>
+                <div class="flex items-center gap-2">
+                    <slot name="panel-right-item"></slot>
+                    <UTooltip
+                        :content="{ align: 'center', side: 'top', sideOffset: 8 }"
+                        :text="
+                            isLoading
+                                ? t('common.chat.messages.stopGeneration')
+                                : !inputValue?.length
+                                  ? t('common.chat.messages.enterQuestion')
+                                  : t('common.chat.messages.sendMessage')
+                        "
+                        :delay-duration="0"
+                        :arrow="true"
+                        :disabled="isLoading || !!inputValue?.length"
+                    >
+                        <UButton
+                            :icon="isLoading ? 'i-lucide-square' : 'i-lucide-arrow-up'"
+                            class="rounded-full font-bold"
+                            size="xl"
+                            :disabled="!isLoading && !inputValue?.length"
+                            :color="isLoading ? 'error' : 'primary'"
+                            @click.stop="handleSubmit"
+                        />
+                    </UTooltip>
+                </div>
             </slot>
         </div>
     </div>

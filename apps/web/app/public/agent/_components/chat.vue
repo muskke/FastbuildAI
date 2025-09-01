@@ -666,12 +666,22 @@ useHead({
                     <ChatPrompt
                         v-model="input"
                         :is-loading="isLoading"
-                        :placeholder="`与 ${agent.name} 对话...`"
+                        :placeholder="t('common.chat.and', { name: agent.name })"
                         class="sticky bottom-0 z-10 [view-transition-name:chat-prompt]"
                         :rows="1"
                         @stop="stop"
                         @submit="handleSubmitMessage"
-                    />
+                    >
+                        <template #panel-right-item>
+                            <span class="text-muted-foreground text-xs">
+                                {{
+                                    t("common.chat.singleRunConsumption", {
+                                        price: agent.billingConfig.price,
+                                    })
+                                }}
+                            </span>
+                        </template>
+                    </ChatPrompt>
                 </div>
             </template>
         </div>

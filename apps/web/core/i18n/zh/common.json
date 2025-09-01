@@ -27,6 +27,8 @@
         "expandSidebar": "展开侧边栏",
         "collapseSidebar": "折叠侧边栏",
         "selectModel": "请先选择模型",
+        "singleRunConsumption": "消耗 {price} 算力/次",
+        "and": "与 {name} 对话...",
         "messages": {
             "thinking": "AI正在思考中...",
             "typing": "对方正在输入中...",
