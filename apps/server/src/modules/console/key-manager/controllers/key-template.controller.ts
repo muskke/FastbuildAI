@@ -1,6 +1,7 @@
 import { BaseController } from "@common/base/controllers/base.controller";
 import { BooleanNumberType } from "@common/constants";
 import { ConsoleController } from "@common/decorators/controller.decorator";
+import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { Permissions } from "@common/decorators/permissions.decorator";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { Body, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
@@ -25,6 +26,7 @@ export class KeyTemplateController extends BaseController {
      * 创建密钥模板
      */
     @Post()
+    @BuildFileUrl(["**.icon"])
     @Permissions({
         code: "create",
         name: "创建密钥模板",
@@ -37,6 +39,7 @@ export class KeyTemplateController extends BaseController {
      * 获取密钥模板列表（分页）
      */
     @Get()
+    @BuildFileUrl(["**.icon"])
     @Permissions({
         code: "list",
         name: "查看密钥模板",
@@ -49,6 +52,7 @@ export class KeyTemplateController extends BaseController {
      * 获取所有启用的模板（不分页）
      */
     @Get("enabled/all")
+    @BuildFileUrl(["**.icon"])
     @Permissions({
         code: "enabled-all",
         name: "查看密钥模板",
@@ -61,6 +65,7 @@ export class KeyTemplateController extends BaseController {
      * 获取单个密钥模板详情
      */
     @Get(":id")
+    @BuildFileUrl(["**.icon"])
     @Permissions({
         code: "detail",
         name: "查看密钥模板",
@@ -73,6 +78,7 @@ export class KeyTemplateController extends BaseController {
      * 更新密钥模板
      */
     @Patch(":id")
+    @BuildFileUrl(["**.icon"])
     @Permissions({
         code: "update",
         name: "更新密钥模板",
