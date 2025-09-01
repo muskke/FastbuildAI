@@ -190,115 +190,125 @@ onMounted(() => {
                 </div>
 
                 <!-- Content area -->
-                <ProScrollArea
-                    ref="scrollAreaRef"
-                    class="max-h-[400px] min-h-[200px] px-2 pb-2"
-                    type="hover"
-                    :shadow="false"
-                >
-                    <!-- Loading state -->
-                    <div
-                        v-if="loading"
-                        class="text-muted-foreground flex flex-col items-center justify-center py-12"
+                <div class="grid h-full">
+                    <ProScrollArea
+                        ref="scrollAreaRef"
+                        class="max-h-[400px] min-h-[200px] px-2 pb-2"
+                        type="hover"
+                        :shadow="false"
                     >
-                        <UIcon name="i-lucide-loader-2" class="mb-2 h-6 w-6 animate-spin" />
-                        <span class="text-sm">{{ t("console-common.loading") }}</span>
-                    </div>
+                        <!-- Loading state -->
+                        <div
+                            v-if="loading"
+                            class="text-muted-foreground flex flex-col items-center justify-center py-12"
+                        >
+                            <UIcon name="i-lucide-loader-2" class="mb-2 h-6 w-6 animate-spin" />
+                            <span class="text-sm">{{ t("console-common.loading") }}</span>
+                        </div>
 
-                    <!-- Empty state -->
-                    <div
-                        v-if="!filteredItems.length"
-                        class="text-muted-foreground flex flex-col items-center justify-center py-12"
-                    >
-                        <UIcon name="i-lucide-database" class="mb-3 h-8 w-8 opacity-50" />
-                        <span class="text-sm font-medium">
-                            {{ search ? "没有找到匹配的结果" : t("console-common.empty") }}
-                        </span>
-                        <span class="mt-1 text-xs">
-                            {{ search ? "请尝试其他关键词" : "暂无可用的密钥池" }}
-                        </span>
-                    </div>
+                        <!-- Empty state -->
+                        <div
+                            v-if="!filteredItems.length"
+                            class="text-muted-foreground flex flex-col items-center justify-center py-12"
+                        >
+                            <UIcon name="i-lucide-database" class="mb-3 h-8 w-8 opacity-50" />
+                            <span class="text-sm font-medium">
+                                {{ search ? "没有找到匹配的结果" : t("console-common.empty") }}
+                            </span>
+                            <span class="mt-1 text-xs">
+                                {{ search ? "请尝试其他关键词" : "暂无可用的密钥池" }}
+                            </span>
+                        </div>
 
-                    <!-- Tree list -->
-                    <div v-else class="py-1">
-                        <div v-for="item in filteredItems" :key="item.id" class="mb-1">
-                            <!-- Parent item (key template) -->
-                            <div
-                                class="group hover:bg-muted/50 flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
-                                @click="toggleExpanded(item.id)"
-                            >
-                                <img :src="item.icon" alt="icon" class="h-4 w-4 flex-shrink-0" />
-                                <span class="text-foreground flex-1 truncate font-medium">{{
-                                    item.name
-                                }}</span>
-                                <div class="text-muted-foreground flex items-center gap-1 text-xs">
-                                    <span>({{ item.keyConfigs.length }})</span>
-                                    <UBadge
-                                        :color="item.isEnabled === 1 ? 'success' : 'neutral'"
-                                        variant="solid"
-                                        size="xs"
-                                    />
-                                </div>
-                                <UIcon
-                                    :name="
-                                        expandedItems.has(item.id)
-                                            ? 'i-lucide-chevron-down'
-                                            : 'i-lucide-chevron-right'
-                                    "
-                                    class="text-muted-foreground h-3 w-3 transition-transform duration-150"
-                                />
-                            </div>
-
-                            <!-- Child items (key configs) -->
-                            <Transition
-                                enter-active-class="transition-all duration-150 ease-out"
-                                enter-from-class="opacity-0 -translate-y-1"
-                                enter-to-class="opacity-100 translate-y-0"
-                                leave-active-class="transition-all duration-150 ease-in"
-                                leave-from-class="opacity-100 translate-y-0"
-                                leave-to-class="opacity-0 -translate-y-1"
-                            >
+                        <!-- Tree list -->
+                        <div v-else class="py-1">
+                            <div v-for="item in filteredItems" :key="item.id" class="mb-1">
+                                <!-- Parent item (key template) -->
                                 <div
-                                    v-if="expandedItems.has(item.id)"
-                                    class="border-border/30 ml-4 border-l pl-3"
+                                    class="group hover:bg-muted/50 flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
+                                    @click="toggleExpanded(item.id)"
                                 >
+                                    <img
+                                        :src="item.icon"
+                                        alt="icon"
+                                        class="h-4 w-4 flex-shrink-0"
+                                    />
+                                    <span class="text-foreground flex-1 truncate font-medium">{{
+                                        item.name
+                                    }}</span>
                                     <div
-                                        v-for="key in item.keyConfigs"
-                                        :key="key.id"
-                                        :data-model-id="key.id"
-                                        class="group/key hover:bg-muted/30 hover:text-foreground flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
-                                        :class="{
-                                            'bg-primary/10 text-primary': selected?.id === key.id,
-                                        }"
-                                        @click="selectModel(key)"
+                                        class="text-muted-foreground flex items-center gap-1 text-xs"
                                     >
-                                        <UIcon
-                                            name="i-lucide-file-key-2"
-                                            class="h-4 w-4 flex-shrink-0"
-                                            :class="{
-                                                'text-primary': selected?.id === key.id,
-                                                'text-muted-foreground/70': selected?.id !== key.id,
-                                            }"
-                                        />
-                                        <span class="flex-1 truncate font-medium">{{
-                                            key.name
-                                        }}</span>
+                                        <span>({{ item.keyConfigs.length }})</span>
                                         <UBadge
-                                            :color="key.status === 1 ? 'success' : 'neutral'"
+                                            :color="item.isEnabled === 1 ? 'success' : 'neutral'"
                                             variant="solid"
                                             size="xs"
                                         />
-                                        <UIcon
-                                            v-if="selected?.id === key.id"
-                                            name="i-lucide-check"
-                                            class="text-primary h-3 w-3"
-                                        />
                                     </div>
+                                    <UIcon
+                                        :name="
+                                            expandedItems.has(item.id)
+                                                ? 'i-lucide-chevron-down'
+                                                : 'i-lucide-chevron-right'
+                                        "
+                                        class="text-muted-foreground h-3 w-3 transition-transform duration-150"
+                                    />
                                 </div>
-                            </Transition>
+
+                                <!-- Child items (key configs) -->
+                                <Transition
+                                    enter-active-class="transition-all duration-150 ease-out"
+                                    enter-from-class="opacity-0 -translate-y-1"
+                                    enter-to-class="opacity-100 translate-y-0"
+                                    leave-active-class="transition-all duration-150 ease-in"
+                                    leave-from-class="opacity-100 translate-y-0"
+                                    leave-to-class="opacity-0 -translate-y-1"
+                                >
+                                    <div
+                                        v-if="expandedItems.has(item.id)"
+                                        class="border-border/30 ml-4 border-l pl-3"
+                                    >
+                                        <div
+                                            v-for="key in item.keyConfigs"
+                                            :key="key.id"
+                                            :data-model-id="key.id"
+                                            class="group/key hover:bg-muted/30 hover:text-foreground flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
+                                            :class="{
+                                                'bg-primary/10 text-primary':
+                                                    selected?.id === key.id,
+                                            }"
+                                            @click="selectModel(key)"
+                                        >
+                                            <UIcon
+                                                name="i-lucide-file-key-2"
+                                                class="h-4 w-4 flex-shrink-0"
+                                                :class="{
+                                                    'text-primary': selected?.id === key.id,
+                                                    'text-muted-foreground/70':
+                                                        selected?.id !== key.id,
+                                                }"
+                                            />
+                                            <span class="flex-1 truncate font-medium">{{
+                                                key.name
+                                            }}</span>
+                                            <UBadge
+                                                :color="key.status === 1 ? 'success' : 'neutral'"
+                                                variant="solid"
+                                                size="xs"
+                                            />
+                                            <UIcon
+                                                v-if="selected?.id === key.id"
+                                                name="i-lucide-check"
+                                                class="text-primary h-3 w-3"
+                                            />
+                                        </div>
+                                    </div>
+                                </Transition>
+                            </div>
                         </div>
-                    </div>
-                </ProScrollArea>
+                    </ProScrollArea>
+                </div>
             </div>
         </template>
     </UPopover>
