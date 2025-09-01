@@ -125,7 +125,10 @@
         "noChatContext": "No chat context available",
         "editedAnswer": "Edited Answer",
         "billingSetup": "Billing configuration",
-        "dialogueConsumption": "Conversation consumption"
+        "dialogueConsumption": "Conversation consumption",
+        "billingDescription": "Power consumption description:",
+        "billingSquareConsumption": "Agent square conversations consume user power",
+        "billingShareConsumption": "Published share links (and other methods) consume creator power"
     },
     "publish": {
         "title": "Agent Publishing",

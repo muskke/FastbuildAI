@@ -125,7 +125,10 @@
         "noChatContext": "暂无对话上下文",
         "editedAnswer": "编辑的答案",
         "billingSetup": "计费配置",
-        "dialogueConsumption": "对话消耗"
+        "dialogueConsumption": "对话消耗",
+        "billingDescription": "算力消耗说明：",
+        "billingSquareConsumption": "智能体广场对话消耗用户算力",
+        "billingShareConsumption": "发布分享链接(以及其他方式均)消耗创建者算力"
     },
     "publish": {
         "title": "智能体发布",

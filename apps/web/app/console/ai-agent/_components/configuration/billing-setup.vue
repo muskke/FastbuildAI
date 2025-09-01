@@ -17,9 +17,33 @@ const { t } = useI18n();
 <template>
     <div class="bg-muted flex items-center justify-between rounded-lg p-3">
         <div class="flex flex-col gap-1">
-            <span class="text-foreground text-sm font-medium">
+            <div class="text-foreground flex items-center gap-1 text-sm font-medium">
                 {{ t("console-ai-agent.configuration.dialogueConsumption") }}
-            </span>
+                <UTooltip :delay-duration="0" :ui="{ content: 'w-xs h-auto' }">
+                    <UIcon name="i-lucide-circle-help" />
+                    <template #content>
+                        <div class="text-background text-xs">
+                            <div class="mb-2">
+                                {{ t("console-ai-agent.configuration.billingDescription") }}
+                            </div>
+                            <div class="space-y-1">
+                                <div>
+                                    1.
+                                    {{
+                                        t("console-ai-agent.configuration.billingSquareConsumption")
+                                    }}
+                                </div>
+                                <div>
+                                    2.
+                                    {{
+                                        t("console-ai-agent.configuration.billingShareConsumption")
+                                    }}
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </UTooltip>
+            </div>
         </div>
         <UInput
             type="number"
