@@ -57,11 +57,11 @@ import { QueueService } from "./queue.service";
         ),
         // 导入AI模块（用于AiModelService）
         AiConsoleModule,
-        KeyManagerModule,
         // 导入数据库实体
         TypeOrmModule.forFeature([User, Datasets, DatasetsDocument, DatasetsSegments]),
         // 导入 AiDatasetsModule 以便注入 DatasetStatusService
         forwardRef(() => AiDatasetsModule),
+        // 导入 KeyManagerModule 以便注入 KeyConfigService
         KeyManagerModule,
     ],
     controllers: [QueueController],

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ProScrollArea } from "@fastbuildai/ui";
-import type { AccordionItem, ButtonProps } from "@nuxt/ui";
+import type { ButtonProps } from "@nuxt/ui";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import type { ModelType } from "@/models";
-import type { AiModel, AiProvider } from "@/models/ai-conversation";
-import { apiGetAiProviders, apiGetDefaultAiModel } from "@/services/web/ai-conversation";
+import type { KeyConfig, KeyTemplateRequest } from "@/models/key-templates";
+import { getApiKeyTypeListAll } from "@/services/console/api-key-type";
 
 interface Props {
     modelValue?: string;
@@ -15,9 +15,7 @@ interface Props {
     console?: boolean;
     supportedModelTypes?: ModelType[];
     buttonUi?: ButtonProps;
-    // 是否显示计费规则
     showBillingRule?: boolean;
-    // 是否打开本地存储
     openLocalStorage?: boolean;
 }
 
@@ -32,152 +30,122 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    (e: "update:modelValue", value: string): void;
-    (e: "change", value: any): void;
+    "update:modelValue": [value: string];
+    change: [value: KeyConfig | null];
 }>();
 
 const loading = ref(false);
 const isOpen = ref(false);
 const search = ref("");
-const providers = ref<AiProvider[]>([]);
-const selected = ref<AiModel | null>(null);
-const scrollAreaRef = ref<any>(null);
+const selected = ref<KeyConfig | null>(null);
+const scrollAreaRef = ref<InstanceType<typeof ProScrollArea> | null>(null);
+const items = ref<KeyTemplateRequest[]>([]);
+const expandedItems = ref<Set<string>>(new Set());
 
-const allModels = computed(() => providers.value.flatMap((p) => p.models ?? []));
-const filteredProviders = computed(() => {
+// Computed: Filtered items based on search query
+const filteredItems = computed(() => {
     const query = search.value.trim().toLowerCase();
-    if (!query) return providers.value;
-    return providers.value
-        .map((p) => ({
-            ...p,
-            models: p.models?.filter((m) =>
-                [m.name, m.model, p.name, p.provider].some((s) => s.toLowerCase().includes(query)),
-            ),
-        }))
-        .filter((p) => p.models?.length);
+    return query
+        ? items.value
+              .map((item) => ({
+                  ...item,
+                  keyConfigs: item.keyConfigs.filter(
+                      (key) =>
+                          key.name.toLowerCase().includes(query) ||
+                          item.name.toLowerCase().includes(query),
+                  ),
+              }))
+              .filter(
+                  (item) => item.name.toLowerCase().includes(query) || item.keyConfigs.length > 0,
+              )
+        : items.value;
 });
 
-function select(key: AiModel | null) {
-    if (selected.value === key) {
-        selected.value = null;
-    } else {
-        selected.value = key;
-    }
+// Computed: Display text for selected model
+const selectedDisplayText = computed(() => {
+    if (!selected.value) return "";
+    const parentPool = items.value.find((item) =>
+        item.keyConfigs.some((key) => key.id === selected.value?.id),
+    );
+    return parentPool ? `${parentPool.name}/${selected.value.name}` : selected.value.name;
+});
 
-    emit("update:modelValue", key?.id || "");
-    emit("change", key);
+// Computed: All key configs for lookup
+const allKeyConfigs = computed(() => items.value.flatMap((item) => item.keyConfigs));
+
+// Select a key config and emit events
+function selectModel(keyConfig: KeyConfig | null) {
+    selected.value = keyConfig;
+    emit("update:modelValue", keyConfig?.id ?? "");
+    emit("change", keyConfig);
     isOpen.value = false;
     search.value = "";
 }
 
-async function loadModels() {
+// Load data from API
+async function loadData() {
     if (loading.value) return;
     loading.value = true;
     try {
-        providers.value = await apiGetAiProviders({
-            supportedModelTypes: props.supportedModelTypes,
-        });
+        items.value = await getApiKeyTypeListAll();
 
-        const findModel = (id?: string) => allModels.value.find((m) => m.id === id);
+        // Ensure all items are expanded by default
+        expandedItems.value = new Set(items.value.map((item) => item.id));
 
+        const findKeyConfig = (id?: string) => allKeyConfigs.value.find((k) => k.id === id);
         if (!props.defaultSelected) {
-            selected.value = findModel(props.modelValue) ?? null;
+            selected.value = findKeyConfig(props.modelValue) ?? null;
             return;
         }
 
         selected.value =
-            (props.openLocalStorage ? findModel(localStorage.getItem("modelId") || "") : null) ??
-            findModel(props.modelValue) ??
-            findModel((await apiGetDefaultAiModel().catch(() => null))?.id) ??
-            allModels.value.find((m) => m.isDefault) ??
-            allModels.value[0] ??
+            (props.openLocalStorage
+                ? findKeyConfig(localStorage.getItem("modelId") ?? "")
+                : null) ??
+            findKeyConfig(props.modelValue) ??
+            allKeyConfigs.value[0] ??
             null;
 
-        selected.value && select(selected.value);
-    } catch (e) {
-        console.error("模型加载失败", e);
+        if (selected.value) selectModel(selected.value);
+    } catch (error) {
+        console.error("Failed to load key templates:", error);
     } finally {
         loading.value = false;
     }
 }
 
-/**
- * 滚动到选中的模型
- */
-const scrollToSelectedModel = async () => {
-    if (!selected.value || !isOpen.value) return;
-
+// Scroll to selected key config
+async function scrollToSelected() {
+    if (!selected.value || !isOpen.value || !scrollAreaRef.value) return;
     await nextTick();
-
     const selectedElement = document.querySelector(`[data-model-id="${selected.value.id}"]`);
-    if (selectedElement && scrollAreaRef.value) {
-        selectedElement.scrollIntoView({
-            behavior: "instant",
-            block: "center",
-        });
-    }
-};
+    selectedElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
 
-const items = ref<AccordionItem[]>([
-    {
-        id: "1",
-        name: "模版名称1",
-        icon: "https://i.pravatar.cc/150?img=1",
-        fieldName: "字段1",
-        isActived: true,
-        keyList: [
-            {
-                id: "1",
-                name: "名称1",
-                value: "值1",
-                isActived: true,
-                createdAt: "2025-01-01",
-            },
-            {
-                id: "2",
-                name: "名称2",
-                value: "值2",
-                isActived: true,
-                createdAt: "2025-01-01",
-            },
-        ],
-        createdAt: "2025-01-01",
-    },
-    {
-        id: "2",
-        name: "模版名称2",
-        icon: "https://i.pravatar.cc/150?img=2",
-        fieldName: "字段2",
-        isActived: false,
-        keyList: [
-            {
-                id: "3",
-                name: "名称3",
-                value: "值3",
-                isActived: false,
-                createdAt: "2025-01-02",
-            },
-        ],
-        createdAt: "2025-01-02",
-    },
-]);
+// Toggle item expansion
+function toggleExpanded(itemId: string) {
+    const newSet = new Set(expandedItems.value);
+    newSet.has(itemId) ? newSet.delete(itemId) : newSet.add(itemId);
+    expandedItems.value = newSet;
+}
 
-// 监听弹窗打开状态，打开时自动定位到选中模型
-watch(isOpen, (newValue) => {
-    if (newValue) {
-        scrollToSelectedModel();
-    }
+// Watch popover state
+watch(isOpen, (open) => {
+    if (open) scrollToSelected();
 });
 
-onMounted(loadModels);
+// Initialize on mount
+onMounted(() => {
+    loadData();
+});
 </script>
 
 <template>
     <UPopover v-model:open="isOpen" :disabled="props.disabled">
         <UButton
-            :color="selected?.name ? 'primary' : 'neutral'"
+            :color="selected ? 'primary' : 'neutral'"
             variant="ghost"
-            class="flex items-center justify-between"
+            class="flex w-full items-center justify-between"
             :class="{ 'bg-primary/10': selected?.id }"
             :loading="loading"
             :disabled="props.disabled"
@@ -185,154 +153,152 @@ onMounted(loadModels);
             @click.stop
         >
             <span class="truncate">
-                {{ selected?.name || t("console-common.placeholder.modelSelect") }}
+                {{ selectedDisplayText || t("console-common.placeholder.modelSelect") }}
             </span>
             <div class="flex items-center gap-2">
                 <UIcon
+                    v-if="selected && props.console"
                     name="i-lucide-x"
-                    v-if="selected?.name && props.console"
-                    @click.stop="select(null)"
+                    class="h-4 w-4"
+                    @click.stop="selectModel(null)"
                 />
-
-                <UIcon name="i-lucide-chevron-down" :class="{ 'rotate-180': isOpen }" />
+                <UIcon
+                    name="i-lucide-chevron-down"
+                    class="h-4 w-4"
+                    :class="{ 'rotate-180': isOpen }"
+                />
             </div>
         </UButton>
 
         <template #content>
-            <div class="bg-background w-80 overflow-hidden rounded-lg shadow-lg">
-                <div class="border-b p-3">
+            <div class="border-border bg-background w-[380px] rounded-lg border shadow-lg">
+                <!-- Search bar -->
+                <div class="p-3">
                     <UInput
                         v-model="search"
                         :placeholder="t('console-common.placeholder.searchModel')"
-                        size="lg"
-                        :ui="{ root: 'w-full' }"
+                        size="sm"
+                        class="w-full"
+                        :ui="{
+                            base: 'bg-muted/30 border-border/50 focus:border-primary/50 focus:ring-primary/20',
+                        }"
                     >
-                        <template #leading><UIcon name="i-lucide-search" /></template>
+                        <template #leading>
+                            <UIcon name="i-lucide-search" class="text-muted-foreground h-4 w-4" />
+                        </template>
                     </UInput>
                 </div>
 
-                <div
-                    class="flex h-[calc((100vh-15rem)/3)] flex-col gap-3 p-2"
-                    :class="{ 'md:grid-cols-2': filteredProviders.length > 1 }"
+                <!-- Content area -->
+                <ProScrollArea
+                    ref="scrollAreaRef"
+                    class="max-h-[400px] min-h-[200px] px-2 pb-2"
+                    type="hover"
+                    :shadow="false"
                 >
-                    <ProScrollArea ref="scrollAreaRef" class="h-full" type="hover" :shadow="false">
-                        <div
-                            v-if="loading"
-                            class="text-muted-foreground col-span-full py-10 text-center"
-                        >
-                            {{ t("console-common.loading") }}...
-                        </div>
+                    <!-- Loading state -->
+                    <div
+                        v-if="loading"
+                        class="text-muted-foreground flex flex-col items-center justify-center py-12"
+                    >
+                        <UIcon name="i-lucide-loader-2" class="mb-2 h-6 w-6 animate-spin" />
+                        <span class="text-sm">{{ t("console-common.loading") }}</span>
+                    </div>
 
-                        <div
-                            v-else-if="!filteredProviders.length"
-                            class="text-muted-foreground col-span-full py-10 text-center"
-                        >
-                            {{ t("console-common.empty") }}
-                        </div>
+                    <!-- Empty state -->
+                    <div
+                        v-if="!filteredItems.length"
+                        class="text-muted-foreground flex flex-col items-center justify-center py-12"
+                    >
+                        <UIcon name="i-lucide-database" class="mb-3 h-8 w-8 opacity-50" />
+                        <span class="text-sm font-medium">
+                            {{ search ? "没有找到匹配的结果" : t("console-common.empty") }}
+                        </span>
+                        <span class="mt-1 text-xs">
+                            {{ search ? "请尝试其他关键词" : "暂无可用的密钥池" }}
+                        </span>
+                    </div>
 
-                        <UAccordion :items="items">
-                            <template #leading="{ item }">
-                                <div class="flex items-center gap-2">
-                                    <UAvatar
-                                        :src="item.icon"
-                                        size="sm"
-                                        :ui="{ image: 'rounded-md' }"
+                    <!-- Tree list -->
+                    <div v-else class="py-1">
+                        <div v-for="item in filteredItems" :key="item.id" class="mb-1">
+                            <!-- Parent item (key template) -->
+                            <div
+                                class="group hover:bg-muted/50 flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
+                                @click="toggleExpanded(item.id)"
+                            >
+                                <img :src="item.icon" alt="icon" class="h-4 w-4 flex-shrink-0" />
+                                <span class="text-foreground flex-1 truncate font-medium">{{
+                                    item.name
+                                }}</span>
+                                <div class="text-muted-foreground flex items-center gap-1 text-xs">
+                                    <span>({{ item.keyConfigs.length }})</span>
+                                    <UBadge
+                                        :color="item.isEnabled === 1 ? 'success' : 'neutral'"
+                                        variant="solid"
+                                        size="xs"
                                     />
-                                    <div>{{ item.name }}</div>
                                 </div>
-                            </template>
-                            <template #content="{ item }">
-                                <ul class="space-y-1 pb-2">
-                                    <li
-                                        v-for="key in item.keyList"
+                                <UIcon
+                                    :name="
+                                        expandedItems.has(item.id)
+                                            ? 'i-lucide-chevron-down'
+                                            : 'i-lucide-chevron-right'
+                                    "
+                                    class="text-muted-foreground h-3 w-3 transition-transform duration-150"
+                                />
+                            </div>
+
+                            <!-- Child items (key configs) -->
+                            <Transition
+                                enter-active-class="transition-all duration-150 ease-out"
+                                enter-from-class="opacity-0 -translate-y-1"
+                                enter-to-class="opacity-100 translate-y-0"
+                                leave-active-class="transition-all duration-150 ease-in"
+                                leave-from-class="opacity-100 translate-y-0"
+                                leave-to-class="opacity-0 -translate-y-1"
+                            >
+                                <div
+                                    v-if="expandedItems.has(item.id)"
+                                    class="border-border/30 ml-4 border-l pl-3"
+                                >
+                                    <div
+                                        v-for="key in item.keyConfigs"
                                         :key="key.id"
                                         :data-model-id="key.id"
-                                        class="group flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 ring-1 ring-transparent transition-colors"
-                                        :class="[
-                                            selected?.id === key.id
-                                                ? 'bg-primary/10 dark:bg-primary/20 hover:bg-primary/15 dark:hover:bg-primary/25'
-                                                : 'hover:bg-muted',
-                                        ]"
-                                        @click="select(key)"
+                                        class="group/key hover:bg-muted/30 hover:text-foreground flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
+                                        :class="{
+                                            'bg-primary/10 text-primary': selected?.id === key.id,
+                                        }"
+                                        @click="selectModel(key)"
                                     >
-                                        <div class="w-full overflow-hidden">
-                                            <div class="flex items-start justify-between gap-2">
-                                                <p
-                                                    class="max-w-54 text-sm font-medium break-all whitespace-normal"
-                                                    :class="
-                                                        selected?.id === key.id
-                                                            ? 'text-primary'
-                                                            : 'text-secondary-foreground'
-                                                    "
-                                                >
-                                                    {{ key.name }}
-                                                </p>
-                                                <div v-if="props.showBillingRule">
-                                                    <span
-                                                        v-if="key.billingRule.power === 0"
-                                                        class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium"
-                                                        :class="
-                                                            selected?.id === key.id
-                                                                ? 'bg-muted-foreground/10 dark:bg-green-800 dark:text-green-400'
-                                                                : 'bg-muted-foreground/10'
-                                                        "
-                                                    >
-                                                        免费
-                                                    </span>
-                                                    <span
-                                                        v-else
-                                                        class="text-inverted inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium"
-                                                        :class="
-                                                            selected?.id === key.id
-                                                                ? 'bg-primary dark:bg-primary-800'
-                                                                : 'bg-primary/10 text-primary'
-                                                        "
-                                                    >
-                                                        <span>{{ key.billingRule.power }}算力</span>
-                                                        <span>/</span>
-                                                        <span
-                                                            >{{
-                                                                key.billingRule.tokens
-                                                            }}Tokens</span
-                                                        >
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <p
-                                                v-if="props.showDescription && key.description"
-                                                class="text-muted-foreground mt-0.5 line-clamp-1 text-xs"
-                                            >
-                                                {{ key.description }}
-                                            </p>
-                                        </div>
-                                        <!-- <UIcon
-                                        v-if="selected?.id === model.id"
-                                        name="i-lucide-check-circle"
-                                        class="text-primary flex-none"
-                                        size="lg"
-                                    /> -->
-                                    </li>
-                                </ul>
-                            </template>
-                            <template #trailing="{ item, open }">
-                                <div class="flex flex-1 items-center justify-end space-x-1">
-                                    <div
-                                        class="bg-muted-foreground/10 w-fit rounded-xl px-2 py-1 text-xs"
-                                    >
-                                        {{ item.keyList?.length }}{{ t("common.unit.general.item")
-                                        }}{{ t("common.ai.model") }}
+                                        <UIcon
+                                            name="i-lucide-file-key-2"
+                                            class="h-4 w-4 flex-shrink-0"
+                                            :class="{
+                                                'text-primary': selected?.id === key.id,
+                                                'text-muted-foreground/70': selected?.id !== key.id,
+                                            }"
+                                        />
+                                        <span class="flex-1 truncate font-medium">{{
+                                            key.name
+                                        }}</span>
+                                        <UBadge
+                                            :color="key.status === 1 ? 'success' : 'neutral'"
+                                            variant="solid"
+                                            size="xs"
+                                        />
+                                        <UIcon
+                                            v-if="selected?.id === key.id"
+                                            name="i-lucide-check"
+                                            class="text-primary h-3 w-3"
+                                        />
                                     </div>
-                                    <UIcon
-                                        :name="
-                                            open ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'
-                                        "
-                                        size="lg"
-                                    />
                                 </div>
-                            </template>
-                        </UAccordion>
-                    </ProScrollArea>
-                </div>
+                            </Transition>
+                        </div>
+                    </div>
+                </ProScrollArea>
             </div>
         </template>
     </UPopover>
