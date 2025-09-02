@@ -168,7 +168,7 @@ export class KeyConfigService extends BaseService<KeyConfig> {
     /**
      * 根据ID获取配置详情（包含字段值）
      * @param id 配置ID
-     * @param includeSensitive 是否包含敏感字段值
+     * @param includeSensitive 是否包含敏感字段值（已废弃，始终返回解密后的值）
      * @returns 配置详情
      */
     async getConfigDetail(id: string, includeSensitive: boolean = false): Promise<any> {
@@ -181,13 +181,9 @@ export class KeyConfigService extends BaseService<KeyConfig> {
             throw HttpExceptionFactory.notFound("密钥配置不存在");
         }
 
-        // 处理字段值显示
+        // 处理字段值显示 - 始终返回解密后的值
         const processedConfig = { ...config };
-        if (!includeSensitive) {
-            processedConfig.fieldValues = this.maskSensitiveFields(config.fieldValues);
-        } else {
-            processedConfig.fieldValues = this.decryptFieldValues(config.fieldValues);
-        }
+        processedConfig.fieldValues = this.decryptFieldValues(config.fieldValues);
 
         return processedConfig;
     }
