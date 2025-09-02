@@ -11,7 +11,6 @@ interface Props {
 const props = defineProps<Props>();
 
 const activeTab = ref("iframe");
-const { t } = useI18n();
 
 const publishUrl = computed(() => {
     if (!props.agent?.publishToken) return "";

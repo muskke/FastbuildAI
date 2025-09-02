@@ -467,7 +467,7 @@ onMounted(async () => {
                 </UFormField>
             </div>
             <!-- 操作按钮 -->
-            <div class="bottom-0 z-10 flex justify-end gap-2 py-4">
+            <div class="bottom-0 z-10 flex justify-end gap-2 pt-4">
                 <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
                     {{ t("console-common.cancel") }}
                 </UButton>
