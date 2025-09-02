@@ -6,7 +6,7 @@ import { object, type ObjectSchema, string } from "yup";
 import type { KeyConfigRequest } from "@/models/api-key-list";
 import type { FieldConfig } from "@/models/key-templates";
 import { getApiKeyDetail } from "@/services/console/api-key-list";
-import { getApiKeyTypeDetail, getApiKeyTypeListAll } from "@/services/console/api-key-type";
+import { getApiKeyTemplateDetail, getApiKeyTemplateListAll } from "@/services/console/api-key-type";
 
 const { t } = useI18n();
 
@@ -115,7 +115,7 @@ const schema = computed((): ObjectSchema<any> => {
 
 // 获取所有启用的模板
 const getEnabledTemplates = async () => {
-    const res = await getApiKeyTypeListAll();
+    const res = await getApiKeyTemplateListAll();
     res.forEach((item) => {
         typeOptions.value.push({
             label: item.name,
@@ -137,7 +137,7 @@ const getEnabledTemplates = async () => {
  * 处理密钥类型变化
  */
 const handleTypeChange = async (value: string) => {
-    const res = await getApiKeyTypeDetail(value);
+    const res = await getApiKeyTemplateDetail(value);
     customFieldOptions.value = res.fieldConfig;
     // 重新初始化动态字段
     initDynamicFields();
@@ -189,7 +189,7 @@ onMounted(async () => {
         :ui="{
             content: 'max-w-2xl overflow-y-auto h-fit',
         }"
-        @update:model-value="(value) => !value && handleClose()"
+        @update:model-value="(value: boolean) => !value && handleClose()"
     >
         <UForm :state="formData" :schema="schema" class="space-y-4" @submit="handleSubmit">
             <div class="grid grid-cols-2 items-center gap-4">

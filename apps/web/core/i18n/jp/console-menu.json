@@ -41,7 +41,7 @@
     },
     "apiKeyManage": {
         "title": "キー管理",
-        "apiKeyType": "キーの種類",
+        "apiKeyTemplate": "キーの種類",
         "apiKeyList": "キーのリスト"
     },
     "datasets": {
