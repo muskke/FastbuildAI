@@ -21,7 +21,7 @@
         "edit": {
             "icon": "icon",
             "title": "Edit type",
-            "name": "Type name",
+            "name": "Template name",
             "status": "state",
             "enable": "enable",
             "disable": "disable",

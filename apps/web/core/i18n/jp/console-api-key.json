@@ -21,7 +21,7 @@
         "edit": {
             "icon": "アイコン",
             "title": "編集タイプ",
-            "name": "タイプ名",
+            "name": "テンプレート名",
             "status": "状態",
             "enable": "有効化",
             "disable": "禁止",
