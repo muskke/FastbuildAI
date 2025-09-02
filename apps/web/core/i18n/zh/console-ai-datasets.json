@@ -101,7 +101,6 @@
             "success": "重试任务已提交，请稍后刷新查看进度",
             "failed": "重试失败"
         },
-         "noEmbeddingModel": "请先在知识库设置中配置 Embedding 模型，然后再添加文件",
         "retryDocumentDescription": "确定要重试该文档下所有失败分段的向量化吗？",
         "retryDocumentSuccess": "重试任务已提交，请稍后刷新查看进度",
         "retryDocumentFailed": "重试失败"
