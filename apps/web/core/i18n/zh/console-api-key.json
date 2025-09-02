@@ -6,7 +6,7 @@
         "disableSuccess": "禁用模板成功",
         "form": {
             "icon": "图标",
-            "name": "类型名称",
+            "name": "模板名称",
             "type": "类型",
             "system": "系统内置",
             "custom": "自定义",
