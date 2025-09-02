@@ -15,6 +15,20 @@ export interface KeyTemplateRequest {
 }
 
 /**
+ * API密钥模板表单数据（用于创建/编辑表单）
+ */
+export interface KeyTemplateFormData {
+    id?: string;
+    fieldConfig: FieldConfig[];
+    icon: string;
+    isEnabled: number;
+    name: string;
+    sortOrder?: number;
+    type?: string;
+    keyConfigs?: KeyConfig[];
+}
+
+/**
  * 字段配置
  */
 export interface FieldConfig {

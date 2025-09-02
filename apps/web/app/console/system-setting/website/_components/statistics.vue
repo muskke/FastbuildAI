@@ -133,7 +133,6 @@ onMounted(() => getWebsiteConfig());
                     <UButton
                         type="submit"
                         color="primary"
-                        size="xl"
                         :loading="isLock"
                         :disabled="isLock || isLoadingConfig"
                     >
@@ -148,7 +147,6 @@ onMounted(() => getWebsiteConfig());
                     type="button"
                     color="neutral"
                     variant="outline"
-                    size="lg"
                     :disabled="isLock || isLoadingConfig"
                     @click="resetForm"
                 >

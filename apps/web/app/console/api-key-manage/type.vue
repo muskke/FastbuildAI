@@ -5,11 +5,12 @@ import type { Row } from "@tanstack/table-core";
 import { useI18n } from "vue-i18n";
 
 import TimeDisplay from "@/common/components/time-display.vue";
-import type { KeyTemplateRequest } from "@/models/key-templates";
+import type { KeyTemplateFormData, KeyTemplateRequest } from "@/models/key-templates";
 import {
     createApiKeyType,
     deleteApiKeyType,
     getApiKeyTypeList,
+    importApiKeyType,
     updateApiKeyType,
     updateApiKeyTypeStatus,
 } from "@/services/console/api-key-type";
@@ -48,6 +49,10 @@ const searchForm = reactive({
  * 编辑弹窗
  */
 const editKey = ref(false);
+/**
+ * 是否是导入
+ */
+const isJsonImport = ref(false);
 
 /**
  * 选中的ID
@@ -58,36 +63,42 @@ const selectedKeyId = ref<string | undefined>(undefined);
  * 获取行操作
  */
 const getRowItems = (row: Row<KeyTemplateRequest>): DropdownMenuItem[] => {
-    return [
-        {
+    const items: DropdownMenuItem[] = [];
+
+    if (row.original.type === "custom") {
+        items.push({
             label: t("console-api-key.type.form.edit"),
             icon: "i-lucide-edit",
             onClick: () => {
                 editKey.value = true;
                 selectedKeyId.value = row.original.id;
             },
+        });
+    }
+
+    items.push({
+        label: row.original.isEnabled
+            ? t("console-api-key.type.form.disable")
+            : t("console-api-key.type.form.enable"),
+        icon: row.original.isEnabled ? "i-lucide-eye-off" : "i-lucide-eye",
+        onSelect: async () => {
+            if (!row.original.id) {
+                console.error("行数据缺少 ID");
+                return;
+            }
+            const isEnabled = row.original.isEnabled ? 0 : 1;
+            await updateApiKeyTypeStatus(row.original.id, { isEnabled });
+            toast.success(
+                row.original.isEnabled
+                    ? t("console-api-key.type.disableSuccess")
+                    : t("console-api-key.type.enableSuccess"),
+            );
+            getLists();
         },
-        {
-            label: row.original.isEnabled
-                ? t("console-api-key.type.form.disable")
-                : t("console-api-key.type.form.enable"),
-            icon: row.original.isEnabled ? "i-lucide-eye-off" : "i-lucide-eye",
-            onSelect: async () => {
-                if (!row.original.id) {
-                    console.error("行数据缺少 ID");
-                    return;
-                }
-                const isEnabled = row.original.isEnabled ? 0 : 1;
-                await updateApiKeyTypeStatus(row.original.id, { isEnabled });
-                toast.success(
-                    row.original.isEnabled
-                        ? t("console-api-key.type.disableSuccess")
-                        : t("console-api-key.type.enableSuccess"),
-                );
-                getLists();
-            },
-        },
-        {
+    });
+
+    if (row.original.type === "custom") {
+        items.push({
             label: t("console-api-key.type.form.delete"),
             icon: "i-lucide-trash",
             color: "error",
@@ -98,8 +109,10 @@ const getRowItems = (row: Row<KeyTemplateRequest>): DropdownMenuItem[] => {
                 }
                 handleDelete(row.original.id);
             },
-        },
-    ];
+        });
+    }
+
+    return items;
 };
 
 const handleSwitchChange = async (row: Row<KeyTemplateRequest>) => {
@@ -123,7 +136,7 @@ const handleSwitchChange = async (row: Row<KeyTemplateRequest>) => {
 /**
  * 提交表单
  */
-const handleSubmit = async (value: KeyTemplateRequest, id?: string) => {
+const handleSubmit = async (value: KeyTemplateFormData, id?: string) => {
     try {
         if (id) {
             await updateApiKeyType(id, value);
@@ -135,6 +148,18 @@ const handleSubmit = async (value: KeyTemplateRequest, id?: string) => {
         handleClose();
     } catch (error) {
         console.error("表单提交失败:", error);
+    }
+};
+
+// JSON导入
+const jsonSubmitForm = async (value: string) => {
+    try {
+        await importApiKeyType({ jsonData: value });
+        toast.success(t("console-api-key.type.edit.submitSuccess"));
+        getLists();
+        handleClose();
+    } catch (error) {
+        console.error("JSON导入失败:", error);
     }
 };
 
@@ -158,11 +183,20 @@ const handleDelete = async (id: string) => {
 };
 
 /**
+ * 打开编辑弹窗
+ */
+const handleOpenEdit = (isImport: boolean = false) => {
+    editKey.value = true;
+    isJsonImport.value = isImport;
+};
+
+/**
  * 关闭弹窗
  */
 const handleClose = () => {
     editKey.value = false;
     selectedKeyId.value = undefined;
+    isJsonImport.value = false;
 };
 
 // 初始化
@@ -173,9 +207,27 @@ onMounted(() => getLists());
         <!-- 顶部控制区域 -->
         <div class="flex items-center justify-between">
             <UInput v-model="searchForm.name" placeholder="请输入名称..." @change="getLists" />
-            <UButton color="primary" icon="i-lucide-plus" @click="editKey = true">{{
-                t("console-api-key.type.addType")
-            }}</UButton>
+            <UDropdownMenu
+                size="lg"
+                :items="[
+                    {
+                        label: t('console-ai-mcp-server.quickCreateTitle'),
+                        icon: 'i-heroicons-plus',
+                        color: 'primary',
+                        onSelect: () => handleOpenEdit(),
+                    },
+                    {
+                        label: t('console-ai-mcp-server.importTitle'),
+                        icon: 'i-lucide-file-json-2',
+                        color: 'primary',
+                        onSelect: () => handleOpenEdit(true),
+                    },
+                ]"
+            >
+                <UButton color="primary" icon="i-lucide-plus">
+                    {{ t("console-api-key.type.addType") }}
+                </UButton>
+            </UDropdownMenu>
         </div>
         <!-- 列表 -->
         <div class="flex-1 overflow-y-auto">
@@ -234,6 +286,13 @@ onMounted(() => getLists());
             </div>
         </div>
 
-        <ApiEdit v-if="editKey" :id="selectedKeyId" @close="handleClose" @submit="handleSubmit" />
+        <ApiEdit
+            v-if="editKey"
+            :id="selectedKeyId"
+            :is-json-import="isJsonImport"
+            @close="handleClose"
+            @json-submit="jsonSubmitForm"
+            @submit="handleSubmit"
+        />
     </div>
 </template>

@@ -209,17 +209,15 @@ onMounted(() => getLists());
         >
             <div class="flex items-center gap-3">
                 <UIcon name="i-lucide-loader-2" class="text-primary-500 h-6 w-6 animate-spin" />
-                <span class="text-accent-foreground dark:text-gray-400">{{
-                    $t("console-common.loading")
-                }}</span>
+                <span class="text-accent-foreground">{{ $t("console-common.loading") }}</span>
             </div>
         </div>
 
         <!-- 空状态 -->
         <div v-else class="flex h-[calc(100vh-10rem)] flex-col items-center justify-center">
-            <UIcon name="i-lucide-users" class="mb-4 h-16 w-16 text-gray-400" />
+            <UIcon name="i-lucide-users" class="text-muted-foreground mb-4 h-16 w-16" />
 
-            <p class="text-accent-foreground dark:text-gray-400">
+            <p class="text-accent-foreground">
                 {{ $t("console-user.noUsers") }}
             </p>
         </div>

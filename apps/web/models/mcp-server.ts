@@ -128,6 +128,7 @@ export interface CreateMcpServerRequest {
     isQuickMenu?: boolean;
     alias?: string;
     providerUrl?: string;
+    customHeaders?: string | Record<string, string>;
 }
 
 export interface ToolInfo {

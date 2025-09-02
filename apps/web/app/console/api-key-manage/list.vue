@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMessage, usePaging } from "@fastbuildai/ui";
+import { ProPaginaction, useMessage, usePaging } from "@fastbuildai/ui";
 import type { DropdownMenuItem } from "@nuxt/ui";
 import type { Row } from "@tanstack/table-core";
 import type { Table } from "@tanstack/vue-table";
@@ -23,6 +23,8 @@ const { t } = useI18n();
 const toast = useMessage();
 
 const UCheckbox = resolveComponent("UCheckbox");
+
+const table = useTemplateRef("table");
 
 // 选中的ID
 const selectedIds = ref<string[]>([]);
@@ -175,6 +177,9 @@ const handleDelete = async (id: string) => {
     getLists();
 };
 
+/**
+ * 切换状态
+ */
 const handleSwitchChange = async (row: Row<KeyConfigRequest>) => {
     if (!row.original.id) {
         console.error("行数据缺少 ID");
@@ -218,7 +223,6 @@ const handleSelectAll = (selected: boolean | "indeterminate") => {
         } else {
             selectedIds.value = [];
         }
-        console.log(selectedIds.value);
     }
 };
 
@@ -226,10 +230,15 @@ const handleSelectAll = (selected: boolean | "indeterminate") => {
  * 处理批量删除
  */
 const handleBatchDelete = async () => {
-    await deleteApiKeys(selectedIds.value);
-    selectedIds.value = [];
-    toast.success(t("console-api-key.list.deleteSuccess"));
-    getLists();
+    try {
+        await deleteApiKeys(selectedIds.value);
+        selectedIds.value = [];
+        table.value?.tableApi.toggleAllPageRowsSelected(false);
+        toast.success(t("console-api-key.list.batchDeleteSuccess"));
+        getLists();
+    } catch (error) {
+        console.error("批量删除失败:", error);
+    }
 };
 
 /**
@@ -258,7 +267,7 @@ const handleClose = () => {
 onMounted(() => getLists());
 </script>
 <template>
-    <div class="flex flex-col gap-4">
+    <div class="flex h-full flex-col gap-4">
         <!-- 顶部控制区域 -->
         <div class="flex items-center justify-between">
             <UInput :placeholder="t('console-api-key.list.placeholder')" />
@@ -277,8 +286,11 @@ onMounted(() => getLists());
             </div>
         </div>
         <!-- 列表 -->
-        <div>
+        <div class="flex-1 overflow-y-auto">
             <UTable
+                ref="table"
+                class="h-full"
+                sticky
                 :columns="columns"
                 :data="paging.items"
                 :ui="{
@@ -309,6 +321,19 @@ onMounted(() => getLists());
             </UTable>
         </div>
 
+        <!-- 分页 -->
+        <div class="bg-background flex items-center justify-end gap-3 py-4">
+            <div class="flex items-center gap-1.5">
+                <ProPaginaction
+                    v-model:page="paging.page"
+                    v-model:size="paging.pageSize"
+                    :total="paging.total"
+                    @change="getLists"
+                />
+            </div>
+        </div>
+
+        <!-- 编辑弹窗 -->
         <ListEdit v-if="editKey" :id="selectedKeyId" @close="handleClose" @submit="handleSubmit" />
     </div>
 </template>

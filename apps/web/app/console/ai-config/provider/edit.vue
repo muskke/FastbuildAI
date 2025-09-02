@@ -86,6 +86,16 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
     }
 });
 
+/**
+ * 将 boolean 类型的 isActive 转换为字符串类型，用于 URadioGroup 组件的双向绑定
+ */
+const isActiveString = computed({
+    get: () => String(formData.isActive),
+    set: (value: string) => {
+        formData.isActive = value === "true";
+    },
+});
+
 // 提交表单
 const { lockFn: submitForm, isLock } = useLockFn(async () => {
     try {
@@ -207,24 +217,39 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                         />
                     </UFormField>
                 </div>
-
-                <!-- 模型类型 -->
-                <UFormField
-                    :label="t('console-ai-provider.form.modelType')"
-                    name="supportedModelTypes"
-                    required
-                >
-                    <UInputMenu
-                        :disabled="detail?.isBuiltIn"
-                        v-model="formData.supportedModelTypes"
-                        open-on-click
-                        multiple
-                        value-key="value"
-                        :items="allModelTypes"
-                        :ui="{ root: 'w-full' }"
+                <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
+                    <URadioGroup
+                        class="my-2"
+                        v-model="isActiveString"
+                        :items="[
+                            { label: t('console-ai-provider.form.isActiveEnabled'), value: 'true' },
+                            {
+                                label: t('console-ai-provider.form.isActiveDisabled'),
+                                value: 'false',
+                            },
+                        ]"
+                        orientation="horizontal"
+                        color="primary"
                     />
                 </UFormField>
             </div>
+
+            <!-- 模型类型 -->
+            <UFormField
+                :label="t('console-ai-provider.form.modelType')"
+                name="supportedModelTypes"
+                required
+            >
+                <UInputMenu
+                    :disabled="detail?.isBuiltIn"
+                    v-model="formData.supportedModelTypes"
+                    open-on-click
+                    multiple
+                    value-key="value"
+                    :items="allModelTypes"
+                    :ui="{ root: 'w-full' }"
+                />
+            </UFormField>
 
             <!-- 描述 -->
             <div class="pb-2">
@@ -237,20 +262,6 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                     />
                 </UFormField>
             </div>
-
-            <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
-                <USwitch
-                    v-model="formData.isActive"
-                    unchecked-icon="i-lucide-x"
-                    checked-icon="i-lucide-check"
-                    size="lg"
-                    :label="
-                        formData.isActive
-                            ? t('console-ai-provider.form.isActiveEnabled')
-                            : t('console-ai-provider.form.isActiveDisabled')
-                    "
-                />
-            </UFormField>
 
             <!-- 操作按钮 -->
             <div class="bottom-0 z-10 flex justify-end gap-2 py-4">
