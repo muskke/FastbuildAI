@@ -227,7 +227,7 @@ onMounted(() => getLists());
                         :src="row.original.icon"
                         :alt="row.original.name"
                         size="md"
-                        :ui="{ image: 'rounded-lg', fallback: 'text-inherit font-medium' }"
+                        :ui="{ image: 'rounded-lg', fallback: 'text-inverted font-medium' }"
                         :class="[row.original.icon ? '' : 'bg-primary']"
                     />
                 </template>

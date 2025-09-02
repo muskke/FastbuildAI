@@ -101,12 +101,42 @@ export class KeyConfigService extends BaseService<KeyConfig> {
             throw HttpExceptionFactory.notFound("密钥配置不存在");
         }
 
-        // 如果更新了配置名称，检查在相同模板下新的配置名称是否已存在
-        if (updateKeyConfigDto.name && updateKeyConfigDto.name !== config.name) {
+        // 检查是否更新了模板ID
+        let templateToUse = config.template;
+        if (updateKeyConfigDto.templateId && updateKeyConfigDto.templateId !== config.templateId) {
+            // 获取新的模板
+            const newTemplate = await this.keyTemplateRepository.findOne({
+                where: { id: updateKeyConfigDto.templateId, isEnabled: BooleanNumber.YES },
+            });
+
+            if (!newTemplate) {
+                throw HttpExceptionFactory.business("所选模板不存在或已被禁用");
+            }
+
+            templateToUse = newTemplate;
+
+            // 检查在新模板下配置名称是否已存在
+            const nameToCheck = updateKeyConfigDto.name || config.name;
+            const existConfig = await super.findOne({
+                where: {
+                    name: nameToCheck,
+                    templateId: updateKeyConfigDto.templateId,
+                    id: Raw((alias) => `${alias} != '${id}'`), // 排除当前配置
+                },
+            });
+
+            if (existConfig) {
+                throw HttpExceptionFactory.business(
+                    `在模板 ${newTemplate.name} 下，配置名称 ${nameToCheck} 已存在`,
+                );
+            }
+        } else if (updateKeyConfigDto.name && updateKeyConfigDto.name !== config.name) {
+            // 如果只更新了配置名称，检查在相同模板下新的配置名称是否已存在
             const existConfig = await super.findOne({
                 where: {
                     name: updateKeyConfigDto.name,
                     templateId: config.templateId,
+                    id: Raw((alias) => `${alias} != '${id}'`), // 排除当前配置
                 },
             });
 
@@ -117,12 +147,20 @@ export class KeyConfigService extends BaseService<KeyConfig> {
             }
         }
 
-        // 如果更新了字段值，验证与模板的匹配性
-        if (updateKeyConfigDto.fieldValues) {
-            this.validateFieldValues(updateKeyConfigDto.fieldValues, config.template.fieldConfig);
-            updateKeyConfigDto.fieldValues = this.processFieldValues(
-                updateKeyConfigDto.fieldValues,
-            );
+        // 如果更新了字段值或模板ID，验证与模板的匹配性
+        if (
+            updateKeyConfigDto.fieldValues ||
+            (updateKeyConfigDto.templateId && updateKeyConfigDto.templateId !== config.templateId)
+        ) {
+            // 如果更新了模板但没有提供新的字段值，则使用原有的字段值进行校验
+            const fieldValuesToValidate = updateKeyConfigDto.fieldValues || config.fieldValues;
+            this.validateFieldValues(fieldValuesToValidate, templateToUse.fieldConfig);
+
+            if (updateKeyConfigDto.fieldValues) {
+                updateKeyConfigDto.fieldValues = this.processFieldValues(
+                    updateKeyConfigDto.fieldValues,
+                );
+            }
         }
 
         return await super.updateById(id, updateKeyConfigDto);
@@ -444,8 +482,13 @@ export class KeyConfigService extends BaseService<KeyConfig> {
                 throw HttpExceptionFactory.paramError(`字段 "${fieldValue.name}" 不存在于模板中`);
             }
 
-            // 对于必填字段，只验证字段是否存在，允许空值保存
-            // 移除对空字符串的验证，允许保存空值
+            // 对于必填字段，验证值不能为空
+            if (templateField.required) {
+                const value = fieldValue.value;
+                if (value === undefined || value === null || value === '') {
+                    throw HttpExceptionFactory.paramError(`必填字段 "${templateField.label || fieldValue.name}" 的值不能为空`);
+                }
+            }
         }
     }
 
