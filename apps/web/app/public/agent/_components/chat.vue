@@ -654,7 +654,7 @@ useHead({
                 <!-- 输入区域 -->
                 <div class="w-full max-w-[800px] p-4 lg:py-2">
                     <!-- 快捷指令 -->
-                    <div v-if="agent.quickCommands?.length" class="mb-3 px-4">
+                    <div v-if="agent.quickCommands?.length" class="mb-3">
                         <div class="flex flex-wrap gap-2">
                             <UButton
                                 v-for="item in agent.quickCommands"

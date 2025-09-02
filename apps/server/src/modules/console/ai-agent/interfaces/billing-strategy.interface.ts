@@ -29,6 +29,10 @@ export class NoBillingStrategy implements BillingStrategy {
     }
 }
 
+/**
+ * 扣用户费用策略 - 根据用户类型智能决定
+ * 匿名用户扣分享者钱，真实用户扣用户钱
+ */
 export class SmartUserBillingStrategy implements BillingStrategy {
     async determineBillTo(
         agent: Agent,
