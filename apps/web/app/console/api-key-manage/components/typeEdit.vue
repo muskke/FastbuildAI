@@ -236,7 +236,6 @@ const correctJson = `{
     "fieldConfig":[
         {
             "name":"apiKey",
-            "label":"APIKey",
             "type":"text",
             "required":true/false,
             "placeholder":"Please enter APIKey"
@@ -250,7 +249,6 @@ const jsonImportTemplate = `{
     "fieldConfig":[
         {
             "name":"apiKey",
-            "label":"APIKey",
             "type":"text",
             "required":true,
             "placeholder":"Please enter APIKey"
