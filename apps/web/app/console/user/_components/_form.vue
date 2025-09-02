@@ -12,6 +12,7 @@ import type { UserCreateRequest } from "@/models/user";
 import { apiGetAllRoleList } from "@/services/console/role";
 
 import { apiGetUserRolesList, apiUpdateUserAmount } from "../../../../services/console/user";
+import EditPower from "./editPower.vue";
 
 // 引入国际化
 const { t } = useI18n();
@@ -39,6 +40,8 @@ const emit = defineEmits<{
     (e: "submit-success", data: UserCreateRequest): void;
     /** 取消事件 */
     (e: "cancel"): void;
+    /** 刷新事件 */
+    (e: "refresh"): void;
 }>();
 
 const message = useMessage();
@@ -52,54 +55,14 @@ const { userNo, ...filteredInitialData } = props.initialData || {};
 const editPower = ref(false);
 
 /**
- * 算力调整表单数据
+ * 处理编辑算力组件关闭事件
+ * @param refresh 是否需要刷新数据
  */
-const powerAdjustForm = reactive({
-    type: 1, // 1: 增加, 0: 扣减
-    amount: 0, // 调整数量
-});
-
-/**
- * 调整后的算力
- */
-const adjustedPower = computed(() => {
-    const currentPower = Number(formData.power) || 0;
-    const adjustAmount = Number(powerAdjustForm.amount) || 0;
-
-    if (powerAdjustForm.type === 1) {
-        return currentPower + adjustAmount;
-    } else {
-        return Math.max(0, currentPower - adjustAmount);
-    }
-});
-
-/**
- * 取消算力编辑
- */
-const handleCancelPowerEdit = () => {
+const handleEditPowerClose = (refresh?: boolean) => {
     editPower.value = false;
-    // 重置表单数据
-    powerAdjustForm.type = 1;
-    powerAdjustForm.amount = 0;
-};
-
-/**
- * 确认算力编辑
- */
-const handleConfirmPowerEdit = async () => {
-    if (!powerAdjustForm.amount || powerAdjustForm.amount <= 0) {
-        message.warning(t("console-user.messages.adjustAmountInput"));
-        return;
+    if (refresh) {
+        emit("refresh");
     }
-    await apiUpdateUserAmount(props.id as string, powerAdjustForm.amount, powerAdjustForm.type);
-    // 更新算力值
-    formData.power = adjustedPower.value;
-
-    message.success(
-        `${powerAdjustForm.type === 1 ? t("console-user.form.add") : t("console-user.form.reduce")}${t("console-user.messages.success")}`,
-    );
-    // 关闭弹窗并重置表单
-    handleCancelPowerEdit();
 };
 
 // 表单数据
@@ -474,69 +437,10 @@ onMounted(() => getRoleList());
         </UForm>
 
         <!-- 编辑算力 -->
-        <ProModal
-            :model-value="editPower"
-            :title="t('console-user.form.editPower')"
-            :ui="{
-                content: 'max-w-sm overflow-y-auto h-fit',
-            }"
-            @close="editPower = false"
-        >
-            <UForm :state="powerAdjustForm" class="space-y-4" @submit="handleConfirmPowerEdit">
-                <UFormField :label="t('console-user.form.currentPower')" name="currentPower">
-                    <UInput
-                        :model-value="formData.power"
-                        size="lg"
-                        disabled
-                        variant="subtle"
-                        class="w-full"
-                        type="number"
-                    />
-                </UFormField>
-
-                <UFormField :label="t('console-user.form.powerAdjust')" name="type">
-                    <URadioGroup
-                        v-model="powerAdjustForm.type"
-                        :items="[
-                            { label: t('console-user.form.add'), value: 1 },
-                            { label: t('console-user.form.reduce'), value: 0 },
-                        ]"
-                        orientation="horizontal"
-                        color="primary"
-                    />
-                </UFormField>
-
-                <UFormField :label="t('console-user.form.adjustAmount')" name="amount">
-                    <UInput
-                        v-model="powerAdjustForm.amount"
-                        :placeholder="t('console-user.form.adjustAmountInput')"
-                        size="lg"
-                        class="w-full"
-                        type="number"
-                        min="0"
-                    />
-                </UFormField>
-
-                <UFormField :label="t('console-user.form.adjustedPower')" name="adjustedPower">
-                    <UInput
-                        :model-value="adjustedPower"
-                        size="lg"
-                        disabled
-                        variant="subtle"
-                        class="w-full"
-                        type="number"
-                    />
-                </UFormField>
-
-                <div class="flex justify-end gap-2">
-                    <UButton color="neutral" variant="soft" @click="handleCancelPowerEdit">
-                        {{ t("console-common.cancel") }}
-                    </UButton>
-                    <UButton color="primary" type="submit">
-                        {{ t("console-common.confirm") }}
-                    </UButton>
-                </div>
-            </UForm>
-        </ProModal>
+        <EditPower
+            v-if="editPower && props.id"
+            :user="{ id: props.id, power: formData.power }"
+            @close="handleEditPowerClose"
+        />
     </div>
 </template>

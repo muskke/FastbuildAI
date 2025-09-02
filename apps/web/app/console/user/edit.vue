@@ -95,6 +95,7 @@ onMounted(() => getUserDetail());
             :is-edit="true"
             :id="userId"
             :initial-data="initialData"
+            @refresh="getUserDetail"
             @submit-success="handleSubmit"
             @cancel="handleCancel"
         />

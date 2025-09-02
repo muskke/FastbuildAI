@@ -103,6 +103,8 @@ const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
         console.error("聊天错误:", message);
     },
     onFinish(message) {
+        const userStore = useUserStore();
+        userStore.getUser();
         refreshNuxtData("chats");
         refreshNuxtData(`chat-detail-${currentConversationId.value}`);
     },
