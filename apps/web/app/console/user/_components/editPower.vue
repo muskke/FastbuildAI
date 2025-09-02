@@ -57,6 +57,12 @@ const handleConfirmPowerEdit = async () => {
         // 调用API接口调整用户余额
         await apiUpdateUserAmount(props.user.id, powerAdjustForm.amount, powerAdjustForm.type);
 
+        const userStore = useUserStore();
+
+        if (userStore.userInfo?.id === props.user?.id) {
+            userStore.getUser();
+        }
+
         toast.success(t("console-user.form.adjustPowerSuccess"));
         emits("close", true);
     } catch (error) {
