@@ -236,26 +236,28 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                         />
                     </UFormField>
                 </div>
-                <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
-                    <div class="flex h-8 items-center">
-                        <URadioGroup
-                            class="my-2"
-                            v-model="isActiveString"
-                            :items="[
-                                {
-                                    label: t('console-ai-provider.form.isActiveEnabled'),
-                                    value: 'true',
-                                },
-                                {
-                                    label: t('console-ai-provider.form.isActiveDisabled'),
-                                    value: 'false',
-                                },
-                            ]"
-                            orientation="horizontal"
-                            color="primary"
-                        />
-                    </div>
-                </UFormField>
+                <div class="flex flex-col justify-center">
+                    <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
+                        <div class="flex h-8 items-center">
+                            <URadioGroup
+                                class="my-2"
+                                v-model="isActiveString"
+                                :items="[
+                                    {
+                                        label: t('console-ai-provider.form.isActiveEnabled'),
+                                        value: 'true',
+                                    },
+                                    {
+                                        label: t('console-ai-provider.form.isActiveDisabled'),
+                                        value: 'false',
+                                    },
+                                ]"
+                                orientation="horizontal"
+                                color="primary"
+                            />
+                        </div>
+                    </UFormField>
+                </div>
             </div>
 
             <!-- 模型类型 -->
