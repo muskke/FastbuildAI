@@ -1,4 +1,5 @@
 import type {
+    KeyTemplateFormData,
     KeyTemplateList,
     KeyTemplateListParams,
     KeyTemplateRequest,
@@ -7,7 +8,7 @@ import type {
 /**
  * 创建API密钥模板
  */
-export const createApiKeyType = (data: KeyTemplateRequest) => {
+export const createApiKeyType = (data: KeyTemplateFormData) => {
     return useConsolePost("/key-templates", data);
 };
 
@@ -28,7 +29,7 @@ export const getApiKeyTypeListAll = (): Promise<KeyTemplateRequest[]> => {
 /**
  * 更新API密钥模板
  */
-export const updateApiKeyType = (id: string, data: KeyTemplateRequest) => {
+export const updateApiKeyType = (id: string, data: KeyTemplateFormData) => {
     return useConsolePatch(`/key-templates/${id}`, data);
 };
 
