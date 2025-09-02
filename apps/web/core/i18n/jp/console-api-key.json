@@ -1,15 +1,9 @@
 {
     "type": {
         "addType": "新しいタイプを追加",
-        "deleteSuccess": "テンプレートの削除に成功しました",
-        "enableSuccess": "テンプレートの有効化に成功しました",
-        "disableSuccess": "テンプレートの無効化に成功しました",
         "form": {
-            "icon": "アイコン",
             "name": "タイプ名",
-            "type": "タイプ",
-            "system": "システム内蔵",
-            "custom": "カスタマイズ",
+            "fieldName": "フィールド名",
             "isActived": "使用しますか？",
             "createdAt": "作成時間",
             "action": "操作",
@@ -19,7 +13,6 @@
             "disable": "禁止"
         },
         "edit": {
-            "icon": "アイコン",
             "title": "編集タイプ",
             "name": "タイプ名",
             "status": "状態",
@@ -30,17 +23,12 @@
             "fieldType": "フィールドタイプ",
             "singleLineText": "単一行のテキスト",
             "multiLineText": "マルチラインテキスト",
-            "number": "数値タイプ",
             "fieldExample": "サンプル文字",
-            "fieldRequired": "必須ですか？",
-            "submitSuccess": "提出が成功しました",
             "action": "操作",
             "add": "追加",
             "nameRequired": "フィールド名を入力してください",
             "typeValueRequired": "フィールドタイプを選択してください",
             "exampleRequired": "例の文字を入力してください",
-            "copyTemplate": "テンプレートをコピー",
-            "copySuccess": "テンプレートのサンプルがクリップボードにコピーされました",
             "toast": {
                 "nameRequired": "タイプ名は空であってはいけません",
                 "customFieldRequired": "カスタムフィールドは空にできません",
@@ -56,10 +44,6 @@
         "add": "新しいキーを追加",
         "batchDelete": "バルク削除",
         "placeholder": "名前を入力してください...",
-        "enableSuccess": "有効化成功",
-        "disableSuccess": "禁用に成功しました",
-        "deleteSuccess": "削除が成功しました",
-        "batchDeleteSuccess": "バッチ削除に成功しました",
         "form": {
             "name": "キー名",
             "keyType": "キーの種類",
@@ -79,7 +63,6 @@
             "remark": "備考",
             "nameRequired": "キーの名前を入力してください",
             "keyTypeRequired": "キータイプを選択してください",
-            "submitSuccess": "提出が成功しました",
             "remarkRequired": "備考を入力してください",
             "fieldRequired": "入力してください"
         }
