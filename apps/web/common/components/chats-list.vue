@@ -212,6 +212,9 @@ defineOptions({ inheritAttrs: false });
                         size="lg"
                         class="flex-1"
                         @click="handleNewChat"
+                        :ui="{
+                            leadingIcon: 'size-4',
+                        }"
                     >
                         {{ t("common.chat.newChat") }}
                     </UButton>
