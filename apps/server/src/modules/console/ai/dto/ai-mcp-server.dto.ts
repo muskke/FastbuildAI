@@ -122,6 +122,13 @@ export class CreateAiMcpServerDto {
     @IsOptional()
     @IsUUID(undefined, { message: "用户ID必须是有效的UUID" })
     userId?: string;
+
+    /**
+     * 自定义请求头
+     */
+    @IsOptional()
+    @IsObject({ message: "自定义请求头必须是对象" })
+    customHeaders?: Record<string, string>;
 }
 
 /**
@@ -177,6 +184,13 @@ export class McpServerUrlConfig {
     @IsNotEmpty({ message: "服务URL不能为空" })
     @IsString({ message: "服务URL必须是字符串" })
     url: string;
+
+    /**
+     * 自定义请求头
+     */
+    @IsOptional()
+    @IsObject({ message: "自定义请求头必须是对象" })
+    customHeaders?: Record<string, string>;
 }
 
 /**

@@ -169,6 +169,7 @@ export class AiMcpServerService extends BaseService<AiMcpServer> {
                     const updated = await this.updateById(existServer.id, {
                         url,
                         creatorId,
+                        customHeaders: config.customHeaders,
                     });
                     // 添加状态标记
                     results.push({
@@ -183,6 +184,7 @@ export class AiMcpServerService extends BaseService<AiMcpServer> {
                         type: McpServerType.SYSTEM,
                         url,
                         creatorId,
+                        customHeaders: config.customHeaders,
                         description: `从JSON导入的MCP服务: ${name}`,
                         icon: "",
                         sortOrder: 0,
@@ -273,6 +275,7 @@ export class AiMcpServerService extends BaseService<AiMcpServer> {
                 url: mcpServer.url,
                 name: mcpServer.name,
                 description: mcpServer.description,
+                customHeaders: mcpServer.customHeaders,
             });
 
             // 尝试连接
