@@ -99,9 +99,9 @@ export class AiProviderController extends BaseController {
             }
 
             // 检查当前 apiKey 和更新的 apiKey
-            const finalBindKeyConfig =
-                dto.bindKeyConfig !== undefined ? dto.bindKeyConfig : provider.bindKeyConfig;
-            if (!finalBindKeyConfig || finalBindKeyConfig.trim() === "") {
+            const finalbindKeyConfigId =
+                dto.bindKeyConfigId !== undefined ? dto.bindKeyConfigId : provider.bindKeyConfigId;
+            if (!finalbindKeyConfigId || finalbindKeyConfigId.trim() === "") {
                 throw HttpExceptionFactory.business("请先完善密钥配置后再启用供应商");
             }
         }
@@ -223,7 +223,7 @@ export class AiProviderController extends BaseController {
             throw HttpExceptionFactory.business("AI供应商不存在");
         }
 
-        if (!provider.bindKeyConfig || provider.bindKeyConfig.trim() === "") {
+        if (!provider.bindKeyConfigId || provider.bindKeyConfigId.trim() === "") {
             throw HttpExceptionFactory.business("请先完善密钥配置后再启用供应商");
         }
 
