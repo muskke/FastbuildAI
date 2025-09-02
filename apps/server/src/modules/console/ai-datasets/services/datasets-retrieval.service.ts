@@ -497,7 +497,7 @@ export class DatasetsRetrievalService {
 
         try {
             const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
-                rerankModel.provider.bindKeyConfig,
+                rerankModel.provider.bindKeyConfigId,
             );
 
             const adapter = getProvider(rerankModel.provider.provider, {
@@ -536,7 +536,7 @@ export class DatasetsRetrievalService {
      */
     private async generateEmbedding(query: string, model: any): Promise<number[]> {
         const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
-            model.provider.bindKeyConfig,
+            model.provider.bindKeyConfigId,
         );
         const adapter = getProvider(model.provider.provider, {
             apiKey: getProviderKeyConfig("apiKey", providerKeyConfig),

@@ -3,6 +3,7 @@ import { BooleanNumber, BooleanNumberType } from "@common/constants";
 import { BusinessCode } from "@common/constants/business-code.constant";
 import { PaginationDto } from "@common/dto/pagination.dto";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
+import { AiProviderService } from "@modules/console/ai/services/ai-provider.service";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Like, Raw, Repository } from "typeorm";
@@ -31,6 +32,7 @@ export class KeyConfigService extends BaseService<KeyConfig> {
         private readonly keyConfigRepository: Repository<KeyConfig>,
         @InjectRepository(KeyTemplate)
         private readonly keyTemplateRepository: Repository<KeyTemplate>,
+        private readonly aiProviderService: AiProviderService,
     ) {
         super(keyConfigRepository);
     }
@@ -229,6 +231,91 @@ export class KeyConfigService extends BaseService<KeyConfig> {
         }
 
         return await super.updateById(id, { status });
+    }
+
+    /**
+     * 删除密钥配置
+     * @param id 密钥配置ID
+     */
+    async delete(id: string): Promise<void> {
+        // 先查询密钥配置是否存在
+        const config = await super.findOneById(id);
+        if (!config) {
+            throw HttpExceptionFactory.notFound("密钥配置不存在");
+        }
+
+        try {
+            // 查询并更新所有绑定了该密钥配置的AI供应商
+            const aiProviders = await this.aiProviderService.findAll({
+                where: { bindKeyConfigId: id },
+            });
+
+            // 清除所有供应商的bindKeyConfigId
+            for (const provider of aiProviders) {
+                await this.aiProviderService.updateById(provider.id, {
+                    bindKeyConfigId: null,
+                    // 如果供应商处于激活状态，则设置为非激活
+                    isActive: false,
+                });
+                this.logger.log(`已清除AI供应商 ${provider.name}(${provider.id}) 的密钥配置绑定`);
+            }
+
+            // 删除密钥配置
+            await super.delete(id);
+            this.logger.log(`密钥配置 ${id} 删除成功`);
+        } catch (error) {
+            this.logger.error(`删除密钥配置失败: ${error.message}`, error.stack);
+            throw HttpExceptionFactory.internal("删除密钥配置失败");
+        }
+    }
+
+    /**
+     * 批量删除密钥配置
+     * @param ids 密钥配置ID数组
+     * @returns 成功删除的数量
+     */
+    async batchDelete(ids: string[]): Promise<number> {
+        if (!ids || ids.length === 0) {
+            return 0;
+        }
+
+        let successCount = 0;
+        const errors = [];
+
+        for (const id of ids) {
+            try {
+                // 查询并更新所有绑定了该密钥配置的AI供应商
+                const aiProviders = await this.aiProviderService.findAll({
+                    where: { bindKeyConfigId: id },
+                });
+
+                // 清除所有供应商的bindKeyConfigId
+                for (const provider of aiProviders) {
+                    await this.aiProviderService.updateById(provider.id, {
+                        bindKeyConfigId: null,
+                        // 如果供应商处于激活状态，则设置为非激活
+                        isActive: false,
+                    });
+                    this.logger.log(
+                        `已清除AI供应商 ${provider.name}(${provider.id}) 的密钥配置绑定`,
+                    );
+                }
+
+                // 删除密钥配置
+                await super.delete(id);
+                this.logger.log(`密钥配置 ${id} 删除成功`);
+                successCount++;
+            } catch (error) {
+                this.logger.error(`删除密钥配置 ${id} 失败: ${error.message}`, error.stack);
+                errors.push({ id, message: error.message });
+            }
+        }
+
+        if (errors.length > 0 && successCount === 0) {
+            throw HttpExceptionFactory.internal(`批量删除密钥配置失败: ${JSON.stringify(errors)}`);
+        }
+
+        return successCount;
     }
 
     /**

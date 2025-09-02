@@ -72,7 +72,7 @@ export class AiProvider {
         nullable: true,
         comment: "绑定的密钥配置",
     })
-    bindKeyConfig?: string;
+    bindKeyConfigId?: string;
 
     /**
      * 供应商图标URL

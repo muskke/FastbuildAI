@@ -111,7 +111,7 @@ export class AiChatMessageController extends BaseController {
             }
 
             const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
-                model.provider.bindKeyConfig,
+                model.provider.bindKeyConfigId,
             );
 
             const provider = getProvider(model.provider.provider, {
@@ -594,7 +594,7 @@ export class AiChatMessageController extends BaseController {
             }
 
             const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
-                model.provider.bindKeyConfig,
+                model.provider.bindKeyConfigId,
             );
 
             const provider = getProvider(model.provider.provider, {
@@ -1142,8 +1142,8 @@ export class AiChatMessageController extends BaseController {
             }
 
             const provider = getProvider(model.provider.provider, {
-                apiKey: getProviderKeyConfig("apiKey", model.provider.bindKeyConfig),
-                baseURL: getProviderKeyConfig("baseUrl", model.provider.bindKeyConfig),
+                apiKey: getProviderKeyConfig("apiKey", model.provider.bindKeyConfigId),
+                baseURL: getProviderKeyConfig("baseUrl", model.provider.bindKeyConfigId),
                 timeout: 10000,
             });
 

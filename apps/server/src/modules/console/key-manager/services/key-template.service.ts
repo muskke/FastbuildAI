@@ -10,10 +10,11 @@ import { Like, Repository } from "typeorm";
 
 import {
     CreateKeyTemplateDto,
+    ImportKeyTemplateJsonDto,
     QueryKeyTemplateDto,
     UpdateKeyTemplateDto,
 } from "../dto/key-template.dto";
-import { KeyTemplate } from "../entities/key-template.entity";
+import { KeyTemplate, KeyTemplateType } from "../entities/key-template.entity";
 
 /**
  * 密钥模板服务
@@ -236,6 +237,78 @@ export class KeyTemplateService extends BaseService<KeyTemplate> {
                     `字段名称 "${field.name}" 格式不正确，只允许字母、数字、下划线，且不能以数字开头`,
                 );
             }
+        }
+    }
+
+    /**
+     * 通过导入JSON创建密钥模板
+     * @param importDto 导入JSON的DTO
+     * @returns 创建的密钥模板列表
+     */
+    async importFromJson(importDto: ImportKeyTemplateJsonDto): Promise<Partial<KeyTemplate>[]> {
+        try {
+            // 解析JSON数据
+            const jsonData = JSON.parse(importDto.jsonData);
+
+            // 判断是单个模板还是模板数组
+            const templateDataArray = Array.isArray(jsonData) ? jsonData : [jsonData];
+
+            if (templateDataArray.length === 0) {
+                throw HttpExceptionFactory.paramError("JSON数据不包含有效的模板信息");
+            }
+
+            const results: Partial<KeyTemplate>[] = [];
+
+            // 逐个处理模板数据
+            for (const templateData of templateDataArray) {
+                // 验证必要字段
+                if (!templateData.name || !templateData.fieldConfig) {
+                    throw HttpExceptionFactory.paramError(
+                        "模板数据缺少必要字段：name或fieldConfig",
+                    );
+                }
+
+                // 构建CreateKeyTemplateDto对象
+                const createDto: CreateKeyTemplateDto = {
+                    name: templateData.name,
+                    type: templateData.type || KeyTemplateType.CUSTOM,
+                    fieldConfig: templateData.fieldConfig,
+                    isEnabled:
+                        templateData.isEnabled !== undefined
+                            ? templateData.isEnabled
+                            : BooleanNumber.YES,
+                    sortOrder: templateData.sortOrder || 0,
+                };
+
+                // 验证字段配置
+                this.validateFieldConfig(createDto.fieldConfig);
+
+                // 检查模板名称是否已存在
+                const existTemplate = await super.findOne({
+                    where: { name: createDto.name },
+                });
+
+                if (existTemplate) {
+                    throw HttpExceptionFactory.business(
+                        `模板名称 ${createDto.name} 已存在`,
+                        BusinessCode.DATA_ALREADY_EXISTS,
+                    );
+                }
+
+                // 创建模板
+                const result = await super.create(createDto);
+                results.push(result);
+            }
+
+            return results;
+        } catch (error) {
+            // 处理JSON解析错误
+            if (error instanceof SyntaxError) {
+                throw HttpExceptionFactory.paramError("JSON格式不正确，无法解析");
+            }
+
+            // 抛出其他错误
+            throw error;
         }
     }
 }
