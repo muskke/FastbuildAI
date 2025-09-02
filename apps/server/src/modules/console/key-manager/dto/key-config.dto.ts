@@ -101,9 +101,7 @@ export class CreateKeyConfigDto {
  * 更新密钥配置DTO
  * 排除了 templateId 字段，更新时不允许修改所属模板
  */
-export class UpdateKeyConfigDto extends PartialType(
-    OmitType(CreateKeyConfigDto, ["templateId"] as const),
-) {}
+export class UpdateKeyConfigDto extends PartialType(CreateKeyConfigDto) {}
 
 /**
  * 查询密钥配置DTO
