@@ -5,7 +5,7 @@ import type { Row } from "@tanstack/table-core";
 import { useI18n } from "vue-i18n";
 
 import TimeDisplay from "@/common/components/time-display.vue";
-import type { KeyTemplateRequest } from "@/models/key-templates";
+import type { KeyTemplateFormData, KeyTemplateRequest } from "@/models/key-templates";
 import {
     createApiKeyType,
     deleteApiKeyType,
@@ -58,36 +58,42 @@ const selectedKeyId = ref<string | undefined>(undefined);
  * 获取行操作
  */
 const getRowItems = (row: Row<KeyTemplateRequest>): DropdownMenuItem[] => {
-    return [
-        {
+    const items: DropdownMenuItem[] = [];
+
+    if (row.original.type === "custom") {
+        items.push({
             label: t("console-api-key.type.form.edit"),
             icon: "i-lucide-edit",
             onClick: () => {
                 editKey.value = true;
                 selectedKeyId.value = row.original.id;
             },
+        });
+    }
+
+    items.push({
+        label: row.original.isEnabled
+            ? t("console-api-key.type.form.disable")
+            : t("console-api-key.type.form.enable"),
+        icon: row.original.isEnabled ? "i-lucide-eye-off" : "i-lucide-eye",
+        onSelect: async () => {
+            if (!row.original.id) {
+                console.error("行数据缺少 ID");
+                return;
+            }
+            const isEnabled = row.original.isEnabled ? 0 : 1;
+            await updateApiKeyTypeStatus(row.original.id, { isEnabled });
+            toast.success(
+                row.original.isEnabled
+                    ? t("console-api-key.type.disableSuccess")
+                    : t("console-api-key.type.enableSuccess"),
+            );
+            getLists();
         },
-        {
-            label: row.original.isEnabled
-                ? t("console-api-key.type.form.disable")
-                : t("console-api-key.type.form.enable"),
-            icon: row.original.isEnabled ? "i-lucide-eye-off" : "i-lucide-eye",
-            onSelect: async () => {
-                if (!row.original.id) {
-                    console.error("行数据缺少 ID");
-                    return;
-                }
-                const isEnabled = row.original.isEnabled ? 0 : 1;
-                await updateApiKeyTypeStatus(row.original.id, { isEnabled });
-                toast.success(
-                    row.original.isEnabled
-                        ? t("console-api-key.type.disableSuccess")
-                        : t("console-api-key.type.enableSuccess"),
-                );
-                getLists();
-            },
-        },
-        {
+    });
+
+    if (row.original.type === "custom") {
+        items.push({
             label: t("console-api-key.type.form.delete"),
             icon: "i-lucide-trash",
             color: "error",
@@ -98,8 +104,10 @@ const getRowItems = (row: Row<KeyTemplateRequest>): DropdownMenuItem[] => {
                 }
                 handleDelete(row.original.id);
             },
-        },
-    ];
+        });
+    }
+
+    return items;
 };
 
 const handleSwitchChange = async (row: Row<KeyTemplateRequest>) => {
@@ -123,7 +131,7 @@ const handleSwitchChange = async (row: Row<KeyTemplateRequest>) => {
 /**
  * 提交表单
  */
-const handleSubmit = async (value: KeyTemplateRequest, id?: string) => {
+const handleSubmit = async (value: KeyTemplateFormData, id?: string) => {
     try {
         if (id) {
             await updateApiKeyType(id, value);
