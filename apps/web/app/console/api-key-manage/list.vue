@@ -129,27 +129,6 @@ const getRowItems = (row: Row<any>): DropdownMenuItem[] => {
             },
         },
         {
-            label: row.original.status
-                ? t("console-api-key.list.form.disable")
-                : t("console-api-key.list.form.enable"),
-            icon: row.original.status ? "i-lucide-eye-off" : "i-lucide-eye",
-            onSelect: async () => {
-                try {
-                    await updateApiKeyStatus(row.original.id, {
-                        status: row.original.status ? 0 : 1,
-                    });
-                    toast.success(
-                        row.original.status
-                            ? t("console-api-key.list.disableSuccess")
-                            : t("console-api-key.list.enableSuccess"),
-                    );
-                    getLists();
-                } catch (error) {
-                    console.error(error);
-                }
-            },
-        },
-        {
             label: t("console-api-key.list.form.delete"),
             icon: "i-lucide-trash",
             color: "error",

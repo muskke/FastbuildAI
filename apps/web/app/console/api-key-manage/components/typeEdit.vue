@@ -37,12 +37,16 @@ const formData = reactive<KeyTemplateFormData>({
             placeholder: "",
         },
     ],
+    type: "",
 });
 
 const jsonFormData = reactive({
     jsonImport: "",
 });
 
+/**
+ * 获取详情
+ */
 const fetchDetail = async () => {
     try {
         const data: KeyTemplateRequest = await getApiKeyTemplateDetail(props.id as string);
@@ -259,7 +263,8 @@ const copyJson = () => {
  * 处理表单提交
  */
 const handleSubmit = () => {
-    emits("submit", formData, props.id);
+    const { type, ...newformData } = formData;
+    emits("submit", newformData, props.id);
 };
 
 onMounted(async () => {
@@ -283,6 +288,7 @@ onMounted(async () => {
             :state="formData"
             :schema="schema"
             class="space-y-4"
+            :disabled="formData.type === 'system'"
             @submit="handleSubmit"
         >
             <div class="grid grid-cols-2 items-center gap-4">
@@ -302,6 +308,7 @@ onMounted(async () => {
                     <UFormField :label="t('console-api-key.type.edit.name')" name="name" required>
                         <UInput
                             v-model="formData.name"
+                            class="w-full"
                             :placeholder="t('console-api-key.type.edit.nameRequired')"
                             :highlight="hasFieldError(formData, 'name')"
                         />
@@ -415,7 +422,9 @@ onMounted(async () => {
                 <UButton color="neutral" variant="soft" @click="handleClose">{{
                     t("console-api-key.cancel")
                 }}</UButton>
-                <UButton color="primary" type="submit">{{ t("console-api-key.save") }}</UButton>
+                <UButton :disabled="formData.type === 'system'" color="primary" type="submit">
+                    {{ t("console-api-key.save") }}
+                </UButton>
             </div>
         </UForm>
 
@@ -430,7 +439,7 @@ onMounted(async () => {
                     <UTextarea
                         v-model="jsonFormData.jsonImport"
                         :placeholder="t('console-ai-mcp-server.form.jsonImportPlaceholder')"
-                        :rows="28"
+                        :rows="22"
                         :ui="{ root: 'w-full' }"
                     />
                     <template #hint>
