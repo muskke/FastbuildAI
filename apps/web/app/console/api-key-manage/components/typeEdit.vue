@@ -5,7 +5,7 @@ import { useI18n } from "vue-i18n";
 import { array, number, object, string } from "yup";
 
 import type { FieldConfig, KeyTemplateFormData, KeyTemplateRequest } from "@/models/key-templates";
-import { getApiKeyTypeDetail } from "@/services/console/api-key-type";
+import { getApiKeyTemplateDetail } from "@/services/console/api-key-type";
 
 const { t } = useI18n();
 const toast = useMessage();
@@ -45,7 +45,7 @@ const jsonFormData = reactive({
 
 const fetchDetail = async () => {
     try {
-        const data: KeyTemplateRequest = await getApiKeyTypeDetail(props.id as string);
+        const data: KeyTemplateRequest = await getApiKeyTemplateDetail(props.id as string);
         Object.keys(formData).forEach((key) => {
             const typedKey = key as keyof typeof formData;
             const value = data[typedKey as keyof KeyTemplateRequest];

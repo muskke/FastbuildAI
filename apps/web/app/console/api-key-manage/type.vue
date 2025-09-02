@@ -7,12 +7,12 @@ import { useI18n } from "vue-i18n";
 import TimeDisplay from "@/common/components/time-display.vue";
 import type { KeyTemplateFormData, KeyTemplateRequest } from "@/models/key-templates";
 import {
-    createApiKeyType,
-    deleteApiKeyType,
-    getApiKeyTypeList,
-    importApiKeyType,
-    updateApiKeyType,
-    updateApiKeyTypeStatus,
+    createApiKeyTemplate,
+    deleteApiKeyTemplate,
+    getApiKeyTemplateList,
+    importApiKeyTemplate,
+    updateApiKeyTemplate,
+    updateApiKeyTemplateStatus,
 } from "@/services/console/api-key-type";
 
 import ApiEdit from "./components/typeEdit.vue";
@@ -87,7 +87,7 @@ const getRowItems = (row: Row<KeyTemplateRequest>): DropdownMenuItem[] => {
                 return;
             }
             const isEnabled = row.original.isEnabled ? 0 : 1;
-            await updateApiKeyTypeStatus(row.original.id, { isEnabled });
+            await updateApiKeyTemplateStatus(row.original.id, { isEnabled });
             toast.success(
                 row.original.isEnabled
                     ? t("console-api-key.type.disableSuccess")
@@ -121,7 +121,7 @@ const handleSwitchChange = async (row: Row<KeyTemplateRequest>) => {
         return;
     }
     try {
-        await updateApiKeyTypeStatus(row.original.id, { isEnabled: row.original.isEnabled });
+        await updateApiKeyTemplateStatus(row.original.id, { isEnabled: row.original.isEnabled });
         toast.success(
             !row.original.isEnabled
                 ? t("console-api-key.type.disableSuccess")
@@ -139,9 +139,9 @@ const handleSwitchChange = async (row: Row<KeyTemplateRequest>) => {
 const handleSubmit = async (value: KeyTemplateFormData, id?: string) => {
     try {
         if (id) {
-            await updateApiKeyType(id, value);
+            await updateApiKeyTemplate(id, value);
         } else {
-            await createApiKeyType(value);
+            await createApiKeyTemplate(value);
         }
         toast.success(t("console-api-key.type.edit.submitSuccess"));
         getLists();
@@ -154,7 +154,7 @@ const handleSubmit = async (value: KeyTemplateFormData, id?: string) => {
 // JSON导入
 const jsonSubmitForm = async (value: string) => {
     try {
-        await importApiKeyType({ jsonData: value });
+        await importApiKeyTemplate({ jsonData: value });
         toast.success(t("console-api-key.type.edit.submitSuccess"));
         getLists();
         handleClose();
@@ -165,7 +165,7 @@ const jsonSubmitForm = async (value: string) => {
 
 // 获取列表
 const { paging, getLists } = usePaging({
-    fetchFun: getApiKeyTypeList,
+    fetchFun: getApiKeyTemplateList,
     params: searchForm,
 });
 
@@ -174,7 +174,7 @@ const { paging, getLists } = usePaging({
  */
 const handleDelete = async (id: string) => {
     try {
-        await deleteApiKeyType(id);
+        await deleteApiKeyTemplate(id);
         toast.success(t("console-api-key.type.deleteSuccess"));
         getLists();
     } catch (error) {
