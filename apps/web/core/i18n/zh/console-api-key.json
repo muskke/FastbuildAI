@@ -56,7 +56,8 @@
         "placeholder": "请输入名称...",
         "enableSuccess": "启用成功",
         "disableSuccess": "禁用成功",
-        "deleteSuccess": "批量删除成功",
+        "deleteSuccess": "删除成功",
+        "batchDeleteSuccess": "批量删除成功",
         "form": {
             "name": "密钥名称",
             "keyType": "密钥模板",

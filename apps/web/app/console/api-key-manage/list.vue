@@ -24,6 +24,8 @@ const toast = useMessage();
 
 const UCheckbox = resolveComponent("UCheckbox");
 
+const table = useTemplateRef("table");
+
 // 选中的ID
 const selectedIds = ref<string[]>([]);
 
@@ -175,6 +177,9 @@ const handleDelete = async (id: string) => {
     getLists();
 };
 
+/**
+ * 切换状态
+ */
 const handleSwitchChange = async (row: Row<KeyConfigRequest>) => {
     if (!row.original.id) {
         console.error("行数据缺少 ID");
@@ -218,7 +223,6 @@ const handleSelectAll = (selected: boolean | "indeterminate") => {
         } else {
             selectedIds.value = [];
         }
-        console.log(selectedIds.value);
     }
 };
 
@@ -226,10 +230,15 @@ const handleSelectAll = (selected: boolean | "indeterminate") => {
  * 处理批量删除
  */
 const handleBatchDelete = async () => {
-    await deleteApiKeys(selectedIds.value);
-    selectedIds.value = [];
-    toast.success(t("console-api-key.list.deleteSuccess"));
-    getLists();
+    try {
+        await deleteApiKeys(selectedIds.value);
+        selectedIds.value = [];
+        table.value?.tableApi.toggleAllPageRowsSelected(false);
+        toast.success(t("console-api-key.list.batchDeleteSuccess"));
+        getLists();
+    } catch (error) {
+        console.error("批量删除失败:", error);
+    }
 };
 
 /**
@@ -279,6 +288,7 @@ onMounted(() => getLists());
         <!-- 列表 -->
         <div>
             <UTable
+                ref="table"
                 :columns="columns"
                 :data="paging.items"
                 :ui="{
