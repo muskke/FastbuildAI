@@ -215,7 +215,6 @@ onMounted(() => getWebsiteConfig());
                     <UButton
                         type="submit"
                         color="primary"
-                        size="xl"
                         :loading="isLock"
                         :disabled="isLock || isLoadingConfig"
                     >
@@ -228,7 +227,6 @@ onMounted(() => getWebsiteConfig());
                 </AccessControl>
                 <UButton
                     type="reset"
-                    size="lg"
                     color="neutral"
                     variant="outline"
                     :disabled="isLock || isLoadingConfig"
