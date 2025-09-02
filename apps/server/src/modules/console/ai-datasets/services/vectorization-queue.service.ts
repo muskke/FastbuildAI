@@ -157,8 +157,13 @@ export class VectorizationQueueService {
         const totalSegments = segments.length;
         let processedCount = 0;
 
-        for (let i = 0; i < segments.length; i += this.BATCH_SIZE) {
-            const batch = segments.slice(i, i + this.BATCH_SIZE);
+        // 获取模型配置，判断是否支持批量处理
+        const modelConfig = await this.getModelConfig(modelId);
+        const maxChunks = modelConfig?.max_chunks || this.BATCH_SIZE;
+        const batchSize = Math.min(maxChunks, this.BATCH_SIZE);
+
+        for (let i = 0; i < segments.length; i += batchSize) {
+            const batch = segments.slice(i, i + batchSize);
 
             try {
                 // 标记为处理中
@@ -167,12 +172,22 @@ export class VectorizationQueueService {
                     { status: PROCESSING_STATUS.PROCESSING },
                 );
 
-                // 生成向量
-                const texts = batch.map((segment) => segment.content);
-                const response = await generator.embeddings.create({
-                    input: texts,
-                    model: modelId,
-                });
+                let response;
+                if (maxChunks === 1) {
+                    // 单文本模型需要逐个处理
+                    const segment = batch[0];
+                    response = await generator.embeddings.create({
+                        input: [segment.content],
+                        model: modelId,
+                    });
+                } else {
+                    // 支持批量处理的模型
+                    const texts = batch.map((segment) => segment.content);
+                    response = await generator.embeddings.create({
+                        input: texts,
+                        model: modelId,
+                    });
+                }
 
                 // 更新向量数据
                 const updatePromises = batch.map((segment, index) => {
@@ -395,6 +410,30 @@ export class VectorizationQueueService {
                 error: errorMessage,
             });
             this.logger.log(`文档状态已更新: ${document.id} -> ${status} (${progress}%)`);
+        }
+    }
+
+    /**
+     * 获取模型配置信息
+     * @param modelId 模型ID
+     * @returns 模型配置信息
+     */
+    private async getModelConfig(modelId: string): Promise<{ max_chunks?: number } | null> {
+        try {
+            const model = await this.aiModelService.findOne({ where: { model: modelId } });
+            if (!model) {
+                this.logger.warn(`未找到模型配置: ${modelId}`);
+                return null;
+            }
+
+            // 从模型配置中获取 max_chunks 信息
+            const modelConfig = model.modelConfig || {};
+            return {
+                max_chunks: modelConfig.max_chunks,
+            };
+        } catch (error) {
+            this.logger.error(`获取模型配置失败: ${modelId}`, error);
+            return null;
         }
     }
 }
