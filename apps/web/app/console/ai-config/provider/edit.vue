@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ProModal, ProSlider, ProUploader, useLockFn, useMessage } from "@fastbuildai/ui";
 import { computed, onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import { array, object, string } from "yup";
 
 import type { AiProviderInfo, CreateAiProviderRequest, ModelType } from "@/models/ai-provider";
@@ -13,6 +14,7 @@ import {
 
 const toast = useMessage();
 const route = useRoute();
+const router = useRouter();
 
 const props = defineProps<{
     id?: string | null;
@@ -95,6 +97,12 @@ const isActiveString = computed({
         formData.isActive = value === "true";
     },
 });
+
+function goToApiKeyManage() {
+    router.push({
+        path: "/console/apiKeyManage/apiKeyType",
+    });
+}
 
 // 提交表单
 const { lockFn: submitForm, isLock } = useLockFn(async () => {
@@ -206,6 +214,17 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                 <div class="space-y-4">
                     <!-- API 配置 -->
                     <UFormField label="API 配置" name="bindKeyConfigId" required>
+                        <template #hint>
+                            <UButton
+                                variant="link"
+                                class="text-muted-foreground cursor-pointer gap-0"
+                                trailing-icon="i-lucide-arrow-right"
+                                :ui="{ trailingIcon: 'size-4' }"
+                                @click="goToApiKeyManage()"
+                            >
+                                {{ t("console-ai-provider.form.goToApiKeyManage") }}
+                            </UButton>
+                        </template>
                         <KeyPoolSelect
                             v-model="formData.bindKeyConfigId"
                             :button-ui="{
