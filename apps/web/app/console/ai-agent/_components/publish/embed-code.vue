@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useClipboard } from "@vueuse/core";
+import { ProButtonCopy } from "@fastbuildai/ui";
 import { computed, ref } from "vue";
 
 import type { Agent } from "@/models/ai-agent";
@@ -11,6 +11,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const activeTab = ref("iframe");
+const { t } = useI18n();
 
 const publishUrl = computed(() => {
     if (!props.agent?.publishToken) return "";
@@ -83,8 +84,6 @@ const tabs = [
     { value: "javascript", label: "JavaScript SDK", icon: "i-lucide-braces" },
     { value: "wordpress", label: "WordPress", icon: "i-lucide-wordpress" },
 ];
-
-const { copy } = useClipboard();
 </script>
 
 <template>
@@ -129,14 +128,13 @@ const { copy } = useClipboard();
                 <div v-if="activeTab === 'iframe'" class="space-y-3">
                     <div class="flex items-center justify-between">
                         <h4 class="font-medium">{{ $t("console-ai-agent.publish.iframeCode") }}</h4>
-                        <UButton
-                            icon="i-lucide-copy"
+                        <ProButtonCopy
+                            :content="iframeCode"
                             variant="outline"
                             size="sm"
-                            @click="copy(iframeCode)"
-                        >
-                            {{ $t("console-common.copy") }}
-                        </UButton>
+                            :copiedText="$t('console-common.messages.copySuccess')"
+                            :default-text="$t('console-common.copy')"
+                        />
                     </div>
                     <div class="relative">
                         <pre
@@ -154,14 +152,13 @@ const { copy } = useClipboard();
                 <div v-if="activeTab === 'javascript'" class="space-y-3">
                     <div class="flex items-center justify-between">
                         <h4 class="font-medium">JavaScript SDK</h4>
-                        <UButton
-                            icon="i-lucide-copy"
+                        <ProButtonCopy
+                            :content="jsCode"
                             variant="outline"
                             size="sm"
-                            @click="copy(jsCode)"
-                        >
-                            {{ $t("console-common.copy") }}
-                        </UButton>
+                            :copiedText="$t('console-common.messages.copySuccess')"
+                            :default-text="$t('console-common.copy')"
+                        />
                     </div>
                     <div class="relative">
                         <pre
@@ -181,14 +178,13 @@ const { copy } = useClipboard();
                         <h4 class="font-medium">
                             {{ $t("console-ai-agent.publish.wordpressCode") }}
                         </h4>
-                        <UButton
-                            icon="i-lucide-copy"
+                        <ProButtonCopy
+                            :content="wordpressCode"
                             variant="outline"
                             size="sm"
-                            @click="copy(wordpressCode)"
-                        >
-                            {{ $t("console-common.copy") }}
-                        </UButton>
+                            :copiedText="$t('console-common.messages.copySuccess')"
+                            :default-text="$t('console-common.copy')"
+                        />
                     </div>
                     <div class="relative">
                         <pre

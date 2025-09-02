@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useClipboard } from "@vueuse/core";
+import { ProButtonCopy } from "@fastbuildai/ui";
 import { computed, ref } from "vue";
 
 import type { Agent } from "@/models/ai-agent";
@@ -209,9 +209,6 @@ const generateCurlExample = (api: any) => {
 
     return curl;
 };
-
-// 复制代码
-const { copy } = useClipboard();
 </script>
 
 <template>
@@ -249,10 +246,11 @@ const { copy } = useClipboard();
                         <label class="text-sm font-medium">API Base URL</label>
                         <div class="flex gap-2">
                             <UInput :value="baseUrl" readonly class="flex-1" />
-                            <UButton
-                                icon="i-lucide-copy"
+                            <ProButtonCopy
+                                :content="baseUrl"
                                 variant="outline"
-                                @click="copy(baseUrl)"
+                                :copiedText="$t('console-common.messages.copySuccess')"
+                                :default-text="$t('console-common.copy')"
                             />
                         </div>
                     </div>
@@ -260,10 +258,11 @@ const { copy } = useClipboard();
                         <label class="text-sm font-medium">API Key</label>
                         <div class="flex gap-2">
                             <UInput :value="agent.apiKey" readonly class="flex-1" />
-                            <UButton
-                                icon="i-lucide-copy"
+                            <ProButtonCopy
+                                :content="agent.apiKey"
                                 variant="outline"
-                                @click="copy(agent.apiKey)"
+                                :copiedText="$t('console-common.messages.copySuccess')"
+                                :default-text="$t('console-common.copy')"
                             />
                         </div>
                     </div>
@@ -313,16 +312,12 @@ const { copy } = useClipboard();
                                         <h5 class="text-sm font-medium">
                                             {{ $t("console-ai-agent.publish.requestExample") }}
                                         </h5>
-                                        <UButton
-                                            icon="i-lucide-copy"
+                                        <ProButtonCopy
+                                            :content="JSON.stringify(api.requestExample, null, 2)"
                                             size="sm"
                                             variant="outline"
-                                            @click="
-                                                copy(JSON.stringify(api.requestExample, null, 2))
-                                            "
-                                        >
-                                            {{ $t("console-ai-agent.publish.copy") }}
-                                        </UButton>
+                                            :default-text="$t('console-ai-agent.publish.copy')"
+                                        />
                                     </div>
                                     <div class="bg-muted rounded-lg p-3">
                                         <pre
@@ -337,16 +332,12 @@ const { copy } = useClipboard();
                                         <h5 class="text-sm font-medium">
                                             {{ $t("console-ai-agent.publish.responseExample") }}
                                         </h5>
-                                        <UButton
-                                            icon="i-lucide-copy"
+                                        <ProButtonCopy
+                                            :content="JSON.stringify(api.responseExample, null, 2)"
                                             size="sm"
                                             variant="outline"
-                                            @click="
-                                                copy(JSON.stringify(api.responseExample, null, 2))
-                                            "
-                                        >
-                                            {{ $t("console-ai-agent.publish.copy") }}
-                                        </UButton>
+                                            :default-text="$t('console-ai-agent.publish.copy')"
+                                        />
                                     </div>
                                     <div class="bg-muted rounded-lg p-3">
                                         <pre
@@ -361,14 +352,12 @@ const { copy } = useClipboard();
                                         <h5 class="text-sm font-medium">
                                             {{ $t("console-ai-agent.publish.curlExample") }}
                                         </h5>
-                                        <UButton
-                                            icon="i-lucide-copy"
+                                        <ProButtonCopy
+                                            :content="generateCurlExample(api)"
                                             size="sm"
                                             variant="outline"
-                                            @click="copy(generateCurlExample(api))"
-                                        >
-                                            {{ $t("console-ai-agent.publish.copy") }}
-                                        </UButton>
+                                            :default-text="$t('console-ai-agent.publish.copy')"
+                                        />
                                     </div>
                                     <div class="bg-muted rounded-lg p-3">
                                         <pre
