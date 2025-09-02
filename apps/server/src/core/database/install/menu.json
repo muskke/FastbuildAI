@@ -512,7 +512,7 @@
             {
                 "name": "console-menu.apiKeyManage.title",
                 "code": "api-key-manage",
-                "path": "apiKeyManage",
+                "path": "api-key-manage",
                 "icon": "i-lucide-key-round",
                 "component": "",
                 "permissionCode": null,
@@ -523,9 +523,9 @@
                 "pluginPackName": "",
                 "children": [
                     {
-                        "name": "console-menu.apiKeyManage.apiKeyType",
+                        "name": "console-menu.apiKeyManage.apiKeyTemplate",
                         "code": "api-key-type",
-                        "path": "apiKeyType",
+                        "path": "api-key-type",
                         "icon": "",
                         "component": "/console/api-key-manage/type",
                         "permissionCode": "key-templates:list",
