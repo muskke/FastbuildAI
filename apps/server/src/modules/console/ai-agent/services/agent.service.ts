@@ -1,15 +1,14 @@
 import { BaseService } from "@common/base/services/base.service";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { UserPlayground } from "@common/interfaces/context.interface";
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { randomBytes } from "crypto";
-import { FindOptions, FindOptionsOrder, FindOptionsWhere, Like, Repository } from "typeorm";
+import { FindOptionsOrder, FindOptionsWhere, Like, Repository } from "typeorm";
 
 import {
     CreateAgentDto,
     ImportAgentDto,
-    PublicAgentInfoDto,
     PublishAgentDto,
     QueryAgentDto,
     QueryAgentStatisticsDto,
@@ -54,6 +53,7 @@ export class AgentService extends BaseService<Agent> {
                 enableWebSearch: false,
                 userCount: 0,
                 isPublic: false,
+                createBy: user.id,
             });
             this.logger.log(`[+] 智能体创建成功: ${agent.id} - ${name}`);
             return agent as Agent;
@@ -63,12 +63,14 @@ export class AgentService extends BaseService<Agent> {
     // 从模板创建智能体
     async createAgentFromTemplate(
         dto: CreateAgentFromTemplateDto | ImportAgentDto,
+        user: UserPlayground,
     ): Promise<Agent> {
         await this.checkNameUniqueness(dto.name);
 
         return this.withErrorHandling(async () => {
             const agent = await this.create({
                 ...dto,
+                createBy: user.id,
             });
             this.logger.log(`[+] 智能体创建成功: ${agent.id} - ${dto.name}`);
             return agent as Agent;

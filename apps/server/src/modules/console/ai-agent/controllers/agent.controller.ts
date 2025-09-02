@@ -76,7 +76,7 @@ export class AgentController {
         dto.avatar = dto.avatar || "/static/images/agent.png";
         // 添加创建者ID
         dto.createBy = user.id;
-        const agent = await this.agentService.createAgentFromTemplate(dto as ImportAgentDto);
+        const agent = await this.agentService.createAgentFromTemplate(dto as ImportAgentDto, user);
 
         // 自动发布智能体
         await this.agentService.publishAgent(agent.id, {
@@ -150,6 +150,7 @@ export class AgentController {
 
         const agent = await this.agentService.createAgentFromTemplate(
             createAgentDto as CreateAgentFromTemplateDto,
+            user,
         );
 
         // 自动发布智能体
