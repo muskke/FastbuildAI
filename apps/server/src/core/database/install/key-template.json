@@ -2,7 +2,7 @@
     {
         "name": "深度求索",
         "icon": "/static/ai/providers/deepseek.png",
-        "type": "custom",
+        "type": "system",
         "fieldConfig": [
             {
                 "name": "baseUrl",
@@ -23,7 +23,7 @@
     {
         "name": "月之暗面",
         "icon": "/static/ai/providers/moonshot.png",
-        "type": "custom",
+        "type": "system",
         "fieldConfig": [
             {
                 "name": "baseUrl",
@@ -44,7 +44,7 @@
     {
         "name": "OpenAI",
         "icon": "/static/ai/providers/openai.png",
-        "type": "custom",
+        "type": "system",
         "fieldConfig": [
             {
                 "name": "baseUrl",
@@ -65,7 +65,7 @@
     {
         "name": "硅基流动",
         "icon": "/static/ai/providers/siliconflow.png",
-        "type": "custom",
+        "type": "system",
         "fieldConfig": [
             {
                 "name": "baseUrl",
@@ -86,7 +86,7 @@
     {
         "name": "通义千问",
         "icon": "/static/ai/providers/tongyi.png",
-        "type": "custom",
+        "type": "system",
         "fieldConfig": [
             {
                 "name": "baseUrl",
@@ -107,7 +107,7 @@
     {
         "name": "文心一言",
         "icon": "/static/ai/providers/wenxin.png",
-        "type": "custom",
+        "type": "system",
         "fieldConfig": [
             {
                 "name": "baseUrl",
