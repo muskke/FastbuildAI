@@ -4,7 +4,7 @@ import { useMessage } from "@fastbuildai/ui/composables/useMessage";
 import { useI18n } from "vue-i18n";
 import { array, number, object, string } from "yup";
 
-import type { KeyTemplateRequest } from "@/models/key-templates";
+import type { FieldConfig, KeyTemplateFormData, KeyTemplateRequest } from "@/models/key-templates";
 import { getApiKeyTypeDetail } from "@/services/console/api-key-type";
 
 const { t } = useI18n();
@@ -16,14 +16,14 @@ const props = defineProps<{
 
 const emits = defineEmits<{
     (e: "close", refresh?: boolean): void;
-    (e: "submit", data: KeyTemplateRequest, id?: string): void;
+    (e: "submit", data: KeyTemplateFormData, id?: string): void;
 }>();
 
 const handleClose = () => {
     emits("close");
 };
 
-const formData = reactive<KeyTemplateRequest>({
+const formData = reactive<KeyTemplateFormData>({
     icon: "",
     name: "",
     isEnabled: 1,
@@ -206,7 +206,6 @@ const schema = computed(() => {
  * 处理表单提交
  */
 const handleSubmit = () => {
-    console.log("formData", formData);
     emits("submit", formData, props.id);
 };
 
@@ -341,7 +340,7 @@ onMounted(async () => {
                     </template>
                     <template #action-cell="{ row }">
                         <UButton
-                            v-if="row.index !== formData.fieldConfig.length - 1 || props.id"
+                            v-if="row.index !== formData.fieldConfig.length - 1"
                             class="cursor-pointer px-3"
                             icon="i-tabler-trash"
                             color="error"
