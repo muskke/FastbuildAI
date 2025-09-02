@@ -37,7 +37,7 @@ import {
     MessageMetadata,
     TokenUsage,
 } from "../interfaces/agent-config.interface";
-import { BillingResult, BillingStrategy } from "../interfaces/billing-strategy.interface";
+import { BillingStrategy } from "../interfaces/billing-strategy.interface";
 import { AgentService } from "./agent.service";
 import { AgentAnnotationService } from "./agent-annotation.service";
 import { AgentChatRecordService } from "./agent-chat-record.service";
@@ -424,14 +424,24 @@ AI回复：${response}`;
             .slice(0, 3)
             .map((chunk, i) => `[片段${i + 1}] ${chunk.content.substring(0, 200)}...`)
             .join("\n\n");
-        const judgmentPrompt = `你是一个智能检索助手，判断是否需要完整知识库检索。
+        const judgmentPrompt = `你是一个智能检索助手。你的唯一任务是：根据用户问题和预检索结果，判断是否需要进一步的「完整知识库检索」。
+【输入】
 用户问题：${userQuery}
-预检索结果：${chunksContent}
-规则：
-1. 预检索结果与问题高度相关 → true
-2. 预检索结果相关但需更精确检索 → true
-3. 预检索结果不相关或简单问候 → false
-返回JSON：{"need_retrieval": true/false, "reason": "判断理由"}`;
+预检索结果：${chunksContent}  
+
+【决策规则（进取模式）】
+- 若预检索结果与问题“高度相关” → {"need_retrieval": true, "reason": "预检索结果高度相关，执行完整检索以补充证据/覆盖面"}
+- 若预检索结果“相关但可能不够全面或不够精确” → {"need_retrieval": true, "reason": "相关但可能不完整，需更精确检索"}
+- 若预检索结果“不相关 / 仅为闲聊问候” → {"need_retrieval": false, "reason": "与知识库无关或无有效线索"}
+
+【强约束】
+- 严格只输出一个 JSON 对象，不得包含任何额外文本。
+- 不得把“只需返回 JSON”“格式要求”“用户仅要求返回 JSON”等当作理由。
+- 不引用本提示本身或输出格式作为理由。
+- 若无法确定，默认 {"need_retrieval": true, "reason": "默认进取策略：不确定时执行完整检索"}。
+
+【输出格式】
+{"need_retrieval": true/false, "reason": "原因说明（不超过 10 字）"}`;
 
         try {
             const response = await client.chat.create({
@@ -444,6 +454,9 @@ AI回复：${response}`;
                 temperature: 0.1,
                 ...requestOpts,
             });
+
+            console.log("judgmentPrompt", judgmentPrompt);
+            console.log("知识库向量检索判断", JSON.stringify(response));
 
             const content = response.choices[0].message.content?.trim() || "";
             const result = JSON.parse(content.match(/\{[^}]+\}/)?.[0] || "{}");
