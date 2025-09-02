@@ -1,6 +1,6 @@
 {
     "type": {
-        "addType": "New types",
+        "addType": "Add Template",
         "deleteSuccess": "Deleting the template succeeds",
         "enableSuccess": "Enabling the template is successful",
         "disableSuccess": "Disabling the template succeeds",

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ProModal } from "@fastbuildai/ui";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 import { object, type ObjectSchema, string } from "yup";
 
 import type { KeyConfigRequest } from "@/models/api-key-list";
@@ -9,6 +10,8 @@ import { getApiKeyDetail } from "@/services/console/api-key-list";
 import { getApiKeyTemplateDetail, getApiKeyTemplateListAll } from "@/services/console/api-key-type";
 
 const { t } = useI18n();
+
+const router = useRouter();
 
 const props = defineProps<{
     id?: string;
@@ -133,6 +136,12 @@ const getEnabledTemplates = async () => {
     }
 };
 
+const goToApiKeyManage = () => {
+    router.push({
+        path: useRoutePath("key-templates:list"),
+    });
+};
+
 /**
  * 处理密钥类型变化
  */
@@ -205,6 +214,17 @@ onMounted(async () => {
                     name="templateId"
                     required
                 >
+                    <template #hint>
+                        <UButton
+                            variant="link"
+                            class="cursor-pointer gap-0 p-0"
+                            trailing-icon="i-lucide-arrow-right"
+                            :ui="{ trailingIcon: 'size-4' }"
+                            @click="goToApiKeyManage()"
+                        >
+                            {{ t("console-api-key.type.addType") }}
+                        </UButton>
+                    </template>
                     <USelect
                         :disabled="!!props.id"
                         v-model="formData.templateId"

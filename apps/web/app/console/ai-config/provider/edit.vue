@@ -100,7 +100,7 @@ const isActiveString = computed({
 
 function goToApiKeyManage() {
     router.push({
-        path: "/console/api-key-manage/api-key-type",
+        path: useRoutePath("key-configs:list"),
     });
 }
 
@@ -217,7 +217,7 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                         <template #hint>
                             <UButton
                                 variant="link"
-                                class="text-muted-foreground cursor-pointer gap-0"
+                                class="cursor-pointer gap-0"
                                 trailing-icon="i-lucide-arrow-right"
                                 :ui="{ trailingIcon: 'size-4' }"
                                 @click="goToApiKeyManage()"
