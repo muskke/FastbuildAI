@@ -88,13 +88,24 @@ services:
 
             echo "🔍 Debug: QUICK_START_MODE = [$$QUICK_START_MODE]"
 
-            if ! command -v pnpm >/dev/null 2>&1; then
-              echo "📦 Installing pnpm..."
-              if [ -n "$$NPM_REGISTRY_URL" ]; then
-                echo "🔧 Using custom registry: $$NPM_REGISTRY_URL"
+            # 先检查并设置镜像
+            if [ -n "$$NPM_REGISTRY_URL" ]; then
+              echo "🔧 Using custom registry: $$NPM_REGISTRY_URL"
+              if command -v npm >/dev/null 2>&1; then
                 npm config set registry "$$NPM_REGISTRY_URL"
               fi
+              if command -v pnpm >/dev/null 2>&1; then
+                pnpm config set registry "$$NPM_REGISTRY_URL"
+              fi
+            else
+              echo "⚠️ NPM_REGISTRY_URL not set, using default registry"
+            fi
+
+            # 再检查并安装 pnpm
+            if ! command -v pnpm >/dev/null 2>&1; then
+              echo "📦 Installing pnpm..."
               npm install -g pnpm
+              # 安装完 pnpm 后再次设置镜像
               if [ -n "$$NPM_REGISTRY_URL" ]; then
                 pnpm config set registry "$$NPM_REGISTRY_URL"
               fi
