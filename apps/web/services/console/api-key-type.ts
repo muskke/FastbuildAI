@@ -53,3 +53,10 @@ export const deleteApiKeyType = (id: string) => {
 export const updateApiKeyTypeStatus = (id: string, data: { isEnabled: number }) => {
     return useConsolePatch(`/key-templates/${id}/enabled`, data);
 };
+
+/**
+ * 导入API密钥模板
+ */
+export const importApiKeyType = (data: { jsonData: string }) => {
+    return useConsolePost("/key-templates/import/json", data);
+};

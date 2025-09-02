@@ -39,6 +39,8 @@
             "nameRequired": "请输入字段名称",
             "typeValueRequired": "请选择字段类型",
             "exampleRequired": "请输入示例文字",
+            "copyTemplate": "复制模板",
+            "copySuccess": "模板示例已复制到剪贴板",
             "toast": {
                 "nameRequired": "类型名称不能为空",
                 "customFieldRequired": "自定义字段不能为空",
