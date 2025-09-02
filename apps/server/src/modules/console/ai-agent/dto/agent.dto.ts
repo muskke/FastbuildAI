@@ -369,7 +369,6 @@ export class UpdateAgentConfigDto extends AgentConfigBaseDto {
      * 是否公开
      */
     @IsOptional()
-    @Transform(({ value }) => value === "true")
     @IsBoolean({ message: "是否公开必须是布尔值" })
     isPublic?: boolean;
 }
