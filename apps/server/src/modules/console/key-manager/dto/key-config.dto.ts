@@ -35,9 +35,9 @@ export class KeyFieldValueDto implements KeyFieldValue {
     /**
      * 字段值
      */
+    @IsOptional()
     @IsString({ message: "字段值必须是字符串" })
-    @IsNotEmpty({ message: "字段值不能为空" })
-    value: string;
+    value?: string;
 
     /**
      * 是否加密存储

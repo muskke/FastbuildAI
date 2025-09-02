@@ -69,7 +69,7 @@ export class KeyConfigService extends BaseService<KeyConfig> {
 
         // 处理敏感字段加密
         const processedFieldValues = this.processFieldValues(createKeyConfigDto.fieldValues);
-
+        console.log("createKeyConfigDto", createKeyConfigDto);
         // 创建配置
         const configData = {
             ...createKeyConfigDto,
@@ -262,27 +262,44 @@ export class KeyConfigService extends BaseService<KeyConfig> {
     /**
      * 获取配置的键值对
      * @param id 配置ID
-     * @returns 配置的键值对对象
+     * @returns 配置的键值对对象，值包含value和required属性
      */
-    async getConfigKeyValuePairs(id: string): Promise<Record<string, string>> {
+    async getConfigKeyValuePairs(
+        id: string,
+    ): Promise<Record<string, { value: string; required: boolean }>> {
         const config = await this.keyConfigRepository.findOne({
             where: { id },
-            select: ["fieldValues"],
+            relations: ["template"],
         });
 
         if (!config) {
             throw HttpExceptionFactory.notFound("密钥配置不存在");
         }
 
+        // 创建模板字段映射，方便查找字段的required属性
+        const templateFieldMap = new Map();
+        if (config.template && config.template.fieldConfig) {
+            config.template.fieldConfig.forEach((field) => {
+                templateFieldMap.set(field.name, field);
+            });
+        }
+
         // 将字段配置转换为键值对
-        const keyValuePairs: Record<string, string> = {};
+        const keyValuePairs: Record<string, { value: string; required: boolean }> = {};
 
         if (config.fieldValues && Array.isArray(config.fieldValues)) {
             config.fieldValues.forEach((field) => {
                 if (field.name && field.value !== undefined) {
                     // 如果字段被加密，先解密
                     const value = field.encrypted ? this.decryptValue(field.value) : field.value;
-                    keyValuePairs[field.name] = value;
+
+                    // 获取模板中该字段的配置信息
+                    const templateField = templateFieldMap.get(field.name);
+
+                    keyValuePairs[field.name] = {
+                        value: value || "",
+                        required: templateField?.required || false,
+                    };
                 }
             });
         }
@@ -344,39 +361,8 @@ export class KeyConfigService extends BaseService<KeyConfig> {
                 throw HttpExceptionFactory.paramError(`字段 "${fieldValue.name}" 不存在于模板中`);
             }
 
-            // 验证必填字段值
-            if (templateField.required && (!fieldValue.value || fieldValue.value.trim() === "")) {
-                throw HttpExceptionFactory.paramError(`必填字段 "${templateField.label}" 不能为空`);
-            }
-
-            // 验证字段长度
-            if (
-                templateField.validation?.minLength &&
-                fieldValue.value.length < templateField.validation.minLength
-            ) {
-                throw HttpExceptionFactory.paramError(
-                    `字段 "${templateField.label}" 长度不能少于 ${templateField.validation.minLength} 个字符`,
-                );
-            }
-
-            if (
-                templateField.validation?.maxLength &&
-                fieldValue.value.length > templateField.validation.maxLength
-            ) {
-                throw HttpExceptionFactory.paramError(
-                    `字段 "${templateField.label}" 长度不能超过 ${templateField.validation.maxLength} 个字符`,
-                );
-            }
-
-            // 验证正则表达式
-            if (templateField.validation?.pattern) {
-                const regex = new RegExp(templateField.validation.pattern);
-                if (!regex.test(fieldValue.value)) {
-                    throw HttpExceptionFactory.paramError(
-                        `字段 "${templateField.label}" 格式不正确`,
-                    );
-                }
-            }
+            // 对于必填字段，只验证字段是否存在，允许空值保存
+            // 移除对空字符串的验证，允许保存空值
         }
     }
 
@@ -387,6 +373,9 @@ export class KeyConfigService extends BaseService<KeyConfig> {
      */
     private processFieldValues(fieldValues: any[]): any[] {
         return fieldValues.map((fieldValue) => {
+            // 确保即使是空值也保存，将 undefined 和 null 转换为空字符串
+            const processedValue = fieldValue.value ?? "";
+
             // 对于密码类型的字段，标记为加密
             if (
                 fieldValue.name.toLowerCase().includes("password") ||
@@ -397,10 +386,13 @@ export class KeyConfigService extends BaseService<KeyConfig> {
                     ...fieldValue,
                     encrypted: true,
                     // 这里应该实际加密，暂时简化处理
-                    value: this.encryptValue(fieldValue.value),
+                    value: this.encryptValue(processedValue),
                 };
             }
-            return fieldValue;
+            return {
+                ...fieldValue,
+                value: processedValue,
+            };
         });
     }
 

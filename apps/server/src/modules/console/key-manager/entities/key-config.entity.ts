@@ -18,7 +18,7 @@ export interface KeyFieldValue {
     /** 字段名称 */
     name: string;
     /** 字段值 */
-    value: string;
+    value?: string;
     /** 是否加密存储 */
     encrypted?: boolean;
 }

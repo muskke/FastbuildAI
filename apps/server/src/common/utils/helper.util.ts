@@ -512,22 +512,31 @@ export function buildWhere<T extends Record<string, any> = Record<string, any>>(
 /**
  * 获取供应商密钥配置
  * @param key 键名
- * @param config 配置对象
+ * @param config 配置对象，格式：Record<string, {value: string, required: boolean}>
  * @returns 配置值
- * @throws 当键不存在或值为空时抛出异常
+ * @throws 当键不存在或必填字段值为空时抛出异常
  */
-export const getProviderKeyConfig = (key: string, config: Record<string, string>): string => {
+export const getProviderKeyConfig = (
+    key: string,
+    config: Record<string, { value: string; required: boolean }>,
+): string => {
     // 检查键是否存在
     if (!(key in config)) {
         throw HttpExceptionFactory.business(`${key} 字段不存在`, BusinessCode.PARAM_MISSING);
     }
 
-    const value = config[key];
+    const configValue = config[key];
 
-    // 检查值是否为空
-    if (!value || value.trim() === "") {
+    if (!configValue || typeof configValue !== "object") {
+        throw HttpExceptionFactory.business(`${key} 字段格式错误`, BusinessCode.PARAM_INVALID);
+    }
+
+    const { value, required } = configValue;
+
+    // 只有在必填的情况下才检查值是否为空
+    if (required && (!value || value.trim() === "")) {
         throw HttpExceptionFactory.business(`${key} 键内容为空`, BusinessCode.PARAM_INVALID);
     }
 
-    return value.trim();
+    return value ? value.trim() : "";
 };

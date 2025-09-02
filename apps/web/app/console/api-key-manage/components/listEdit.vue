@@ -48,8 +48,10 @@ const initDynamicFields = () => {
     if (customFieldOptions.value && customFieldOptions.value.length > 0) {
         customFieldOptions.value.forEach((field) => {
             if (field.name) {
-                // 动态添加字段到formData
-                formData[field.name] = field.name || "";
+                // 动态添加字段到formData，如果字段不存在才初始化为空字符串
+                if (!(field.name in formData)) {
+                    formData[field.name] = "";
+                }
             }
         });
     }
@@ -137,23 +139,26 @@ const getEnabledTemplates = async () => {
 const handleTypeChange = async (value: string) => {
     const res = await getApiKeyTypeDetail(value);
     customFieldOptions.value = res.fieldConfig;
+    // 重新初始化动态字段
+    initDynamicFields();
 };
 
 const handleSubmit = () => {
-    const [name, templateId, fieldValues, remark, status, sortOrder, ...keys] =
-        Object.keys(formData);
+    // 确保包含所有自定义字段，即使值为空
+    const dynamicFieldValues = customFieldOptions.value.map((field) => {
+        return {
+            name: field.name!,
+            value: String(formData[field.name!] || ""),
+        };
+    });
+
     if (props.id) {
         const newFormData = {
             name: formData.name,
             remark: formData.remark,
             status: formData.status,
             sortOrder: formData.sortOrder,
-            fieldValues: keys.map((key) => {
-                return {
-                    name: key,
-                    value: String(formData[key]),
-                };
-            }),
+            fieldValues: dynamicFieldValues,
         };
         emits("submit", newFormData, props.id);
     } else {
@@ -163,12 +168,7 @@ const handleSubmit = () => {
             remark: formData.remark,
             status: formData.status,
             sortOrder: formData.sortOrder,
-            fieldValues: keys.map((key) => {
-                return {
-                    name: key,
-                    value: String(formData[key]),
-                };
-            }),
+            fieldValues: dynamicFieldValues,
         };
         emits("submit", newFormData);
     }
