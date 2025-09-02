@@ -533,7 +533,100 @@
                         "isHidden": 0,
                         "type": 2,
                         "sourceType": 1,
-                        "pluginPackName": null
+                        "pluginPackName": null,
+                        "children": [
+                            {
+                                "name": "console-common.create",
+                                "code": "api-key-type-create",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-templates:create",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.update",
+                                "code": "api-key-type-update",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-templates:update",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.delete",
+                                "code": "api-key-type-delete",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-templates:delete",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.batchDelete",
+                                "code": "api-key-type-batch-delete",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-templates:batch-delete",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.import",
+                                "code": "api-key-type-import",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-templates:import-json",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.toggleStatus",
+                                "code": "api-key-type-toggle-enabled",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-templates:toggle-enabled",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.view",
+                                "code": "api-key-type-detail",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-templates:detail",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            }
+                        ]
                     },
                     {
                         "name": "console-menu.apiKeyManage.apiKeyList",
@@ -546,7 +639,100 @@
                         "isHidden": 0,
                         "type": 2,
                         "sourceType": 1,
-                        "pluginPackName": null
+                        "pluginPackName": null,
+                        "children": [
+                            {
+                                "name": "console-common.create",
+                                "code": "api-key-list-create",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-configs:create",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.update",
+                                "code": "api-key-list-update",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-configs:update",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.delete",
+                                "code": "api-key-list-delete",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-configs:delete",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.batchDelete",
+                                "code": "api-key-list-batch-delete",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-configs:batch-delete",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.view",
+                                "code": "api-key-list-detail",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-configs:detail",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.manage",
+                                "code": "api-key-list-detail-full",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-configs:detail-full",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            },
+                            {
+                                "name": "console-common.updateStatus",
+                                "code": "api-key-list-update-status",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "key-configs:update-status",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            }
+                        ]
                     }
                 ]
             }
