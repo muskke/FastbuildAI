@@ -65,35 +65,21 @@ export class DocumentsService extends BaseService<DatasetsDocument> {
             throw HttpExceptionFactory.notFound("知识库不存在");
         }
 
-        // 2. 检查是否为知识库的第一个文档
-        const existingDocumentsCount = await this.documentRepository.count({
-            where: { datasetId: dto.datasetId },
-        });
-
-        const isFirstDocument = existingDocumentsCount === 0;
-
-        // 3. 如果是第一个文档且传入了 embeddingModelId，更新知识库的向量模型
-        if (isFirstDocument && dto.embeddingModelId) {
-            await this.datasetsRepository.update(dto.datasetId, {
-                embeddingModelId: dto.embeddingModelId,
-            });
-        }
-
         const { fileIds } = dto.indexingConfig;
 
-        // 4. 检查文件是否上传
+        // 2. 检查文件是否上传
         if (!fileIds?.length) {
             throw HttpExceptionFactory.badRequest("请上传文件");
         }
 
         try {
-            // 5. 文件分段处理
+            // 3. 文件分段处理
             const segmentsResult = await this.indexingService.indexingSegments(
                 dto.indexingConfig as IndexingSegmentsDto,
             );
             this.logger.log(`[+] 文件分段完成，总分段数: ${segmentsResult.totalSegments}`);
 
-            // 6. 创建文档并并发处理
+            // 4. 创建文档并并发处理
             const fileResults =
                 segmentsResult.fileResults?.filter((fr) => fr.segments?.length) ?? [];
 
@@ -106,10 +92,10 @@ export class DocumentsService extends BaseService<DatasetsDocument> {
                 );
                 this.logger.log(`[+] 文档已创建: ${fileResult.fileName}`);
 
-                // 7. 文档新增后同步状态
+                // 5. 文档新增后同步状态
                 // await this.datasetStatusService.syncAfterDocumentCreate(document.id); // Removed
 
-                // 8. 异步队列向量化
+                // 6. 异步队列向量化
                 await this.queueService
                     .addVectorizationJob("document", {
                         datasetId: dataset.id,
