@@ -26,7 +26,6 @@
 <a href="./README.zh-CN.md">中文文档</a>
 </p>
 
-
 ## Get Started
 
 From the project root directory, run:
@@ -48,6 +47,7 @@ http://localhost:4090
 ```
 
 **Default Super Admin Account**  
+
 - **Username:** `admin`  
 - **Password:** `FastbuildAI&123456`  
 
@@ -62,9 +62,6 @@ http://localhost:4090
 - ⬜ **Workflow** – AI task automation.
 - ⬜ **Plugin System** – Extend functionality with plugins.
 
-
-
-
 ## Screenshots
 
 ![image](./docs/screenshots/1.png)
@@ -76,6 +73,7 @@ http://localhost:4090
 ![image](./docs/screenshots/7.png)
 ![image](./docs/screenshots/8.png)
 ![image](./docs/screenshots/9.png)
+![image](./docs/screenshots/10.png)
 
 ## Star History
 
@@ -84,4 +82,3 @@ http://localhost:4090
 ## License
 
 [Apache License 2.0](./LICENSE)
-
