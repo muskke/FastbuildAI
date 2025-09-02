@@ -26,7 +26,6 @@
 <a href="./README.md">English</a>
 </p>
 
-
 ## 快速开始
 
 在项目根目录下运行：
@@ -48,6 +47,7 @@ http://localhost:4090
 ```
 
 **默认超级管理员账号**  
+
 - **用户名：** `admin`  
 - **密码：** `FastbuildAI&123456`  
 
@@ -62,7 +62,6 @@ http://localhost:4090
 - ⬜ **工作流** – AI 任务自动化。
 - ⬜ **插件系统** – 通过插件扩展功能。
 
-
 ## 截图展示
 
 ![image](./docs/screenshots/1.png)
@@ -74,6 +73,7 @@ http://localhost:4090
 ![image](./docs/screenshots/7.png)
 ![image](./docs/screenshots/8.png)
 ![image](./docs/screenshots/9.png)
+![image](./docs/screenshots/10.png)
 
 ## Star 历史
 
