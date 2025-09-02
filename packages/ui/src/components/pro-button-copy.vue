@@ -30,7 +30,7 @@ const { copy, copied } = useClipboard();
 
 async function handleCopy() {
     await copy(props.content);
-    useMessage().success(props.copiedText || props.defaultText);
+    useMessage().success(props.copiedText || props.defaultText || t('common.chat.messages.copied'));
 }
 </script>
 
