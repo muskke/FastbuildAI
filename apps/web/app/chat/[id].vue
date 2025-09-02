@@ -67,6 +67,7 @@ const initialMessages = messagesData.value.items.map((item: AiMessage) => {
         content: item.errorMessage || item.content,
         status: item.errorMessage ? ("failed" as const) : ("completed" as const),
         mcpToolCalls: item.mcpToolCalls,
+        userConsumedPower: item.userConsumedPower || 0,
     };
 });
 
@@ -133,6 +134,7 @@ async function loadMoreMessages() {
                 content: item.errorMessage || item.content,
                 status: item.errorMessage ? ("failed" as const) : ("completed" as const),
                 mcpToolCalls: item.mcpToolCalls,
+                userConsumedPower: item.userConsumedPower,
             }),
         );
         messages.value.unshift(...newMessages);
@@ -403,11 +405,11 @@ definePageMeta({ activePath: "/" });
 
                         <UButton
                             v-if="quickMenu"
-                            color="primary"
+                            :color="isQuickMenu ? 'primary' : 'neutral'"
                             variant="ghost"
                             :icon="quickMenu?.icon ? '' : 'tabler:tool'"
                             :ui="{ leadingIcon: 'size-4' }"
-                            :class="{ 'bg-primary/15': isQuickMenu }"
+                            :class="{ 'bg-primary/10': isQuickMenu }"
                             @click.stop="handleQuickMenu"
                         >
                             <UAvatar
