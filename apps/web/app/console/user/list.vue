@@ -7,6 +7,8 @@ import { useRouter } from "vue-router";
 import type { UserInfo, UserQueryRequest } from "@/models/user";
 import { apiBatchDeleteUser, apiDeleteUser, apiGetUserList } from "@/services/console/user";
 
+import EditPower from "./_components/editPower.vue";
+
 const UserCard = defineAsyncComponent(() => import("./_components/user-card.vue"));
 
 // 路由实例
@@ -23,6 +25,10 @@ const searchForm = reactive<UserQueryRequest>({
 
 // 选中的用户
 const selectedUsers = ref<Set<string>>(new Set());
+
+// 编辑余额
+const editPowerVisible = ref(false);
+const selectedUser = ref<UserInfo | null>(null);
 
 const { paging, getLists } = usePaging({
     fetchFun: apiGetUserList,
@@ -91,6 +97,15 @@ const handleDeleteUser = (user: UserInfo) => {
     if (user.id) {
         handleDelete(user.id);
     }
+};
+
+/**
+ * 用户编辑余额
+ */
+const handleEditPower = (user: UserInfo) => {
+    selectedUser.value = user;
+    editPowerVisible.value = true;
+    console.log("handleEditPower", user);
 };
 
 /**
@@ -195,6 +210,7 @@ onMounted(() => getLists());
                         :key="user.id"
                         :user="user"
                         :selected="selectedUsers.has(user.id as string)"
+                        @edit-power="handleEditPower"
                         @select="handleUserSelect"
                         @delete="handleDeleteUser"
                     />
@@ -240,5 +256,8 @@ onMounted(() => getLists());
                 />
             </div>
         </div>
+
+        <!-- 编辑余额 -->
+        <EditPower v-if="editPowerVisible" :user="selectedUser" @close="editPowerVisible = false" />
     </div>
 </template>
