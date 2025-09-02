@@ -21,7 +21,7 @@
         "edit": {
             "icon": "图标",
             "title": "编辑模板",
-            "name": "类型名称",
+            "name": "模板名称",
             "status": "状态",
             "enable": "启用",
             "disable": "禁用",
