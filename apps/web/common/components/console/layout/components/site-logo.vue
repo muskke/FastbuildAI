@@ -23,13 +23,20 @@ defineOptions({ inheritAttrs: false });
     <h1
         v-if="props.layout === 'side'"
         v-bind="$attrs"
-        class="hover:bg-secondary dark:hover:bg-surface-800 flex cursor-pointer items-center gap-2 rounded-xl select-none"
-        :class="props.collapsed ? 'p-1' : 'p-2'"
+        class="hover:bg-secondary dark:hover:bg-surface-800 flex cursor-pointer items-center rounded-xl transition-all select-none"
+        :class="{
+            'p-1': props.collapsed,
+            'p-2': !props.collapsed,
+            'gap-2': !appStore.siteConfig?.webinfo.logo,
+        }"
         @click="backToHome"
     >
         <div
-            class="bg-primary flex flex-none items-center justify-center rounded-lg transition-all"
-            :class="props.collapsed ? 'size-10' : 'size-9'"
+            class="flex size-10 flex-none items-center gap-2 rounded-lg transition-all"
+            :class="{
+                'bg-primary justify-center': !appStore.siteConfig?.webinfo.logo,
+                'p-1': props.collapsed,
+            }"
         >
             <img
                 v-if="appStore.siteConfig?.webinfo.logo"
