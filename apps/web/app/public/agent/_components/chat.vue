@@ -654,7 +654,7 @@ useHead({
                 <!-- 输入区域 -->
                 <div class="w-full max-w-[800px] p-4 lg:py-2">
                     <!-- 快捷指令 -->
-                    <div v-if="agent.quickCommands?.length" class="mb-3 px-4">
+                    <div v-if="agent.quickCommands?.length" class="mb-3">
                         <div class="flex flex-wrap gap-2">
                             <UButton
                                 v-for="item in agent.quickCommands"
@@ -681,7 +681,10 @@ useHead({
                         @submit="handleSubmitMessage"
                     >
                         <template #panel-right-item>
-                            <span class="text-muted-foreground text-xs">
+                            <span
+                                class="text-muted-foreground text-xs"
+                                v-if="agent.billingConfig.price > 0"
+                            >
                                 {{
                                     t("common.chat.singleRunConsumption", {
                                         price: agent.billingConfig.price,
