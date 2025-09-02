@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useClipboard } from "@vueuse/core";
-import { computed, ref } from "vue";
+import { ProButtonCopy } from "@fastbuildai/ui";
+import { computed } from "vue";
 
 import type { Agent } from "@/models/ai-agent";
 
@@ -17,34 +17,6 @@ const publishUrl = computed(() => {
 });
 
 const isPublished = computed(() => props.agent?.isPublished || false);
-
-// 复制状态
-const isCopiedUrl = ref(false);
-const isCopiedApiKey = ref(false);
-
-// 复制文本到剪贴板
-const { copy } = useClipboard();
-
-/**
- * 复制文本并显示复制成功状态
- * @param text 要复制的文本
- * @param type 复制类型（url或apiKey）
- */
-const copyWithFeedback = (text: string, type: "url" | "apiKey") => {
-    copy(text);
-
-    if (type === "url") {
-        isCopiedUrl.value = true;
-        setTimeout(() => {
-            isCopiedUrl.value = false;
-        }, 2000);
-    } else {
-        isCopiedApiKey.value = true;
-        setTimeout(() => {
-            isCopiedApiKey.value = false;
-        }, 2000);
-    }
-};
 
 // 打开链接
 const openLink = (url: string) => {
@@ -105,12 +77,12 @@ const openLink = (url: string) => {
                                 $t('console-ai-agent.publish.publicAccessLinkPlaceholder')
                             "
                         />
-                        <UButton
+                        <ProButtonCopy
                             v-if="publishUrl"
-                            :icon="isCopiedUrl ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+                            :content="publishUrl"
                             variant="outline"
-                            :color="isCopiedUrl ? 'success' : undefined"
-                            @click="copyWithFeedback(publishUrl, 'url')"
+                            :copiedText="$t('console-common.messages.copySuccess')"
+                            :default-text="$t('console-common.copy')"
                         />
                         <UButton
                             v-if="publishUrl"
@@ -133,12 +105,12 @@ const openLink = (url: string) => {
                             class="flex-1"
                             :placeholder="$t('console-ai-agent.publish.apiKeyPlaceholder')"
                         />
-                        <UButton
+                        <ProButtonCopy
                             v-if="agent?.apiKey"
-                            :icon="isCopiedApiKey ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+                            :content="agent.apiKey || ''"
                             variant="outline"
-                            :color="isCopiedApiKey ? 'success' : undefined"
-                            @click="copyWithFeedback(agent.apiKey || '', 'apiKey')"
+                            :copiedText="$t('console-common.messages.copySuccess')"
+                            :default-text="$t('console-common.copy')"
                         />
                     </UFormField>
                 </div>
