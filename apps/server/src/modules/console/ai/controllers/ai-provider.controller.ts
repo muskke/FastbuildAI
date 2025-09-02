@@ -100,7 +100,7 @@ export class AiProviderController extends BaseController {
 
             // 检查当前 apiKey 和更新的 apiKey
             const finalBindKeyConfig =
-                dto.bindKeyConfig !== undefined ? provider.bindKeyConfig : dto.bindKeyConfig;
+                dto.bindKeyConfig !== undefined ? dto.bindKeyConfig : provider.bindKeyConfig;
             if (!finalBindKeyConfig || finalBindKeyConfig.trim() === "") {
                 throw HttpExceptionFactory.business("请先完善密钥配置后再启用供应商");
             }
