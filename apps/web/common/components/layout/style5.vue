@@ -47,12 +47,17 @@ const isActive = (path: string): boolean => {
             <div class="flex size-full flex-col items-center gap-5 py-4">
                 <!-- Logo 区域 -->
                 <NuxtLink to="/" class="flex justify-center">
-                    <h1 class="bg-primary flex size-10 items-center justify-center rounded-lg">
+                    <h1
+                        class="flex size-10 items-center justify-center rounded-lg"
+                        :class="{
+                            'bg-primary': !appStore.siteConfig?.webinfo.logo,
+                        }"
+                    >
                         <img
                             v-if="appStore.siteConfig?.webinfo.logo"
                             :src="appStore.siteConfig?.webinfo.logo"
                             alt="Logo"
-                            class="size-8"
+                            class="size-9"
                         />
                         <Logo
                             v-else
