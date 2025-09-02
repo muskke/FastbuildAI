@@ -208,7 +208,8 @@ function handleCardClick() {
                     <!-- 用户来源 -->
                     <div class="flex items-center gap-2">
                         <UIcon :name="sourceInfo.icon" class="text-muted-foreground size-3" />
-                        <span class="text-muted-foreground">{{ sourceInfo.label }}</span>
+                        <span v-if="user.isRoot === 1" class="text-muted-foreground"> - </span>
+                        <span v-else class="text-muted-foreground">{{ sourceInfo.label }}</span>
                     </div>
 
                     <!-- 创建时间 -->

@@ -24,6 +24,7 @@
         "sortOrderPlaceholder": "0",
         "isActive": "启用状态",
         "isActiveEnabled": "启用供应商",
+        "goToApiKeyManage": "前往配置",
         "isActiveDisabled": "禁用供应商",
         "supportedFeatures": "支持功能",
         "addDescription": "配置新的AI服务供应商",
