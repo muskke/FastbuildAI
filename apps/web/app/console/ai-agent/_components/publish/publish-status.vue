@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useClipboard } from "@vueuse/core";
+import { ProButtonCopy } from "@fastbuildai/ui";
 import { computed } from "vue";
 
 import type { Agent } from "@/models/ai-agent";
@@ -17,9 +17,6 @@ const publishUrl = computed(() => {
 });
 
 const isPublished = computed(() => props.agent?.isPublished || false);
-
-// 复制文本到剪贴板
-const { copy } = useClipboard();
 
 // 打开链接
 const openLink = (url: string) => {
@@ -80,11 +77,12 @@ const openLink = (url: string) => {
                                 $t('console-ai-agent.publish.publicAccessLinkPlaceholder')
                             "
                         />
-                        <UButton
+                        <ProButtonCopy
                             v-if="publishUrl"
-                            icon="i-lucide-copy"
+                            :content="publishUrl"
                             variant="outline"
-                            @click="copy(publishUrl)"
+                            :copiedText="$t('console-common.messages.copySuccess')"
+                            :default-text="$t('console-common.copy')"
                         />
                         <UButton
                             v-if="publishUrl"
@@ -107,11 +105,12 @@ const openLink = (url: string) => {
                             class="flex-1"
                             :placeholder="$t('console-ai-agent.publish.apiKeyPlaceholder')"
                         />
-                        <UButton
+                        <ProButtonCopy
                             v-if="agent?.apiKey"
-                            icon="i-lucide-copy"
+                            :content="agent.apiKey || ''"
                             variant="outline"
-                            @click="copy(agent.apiKey || '')"
+                            :copiedText="$t('console-common.messages.copySuccess')"
+                            :default-text="$t('console-common.copy')"
                         />
                     </UFormField>
                 </div>

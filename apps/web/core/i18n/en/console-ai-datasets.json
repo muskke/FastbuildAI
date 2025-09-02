@@ -101,7 +101,6 @@
             "success": "Task submitted",
             "failed": "Failed"
         },
-        "noEmbeddingModel": "Please configure the Embedding model in dataset settings before adding files",
         "retryDocumentDescription": "Retry vectorization for all failed chunks?",
         "retryDocumentSuccess": "Task submitted",
         "retryDocumentFailed": "Failed"
