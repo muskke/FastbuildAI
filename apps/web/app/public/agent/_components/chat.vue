@@ -681,7 +681,10 @@ useHead({
                         @submit="handleSubmitMessage"
                     >
                         <template #panel-right-item>
-                            <span class="text-muted-foreground text-xs">
+                            <span
+                                class="text-muted-foreground text-xs"
+                                v-if="agent.billingConfig.price > 0"
+                            >
                                 {{
                                     t("common.chat.singleRunConsumption", {
                                         price: agent.billingConfig.price,
