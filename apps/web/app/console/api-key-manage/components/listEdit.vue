@@ -123,8 +123,8 @@ const isTemplateSelectDisabled = computed(() => {
 const schema = computed((): ObjectSchema<any> => {
     // 基础schema定义
     const baseSchema: Record<string, any> = {
-        keyName: string().trim().required(t("console-user.form.nameRequired")),
-        typeValue: string().trim().required(t("console-user.form.typeValueRequired")),
+        name: string().trim().required(t("console-api-key.list.edit.keyTypeRequired")),
+        templateId: string().trim().required(t("console-api-key.list.edit.keyTypeRequired")),
         remark: string(), // 备注字段可选
     };
 
@@ -303,9 +303,7 @@ onMounted(async () => {
                 <UButton color="neutral" variant="soft" @click="handleClose">{{
                     t("console-api-key.cancel")
                 }}</UButton>
-                <UButton color="primary" type="submit" @click="handleSubmit">{{
-                    t("console-api-key.save")
-                }}</UButton>
+                <UButton color="primary" type="submit">{{ t("console-api-key.save") }}</UButton>
             </div>
         </UForm>
     </ProModal>
