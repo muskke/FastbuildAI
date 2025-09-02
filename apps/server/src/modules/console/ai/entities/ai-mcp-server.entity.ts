@@ -123,6 +123,16 @@ export class AiMcpServer {
     timeout: number;
 
     /**
+     * 自定义请求头
+     */
+    @Column({
+        type: "jsonb",
+        nullable: true,
+        comment: "自定义请求头，JSON格式存储",
+    })
+    customHeaders?: Record<string, string>;
+
+    /**
      * 供应商图标
      */
     @Column({
