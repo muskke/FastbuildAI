@@ -38,7 +38,7 @@ export interface AppConfig {
 
 export const appConfig: AppConfig = {
     name: process.env.APP_NAME || "FastbuildAI",
-    version: process.env.APP_VERSION || "1.0.0-beta.1",
+    version: process.env.APP_VERSION || "unknown",
     database: {
         type: process.env.DB_TYPE as "postgres",
         host: process.env.DB_HOST,
