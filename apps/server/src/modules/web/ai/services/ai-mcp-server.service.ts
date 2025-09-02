@@ -245,6 +245,7 @@ export class WebAiMcpServerService extends BaseService<AiMcpServer> {
                 url: mcpServer.url,
                 name: mcpServer.name,
                 description: mcpServer.description,
+                customHeaders: mcpServer.customHeaders,
             });
 
             // 尝试连接

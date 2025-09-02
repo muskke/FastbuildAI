@@ -40,6 +40,7 @@ export interface McpServerOptions {
     name?: string;
     description?: string;
     version?: string;
+    customHeaders?: Record<string, string>;
 }
 
 export class McpServer {
@@ -50,8 +51,14 @@ export class McpServer {
 
     constructor(options: McpServerOptions) {
         this.options = options;
-        // 初始化 MCP 传输层
-        this.transport = new SSEClientTransport(new URL(options.url));
+        // 初始化 MCP 传输层，支持自定义请求头
+        this.transport = new SSEClientTransport(new URL(options.url), {
+            requestInit: {
+                headers: options.customHeaders || {},
+            },
+        });
+
+        console.log(options.customHeaders);
 
         // 初始化 MCP 客户端
         this.client = new Client(

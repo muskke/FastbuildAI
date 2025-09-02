@@ -89,6 +89,13 @@ export class CreateWebAiMcpServerDto extends PartialType(AddUserMcpServerDto) {
     @IsOptional()
     @IsBoolean({ message: "是否显示必须是布尔值" })
     isDisabled?: boolean;
+
+    /**
+     * 自定义请求头
+     */
+    @IsOptional()
+    @IsObject({ message: "自定义请求头必须是对象" })
+    customHeaders?: Record<string, string>;
 }
 
 /**
@@ -158,6 +165,13 @@ export class WebMcpServerUrlConfig {
     @IsNotEmpty({ message: "服务URL不能为空" })
     @IsString({ message: "服务URL必须是字符串" })
     url: string;
+
+    /**
+     * 自定义请求头
+     */
+    @IsOptional()
+    @IsObject({ message: "自定义请求头必须是对象" })
+    customHeaders?: Record<string, string>;
 }
 
 /**
