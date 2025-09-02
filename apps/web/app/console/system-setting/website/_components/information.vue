@@ -64,11 +64,8 @@ const { lockFn: handleSubmit, isLock } = useLockFn(async () => {
         message.success(t("console-system.website.messages.saveSuccess"));
 
         // 重新获取配置以确保数据同步
-        await apiGetWebsiteConfig();
+        await appStore.getConfig();
 
-        await useAsyncData("config", () => appStore.getConfig(), {
-            lazy: import.meta.server,
-        });
         useHead({
             title: state.name,
             link: [

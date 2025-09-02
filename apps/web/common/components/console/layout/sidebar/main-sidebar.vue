@@ -57,7 +57,7 @@ const items = computed<NavigationMenuItem[][]>(() => {
 
             <!-- 菜单区域 -->
             <ProScrollArea class="flex-1">
-                <div class="flex flex-grow flex-col overflow-hidden px-1 py-4">
+                <div class="flex flex-grow flex-col overflow-hidden px-1 py-2">
                     <!-- 搜索按钮 -->
                     <ConsoleDashboardSearchButton
                         v-if="!collapsed"

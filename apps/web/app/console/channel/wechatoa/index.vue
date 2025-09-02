@@ -195,7 +195,7 @@ const resetForm = () => {
                 ref="formRef"
             >
                 <div v-show="activeTab === '0'">
-                    <div class="information-container mx-auto mt-8">
+                    <div class="information-container mx-auto mt-4">
                         <div class="mb-4 flex flex-col justify-center">
                             <h2 class="text-xl font-semibold">{{ t("console-wechatoa.title") }}</h2>
                             <p class="text-muted-foreground mt-1 text-sm">
@@ -236,7 +236,7 @@ const resetForm = () => {
                 </div>
                 <div v-show="activeTab === '1'">
                     <!-- 服务器配置 -->
-                    <div class="information-container mx-auto mt-8">
+                    <div class="information-container mx-auto mt-4">
                         <div class="mb-4 flex flex-col justify-center">
                             <h2 class="text-xl font-semibold">
                                 {{ t("console-wechatoa.sections.serverConfig") }}
@@ -310,7 +310,7 @@ const resetForm = () => {
                 </div>
                 <div v-show="activeTab === '2'">
                     <!-- 功能设置 -->
-                    <div class="information-container mx-auto mt-8">
+                    <div class="information-container mx-auto mt-4">
                         <div class="mb-4 flex flex-col justify-center">
                             <h2 class="text-xl font-semibold">
                                 {{ t("console-wechatoa.sections.functionSettings") }}
