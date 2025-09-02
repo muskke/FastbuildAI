@@ -299,7 +299,7 @@ onMounted(async () => {
         :ui="{
             content: 'max-w-3xl overflow-y-auto h-fit',
         }"
-        @update:model-value="(value) => !value && handleClose()"
+        @update:model-value="(value: boolean) => !value && handleClose()"
     >
         <UForm
             v-if="!isJsonImport"

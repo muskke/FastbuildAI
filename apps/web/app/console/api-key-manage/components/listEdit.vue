@@ -101,23 +101,6 @@ initDynamicFields();
 const isTemplateId = ref<boolean>(false);
 
 /**
- * 计算选择框是否应该禁用
- * 只有当编辑模式且模板ID存在于可用选项中时才禁用
- */
-const isTemplateSelectDisabled = computed(() => {
-    // 新增模式始终不禁用
-    if (!props.id) return false;
-
-    // 编辑模式：只有当模板ID存在且在可用选项中时才禁用
-    if (isTemplateId.value && formData.templateId && typeOptions.value.length > 0) {
-        return typeOptions.value.some((option) => option.value === formData.templateId);
-    }
-
-    // 其他情况都不禁用（包括模板ID不存在或不在可用选项中）
-    return false;
-});
-
-/**
  * 表单验证规则
  */
 const schema = computed((): ObjectSchema<any> => {
@@ -255,7 +238,6 @@ onMounted(async () => {
                         </UButton>
                     </template>
                     <USelect
-                        :disabled="isTemplateSelectDisabled"
                         v-model="formData.templateId"
                         :items="typeOptions"
                         :placeholder="t('console-api-key.list.edit.keyTypeRequired')"
