@@ -51,7 +51,7 @@ export interface CreateAiProviderRequest {
     /** 供应商名称 */
     name: string;
     /** API密钥 */
-    bindKeyConfig: string;
+    bindKeyConfigId: string;
     /** 图标URL */
     iconUrl?: string;
     /** 官网URL */

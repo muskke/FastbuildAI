@@ -8,6 +8,7 @@ import { Body, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
 
 import {
     CreateKeyTemplateDto,
+    ImportKeyTemplateJsonDto,
     QueryKeyTemplateDto,
     UpdateKeyTemplateDto,
 } from "../dto/key-template.dto";
@@ -33,6 +34,19 @@ export class KeyTemplateController extends BaseController {
     })
     async create(@Body() dto: CreateKeyTemplateDto) {
         return await this.keyTemplateService.create(dto);
+    }
+
+    /**
+     * 通过导入JSON创建密钥模板
+     */
+    @Post("import/json")
+    @BuildFileUrl(["**.icon"])
+    @Permissions({
+        code: "import-json",
+        name: "导入密钥模板",
+    })
+    async importFromJson(@Body() dto: ImportKeyTemplateJsonDto) {
+        return await this.keyTemplateService.importFromJson(dto);
     }
 
     /**

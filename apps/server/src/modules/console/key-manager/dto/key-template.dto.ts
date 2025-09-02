@@ -8,6 +8,7 @@ import {
     IsDefined,
     IsEnum,
     IsInt,
+    IsJSON,
     IsNotEmpty,
     IsNumber,
     IsOptional,
@@ -137,4 +138,17 @@ export class QueryKeyTemplateDto extends PaginationDto {
         return Number(value);
     })
     isEnabled?: BooleanNumberType;
+}
+
+/**
+ * 导入JSON创建密钥模板DTO
+ */
+export class ImportKeyTemplateJsonDto {
+    /**
+     * JSON字符串或对象
+     * 必须包含有效的密钥模板数据
+     */
+    @IsJSON({ message: "必须提供有效的JSON数据" })
+    @IsNotEmpty({ message: "JSON数据不能为空" })
+    jsonData: string;
 }

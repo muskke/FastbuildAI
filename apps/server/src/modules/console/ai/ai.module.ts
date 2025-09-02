@@ -53,6 +53,7 @@ import { ChatConfigService } from "./services/chat-config.service";
         AiChatMessageService,
         AiMcpServerService,
         AiMcpToolService,
+        AiProviderService,
     ],
     exports: [
         ChatConfigService,
@@ -62,6 +63,7 @@ import { ChatConfigService } from "./services/chat-config.service";
         AiChatMessageService,
         AiMcpServerService,
         AiMcpToolService,
+        AiProviderService,
     ],
 })
 export class AiConsoleModule {}
