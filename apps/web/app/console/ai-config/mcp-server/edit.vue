@@ -42,6 +42,7 @@ const formData = reactive<CreateMcpServerRequest>({
     isQuickMenu: false,
     alias: "",
     providerUrl: "",
+    customHeaders: "",
 });
 
 const jsonFormData = reactive({
@@ -94,14 +95,27 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
             const typedKey = key as keyof typeof formData;
             const value = data[typedKey as keyof McpServerDetail];
             if (value !== undefined) {
-                // 检查值是否为对象且非空，或者是其他类型的值
-                if (typeof value === "object" && value !== null) {
-                    if (Object.keys(value).length > 0) {
-                        formData[typedKey as keyof typeof formData] = value as never;
+                // 特殊处理 customHeaders：如果是对象则转换为字符串
+                if (typedKey === "customHeaders") {
+                    if (typeof value === "object" && value !== null) {
+                        // 将对象转换为 "key1=value1,key2=value2" 格式的字符串
+                        const headersStr = Object.entries(value as Record<string, string>)
+                            .map(([k, v]) => `${k}=${v}`)
+                            .join(",");
+                        formData[typedKey] = headersStr as never;
+                    } else {
+                        formData[typedKey] = (value || "") as never;
                     }
                 } else {
-                    // 处理原始类型（string, number, boolean等）
-                    formData[typedKey as keyof typeof formData] = value as never;
+                    // 处理其他字段
+                    if (typeof value === "object" && value !== null) {
+                        if (Object.keys(value).length > 0) {
+                            formData[typedKey as keyof typeof formData] = value as never;
+                        }
+                    } else {
+                        // 处理原始类型（string, number, boolean等）
+                        formData[typedKey as keyof typeof formData] = value as never;
+                    }
                 }
             }
         });
@@ -110,11 +124,42 @@ const { lockFn: fetchDetail, isLock: detailLoading } = useLockFn(async () => {
     }
 });
 
+/**
+ * 解析自定义请求头字符串为键值对对象
+ * @param headersStr - 格式为 "key1=value1,key2=value2" 或换行分隔的字符串
+ * @returns 解析后的键值对对象
+ */
+const parseCustomHeaders = (headersStr?: string | null): Record<string, string> => {
+    if (!headersStr?.trim()) return {};
+
+    const headers: Record<string, string> = {};
+    // 支持换行或逗号分隔
+    const pairs = headersStr.split(/[,\n]/).filter((pair) => pair.trim());
+
+    pairs.forEach((pair) => {
+        const [key, ...valueParts] = pair.split("=");
+        if (key?.trim() && valueParts.length > 0) {
+            const value = valueParts.join("="); // 处理值中包含等号的情况
+            headers[key.trim()] = value.trim();
+        }
+    });
+
+    return headers;
+};
+
 // 提交表单
 const { lockFn: submitForm, isLock } = useLockFn(async () => {
-    const { ...obj } = formData;
-    const newFormData: Omit<CreateMcpServerRequest, "args"> & { args?: Record<string, unknown> } = {
+    const { customHeaders, ...obj } = formData;
+
+    // 解析自定义请求头
+    const parsedHeaders = parseCustomHeaders(customHeaders as string);
+
+    const newFormData: Omit<CreateMcpServerRequest, "args"> & {
+        args?: Record<string, unknown>;
+        customHeaders?: Record<string, string>;
+    } = {
         ...obj,
+        customHeaders: parsedHeaders,
     };
 
     try {
@@ -226,6 +271,14 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                     <UTextarea
                         v-model="formData.url"
                         :placeholder="t('console-ai-mcp-server.form.baseUrlPlaceholder')"
+                        :ui="{ root: 'w-full' }"
+                    />
+                </UFormField>
+                <!-- 请求头 -->
+                <UFormField :label="t('console-ai-mcp-server.form.headers')" name="headers">
+                    <UTextarea
+                        v-model="formData.customHeaders as string"
+                        :placeholder="t('console-ai-mcp-server.form.customHeadersPlaceholder')"
                         :ui="{ root: 'w-full' }"
                     />
                 </UFormField>

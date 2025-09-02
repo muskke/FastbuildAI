@@ -4,7 +4,7 @@ import { useMessage } from "@fastbuildai/ui/composables/useMessage";
 import { useI18n } from "vue-i18n";
 import { array, number, object, string } from "yup";
 
-import type { KeyTemplateRequest } from "@/models/key-templates";
+import type { FieldConfig, KeyTemplateFormData, KeyTemplateRequest } from "@/models/key-templates";
 import { getApiKeyTypeDetail } from "@/services/console/api-key-type";
 
 const { t } = useI18n();
@@ -12,18 +12,20 @@ const toast = useMessage();
 
 const props = defineProps<{
     id?: string;
+    isJsonImport?: boolean;
 }>();
 
 const emits = defineEmits<{
     (e: "close", refresh?: boolean): void;
-    (e: "submit", data: KeyTemplateRequest, id?: string): void;
+    (e: "submit", data: KeyTemplateFormData, id?: string): void;
+    (e: "json-submit", data: string): void;
 }>();
 
 const handleClose = () => {
     emits("close");
 };
 
-const formData = reactive<KeyTemplateRequest>({
+const formData = reactive<KeyTemplateFormData>({
     icon: "",
     name: "",
     isEnabled: 1,
@@ -35,6 +37,10 @@ const formData = reactive<KeyTemplateRequest>({
             placeholder: "",
         },
     ],
+});
+
+const jsonFormData = reactive({
+    jsonImport: "",
 });
 
 const fetchDetail = async () => {
@@ -202,11 +208,57 @@ const schema = computed(() => {
     });
 });
 
+// JSON导入表单验证规则
+const jsonImportSchema = object({
+    jsonImport: string()
+        .required("请输入JSON数据")
+        .test("is-valid-json", "请输入有效的JSON数据", (value) => {
+            if (!value) return false;
+            try {
+                JSON.parse(value);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }),
+});
+
+const jsonSubmitForm = () => {
+    emits("json-submit", jsonFormData.jsonImport);
+};
+
+// JSON导入示例
+const correctJson = `{
+    "name":"API密钥模板",
+    "icon":"path/to/icon.png",
+    "fieldConfig":[
+        {
+            "name":"apiKey",
+            "type":"text",
+            "required":true,
+            "placeholder":"请输入API密钥"
+        },
+        {
+            "name":"secretKey",
+            "type":"text",
+            "required":true,
+            "placeholder":"请输入密钥"
+        }
+    ]
+}`;
+
+/**
+ * 复制JSON
+ */
+const copyJson = () => {
+    navigator.clipboard.writeText(correctJson);
+    toast.success(t("console-api-key.type.edit.copySuccess"));
+};
+
 /**
  * 处理表单提交
  */
 const handleSubmit = () => {
-    console.log("formData", formData);
     emits("submit", formData, props.id);
 };
 
@@ -226,7 +278,13 @@ onMounted(async () => {
         }"
         @update:model-value="(value) => !value && handleClose()"
     >
-        <UForm :state="formData" :schema="schema" class="space-y-4" @submit="handleSubmit">
+        <UForm
+            v-if="!isJsonImport"
+            :state="formData"
+            :schema="schema"
+            class="space-y-4"
+            @submit="handleSubmit"
+        >
             <div class="grid grid-cols-2 items-center gap-4">
                 <UFormField :label="t('console-api-key.type.edit.icon')" name="icon" required>
                     <ProUploader
@@ -341,7 +399,7 @@ onMounted(async () => {
                     </template>
                     <template #action-cell="{ row }">
                         <UButton
-                            v-if="row.index !== formData.fieldConfig.length - 1 || props.id"
+                            v-if="row.index !== formData.fieldConfig.length - 1"
                             class="cursor-pointer px-3"
                             icon="i-tabler-trash"
                             color="error"
@@ -358,6 +416,55 @@ onMounted(async () => {
                     t("console-api-key.cancel")
                 }}</UButton>
                 <UButton color="primary" type="submit">{{ t("console-api-key.save") }}</UButton>
+            </div>
+        </UForm>
+
+        <!-- JSON导入 -->
+        <UForm v-else :state="jsonFormData" :schema="jsonImportSchema" @submit="jsonSubmitForm">
+            <div class="pb-2">
+                <UFormField
+                    :label="t('console-ai-mcp-server.form.jsonImport')"
+                    name="jsonImport"
+                    required
+                >
+                    <UTextarea
+                        v-model="jsonFormData.jsonImport"
+                        :placeholder="t('console-ai-mcp-server.form.jsonImportPlaceholder')"
+                        :rows="28"
+                        :ui="{ root: 'w-full' }"
+                    />
+                    <template #hint>
+                        <UPopover mode="hover" :open-delay="1500" :close-delay="0">
+                            <UButton
+                                variant="link"
+                                class="text-primary cursor-pointer text-xs"
+                                @click="copyJson"
+                            >
+                                {{ t("console-api-key.type.edit.copyTemplate") }}
+                            </UButton>
+                            <template #content>
+                                <div class="flex flex-col gap-4 p-4">
+                                    <div class="flex flex-col">
+                                        <div class="flex max-w-120 flex-col items-start gap-2">
+                                            <pre
+                                                class="bg-muted w-full overflow-x-auto rounded-lg p-4 text-sm"
+                                            ><code>{{ correctJson }}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </UPopover>
+                    </template>
+                </UFormField>
+            </div>
+            <!-- 操作按钮 -->
+            <div class="bottom-0 z-10 flex justify-end gap-2 py-4">
+                <UButton color="neutral" variant="soft" size="lg" @click="handleClose">
+                    {{ t("console-common.cancel") }}
+                </UButton>
+                <UButton color="primary" size="lg" type="submit">
+                    {{ t("console-api-key.save") }}
+                </UButton>
             </div>
         </UForm>
     </ProModal>

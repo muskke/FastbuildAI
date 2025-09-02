@@ -129,6 +129,21 @@ const dropdownActions = computed(() => {
 
 const statusInfo = computed(() => getUserStatusInfo(props.user.status));
 const sourceInfo = computed(() => getUserSourceInfo(props.user.source));
+
+/** 处理卡片点击 */
+function handleCardClick() {
+    console.log("handleCardClick", props.user);
+    if (
+        hasAccessByCodes(["users:update"]) &&
+        (props.user.isRoot !== 1 ||
+            (auth.userInfo?.isRoot === 1 && props.user.id === auth.userInfo.id))
+    ) {
+        router.push({
+            path: useRoutePath("users:update"),
+            query: { id: props.user.id },
+        });
+    }
+}
 </script>
 
 <template>
@@ -138,7 +153,9 @@ const sourceInfo = computed(() => getUserSourceInfo(props.user.source));
         variant="outlined"
         :selected="selected"
         :actions="dropdownActions"
+        :clickable="true"
         @select="handleSelect"
+        @click="handleCardClick"
     >
         <template #icon="{ groupHoverClass, selectedClass }">
             <UChip position="top-right" color="success">

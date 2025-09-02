@@ -408,10 +408,6 @@ onMounted(() => fetchMenuTree());
     <div class="menu-list-container pb-5">
         <!-- 搜索区域 -->
         <div class="bg-background sticky top-0 z-10 flex flex-wrap gap-4 pb-4">
-            <div class="itemc-end flex justify-end">
-                <UTabs v-model="activeSourceType" :items="sourceTypeItems" class="block w-auto" />
-            </div>
-
             <div class="flex items-end gap-2 md:ml-auto">
                 <UButton
                     color="error"

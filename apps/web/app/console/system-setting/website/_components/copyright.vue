@@ -146,7 +146,6 @@ onMounted(() => {
                     <UButton
                         type="submit"
                         color="primary"
-                        size="xl"
                         :loading="isLock"
                         :disabled="isLock || isLoadingConfig"
                     >
@@ -159,7 +158,6 @@ onMounted(() => {
                 </AccessControl>
                 <UButton
                     type="reset"
-                    size="xl"
                     color="neutral"
                     variant="outline"
                     :disabled="isLock || isLoadingConfig"
