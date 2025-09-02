@@ -100,7 +100,7 @@ const isActiveString = computed({
 
 function goToApiKeyManage() {
     router.push({
-        path: "/console/apiKeyManage/apiKeyType",
+        path: "/console/api-key-manage/api-key-type",
     });
 }
 

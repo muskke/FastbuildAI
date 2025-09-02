@@ -13,7 +13,7 @@ export const getApiKeyList = (params: {
 /**
  * 获取模板列表
  */
-export const getApiKeyTypeList = (params: { page: number; pageSize: number }) => {
+export const getApiKeyTemplateList = (params: { page: number; pageSize: number }) => {
     return useConsoleGet("/key-templates", params);
 };
 
