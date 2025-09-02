@@ -61,8 +61,8 @@ const models = computed(() => {
                     base: 'table-fixed border-separate border-spacing-0',
                     thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
                     tbody: '[&>tr]:last:[&>td]:border-b-0',
-                    th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
-                    td: 'border-b border-default cursor-pointer',
+                    th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r [&:nth-child(4)]:min-w-22',
+                    td: 'border-b border-default cursor-pointer [&:nth-child(4)]:min-w-22',
                     tr: '[&:has(>td[colspan])]:hidden',
                 }"
             >
@@ -93,14 +93,14 @@ const models = computed(() => {
                 <!-- 对话消耗 -->
                 <template #billingRule-cell="{ row }">
                     <div class="flex w-full items-center gap-2">
-                        <UFormField :name="`rows.${row.index}.billingRule.power`">
+                        <UFormField :name="`rows.${row.index}.billingRule.power`" class="flex-1">
                             <UInput
                                 v-model.number="row.original.billingRule.power"
                                 type="number"
                                 placeholder=""
                                 size="lg"
                                 :min="0"
-                                class="flex-1"
+                                class="w-full"
                                 :ui="{ base: 'pr-15' }"
                                 @blur="
                                     if (row.original.billingRule.power < 0)
@@ -114,15 +114,15 @@ const models = computed(() => {
                                 </template>
                             </UInput>
                         </UFormField>
-                        <span>/</span>
-                        <UFormField :name="`rows.${row.index}.billingRule.tokens`">
+                        <span class="shrink-0">/</span>
+                        <UFormField :name="`rows.${row.index}.billingRule.tokens`" class="flex-1">
                             <UInput
                                 v-model.number="row.original.billingRule.tokens"
                                 type="number"
                                 placeholder=""
                                 size="lg"
                                 :min="1"
-                                class="flex-1"
+                                class="w-full"
                                 :ui="{ base: 'pr-15' }"
                                 @blur="
                                     if (row.original.billingRule.tokens < 1)
