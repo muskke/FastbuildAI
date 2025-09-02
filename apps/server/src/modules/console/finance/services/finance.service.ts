@@ -192,14 +192,30 @@ export class FinanceService extends BaseService<AccountLog> {
      * @returns 处理后的账户变动记录列表
      */
     private async enrichAccountLogItems(accountLogs: any[]) {
-        // 获取控制台用户列表用于关联用户查找
-        const consoleUsers = await this.userRepository.find({
-            where: { source: UserCreateSource.CONSOLE },
-            select: ["id", "nickname"],
+        // 收集所有关联用户ID
+        const associationUserIds = new Set<string>();
+        const userIds = new Set<string>();
+
+        accountLogs.forEach((accountLog) => {
+            if (accountLog.associationUserId) {
+                associationUserIds.add(accountLog.associationUserId);
+            }
+            if (accountLog.userId) {
+                userIds.add(accountLog.userId);
+            }
+        });
+
+        // 查询所有相关用户
+        const allUserIds = [...new Set([...associationUserIds, ...userIds])];
+        const users = await this.userRepository.find({
+            where: { id: In(allUserIds) },
+            select: ["id", "nickname", "username"],
         });
 
         // 创建用户ID到昵称的映射，提高查找效率
-        const userNicknameMap = new Map(consoleUsers.map((user) => [user.id, user.nickname]));
+        const userNicknameMap = new Map(
+            users.map((user) => [user.id, user.nickname || user.username || "未知用户"]),
+        );
 
         // 收集所有需要查询的智能体ID
         const agentIds = new Set<string>();
