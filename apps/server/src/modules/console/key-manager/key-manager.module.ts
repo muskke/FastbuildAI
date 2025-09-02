@@ -12,12 +12,6 @@ import { KeyTemplateService } from "./services/key-template.service";
 
 /**
  * 密钥管理模块
- *
- * 提供密钥模板和密钥配置的管理功能，包括：
- * - 密钥模板的创建、查询、更新、删除
- * - 密钥配置的创建、查询、更新、删除
- * - 密钥配置的状态管理和使用统计
- * - 敏感字段的加密存储和掩码显示
  */
 @Module({
     imports: [TypeOrmModule.forFeature([KeyConfig, KeyTemplate, AiProvider])],

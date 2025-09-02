@@ -167,7 +167,7 @@ onMounted(() => getLists());
                 @load-more="loadMore"
             >
                 <div
-                    class="grid grid-cols-1 gap-6 py-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                    class="grid grid-cols-1 gap-6 pt-2 pb-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                 >
                     <!-- 创建知识库卡片 -->
                     <AccessControl :codes="['ai-datasets:create']">

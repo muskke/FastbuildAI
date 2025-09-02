@@ -1,7 +1,7 @@
 {
     "phone": "手机号码",
     "email": "邮箱",
-    "userNo": "用户编号",
+    "userNo": "编号",
     "add": "新增用户",
     "deleteTitle": "删除用户",
     "deleteMsg": "删除后该用户将无法恢复，确认删除？",

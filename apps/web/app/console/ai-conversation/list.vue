@@ -316,7 +316,7 @@ onMounted(() => getLists());
 
         <!-- 列表展示 -->
         <template v-if="!paging.loading && paging.items.length > 0 && tab === 1">
-            <ProScrollArea class="h-[calc(100vh-13rem)]" :shadow="false">
+            <ProScrollArea class="h-[calc(100vh-13rem)] pt-2" :shadow="false">
                 <UTable
                     ref="table"
                     :data="paging.items"
