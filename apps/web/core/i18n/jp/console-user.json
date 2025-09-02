@@ -14,9 +14,6 @@
     "addTitle": "新規ユーザー追加",
     "editTitle": "ユーザー編集",
     "neverLogin": "ログイン履歴なし",
-    "editProfile": "資料を編集する",
-    "adjustBalance": "残高を調整する",
-    "deleteUser": "ユーザーを削除",
     "status": {
         "active": "有効",
         "inactive": "無効",
@@ -77,11 +74,7 @@
         "reduce": "控除",
         "adjustAmount": "数量を調整する",
         "adjustAmountInput": "調整する数を入力してください",
-        "adjustAmountRequired": "調整額は空にすることはできません",
-        "adjustAmountMin": "調整金額は0より大きくなければなりません。",
         "adjustedPower": "調整された計算能力",
-        "adjustPowerSuccess": "残高調整が成功しました",
-        "adjustPowerError": "残高調整に失敗しました",
         "confirmPowerEdit": "編集の計算能力を確定しますか？",
         "confirmPowerEditMessage": "計算能力を編集してもいいですか？"
     },

@@ -77,9 +77,7 @@
         "rightProviderUrl": "正しいMCPプロバイダーURLを入力してください",
         "rightBaseUrl": "正しいMCPサーバーURLを入力してください",
         "isQuickMenu": "ショートカットメニューにする",
-        "alias": "エイリアス",
-        "headers": "リクエストヘッダー",
-        "customHeadersPlaceholder": "リクエストヘッダーを入力してください。形式は: xxx=xxx, yyy=yyy（改行やカンマで複数のパラメータを区切ることができます）"
+        "alias": "エイリアス"
     },
     "detail": {
         "noDescription": "説明なし...",

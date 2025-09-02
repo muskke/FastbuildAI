@@ -1,15 +1,9 @@
 {
     "type": {
         "addType": "New types",
-        "deleteSuccess": "Deleting the template succeeds",
-        "enableSuccess": "Enabling the template is successful",
-        "disableSuccess": "Disabling the template succeeds",
         "form": {
-            "icon": "icon",
             "name": "Type name",
-            "type": "type",
-            "system": "System built-in",
-            "custom": "Customization",
+            "fieldName": "Field name",
             "isActived": "Whether enabled or not",
             "createdAt": "Creation time",
             "action": "operate",
@@ -19,7 +13,6 @@
             "disable": "disable"
         },
         "edit": {
-            "icon": "icon",
             "title": "Edit type",
             "name": "Type name",
             "status": "state",
@@ -30,17 +23,12 @@
             "fieldType": "Field type",
             "singleLineText": "Single line text",
             "multiLineText": "Multi-line text",
-            "number": "Number type",
             "fieldExample": "Sample text",
-            "fieldRequired": "Whether it is required",
-            "submitSuccess": "Submission was successful",
             "action": "operate",
             "add": "New",
             "nameRequired": "Please enter a field name",
             "typeValueRequired": "Select the field type",
             "exampleRequired": "Please enter a sample text",
-            "copyTemplate": "Copy the template",
-            "copySuccess": "The template example has been copied to the clipboard",
             "toast": {
                 "nameRequired": "The type name cannot be empty",
                 "customFieldRequired": "Custom fields cannot be empty",
@@ -56,10 +44,6 @@
         "add": "Add a key",
         "batchDelete": "Bulk deletion",
         "placeholder": "Please enter a name...",
-        "enableSuccess": "Enabled successfully",
-        "disableSuccess": "Disabled successfully",
-        "deleteSuccess": "Delete successful",
-        "batchDeleteSuccess": "Batch deletion is successful",
         "form": {
             "name": "Key name",
             "keyType": "Key type",
@@ -79,7 +63,6 @@
             "remark": "remark",
             "nameRequired": "Please enter the name of the key",
             "keyTypeRequired": "Select the key type",
-            "submitSuccess": "Submission was successful",
             "remarkRequired": "Please enter a comment",
             "fieldRequired": "Please enter"
         }
