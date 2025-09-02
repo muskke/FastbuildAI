@@ -10,6 +10,7 @@ import {
     createApiKeyType,
     deleteApiKeyType,
     getApiKeyTypeList,
+    importApiKeyType,
     updateApiKeyType,
     updateApiKeyTypeStatus,
 } from "@/services/console/api-key-type";
@@ -48,6 +49,10 @@ const searchForm = reactive({
  * 编辑弹窗
  */
 const editKey = ref(false);
+/**
+ * 是否是导入
+ */
+const isJsonImport = ref(false);
 
 /**
  * 选中的ID
@@ -146,6 +151,18 @@ const handleSubmit = async (value: KeyTemplateFormData, id?: string) => {
     }
 };
 
+// JSON导入
+const jsonSubmitForm = async (value: string) => {
+    try {
+        await importApiKeyType({ jsonData: value });
+        toast.success(t("console-api-key.type.edit.submitSuccess"));
+        getLists();
+        handleClose();
+    } catch (error) {
+        console.error("JSON导入失败:", error);
+    }
+};
+
 // 获取列表
 const { paging, getLists } = usePaging({
     fetchFun: getApiKeyTypeList,
@@ -166,11 +183,20 @@ const handleDelete = async (id: string) => {
 };
 
 /**
+ * 打开编辑弹窗
+ */
+const handleOpenEdit = (isImport: boolean = false) => {
+    editKey.value = true;
+    isJsonImport.value = isImport;
+};
+
+/**
  * 关闭弹窗
  */
 const handleClose = () => {
     editKey.value = false;
     selectedKeyId.value = undefined;
+    isJsonImport.value = false;
 };
 
 // 初始化
@@ -181,9 +207,27 @@ onMounted(() => getLists());
         <!-- 顶部控制区域 -->
         <div class="flex items-center justify-between">
             <UInput v-model="searchForm.name" placeholder="请输入名称..." @change="getLists" />
-            <UButton color="primary" icon="i-lucide-plus" @click="editKey = true">{{
-                t("console-api-key.type.addType")
-            }}</UButton>
+            <UDropdownMenu
+                size="lg"
+                :items="[
+                    {
+                        label: t('console-ai-mcp-server.quickCreateTitle'),
+                        icon: 'i-heroicons-plus',
+                        color: 'primary',
+                        onSelect: () => handleOpenEdit(),
+                    },
+                    {
+                        label: t('console-ai-mcp-server.importTitle'),
+                        icon: 'i-lucide-file-json-2',
+                        color: 'primary',
+                        onSelect: () => handleOpenEdit(true),
+                    },
+                ]"
+            >
+                <UButton color="primary" icon="i-lucide-plus">
+                    {{ t("console-api-key.type.addType") }}
+                </UButton>
+            </UDropdownMenu>
         </div>
         <!-- 列表 -->
         <div class="flex-1 overflow-y-auto">
@@ -242,6 +286,13 @@ onMounted(() => getLists());
             </div>
         </div>
 
-        <ApiEdit v-if="editKey" :id="selectedKeyId" @close="handleClose" @submit="handleSubmit" />
+        <ApiEdit
+            v-if="editKey"
+            :id="selectedKeyId"
+            :is-json-import="isJsonImport"
+            @close="handleClose"
+            @json-submit="jsonSubmitForm"
+            @submit="handleSubmit"
+        />
     </div>
 </template>
