@@ -105,10 +105,15 @@ const handleCreateEmpty = async () => {
         toast.error(t("console-ai-datasets.settings.descriptionInput"));
         return;
     }
+    if (!datasets.embeddingModelId) {
+        toast.error(t("console-ai-datasets.settings.embeddingModelInput"));
+        return;
+    }
     try {
         const result = await apiCreateEmptyDataset({
             name: datasets.name,
             description: datasets.description,
+            embeddingModelId: datasets.embeddingModelId,
         });
         // 跳转到新知识库详情页
         router.replace(useRoutePath("ai-datasets-documents:list", { id: result.id as string }));
@@ -158,6 +163,7 @@ onMounted(() => {
                     v-model:fileIds="datasets.indexingConfig.fileIds"
                     v-model:name="datasets.name"
                     v-model:description="datasets.description"
+                    v-model:embeddingModelId="datasets.embeddingModelId"
                     :disabled="!!props.id"
                     @onStepChange="nextStep"
                     @createEmpty="handleCreateEmpty"
@@ -167,7 +173,6 @@ onMounted(() => {
             <div v-show="step === 2" class="flex h-full min-h-0 w-full">
                 <StepTwo
                     v-model:indexingConfig="datasets.indexingConfig"
-                    v-model:embeddingModelId="datasets.embeddingModelId"
                     v-model:retrievalConfig="datasets.retrievalConfig"
                     :disabled="!!props.datasetsDetail?.documentCount"
                     @onStepChange="changeStep"

@@ -12,18 +12,21 @@ const emits = defineEmits<{
     (e: "update:fileIds", v: string[]): void;
     (e: "onStepChange"): void;
     (e: "createEmpty"): void;
+    (e: "update:embeddingModelId", v: string): void;
 }>();
 
 const props = defineProps<{
     disabled?: boolean;
     name: string;
     description: string;
+    embeddingModelId: string;
 }>();
 
 const { t } = useI18n();
 
 const name = useVModel(props, "name", emits);
 const description = useVModel(props, "description", emits);
+const embeddingModelId = useVModel(props, "embeddingModelId", emits);
 
 const fileList = ref<FileItem[]>([]);
 
@@ -111,6 +114,35 @@ const selectSource = (source: (typeof DATA_SOURCES)[number]) => {
                         v-model="description"
                         :placeholder="$t('console-ai-datasets.settings.descriptionInput')"
                         :ui="{ root: 'w-full' }"
+                    />
+                </UFormField>
+
+                <!-- Embedding 模型 -->
+                <UFormField
+                    class="flex w-full justify-between"
+                    :ui="{
+                        wrapper: 'flex  ',
+                        labelWrapper: 'items-stretch ',
+                        label: 'text-accent-foreground width140 pt-2',
+                        container: 'flex-1',
+                    }"
+                    :label="$t('console-ai-datasets.create.stepTwo.embeddingModel')"
+                    required
+                >
+                    <ModelSelect
+                        :model-value="embeddingModelId"
+                        :button-ui="{
+                            variant: 'outline',
+                            color: 'neutral',
+                            ui: { base: 'w-full' },
+                            class: 'bg-background',
+                        }"
+                        :defaultSelected="false"
+                        capability="chat"
+                        :supportedModelTypes="['text-embedding']"
+                        placeholder="选择嵌入模型"
+                        :disabled="disabled"
+                        @change="(e) => (embeddingModelId = e.id)"
                     />
                 </UFormField>
             </div>

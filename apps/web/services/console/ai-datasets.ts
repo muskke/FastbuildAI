@@ -70,6 +70,7 @@ export function apiCreateDataset(data: CreateDatasetParams): Promise<Dataset> {
 export function apiCreateEmptyDataset(data: {
     name: string;
     description?: string;
+    embeddingModelId: string;
 }): Promise<Dataset> {
     return useConsolePost("/ai-datasets/create-empty", data);
 }

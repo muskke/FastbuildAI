@@ -248,6 +248,7 @@
         "description": "ナレッジベース名、説明、ベクトルモデル、検索設定などを設定できます。",
         "nameInput": "ナレッジベース名を入力",
         "descriptionInput": "ナレッジベースの説明を入力",
+        "embeddingModelInput": "Embedding モデルを選択",
         "retrievalMethod": "検索設定"
     },
     "create": {
