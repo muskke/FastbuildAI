@@ -346,10 +346,6 @@ const handleDelete = async (id: string) => {
 
 // 处理添加文件
 const handleAddFile = () => {
-    if (!datasets?.value?.embeddingModelId) {
-        toast.error(t("console-ai-datasets.documents.noEmbeddingModel"));
-        return;
-    }
     router.push(useRoutePath("ai-datasets-documents:create", { id: datasetIdSafe.value }));
 };
 
