@@ -192,6 +192,7 @@ const handleSubmit = () => {
     if (props.id) {
         const newFormData = {
             name: formData.name,
+            templateId: formData.templateId,
             remark: formData.remark,
             status: formData.status,
             sortOrder: formData.sortOrder,
