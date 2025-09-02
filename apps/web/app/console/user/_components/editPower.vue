@@ -5,12 +5,13 @@ import { useI18n } from "vue-i18n";
 import { number, object } from "yup";
 
 import type { UserInfo } from "@/models/user";
+import { apiUpdateUserAmount } from "@/services/console/user";
 
 const { t } = useI18n();
 const toast = useMessage();
 
 const props = defineProps<{
-    user: UserInfo | null;
+    user: { id: string; power?: number } | null;
 }>();
 
 const emits = defineEmits<{
@@ -48,8 +49,13 @@ const adjustedPower = computed(() => {
  */
 const handleConfirmPowerEdit = async () => {
     try {
-        // TODO: 调用API接口调整用户余额
-        // await apiAdjustUserPower(props.user?.id, powerAdjustForm);
+        if (!props.user?.id) {
+            toast.error("用户ID不存在");
+            return;
+        }
+
+        // 调用API接口调整用户余额
+        await apiUpdateUserAmount(props.user.id, powerAdjustForm.amount, powerAdjustForm.type);
 
         toast.success(t("console-user.form.adjustPowerSuccess"));
         emits("close", true);
