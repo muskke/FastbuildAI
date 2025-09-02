@@ -177,12 +177,12 @@ function handleCardClick() {
                         {{ user.nickname }}
                     </span>
                 </UTooltip>
-                <span class="text-muted-foreground text-sm">(@{{ user.username }})</span>
+                <span class="text-muted-foreground mr-2 text-sm">(@{{ user.username }})</span>
                 <!-- 用户权限 -->
-                <UBadge v-if="user.isRoot" color="warning" size="sm" class="ml-2">
+                <UBadge v-if="user.isRoot" color="warning" size="sm" class="ml-auto shrink-0">
                     {{ $t("console-user.admin") }}
                 </UBadge>
-                <UBadge v-else-if="user.role" color="primary" size="sm" class="ml-2">
+                <UBadge v-else-if="user.role" color="primary" size="sm" class="ml-auto shrink-0">
                     {{ user.role.name }}
                 </UBadge>
             </h3>

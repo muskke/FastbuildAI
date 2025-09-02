@@ -237,19 +237,24 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                     </UFormField>
                 </div>
                 <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
-                    <URadioGroup
-                        class="my-2"
-                        v-model="isActiveString"
-                        :items="[
-                            { label: t('console-ai-provider.form.isActiveEnabled'), value: 'true' },
-                            {
-                                label: t('console-ai-provider.form.isActiveDisabled'),
-                                value: 'false',
-                            },
-                        ]"
-                        orientation="horizontal"
-                        color="primary"
-                    />
+                    <div class="flex h-8 items-center">
+                        <URadioGroup
+                            class="my-2"
+                            v-model="isActiveString"
+                            :items="[
+                                {
+                                    label: t('console-ai-provider.form.isActiveEnabled'),
+                                    value: 'true',
+                                },
+                                {
+                                    label: t('console-ai-provider.form.isActiveDisabled'),
+                                    value: 'false',
+                                },
+                            ]"
+                            orientation="horizontal"
+                            color="primary"
+                        />
+                    </div>
                 </UFormField>
             </div>
 

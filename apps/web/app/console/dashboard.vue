@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ProEcharts from "@fastbuildai/ui/components/pro-echarts.vue";
+import ProScrollArea from "@fastbuildai/ui/components/pro-scroll-area.vue";
 import type { TableColumn } from "@nuxt/ui";
 import { useColorMode } from "@vueuse/core";
 import type { EChartsOption } from "echarts";
@@ -318,191 +319,13 @@ const progressChartOptions = reactive({
 </script>
 
 <template>
-    <div class="my-px space-y-4 pb-6">
-        <!-- 项目概览卡片 -->
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <UCard>
-                <template #header>
-                    <div class="mb-1 flex items-center font-medium">今日访问数据</div>
-                    <div class="mb-1 flex items-center gap-1 text-gray-400">
-                        <UIcon name="i-lucide-info" class="size-3" />
-                        <TimeDisplay
-                            :datetime="new Date().toISOString()"
-                            mode="datetime"
-                            class="text-xs"
-                        />
-                    </div>
-                </template>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div>
-                            <div class="">
-                                <span class="text-2xl font-bold">8</span>
-                                <span class="ml-1 text-xs text-gray-400">次</span>
-                            </div>
-                            <div class="text-xs text-gray-400">页面访问量</div>
-                        </div>
-                        <USeparator orientation="vertical" class="h-6" />
-                        <div>
-                            <div class="">
-                                <span class="text-2xl font-bold">8</span>
-                                <span class="ml-1 text-xs text-gray-400">次</span>
-                            </div>
-                            <div class="text-xs text-gray-400">页面访问量</div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col items-center justify-center text-gray-400">
-                        <UIcon name="i-heroicons-arrow-trending-up" class="text-primary size-7" />
-                        <span class="text-xs">
-                            同比昨天增长
-                            <span class="text-primary text-base font-medium">8</span> 次
-                        </span>
-                    </div>
-                </div>
-            </UCard>
-
-            <UCard>
-                <template #header>
-                    <div class="mb-1 flex items-center font-medium">近15天访问数据</div>
-                    <div class="mb-1 flex items-center gap-1 text-gray-400">
-                        <UIcon name="i-lucide-info" class="size-3" />
-                        <TimeDisplay
-                            :datetime="new Date().toISOString()"
-                            mode="datetime"
-                            class="text-xs"
-                        />
-                    </div>
-                </template>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div>
-                            <div class="">
-                                <span class="text-2xl font-bold">468</span>
-                                <span class="ml-1 text-xs text-gray-400">次</span>
-                            </div>
-                            <div class="text-xs text-gray-400">页面访问量</div>
-                        </div>
-                        <USeparator orientation="vertical" class="h-6" />
-                        <div>
-                            <div class="">
-                                <span class="text-2xl font-bold">359</span>
-                                <span class="ml-1 text-xs text-gray-400">次</span>
-                            </div>
-                            <div class="text-xs text-gray-400">页面访问量</div>
-                        </div>
-                    </div>
-                    <div class="text-primary flex flex-col items-center justify-center">
-                        <UIcon name="i-heroicons-arrow-trending-up" class="size-7" />
-                        <span class="text-xs text-gray-400">
-                            同比上月增
-                            <span class="text-primary text-base font-medium">418</span> 次
-                        </span>
-                    </div>
-                </div>
-            </UCard>
-
-            <UCard>
-                <template #header>
-                    <div class="mb-1 flex items-center font-medium">项目完成率</div>
-                    <div class="mb-1 flex items-center gap-1 text-gray-400">
-                        <UIcon name="i-lucide-info" class="size-3" />
-                        <TimeDisplay
-                            :datetime="new Date().toISOString()"
-                            mode="datetime"
-                            class="text-xs"
-                        />
-                    </div>
-                </template>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div>
-                            <div class="">
-                                <span class="text-2xl font-bold">
-                                    {{
-                                        Math.round(
-                                            projects.reduce((acc, p) => acc + p.progress, 0) /
-                                                projects.length,
-                                        )
-                                    }}
-                                </span>
-                                <span class="ml-1 text-xs text-gray-400">%</span>
-                            </div>
-                            <div class="text-xs text-gray-400">页面访问量</div>
-                        </div>
-                        <USeparator orientation="vertical" class="h-6" />
-                        <div>
-                            <div class="">
-                                <span class="text-2xl font-bold">
-                                    {{
-                                        Math.round(
-                                            projects.reduce((acc, p) => acc + p.progress, 0) /
-                                                projects.length,
-                                        )
-                                    }}
-                                </span>
-                                <span class="ml-1 text-xs text-gray-400">%</span>
-                            </div>
-                            <div class="text-xs text-gray-400">页面访问量</div>
-                        </div>
-                    </div>
-                    <div class="text-primary flex flex-col items-center justify-center">
-                        <UIcon name="i-heroicons-arrow-trending-up" class="size-7" />
-                        <span class="mt-1 text-xs text-gray-400">
-                            同比上月增
-                            <span class="text-primary text-base font-medium">5</span> %
-                        </span>
-                    </div>
-                </div>
-            </UCard>
-        </div>
-
-        <!-- 图表展示区域 -->
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <UCard class="lg:col-span-2">
-                <template #header>
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium">项目状态分布</h3>
-                    </div>
-                    <div class="mb-1 flex items-center gap-1 text-gray-400">
-                        <UIcon name="i-lucide-info" class="size-3" />
-                        <TimeDisplay
-                            :datetime="new Date().toISOString()"
-                            mode="datetime"
-                            class="text-xs"
-                        />
-                    </div>
-                </template>
-                <div class="h-80">
-                    <ProEcharts :options="chartOptions as EChartsOption" height="100%" />
-                </div>
-            </UCard>
-
-            <UCard>
-                <template #header>
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium">项目进度概览</h3>
-                    </div>
-                    <div class="mb-1 flex items-center gap-1 text-gray-400">
-                        <UIcon name="i-lucide-info" class="size-3" />
-                        <TimeDisplay
-                            :datetime="new Date().toISOString()"
-                            mode="datetime"
-                            class="text-xs"
-                        />
-                    </div>
-                </template>
-                <div class="h-80">
-                    <ProEcharts :options="progressChartOptions as EChartsOption" height="100%" />
-                </div>
-            </UCard>
-        </div>
-
-        <!-- 项目列表 -->
-        <UCard>
-            <template #header>
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg font-medium">项目列表</h3>
+    <ProScrollArea :shadow="false" class="h-[calc(100svh-5rem)]">
+        <div class="space-y-4 pb-6">
+            <!-- 项目概览卡片 -->
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <UCard>
+                    <template #header>
+                        <div class="mb-1 flex items-center font-medium">今日访问数据</div>
                         <div class="mb-1 flex items-center gap-1 text-gray-400">
                             <UIcon name="i-lucide-info" class="size-3" />
                             <TimeDisplay
@@ -511,41 +334,227 @@ const progressChartOptions = reactive({
                                 class="text-xs"
                             />
                         </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <UInput
-                            placeholder="搜索项目..."
-                            icon="i-heroicons-magnifying-glass"
-                            size="sm"
-                        />
-                        <USelect
-                            size="sm"
-                            placeholder="状态"
-                            :items="[
-                                { label: '全部', value: 'all' },
-                                { label: '进行中', value: 'in-progress' },
-                                { label: '已完成', value: 'completed' },
-                                { label: '规划中', value: 'planning' },
-                                { label: '已延期', value: 'delayed' },
-                            ]"
-                        />
-                    </div>
-                </div>
-            </template>
-
-            <UTable :data="projects" :columns="columns">
-                <template #members-cell="{ row }">
-                    <div class="flex items-center space-x-2">
-                        <UAvatarGroup>
-                            <UAvatar
-                                v-for="member in row.original.members"
-                                :key="member.name"
-                                :src="member.avatar"
+                    </template>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div>
+                                <div class="">
+                                    <span class="text-2xl font-bold">8</span>
+                                    <span class="ml-1 text-xs text-gray-400">次</span>
+                                </div>
+                                <div class="text-xs text-gray-400">页面访问量</div>
+                            </div>
+                            <USeparator orientation="vertical" class="h-6" />
+                            <div>
+                                <div class="">
+                                    <span class="text-2xl font-bold">8</span>
+                                    <span class="ml-1 text-xs text-gray-400">次</span>
+                                </div>
+                                <div class="text-xs text-gray-400">页面访问量</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center justify-center text-gray-400">
+                            <UIcon
+                                name="i-heroicons-arrow-trending-up"
+                                class="text-primary size-7"
                             />
-                        </UAvatarGroup>
+                            <span class="text-xs">
+                                同比昨天增长
+                                <span class="text-primary text-base font-medium">8</span> 次
+                            </span>
+                        </div>
+                    </div>
+                </UCard>
+
+                <UCard>
+                    <template #header>
+                        <div class="mb-1 flex items-center font-medium">近15天访问数据</div>
+                        <div class="mb-1 flex items-center gap-1 text-gray-400">
+                            <UIcon name="i-lucide-info" class="size-3" />
+                            <TimeDisplay
+                                :datetime="new Date().toISOString()"
+                                mode="datetime"
+                                class="text-xs"
+                            />
+                        </div>
+                    </template>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div>
+                                <div class="">
+                                    <span class="text-2xl font-bold">468</span>
+                                    <span class="ml-1 text-xs text-gray-400">次</span>
+                                </div>
+                                <div class="text-xs text-gray-400">页面访问量</div>
+                            </div>
+                            <USeparator orientation="vertical" class="h-6" />
+                            <div>
+                                <div class="">
+                                    <span class="text-2xl font-bold">359</span>
+                                    <span class="ml-1 text-xs text-gray-400">次</span>
+                                </div>
+                                <div class="text-xs text-gray-400">页面访问量</div>
+                            </div>
+                        </div>
+                        <div class="text-primary flex flex-col items-center justify-center">
+                            <UIcon name="i-heroicons-arrow-trending-up" class="size-7" />
+                            <span class="text-xs text-gray-400">
+                                同比上月增
+                                <span class="text-primary text-base font-medium">418</span> 次
+                            </span>
+                        </div>
+                    </div>
+                </UCard>
+
+                <UCard>
+                    <template #header>
+                        <div class="mb-1 flex items-center font-medium">项目完成率</div>
+                        <div class="mb-1 flex items-center gap-1 text-gray-400">
+                            <UIcon name="i-lucide-info" class="size-3" />
+                            <TimeDisplay
+                                :datetime="new Date().toISOString()"
+                                mode="datetime"
+                                class="text-xs"
+                            />
+                        </div>
+                    </template>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div>
+                                <div class="">
+                                    <span class="text-2xl font-bold">
+                                        {{
+                                            Math.round(
+                                                projects.reduce((acc, p) => acc + p.progress, 0) /
+                                                    projects.length,
+                                            )
+                                        }}
+                                    </span>
+                                    <span class="ml-1 text-xs text-gray-400">%</span>
+                                </div>
+                                <div class="text-xs text-gray-400">页面访问量</div>
+                            </div>
+                            <USeparator orientation="vertical" class="h-6" />
+                            <div>
+                                <div class="">
+                                    <span class="text-2xl font-bold">
+                                        {{
+                                            Math.round(
+                                                projects.reduce((acc, p) => acc + p.progress, 0) /
+                                                    projects.length,
+                                            )
+                                        }}
+                                    </span>
+                                    <span class="ml-1 text-xs text-gray-400">%</span>
+                                </div>
+                                <div class="text-xs text-gray-400">页面访问量</div>
+                            </div>
+                        </div>
+                        <div class="text-primary flex flex-col items-center justify-center">
+                            <UIcon name="i-heroicons-arrow-trending-up" class="size-7" />
+                            <span class="mt-1 text-xs text-gray-400">
+                                同比上月增
+                                <span class="text-primary text-base font-medium">5</span> %
+                            </span>
+                        </div>
+                    </div>
+                </UCard>
+            </div>
+
+            <!-- 图表展示区域 -->
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <UCard class="lg:col-span-2">
+                    <template #header>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium">项目状态分布</h3>
+                        </div>
+                        <div class="mb-1 flex items-center gap-1 text-gray-400">
+                            <UIcon name="i-lucide-info" class="size-3" />
+                            <TimeDisplay
+                                :datetime="new Date().toISOString()"
+                                mode="datetime"
+                                class="text-xs"
+                            />
+                        </div>
+                    </template>
+                    <div class="h-80">
+                        <ProEcharts :options="chartOptions as EChartsOption" height="100%" />
+                    </div>
+                </UCard>
+
+                <UCard>
+                    <template #header>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium">项目进度概览</h3>
+                        </div>
+                        <div class="mb-1 flex items-center gap-1 text-gray-400">
+                            <UIcon name="i-lucide-info" class="size-3" />
+                            <TimeDisplay
+                                :datetime="new Date().toISOString()"
+                                mode="datetime"
+                                class="text-xs"
+                            />
+                        </div>
+                    </template>
+                    <div class="h-80">
+                        <ProEcharts
+                            :options="progressChartOptions as EChartsOption"
+                            height="100%"
+                        />
+                    </div>
+                </UCard>
+            </div>
+
+            <!-- 项目列表 -->
+            <UCard>
+                <template #header>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-medium">项目列表</h3>
+                            <div class="mb-1 flex items-center gap-1 text-gray-400">
+                                <UIcon name="i-lucide-info" class="size-3" />
+                                <TimeDisplay
+                                    :datetime="new Date().toISOString()"
+                                    mode="datetime"
+                                    class="text-xs"
+                                />
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <UInput
+                                placeholder="搜索项目..."
+                                icon="i-heroicons-magnifying-glass"
+                                size="sm"
+                            />
+                            <USelect
+                                size="sm"
+                                placeholder="状态"
+                                :items="[
+                                    { label: '全部', value: 'all' },
+                                    { label: '进行中', value: 'in-progress' },
+                                    { label: '已完成', value: 'completed' },
+                                    { label: '规划中', value: 'planning' },
+                                    { label: '已延期', value: 'delayed' },
+                                ]"
+                            />
+                        </div>
                     </div>
                 </template>
-            </UTable>
-        </UCard>
-    </div>
+
+                <UTable :data="projects" :columns="columns">
+                    <template #members-cell="{ row }">
+                        <div class="flex items-center space-x-2">
+                            <UAvatarGroup>
+                                <UAvatar
+                                    v-for="member in row.original.members"
+                                    :key="member.name"
+                                    :src="member.avatar"
+                                />
+                            </UAvatarGroup>
+                        </div>
+                    </template>
+                </UTable>
+            </UCard>
+        </div>
+    </ProScrollArea>
 </template>

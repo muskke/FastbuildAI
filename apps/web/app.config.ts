@@ -30,6 +30,16 @@ export default defineAppConfig({
                 body: "ring-0",
                 footer: "p-4 sm:px-6",
             },
+            variants: {
+                variant: {
+                    outline: {
+                        root: "bg-default border ring-0 border-border divide-y divide-default",
+                    },
+                    subtle: {
+                        root: "bg-elevated/50 border ring-0 border-border divide-y divide-default",
+                    },
+                },
+            },
         },
         accordion: {
             slots: {
