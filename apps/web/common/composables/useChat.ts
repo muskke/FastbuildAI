@@ -303,6 +303,7 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
                     streamController.value = null;
                     status.value = "idle";
                     onFinish?.(aiMessage);
+                    useUserStore().getUser();
                 },
                 onError(err) {
                     if (err.message === "BodyStreamBuffer was aborted") {
