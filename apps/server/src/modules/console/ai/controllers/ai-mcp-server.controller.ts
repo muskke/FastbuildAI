@@ -290,6 +290,13 @@ export class AiMcpServerController extends BaseController {
                 type: "object",
                 properties: {
                     url: { type: "string", minLength: 1 },
+                    customHeaders: {
+                        type: "object",
+                        patternProperties: {
+                            "^.*$": { type: "string" },
+                        },
+                        additionalProperties: false,
+                    },
                 },
                 required: ["url"],
                 additionalProperties: false,

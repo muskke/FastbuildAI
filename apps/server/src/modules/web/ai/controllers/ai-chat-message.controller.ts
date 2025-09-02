@@ -141,6 +141,7 @@ export class AiChatMessageController extends BaseController {
                                 url: server.url,
                                 name: server.name,
                                 description: server.description,
+                                customHeaders: server.customHeaders,
                             });
                             await mcpServer.connect();
                             mcpServers.push(mcpServer);
@@ -618,6 +619,7 @@ export class AiChatMessageController extends BaseController {
                                 url: server.url,
                                 name: server.name,
                                 description: server.description,
+                                customHeaders: server.customHeaders,
                             });
 
                             await mcpServer.connect();
