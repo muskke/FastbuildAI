@@ -41,6 +41,15 @@
             "exampleRequired": "请输入示例文字",
             "copyTemplate": "复制模板",
             "copySuccess": "模板示例已复制到剪贴板",
+            "fillTemplate": "填入模板",
+            "fillTemplateSuccess": "填入模板成功",
+            "templateExample": "模板示例",
+            "fieldTypeSupported": "fieldConfig.type 支持的类型：",
+            "fieldTypes": {
+                "text": "文本输入框",
+                "textarea": "多行文本框",
+                "number": "数字输入框"
+            },
             "toast": {
                 "nameRequired": "类型名称不能为空",
                 "customFieldRequired": "自定义字段不能为空",
