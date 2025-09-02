@@ -121,7 +121,7 @@ function handleKeywordChange(val: number) {
                     ui: { base: 'w-full' },
                     class: 'bg-background',
                 }"
-                :supportedModelTypes="['llm']"
+                :supportedModelTypes="['rerank']"
                 :defaultSelected="false"
                 capability="chat"
                 placeholder="选择重排模型"
