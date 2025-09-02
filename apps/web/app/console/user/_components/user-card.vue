@@ -14,6 +14,7 @@ interface UserCardProps {
 interface UserCardEmits {
     (e: "select", user: UserInfo, selected: boolean | "indeterminate"): void;
     (e: "delete", user: UserInfo): void;
+    (e: "edit-power", user: UserInfo): void;
 }
 
 const props = withDefaults(defineProps<UserCardProps>(), {
@@ -105,19 +106,24 @@ const dropdownActions = computed(() => {
             (auth.userInfo?.isRoot === 1 && props.user.id === auth.userInfo.id))
     ) {
         items.push({
-            label: t("console-common.edit"),
-            icon: "i-lucide-edit",
+            label: t("console-user.editProfile"),
+            icon: "i-lucide-user-round-pen",
             onSelect: () =>
                 router.push({
                     path: useRoutePath("users:update"),
                     query: { id: props.user.id },
                 }),
         });
+        items.push({
+            label: t("console-user.adjustBalance"),
+            icon: "i-lucide-edit",
+            onSelect: () => emit("edit-power", props.user),
+        });
     }
 
     if (hasAccessByCodes(["users:delete"]) && props.user.isRoot !== 1) {
         items.push({
-            label: t("console-common.delete"),
+            label: t("console-user.deleteUser"),
             icon: "i-lucide-trash-2",
             color: "error" as const,
             onSelect: () => emit("delete", props.user),

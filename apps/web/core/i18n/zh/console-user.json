@@ -14,6 +14,9 @@
     "addTitle": "新增用户",
     "editTitle": "编辑用户",
     "neverLogin": "从未登录",
+    "editProfile": "编辑资料",
+    "adjustBalance": "调整余额",
+    "deleteUser": "删除用户",
     "status": {
         "active": "正常",
         "inactive": "禁用",
@@ -74,7 +77,11 @@
         "reduce": "扣减",
         "adjustAmount": "调整数量",
         "adjustAmountInput": "请输入调整的数量",
+        "adjustAmountRequired": "调整金额不能为空",
+        "adjustAmountMin": "调整金额必须大于0",
         "adjustedPower": "调整后算力",
+        "adjustPowerSuccess": "余额调整成功",
+        "adjustPowerError": "余额调整失败",
         "confirmPowerEdit": "确定编辑算力？",
         "confirmPowerEditMessage": "确定要编辑算力吗？"
     },
