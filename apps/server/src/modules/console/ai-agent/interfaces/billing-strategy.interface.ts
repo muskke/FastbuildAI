@@ -116,6 +116,11 @@ export class CreatorBillingStrategy implements BillingStrategy {
         const billToUser = await userRepository.findOne({
             where: { id: agent.createBy },
         });
+
+        if (!billToUser) {
+            throw new Error(`智能体创建者用户不存在 (ID: ${agent.createBy})`);
+        }
+
         return {
             billToUser,
             billingContext: "创建者算力",
