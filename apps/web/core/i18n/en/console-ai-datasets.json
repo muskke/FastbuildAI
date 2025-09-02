@@ -248,6 +248,7 @@
         "description": "Configure name, description, vector model and retrieval.",
         "nameInput": "Enter name",
         "descriptionInput": "Enter description",
+        "embeddingModelInput": "Select embedding model",
         "retrievalMethod": "Retrieval"
     },
     "create": {

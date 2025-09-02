@@ -15,19 +15,16 @@ import SegmentPreview from "../segment-preview/index.vue";
 
 const props = defineProps<{
     indexingConfig: IndexingConfig;
-    embeddingModelId: string;
     retrievalConfig: RetrievalConfigType;
     disabled: boolean;
 }>();
 const emits = defineEmits<{
     (e: "update:retrievalConfig", v: RetrievalConfigType): void;
-    (e: "update:embeddingModelId", v: string): void;
     (e: "onStepChange", v: number): void;
     (e: "onCreate", v: void): void;
     (e: "update:indexingConfig", v: IndexingConfig): void;
 }>();
 
-const embeddingModelId = useVModel(props, "embeddingModelId", emits);
 const indexingConfig = useVModel(props, "indexingConfig", emits);
 const retrievalConfig = useVModel(props, "retrievalConfig", emits);
 
@@ -51,13 +48,6 @@ const { lockFn: handlePreview, isLock } = useLockFn(async () => {
         console.error("预览失败:", error);
     }
 });
-
-// Embedding 模型选项
-const EMBEDDING_MODELS = [
-    { label: "text-embedding-v3", value: "e2821aab-62e8-49b0-8b6d-e614085e2834" },
-    { label: "text-embedding-3-large", value: "72267900-c0e6-4e89-930c-a699a283ba00" },
-    { label: "text-embedding-ada-002", value: "e2821aab-62e8-49b0-8b6d-e614085e2834" },
-];
 </script>
 
 <template>
@@ -74,28 +64,6 @@ const EMBEDDING_MODELS = [
                         v-model="indexingConfig"
                         :is-previewing="isLock"
                         :on-preview-segments="handlePreview"
-                    />
-                </section>
-
-                <!-- Embedding 模型 -->
-                <section class="mt-4 space-y-4">
-                    <h5 class="text-foreground text-sm font-medium">
-                        {{ $t("console-ai-datasets.create.stepTwo.embeddingModel") }}
-                    </h5>
-                    <ModelSelect
-                        :model-value="embeddingModelId"
-                        :button-ui="{
-                            variant: 'outline',
-                            color: 'neutral',
-                            ui: { base: 'w-full' },
-                            class: 'bg-background',
-                        }"
-                        :defaultSelected="false"
-                        capability="chat"
-                        :supportedModelTypes="['text-embedding']"
-                        placeholder="选择嵌入模型"
-                        :disabled="disabled"
-                        @change="(e) => (embeddingModelId = e.id)"
                     />
                 </section>
 
