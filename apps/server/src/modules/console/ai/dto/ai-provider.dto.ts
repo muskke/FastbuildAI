@@ -56,7 +56,7 @@ export class CreateAiProviderDto {
      * 绑定的密钥配置
      */
     @IsString({ message: "绑定的密钥配置必须是字符串" })
-    bindKeyConfig: string;
+    bindKeyConfigId: string;
 
     /**
      * 支持的模型类型

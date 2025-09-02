@@ -116,7 +116,7 @@ export class VectorizationQueueService {
         const { getProvider } = await import("@sdk/ai/utils/get-provider");
 
         const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
-            embeddingModel.provider.bindKeyConfig,
+            embeddingModel.provider.bindKeyConfigId,
         );
         const adapter = getProvider(embeddingModel.provider.provider, {
             apiKey: getProviderKeyConfig("apiKey", providerKeyConfig),

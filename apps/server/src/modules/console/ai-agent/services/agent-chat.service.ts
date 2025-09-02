@@ -381,7 +381,7 @@ abstract class BaseAgentChatService extends BaseService<AgentChatRecord> {
         }
 
         const providerKeyConfig = await this.keyConfigService.getConfigKeyValuePairs(
-            model.provider.bindKeyConfig,
+            model.provider.bindKeyConfigId,
         );
 
         const provider = getProvider(model.provider.provider, {

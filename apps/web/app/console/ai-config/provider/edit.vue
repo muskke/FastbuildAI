@@ -36,7 +36,7 @@ const detail = ref<AiProviderInfo | null>(null);
 const formData = reactive<CreateAiProviderRequest>({
     provider: "",
     name: "",
-    bindKeyConfig: "",
+    bindKeyConfigId: "",
     websiteUrl: "",
     iconUrl: "",
     description: "",
@@ -49,7 +49,7 @@ const formData = reactive<CreateAiProviderRequest>({
 const providerSchema = object({
     provider: string().required(t("console-ai-provider.form.providerRequired")),
     name: string().required(t("console-ai-provider.form.nameRequired")),
-    bindKeyConfig: string().required(t("console-ai-provider.form.apiKeyRequired")),
+    bindKeyConfigId: string().required(t("console-ai-provider.form.apiKeyRequired")),
     supportedModelTypes: array().min(1, t("console-ai-provider.form.supportedModelTypesRequired")),
 });
 
@@ -195,9 +195,9 @@ onMounted(async () => providerId.value && (await fetchDetail()));
             <div class="grid grid-cols-1 gap-4 pb-2 md:grid-cols-2">
                 <div class="space-y-4">
                     <!-- API 配置 -->
-                    <UFormField label="API 配置" name="bindKeyConfig" required>
+                    <UFormField label="API 配置" name="bindKeyConfigId" required>
                         <KeyPoolSelect
-                            v-model="formData.bindKeyConfig"
+                            v-model="formData.bindKeyConfigId"
                             :button-ui="{
                                 variant: 'outline',
                                 color: 'neutral',
