@@ -5,7 +5,7 @@ import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import type { ModelType } from "@/models";
 import type { KeyConfig, KeyTemplateRequest } from "@/models/key-templates";
-import { getApiKeyTypeListAll } from "@/services/console/api-key-type";
+import { getApiKeyTemplateListAll } from "@/services/console/api-key-type";
 
 interface Props {
     modelValue?: string;
@@ -87,7 +87,7 @@ async function loadData() {
     if (loading.value) return;
     loading.value = true;
     try {
-        items.value = await getApiKeyTypeListAll();
+        items.value = await getApiKeyTemplateListAll();
 
         // Ensure all items are expanded by default
         expandedItems.value = new Set(items.value.map((item) => item.id));

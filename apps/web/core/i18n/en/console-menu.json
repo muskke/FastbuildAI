@@ -41,7 +41,7 @@
     },
     "apiKeyManage": {
         "title": "Key management",
-        "apiKeyType": "Key type",
+        "apiKeyTemplate": "Key type",
         "apiKeyList": "List of keys"
     },
     "datasets": {
