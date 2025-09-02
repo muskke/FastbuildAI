@@ -186,7 +186,7 @@ const resetForm = () => {
                 :items="tabs.map((tab) => ({ label: tab.label }))"
             />
         </div>
-        <div class="mx-auto mb-4 w-auto lg:max-w-2xl xl:max-w-4xl">
+        <div class="mb-4 w-auto lg:max-w-2xl xl:max-w-4xl">
             <UForm
                 :schema="schema"
                 :state="state"
