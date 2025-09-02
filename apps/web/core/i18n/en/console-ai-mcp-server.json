@@ -77,7 +77,9 @@
         "rightProviderUrl": "Enter valid provider URL",
         "rightBaseUrl": "Enter valid URL",
         "isQuickMenu": "Quick Menu",
-        "alias": "Alias"
+        "alias": "Alias",
+        "headers": "Request header",
+        "customHeadersPlaceholder": "Please enter the request header in the following format: xxx=xxx,yyy=yyy (you can use line breaks, commas to separate multiple parameters)"
     },
     "detail": {
         "noDescription": "No description",
