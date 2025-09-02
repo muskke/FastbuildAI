@@ -29,6 +29,17 @@
             "nameRequired": "フィールド名を入力してください",
             "typeValueRequired": "フィールドタイプを選択してください",
             "exampleRequired": "例の文字を入力してください",
+            "copyTemplate": "テンプレートをコピー",
+            "copySuccess": "テンプレート例をクリップボードにコピーしました",
+            "fillTemplate": "テンプレートを入力",
+            "fillTemplateSuccess": "テンプレートの入力が成功しました",
+            "templateExample": "テンプレート例",
+            "fieldTypeSupported": "サポートされているfieldConfig.type：",
+            "fieldTypes": {
+                "text": "テキスト入力",
+                "textarea": "テキストエリア",
+                "number": "数値入力"
+            },
             "toast": {
                 "nameRequired": "タイプ名は空であってはいけません",
                 "customFieldRequired": "カスタムフィールドは空にできません",

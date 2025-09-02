@@ -29,6 +29,17 @@
             "nameRequired": "Please enter a field name",
             "typeValueRequired": "Select the field type",
             "exampleRequired": "Please enter a sample text",
+            "copyTemplate": "Copy Template",
+            "copySuccess": "Template example copied to clipboard",
+            "fillTemplate": "Fill Template",
+            "fillTemplateSuccess": "Template filled successfully",
+            "templateExample": "Template Example",
+            "fieldTypeSupported": "Supported fieldConfig.type:",
+            "fieldTypes": {
+                "text": "Text Input",
+                "textarea": "Textarea",
+                "number": "Number Input"
+            },
             "toast": {
                 "nameRequired": "The type name cannot be empty",
                 "customFieldRequired": "Custom fields cannot be empty",

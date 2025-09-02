@@ -223,7 +223,13 @@ onMounted(() => getLists());
                 }"
             >
                 <template #icon-cell="{ row }">
-                    <UAvatar :src="row.original.icon" size="md" :ui="{ image: 'rounded-lg' }" />
+                    <UAvatar
+                        :src="row.original.icon"
+                        :alt="row.original.name"
+                        size="md"
+                        :ui="{ image: 'rounded-lg', fallback: 'text-inherit font-medium' }"
+                        :class="[row.original.icon ? '' : 'bg-primary']"
+                    />
                 </template>
                 <template #type-cell="{ row }">
                     {{

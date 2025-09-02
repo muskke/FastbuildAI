@@ -197,7 +197,6 @@ const rowSchema = object({
  */
 const schema = computed(() => {
     return object({
-        icon: string().trim().required("请上传图标"),
         name: string().trim().required("请输入类型名称"),
         isEnabled: number().required("请选择类型状态"),
         fieldConfig: array()
@@ -231,32 +230,53 @@ const jsonSubmitForm = () => {
     emits("json-submit", jsonFormData.jsonImport);
 };
 
-// JSON导入示例
+// JSON 模板示例
 const correctJson = `{
-    "name":"API密钥模板",
-    "icon":"path/to/icon.png",
+    "name":"APIKeyModel",
     "fieldConfig":[
         {
             "name":"apiKey",
+            "label":"APIKey",
             "type":"text",
-            "required":true,
-            "placeholder":"请输入API密钥"
-        },
+            "required":true/false,
+            "placeholder":"Please enter APIKey"
+        }
+    ]
+}`;
+
+// JSON 导入模板
+const jsonImportTemplate = `{
+    "name":"APIKeyModel",
+    "fieldConfig":[
         {
-            "name":"secretKey",
+            "name":"apiKey",
+            "label":"APIKey",
             "type":"text",
             "required":true,
-            "placeholder":"请输入密钥"
+            "placeholder":"Please enter APIKey"
         }
     ]
 }`;
 
 /**
+ * 格式化的 JSON 示例（用于右侧代码块显示）
+ */
+const formatJsonExample = computed(() => {
+    try {
+        const jsonObj = JSON.parse(correctJson);
+        return JSON.stringify(jsonObj, null, 2);
+    } catch {
+        return correctJson;
+    }
+});
+
+/**
  * 复制JSON
  */
 const copyJson = () => {
-    navigator.clipboard.writeText(correctJson);
-    toast.success(t("console-api-key.type.edit.copySuccess"));
+    navigator.clipboard.writeText(jsonImportTemplate);
+    jsonFormData.jsonImport = jsonImportTemplate;
+    toast.success(t("console-api-key.type.edit.fillTemplateSuccess"));
 };
 
 /**
@@ -292,7 +312,7 @@ onMounted(async () => {
             @submit="handleSubmit"
         >
             <div class="grid grid-cols-2 items-center gap-4">
-                <UFormField :label="t('console-api-key.type.edit.icon')" name="icon" required>
+                <UFormField :label="t('console-api-key.type.edit.icon')" name="icon">
                     <ProUploader
                         v-model="formData.icon"
                         class="h-32 w-32"
@@ -431,40 +451,75 @@ onMounted(async () => {
         <!-- JSON导入 -->
         <UForm v-else :state="jsonFormData" :schema="jsonImportSchema" @submit="jsonSubmitForm">
             <div class="pb-2">
-                <UFormField
-                    :label="t('console-ai-mcp-server.form.jsonImport')"
-                    name="jsonImport"
-                    required
-                >
-                    <UTextarea
-                        v-model="jsonFormData.jsonImport"
-                        :placeholder="t('console-ai-mcp-server.form.jsonImportPlaceholder')"
-                        :rows="22"
-                        :ui="{ root: 'w-full' }"
-                    />
-                    <template #hint>
-                        <UPopover mode="hover" :open-delay="1500" :close-delay="0">
-                            <UButton
-                                variant="link"
-                                class="text-primary cursor-pointer text-xs"
-                                @click="copyJson"
-                            >
-                                {{ t("console-api-key.type.edit.copyTemplate") }}
-                            </UButton>
-                            <template #content>
-                                <div class="flex flex-col gap-4 p-4">
-                                    <div class="flex flex-col">
-                                        <div class="flex max-w-120 flex-col items-start gap-2">
-                                            <pre
-                                                class="bg-muted w-full overflow-x-auto rounded-lg p-4 text-sm"
-                                            ><code>{{ correctJson }}</code></pre>
-                                        </div>
-                                    </div>
-                                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- 左侧：JSON 输入区域 -->
+                    <div>
+                        <UFormField
+                            :label="t('console-ai-mcp-server.form.jsonImport')"
+                            name="jsonImport"
+                            required
+                        >
+                            <UTextarea
+                                v-model="jsonFormData.jsonImport"
+                                :placeholder="t('console-ai-mcp-server.form.jsonImportPlaceholder')"
+                                :rows="22"
+                                :ui="{ root: 'w-full' }"
+                            />
+                            <template #hint>
+                                <UButton
+                                    variant="link"
+                                    class="text-primary cursor-pointer text-xs"
+                                    @click="copyJson"
+                                >
+                                    {{ t("console-api-key.type.edit.fillTemplate") }}
+                                </UButton>
                             </template>
-                        </UPopover>
-                    </template>
-                </UFormField>
+                        </UFormField>
+                    </div>
+
+                    <!-- 右侧：代码块样式显示 -->
+                    <div class="flex flex-col">
+                        <label class="text-muted mt-0.5 mb-2.5 block text-sm font-medium">
+                            {{ t("console-api-key.type.edit.templateExample") }}
+                        </label>
+                        <div
+                            class="bg-muted border-muted flex-1 overflow-y-auto rounded-lg border p-4 select-none"
+                        >
+                            <pre
+                                class="text-muted text-sm whitespace-pre-wrap select-none"
+                            ><code>{{ formatJsonExample }}</code></pre>
+                        </div>
+
+                        <!-- fieldConfig type 类型说明 -->
+                        <div
+                            class="mt-2 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-800"
+                        >
+                            <h4 class="mb-2 text-sm font-medium text-blue-800 dark:text-blue-200">
+                                {{ t("console-api-key.type.edit.fieldTypeSupported") }}
+                            </h4>
+                            <ul class="space-y-1 text-xs text-blue-700 dark:text-blue-200">
+                                <li>
+                                    <code class="rounded bg-blue-100 px-1 dark:bg-blue-900"
+                                        >text</code
+                                    >
+                                    - {{ t("console-api-key.type.edit.fieldTypes.text") }}
+                                </li>
+                                <li>
+                                    <code class="rounded bg-blue-100 px-1 dark:bg-blue-900"
+                                        >textarea</code
+                                    >
+                                    - {{ t("console-api-key.type.edit.fieldTypes.textarea") }}
+                                </li>
+                                <li>
+                                    <code class="rounded bg-blue-100 px-1 dark:bg-blue-900"
+                                        >number</code
+                                    >
+                                    - {{ t("console-api-key.type.edit.fieldTypes.number") }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- 操作按钮 -->
             <div class="bottom-0 z-10 flex justify-end gap-2 py-4">
