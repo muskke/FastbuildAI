@@ -66,7 +66,7 @@ export class DatasetsController {
         name: "创建空数据集",
     })
     async createEmpty(
-        @Body() dto: { name: string; description?: string },
+        @Body() dto: { name: string; description?: string; embeddingModelId: string },
         @Playground() user: UserPlayground,
     ): Promise<Datasets> {
         return this.datasetsService.createEmptyDataset(dto, user);

@@ -248,7 +248,8 @@
         "description": "您可以设置您的知识库名称以及知识库描述，以及向量模型， 检索设置等。",
         "nameInput": "请输入知识库名称",
         "descriptionInput": "请输入知识库描述",
-        "retrievalMethod": "检索设置"
+        "retrievalMethod": "检索设置",
+        "embeddingModelInput": "请选择 embeddingModel 模型"
     },
 
     "create": {

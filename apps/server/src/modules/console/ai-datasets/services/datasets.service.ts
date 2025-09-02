@@ -110,10 +110,10 @@ export class DatasetsService extends BaseService<Datasets> {
      * 创建空知识库，只需名称和描述
      */
     async createEmptyDataset(
-        dto: { name: string; description?: string },
+        dto: { name: string; description?: string; embeddingModelId: string },
         user: UserPlayground,
     ): Promise<Datasets> {
-        const { name, description } = dto;
+        const { name, description, embeddingModelId } = dto;
         // 检查重名
         const existing = await this.findOne({ where: { name, createdBy: user.id } });
         if (existing) throw HttpExceptionFactory.badRequest("知识库名称已存在");
@@ -158,7 +158,7 @@ export class DatasetsService extends BaseService<Datasets> {
             name,
             description,
             createdBy: user.id,
-            embeddingModelId: null,
+            embeddingModelId,
             indexingConfig,
             retrievalConfig,
         });
