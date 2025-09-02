@@ -101,7 +101,6 @@
             "success": "再試行タスクが送信されました。進捗を確認するには後で更新してください",
             "failed": "再試行に失敗しました"
         },
-        "noEmbeddingModel": "ファイルを追加する前に、データセット設定でEmbeddingモデルを設定してください",
         "retryDocumentDescription": "このドキュメント内のすべての失敗したセグメントのベクトル化を再試行しますか？",
         "retryDocumentSuccess": "再試行タスクが送信されました。進捗を確認するには後で更新してください",
         "retryDocumentFailed": "再試行に失敗しました"
