@@ -3,7 +3,7 @@ import { BooleanNumber, BooleanNumberType } from "@common/constants";
 import { BusinessCode } from "@common/constants/business-code.constant";
 import { PaginationDto } from "@common/dto/pagination.dto";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
-import { isEnabled } from "@common/utils/is.util";
+import { buildWhere } from "@common/utils/helper.util";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Like, Repository } from "typeorm";
@@ -104,22 +104,11 @@ export class KeyTemplateService extends BaseService<KeyTemplate> {
         const { name, type, isEnabled, ...paginationDto } = queryKeyTemplateDto;
 
         // 构建查询条件
-        const whereConditions: any = {};
-
-        // 模板名称模糊查询
-        if (name) {
-            whereConditions.name = Like(`%${name}%`);
-        }
-
-        // 模板类型精确查询
-        if (type) {
-            whereConditions.type = type;
-        }
-
-        // 启用状态查询
-        if (isEnabled !== undefined) {
-            whereConditions.isEnabled = isEnabled;
-        }
+        const whereConditions = buildWhere<KeyTemplate>({
+            name: name ? Like(`%${name}%`) : undefined,
+            type,
+            isEnabled,
+        });
 
         return await super.paginate(paginationDto as PaginationDto, {
             where: whereConditions,
