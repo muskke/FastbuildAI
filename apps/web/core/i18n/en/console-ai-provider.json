@@ -157,7 +157,7 @@
             "basicInfoDescription": "Configure model identification",
             "modelType": "Model Type",
             "modelTypePlaceholder": "Please enter the model type",
-            "billing": "Conversation consumption",
+            "billing": "Billing Rules",
             "power": "Hashrate",
             "billingHelp": "How much hash power is consumed for each token"
         },
@@ -166,7 +166,7 @@
             "model": "Model identification",
             "maxContext": "Maximum context",
             "isActive": "Whether enabled or not",
-            "billingRule": "Conversation consumption"
+            "billingRule": "Billing Rules"
         },
         "table": {
             "icon": "icon",

@@ -368,7 +368,7 @@ defineExpose({ resetForm });
                                     </template>
                                 </UFormField>
 
-                                <!-- 对话消耗 -->
+                                <!-- 计费规则 -->
                                 <UFormField
                                     :label="t('console-ai-provider.model.form.billing')"
                                     name="billing"

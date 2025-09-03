@@ -176,6 +176,16 @@ const statusInfo = computed(() => getModelStatusInfo(props.model.isActive));
                     </p>
 
                     <p
+                        v-if="model.billingRule"
+                        class="text-muted-foreground mt-2 line-clamp-2 text-xs"
+                    >
+                        {{ t("console-ai-provider.model.form.billing") }}:
+                        {{ model.billingRule?.power }}
+                        {{ t("console-ai-provider.model.form.power") }} /
+                        {{ model.billingRule?.tokens }} Tokens
+                    </p>
+
+                    <p
                         v-if="model.createdAt"
                         class="text-muted-foreground mt-2 line-clamp-2 text-xs"
                     >
