@@ -284,6 +284,31 @@ export class UserController extends BaseController {
     }
 
     /**
+     * 自动重置用户密码
+     *
+     * @param id 用户ID
+     * @returns 重置后的新密码
+     */
+    @Post("/reset-password-auto/:id")
+    @Permissions({
+        code: "reset-password-auto",
+        name: "自动重置密码",
+        description: "自动生成随机密码并重置用户密码",
+    })
+    async resetPasswordAuto(@Param("id", UUIDValidationPipe) id: string) {
+        // 生成随机密码
+        const randomPassword = await this.userService.generateRandomPassword();
+
+        // 重置用户密码
+        await this.userService.resetPassword(id, randomPassword);
+
+        // 返回生成的随机密码
+        return {
+            password: randomPassword,
+        };
+    }
+
+    /**
      * 设置用户状态
      *
      * @param id 用户ID
