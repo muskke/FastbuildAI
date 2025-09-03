@@ -289,6 +289,43 @@ export class UserService extends BaseService<User> {
     }
 
     /**
+     * 生成随机密码
+     *
+     * @param length 密码长度，默认为12
+     * @returns 生成的随机密码
+     */
+    async generateRandomPassword(length: number = 12): Promise<string> {
+        // 定义可能的字符集
+        const uppercaseChars = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // 排除容易混淆的字符 I, O
+        const lowercaseChars = "abcdefghijkmnpqrstuvwxyz"; // 排除容易混淆的字符 l, o
+        const numberChars = "23456789"; // 排除容易混淆的字符 0, 1
+        const specialChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+        // 合并所有字符集
+        const allChars = uppercaseChars + lowercaseChars + numberChars + specialChars;
+
+        // 确保密码至少包含一个大写字母、一个小写字母、一个数字和一个特殊字符
+        let password = "";
+        password += uppercaseChars.charAt(Math.floor(Math.random() * uppercaseChars.length));
+        password += lowercaseChars.charAt(Math.floor(Math.random() * lowercaseChars.length));
+        password += numberChars.charAt(Math.floor(Math.random() * numberChars.length));
+        password += specialChars.charAt(Math.floor(Math.random() * specialChars.length));
+
+        // 生成剩余的随机字符
+        for (let i = 4; i < length; i++) {
+            password += allChars.charAt(Math.floor(Math.random() * allChars.length));
+        }
+
+        // 打乱密码字符顺序
+        password = password
+            .split("")
+            .sort(() => 0.5 - Math.random())
+            .join("");
+
+        return password;
+    }
+
+    /**
      * 更新用户
      *
      * @param id 用户ID
