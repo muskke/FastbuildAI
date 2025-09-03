@@ -164,7 +164,7 @@
             "basicInfoDescription": "配置模型的基本信息和识别参数",
             "modelType": "模型类型",
             "modelTypePlaceholder": "请输入模型类型",
-            "billing": "对话消耗",
+            "billing": "计费规则",
             "power": "算力",
             "billingHelp": "每多少 tokens 消耗多少算力"
         },

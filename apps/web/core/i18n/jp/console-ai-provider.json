@@ -157,7 +157,7 @@
             "basicInfoDescription": "モデルの基本情報と識別パラメータを設定",
             "modelType": "モデルタイプ",
             "modelTypePlaceholder": "モデルタイプを入力してください",
-            "billing": "対話の消費",
+            "billing": "課金ルール",
             "power": "計算能力",
             "billingHelp": "何トークンごとにどれだけの計算力が消費されるか"
         },
@@ -166,7 +166,7 @@
             "model": "モデル識別",
             "maxContext": "最大コンテキスト",
             "isActive": "使用しますか？",
-            "billingRule": "対話の消費"
+            "billingRule": "課金ルール"
         },
         "table": {
             "icon": "アイコン",
