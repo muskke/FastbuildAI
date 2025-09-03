@@ -153,9 +153,6 @@ const handleResetPassword = async () => {
         // 生成新密码
         const { password } = await apiGenerateRandomPassword(props.userid!);
 
-        // 模拟API调用
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
         // 设置生成的密码并显示弹框
         generatedPassword.value = password;
         showNewPasswordModal.value = true;
@@ -197,18 +194,6 @@ const handleClose = () => {
 watch(activeTab, () => {
     resetForm();
 });
-
-/**
- * 生成随机密码
- */
-const generateRandomPassword = (): string => {
-    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-    let password = "";
-    for (let i = 0; i < 12; i++) {
-        password += charset.charAt(Math.floor(Math.random() * charset.length));
-    }
-    return password;
-};
 
 /**
  * 复制密码到剪贴板
