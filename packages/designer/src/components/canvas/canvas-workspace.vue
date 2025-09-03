@@ -74,14 +74,31 @@ function handleGlobalClick(e: MouseEvent) {
     }
 }
 
+/**
+ * 处理键盘删除事件
+ */
+function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+        // 只有在有选中组件时才删除
+        if (activeComponentId.value) {
+            e.preventDefault();
+            design.removeComponent(activeComponentId.value);
+        }
+    }
+}
+
 onMounted(() => {
     // 添加全局点击监听
     document.addEventListener("click", handleGlobalClick);
+    // 添加键盘事件监听
+    document.addEventListener("keydown", handleKeyDown);
 });
 
 onUnmounted(() => {
     // 移除全局点击监听
     document.removeEventListener("click", handleGlobalClick);
+    // 移除键盘事件监听
+    document.removeEventListener("keydown", handleKeyDown);
 });
 </script>
 
