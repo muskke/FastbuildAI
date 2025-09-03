@@ -1,8 +1,8 @@
 import { BaseService } from "@common/base/services/base.service";
 import { BooleanNumber, BooleanNumberType } from "@common/constants";
-import { BusinessCode } from "@common/constants/business-code.constant";
 import { PaginationDto } from "@common/dto/pagination.dto";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
+import { buildWhere } from "@common/utils/helper.util";
 import { AiProviderService } from "@modules/console/ai/services/ai-provider.service";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -71,7 +71,6 @@ export class KeyConfigService extends BaseService<KeyConfig> {
 
         // 处理敏感字段加密
         const processedFieldValues = this.processFieldValues(createKeyConfigDto.fieldValues);
-        console.log("createKeyConfigDto", createKeyConfigDto);
         // 创建配置
         const configData = {
             ...createKeyConfigDto,
@@ -175,22 +174,11 @@ export class KeyConfigService extends BaseService<KeyConfig> {
         const { name, templateId, status, ...paginationDto } = queryKeyConfigDto;
 
         // 构建查询条件
-        const whereConditions: any = {};
-
-        // 配置名称模糊查询
-        if (name) {
-            whereConditions.name = Like(`%${name}%`);
-        }
-
-        // 模板ID精确查询
-        if (templateId) {
-            whereConditions.templateId = templateId;
-        }
-
-        // 配置状态查询
-        if (status) {
-            whereConditions.status = status;
-        }
+        const whereConditions = buildWhere<KeyConfig>({
+            name: name ? Like(`%${name}%`) : undefined,
+            templateId,
+            status,
+        });
 
         return await super.paginate(paginationDto as PaginationDto, {
             where: whereConditions,
@@ -236,11 +224,10 @@ export class KeyConfigService extends BaseService<KeyConfig> {
         templateId: string,
         onlyActive: boolean = true,
     ): Promise<KeyConfig[]> {
-        const whereConditions: any = { templateId };
-
-        if (onlyActive) {
-            whereConditions.status = true;
-        }
+        const whereConditions = buildWhere<KeyConfig>({
+            templateId,
+            status: onlyActive ? true : undefined,
+        });
 
         return await super.findAll({
             where: whereConditions,
@@ -485,8 +472,10 @@ export class KeyConfigService extends BaseService<KeyConfig> {
             // 对于必填字段，验证值不能为空
             if (templateField.required) {
                 const value = fieldValue.value;
-                if (value === undefined || value === null || value === '') {
-                    throw HttpExceptionFactory.paramError(`必填字段 "${templateField.label || fieldValue.name}" 的值不能为空`);
+                if (value === undefined || value === null || value === "") {
+                    throw HttpExceptionFactory.paramError(
+                        `必填字段 "${templateField.label || fieldValue.name}" 的值不能为空`,
+                    );
                 }
             }
         }
