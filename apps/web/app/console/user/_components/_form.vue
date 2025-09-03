@@ -12,6 +12,7 @@ import type { UserCreateRequest } from "@/models/user";
 import { apiGetAllRoleList } from "@/services/console/role";
 
 import { apiGetUserRolesList, apiUpdateUserAmount } from "../../../../services/console/user";
+import EditPassword from "./editPassword.vue";
 import EditPower from "./editPower.vue";
 
 // 引入国际化
@@ -53,6 +54,11 @@ const { userNo, ...filteredInitialData } = props.initialData || {};
  * 编辑算力状态
  */
 const editPower = ref(false);
+
+/**
+ * 重置密码状态
+ */
+const isEditPassword = ref(false);
 
 /**
  * 处理编辑算力组件关闭事件
@@ -159,6 +165,12 @@ const resetForm = () => {
         }
     });
     message.info(t("console-user.form.formReset"));
+};
+
+/** 重置密码 */
+const handleEditPassword = () => {
+    isEditPassword.value = true;
+    console.log("handleEditPassword", isEditPassword.value);
 };
 
 /** 提交表单 */
@@ -415,7 +427,16 @@ onMounted(() => getRoleList());
                         >
                             {{ t("console-common.cancel") }}
                         </UButton>
-                        <UButton color="neutral" size="lg" @click="resetForm" class="px-8">
+                        <UButton
+                            v-if="props.id"
+                            color="neutral"
+                            size="lg"
+                            @click="handleEditPassword"
+                            class="px-8"
+                        >
+                            {{ t("console-user.password.resetTab") }}
+                        </UButton>
+                        <UButton v-else color="neutral" size="lg" @click="resetForm" class="px-8">
                             {{ t("console-common.reset") }}
                         </UButton>
                         <UButton
@@ -442,5 +463,8 @@ onMounted(() => getRoleList());
             :user="{ id: props.id, power: formData.power }"
             @close="handleEditPowerClose"
         />
+
+        <!-- 重置密码 -->
+        <EditPassword v-if="isEditPassword" :userid="props.id" @close="isEditPassword = false" />
     </div>
 </template>

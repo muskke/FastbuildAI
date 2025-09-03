@@ -85,6 +85,41 @@
         "confirmPowerEdit": "Determine the editing power?",
         "confirmPowerEditMessage": "Are you sure you want to edit the hashrate?"
     },
+    "password": {
+        "title": "Password Management",
+        "changeTab": "Change Password",
+        "resetTab": "Reset Password",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter new password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Re-enter new password",
+        "passwordHelp": "At least 6 characters, including letters, numbers and special characters",
+        "resetConfirmTitle": "Reset Password Confirmation",
+        "resetConfirmDesc": "The system will randomly generate a new password for this user. This action cannot be undone, please confirm.",
+        "resetWarning1": "User's current password will be immediately invalidated",
+        "resetWarning2": "User needs to log in again with the new password",
+        "cancel": "Cancel",
+        "changePassword": "Change Password",
+        "confirmReset": "Confirm Reset",
+        "resetSuccessTitle": "Password Reset Successful",
+        "newPasswordGenerated": "New Password Generated",
+        "newPasswordDesc": "Please provide the following password to the user and remind them to change it promptly.",
+        "copyAndClose": "Copy and Close",
+        "validation": {
+            "newPasswordRequired": "Please enter new password",
+            "passwordMinLength": "Password must be at least 6 characters",
+            "confirmPasswordRequired": "Please confirm new password",
+            "passwordMismatch": "Passwords do not match",
+            "userIdRequired": "User ID cannot be empty"
+        },
+        "messages": {
+            "changeSuccess": "Password changed successfully",
+            "changeFailed": "Failed to change password",
+            "resetFailed": "Failed to reset password",
+            "copySuccess": "New password copied to clipboard",
+            "copyFailed": "Copy failed, please copy password manually"
+        }
+    },
     "messages": {
         "createSuccess": "User created",
         "createFailed": "Create failed",
