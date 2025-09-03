@@ -181,7 +181,7 @@ onMounted(() => {
                         ]"
                     />
                 </UChip>
-                <div>
+                <div class="flex h-12 flex-col justify-start">
                     <h3 class="text-secondary-foreground flex items-center text-base font-semibold">
                         <UTooltip :text="mcpServer.name" :delay="0">
                             <span class="line-clamp-1">
@@ -190,11 +190,18 @@ onMounted(() => {
                         </UTooltip>
                     </h3>
                     <a
-                        class="text-muted-foreground line-clamp-1 text-xs"
+                        v-if="mcpServer.providerName"
+                        :href="getFormattedUrl(mcpServer.providerUrl)"
+                        class="text-muted-foreground hover:text-primary group/a flex items-center gap-1 text-xs hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        @ {{ mcpServer.providerName }}
+                        <span class="line-clamp-1"> @ {{ mcpServer.providerName }} </span>
+                        <UIcon
+                            name="tabler:external-link"
+                            class="flex-shrink-0 opacity-0 group-hover/a:opacity-100"
+                            size="12"
+                        />
                     </a>
                 </div>
             </div>
