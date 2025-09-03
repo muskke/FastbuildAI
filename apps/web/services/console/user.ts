@@ -96,6 +96,15 @@ export function apiResetUserPassword(id: string, password: string): Promise<{ su
 }
 
 /**
+ * 随机生成密码
+ * @description 随机生成密码
+ * @returns {Promise<{ password: string }>} 生成的密码
+ */
+export function apiGenerateRandomPassword(id: string): Promise<{ password: string }> {
+    return useConsolePost(`/users/reset-password-auto/${id}`);
+}
+
+/**
  * 设置用户状态
  * @description 设置用户的启用/禁用状态
  * @param {string} id 用户ID

@@ -85,6 +85,41 @@
         "confirmPowerEdit": "确定编辑算力？",
         "confirmPowerEditMessage": "确定要编辑算力吗？"
     },
+    "password": {
+        "title": "密码管理",
+        "changeTab": "修改密码",
+        "resetTab": "重置密码",
+        "newPassword": "新密码",
+        "newPasswordPlaceholder": "请输入新密码",
+        "confirmPassword": "确认密码",
+        "confirmPasswordPlaceholder": "请再次输入新密码",
+        "passwordHelp": "密码长度至少6位，建议包含字母、数字和特殊字符",
+        "resetConfirmTitle": "重置密码确认",
+        "resetConfirmDesc": "系统将为该用户随机生成新密码。此操作不可撤销，请确认执行。",
+        "resetWarning1": "用户当前密码将立即失效",
+        "resetWarning2": "用户需使用新密码重新登录",
+        "cancel": "取消",
+        "changePassword": "修改密码",
+        "confirmReset": "确认重置",
+        "resetSuccessTitle": "密码重置成功",
+        "newPasswordGenerated": "新密码已生成",
+        "newPasswordDesc": "请将以下密码提供给用户，并提醒用户及时修改密码。",
+        "copyAndClose": "复制并关闭",
+        "validation": {
+            "newPasswordRequired": "请输入新密码",
+            "passwordMinLength": "密码长度至少6位",
+            "confirmPasswordRequired": "请确认新密码",
+            "passwordMismatch": "两次输入的密码不一致",
+            "userIdRequired": "用户ID不能为空"
+        },
+        "messages": {
+            "changeSuccess": "密码修改成功",
+            "changeFailed": "修改密码失败",
+            "resetFailed": "重置密码失败",
+            "copySuccess": "新密码已复制到剪贴板",
+            "copyFailed": "复制失败，请手动复制密码"
+        }
+    },
     "messages": {
         "createSuccess": "用户创建成功",
         "createFailed": "用户创建失败",
