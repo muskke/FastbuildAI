@@ -383,8 +383,10 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                 <UFormField :label="t('console-ai-mcp-server.form.description')" name="description">
                     <UTextarea
                         v-model="formData.description"
+                        autoresize
                         :placeholder="t('console-ai-mcp-server.form.descriptionPlaceholder')"
                         :rows="3"
+                        :maxrows="8"
                         :ui="{ root: 'w-full' }"
                     />
                 </UFormField>
