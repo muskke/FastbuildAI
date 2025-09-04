@@ -78,7 +78,7 @@ function handleGlobalClick(e: MouseEvent) {
  * 处理键盘删除事件
  */
 function handleKeyDown(e: KeyboardEvent) {
-    if (e.key === 'Delete' || e.key === 'Backspace') {
+    if (e.key === 'Delete') {
         // 只有在有选中组件时才删除
         if (activeComponentId.value) {
             e.preventDefault();
