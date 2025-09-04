@@ -24,7 +24,6 @@ const toast = useMessage();
 const columns = computed(() => [
     { accessorKey: "icon", header: t("console-api-key.type.form.icon") },
     { accessorKey: "name", header: t("console-api-key.type.form.name") },
-    { accessorKey: "type", header: t("console-api-key.type.form.type") },
     { accessorKey: "isActived", header: t("console-api-key.type.form.isActived") },
     {
         accessorKey: "createdAt",
@@ -74,20 +73,18 @@ const getRowItems = (row: Row<KeyTemplateRequest>): DropdownMenuItem[] => {
         },
     });
 
-    if (row.original.type === "custom") {
-        items.push({
-            label: t("console-api-key.type.form.delete"),
-            icon: "i-lucide-trash",
-            color: "error",
-            onSelect() {
-                if (!row.original.id) {
-                    console.error("行数据缺少 ID");
-                    return;
-                }
-                handleDelete(row.original.id);
-            },
-        });
-    }
+    items.push({
+        label: t("console-api-key.type.form.delete"),
+        icon: "i-lucide-trash",
+        color: "error",
+        onSelect() {
+            if (!row.original.id) {
+                console.error("行数据缺少 ID");
+                return;
+            }
+            handleDelete(row.original.id);
+        },
+    });
 
     return items;
 };

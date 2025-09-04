@@ -306,7 +306,6 @@ onMounted(async () => {
             :state="formData"
             :schema="schema"
             class="space-y-4"
-            :disabled="formData.type === 'system'"
             @submit="handleSubmit"
         >
             <div class="grid grid-cols-2 items-center gap-4">
@@ -440,7 +439,7 @@ onMounted(async () => {
                 <UButton color="neutral" variant="soft" @click="handleClose">{{
                     t("console-api-key.cancel")
                 }}</UButton>
-                <UButton :disabled="formData.type === 'system'" color="primary" type="submit">
+                <UButton color="primary" type="submit">
                     {{ t("console-api-key.save") }}
                 </UButton>
             </div>
