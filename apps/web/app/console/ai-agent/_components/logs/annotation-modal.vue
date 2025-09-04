@@ -116,15 +116,11 @@ const { lockFn: submitForm, isLock: submitting } = useLockFn(async () => {
             let result;
             if (props.isPublic && props.publishToken && props.accessToken) {
                 // 公开访问模式
-                result = await apiCreateAnnotation(
-                    props.publishToken,
-                    props.accessToken,
-                    {
-                        ...formData.value,
-                        agentId: props.agentId,
-                        messageId: props.messageId || undefined,
-                    },
-                );
+                result = await apiCreateAnnotation(props.publishToken, props.accessToken, {
+                    ...formData.value,
+                    agentId: props.agentId,
+                    messageId: props.messageId || undefined,
+                });
             } else {
                 // 管理后台模式
                 result = await apiCreateAgentAnnotation(props.agentId, {

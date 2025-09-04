@@ -100,7 +100,7 @@ export class AgentService extends BaseService<Agent> {
 
         return this.withErrorHandling(async () => {
             const updateData = { ...dto, avatar: dto.avatar || this.defaultAvatar };
-            if (updateData.billingConfig.price < 0) {
+            if (updateData.billingConfig && updateData.billingConfig.price < 0) {
                 throw HttpExceptionFactory.business("算力消耗不能小于 0");
             }
             const updated = await this.updateById(id, updateData);
