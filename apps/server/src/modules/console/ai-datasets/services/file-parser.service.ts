@@ -98,13 +98,18 @@ export class FileParserService {
             return this.parseText(file.buffer);
         }
 
+        // 解析 Markdown 文件
+        if (mimeType === "text/markdown" || originalName.endsWith(".md")) {
+            return this.parseMarkdown(file.buffer);
+        }
+
         // 解析 doc 文件（暂不支持）
         if (mimeType === "application/msword" || originalName.endsWith(".doc")) {
             throw HttpExceptionFactory.badRequest("暂不支持 .doc 格式，请使用 .docx 格式");
         }
 
         throw HttpExceptionFactory.badRequest(
-            `不支持的文件类型: ${mimeType}，目前仅支持 .docx 和 .txt 文件`,
+            `不支持的文件类型: ${mimeType}，目前仅支持 .docx、.txt 和 .md 文件`,
         );
     }
 
@@ -167,6 +172,67 @@ export class FileParserService {
     }
 
     /**
+     * 解析 Markdown 文件
+     * 将 Markdown 格式转换为纯文本，保留基本结构
+     */
+    private parseMarkdown(buffer: Buffer): string {
+        try {
+            const markdown = buffer.toString("utf-8").trim();
+
+            if (!markdown) {
+                throw HttpExceptionFactory.badRequest("文档内容为空");
+            }
+
+            // 将 Markdown 转换为纯文本，保留基本结构
+            let text = markdown
+                // 移除代码块标记，保留内容
+                .replace(/```[\s\S]*?```/g, (match) => {
+                    return match.replace(/```[\w]*\n?/g, "").replace(/```/g, "");
+                })
+                // 移除行内代码标记，保留内容
+                .replace(/`([^`]+)`/g, "$1")
+                // 移除链接，保留文本内容
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+                // 移除图片，保留alt文本
+                .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1")
+                // 移除标题标记，保留文本
+                .replace(/^#{1,6}\s+/gm, "")
+                // 移除粗体标记，保留文本
+                .replace(/\*\*([^*]+)\*\*/g, "$1")
+                .replace(/__([^_]+)__/g, "$1")
+                // 移除斜体标记，保留文本
+                .replace(/\*([^*]+)\*/g, "$1")
+                .replace(/_([^_]+)_/g, "$1")
+                // 移除删除线标记，保留文本
+                .replace(/~~([^~]+)~~/g, "$1")
+                // 移除引用标记，保留内容
+                .replace(/^>\s*/gm, "")
+                // 移除列表标记，保留内容
+                .replace(/^[\s]*[-*+]\s+/gm, "")
+                .replace(/^[\s]*\d+\.\s+/gm, "")
+                // 移除水平线
+                .replace(/^[-*_]{3,}$/gm, "")
+                // 统一换行符
+                .replace(/\r\n/g, "\n")
+                .replace(/\r/g, "\n")
+                // 合并多个空行
+                .replace(/\n{3,}/g, "\n\n")
+                // 去除行首行尾空格
+                .replace(/[ ]+\n/g, "\n")
+                .replace(/\n[ ]+/g, "\n")
+                .trim();
+
+            this.logger.log(
+                `Markdown 文件解析成功，原始长度: ${markdown.length}，处理后长度: ${text.length}`,
+            );
+
+            return text;
+        } catch (error) {
+            throw HttpExceptionFactory.badRequest(`解析 Markdown 文件失败: ${error.message}`);
+        }
+    }
+
+    /**
      * 验证文件类型
      */
     isSupportedFile(file: Express.Multer.File): boolean {
@@ -176,9 +242,10 @@ export class FileParserService {
         const supportedMimeTypes = [
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "text/plain",
+            "text/markdown",
         ];
 
-        const supportedExtensions = [".docx", ".txt"];
+        const supportedExtensions = [".docx", ".txt", ".md"];
 
         return (
             supportedMimeTypes.includes(mimeType) ||

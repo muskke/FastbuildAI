@@ -52,7 +52,7 @@ const validateFile = (file: File) => {
     //     return { valid: false, error: t("console-ai-datasets.create.file.unsupportedFileType", { ext }) };
     // }
     // 只允许 txt 和 docx 文件
-    if (ext !== "TXT" && ext !== "DOCX") {
+    if (ext !== "TXT" && ext !== "DOCX" && ext !== "MD") {
         return {
             valid: false,
             error: t("console-ai-datasets.create.file.unsupportedFileType", { ext }),
