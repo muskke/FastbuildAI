@@ -15,7 +15,7 @@ function collectConsoleLayouts(rootDir: string): Record<string, string> {
             const match = content.match(
                 /definePageMeta\s*\(\s*\{\s*[^}]*layout:\s*["']([^"']+)["'][^}]*\}\s*\)/s,
             );
-            return match ? match[1] : "console";
+            return match?.[1] || "console";
         } catch {
             return "console";
         }

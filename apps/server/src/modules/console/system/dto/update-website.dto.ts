@@ -13,6 +13,12 @@ class WebInfoDto {
 
     @IsNotEmpty({ message: "网站logo不能为空" })
     logo: string;
+    
+    /**
+     * SPA加载图标
+     */
+    @IsOptional()
+    spaLoadingIcon?: string;
 }
 
 class AgreementDto {
