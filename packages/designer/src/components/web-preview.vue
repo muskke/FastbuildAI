@@ -58,6 +58,8 @@ const centerZone = computed(() => ({
  */
 function isInCenterZone(component: any) {
     const { position, size } = component;
+    console.log(position, size);
+    
     const componentLeft = position.x;
     const componentRight = position.x + size.width;
 
@@ -123,6 +125,7 @@ const centerContentStyle = computed(() => {
         margin: "0 auto",
         position: "relative" as const,
         minHeight: `${configs.pageHeight || designHeight.value}px`,
+        pointerEvents: "none",
     };
 });
 
@@ -149,11 +152,14 @@ function getCenterComponentStyle(component: any) {
     };
 }
 
+const webPreviewRef = ref<HTMLElement>();
+const webPreviewWidth = ref(0);
+
 /**
  * 获取区域外组件样式 - 简单的边距固定方案
  */
 function getOutsideComponentStyle(component: any) {
-    const currentScreenWidth = windowWidth.value;
+    const currentScreenWidth = webPreviewWidth.value;
 
     let finalLeft: number;
 
@@ -181,16 +187,24 @@ function getOutsideComponentStyle(component: any) {
     };
 }
 
+const getWebPreviewWidth = () => {
+    webPreviewWidth.value = webPreviewRef.value?.offsetWidth || 0;
+};
+
 onMounted(async () => {
     if (props.data && props.data.length > 0) {
         designStore.components = props.data;
         designStore.configs = props.configs || ({} as PageMateConfig);
     }
+    webPreviewWidth.value = webPreviewRef.value?.offsetWidth || 0;
+
+
 
     // 监听窗口大小变化
     if (typeof window !== "undefined") {
         const handleResize = () => {
             windowWidth.value = window.innerWidth;
+            getWebPreviewWidth();
         };
 
         window.addEventListener("resize", handleResize);
@@ -204,7 +218,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="web-preview">
+    <div ref="webPreviewRef" class="web-preview">
         <!-- 顶部工具栏 -->
         <div
             v-if="showToolbar"
