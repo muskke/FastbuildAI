@@ -4,12 +4,14 @@ import {
     CreateDateColumn,
     JoinTable,
     ManyToMany,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from "typeorm";
 
 import { AppEntity } from "../../../decorators/app-entity.decorator";
 import { Permission } from "./permission.entity";
+import { User } from "./user.entity";
 
 /**
  * 角色实体
@@ -50,6 +52,19 @@ export class Role {
         inverseJoinColumn: { name: "permission_id", referencedColumnName: "id" },
     })
     permissions: Permission[];
+
+    /**
+     * 角色关联的用户
+     *
+     * 一对多关系，一个角色可以有多个用户，一个用户可以属于一个角色
+     */
+    @OneToMany(() => User, (user) => user.role)
+    @JoinTable({
+        name: getTablePrefix("role_users"),
+        joinColumn: { name: "role_id", referencedColumnName: "id" },
+        inverseJoinColumn: { name: "user_id", referencedColumnName: "id" },
+    })
+    users: User[];
 
     /**
      * 创建时间

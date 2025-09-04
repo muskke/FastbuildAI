@@ -5,7 +5,10 @@ import { h, onMounted, reactive, ref, resolveComponent } from "vue";
 import { useRouter } from "vue-router";
 
 import type { RoleFormData, RoleQueryRequest } from "@/models/role";
+import type { UserInfo } from "@/models/user";
 import { apiBatchDeleteRole, apiDeleteRole, apiGetRoleList } from "@/services/console/role";
+
+import UsersCount from "./users-count.vue";
 
 const AssignPermissions = defineAsyncComponent(() => import("./assign-permissions.vue"));
 const PopEdit = defineAsyncComponent(() => import("./edit.vue"));
@@ -36,6 +39,7 @@ const columnLabels = computed<Record<string, string>>(() => ({
     description: t("console-system-perms.role.describe"),
     status: t("console-common.status"),
     createdAt: t("console-common.createAt"),
+    accountCount: t("console-system-perms.role.usersCount"),
     actions: t("console-common.operation"),
 }));
 
@@ -76,6 +80,14 @@ const columns: TableColumn<RoleFormData>[] = [
         cell: ({ row }) => {
             const description = row.getValue("description") as string;
             return h("div", { class: "max-w-xs truncate" }, description);
+        },
+    },
+    {
+        accessorKey: "users",
+        header: () => h("p", { class: "" }, `${columnLabels.value.accountCount}`),
+        cell: ({ row }) => {
+            const users = row.getValue("users") as string[];
+            return h("div", { class: "max-w-xs truncate" }, users.length);
         },
     },
     {
@@ -172,7 +184,17 @@ const { paging, getLists } = usePaging({
  */
 const showPopEdit = ref(false);
 const showAssignPermissions = ref(false);
+const showUsersCount = ref(false);
 const currentId = ref<string | null>(null);
+const currentRoleName = ref<string>("");
+const currentUsers = ref<UserInfo[]>([]);
+
+/** 打开用户列表 */
+function handleUsersCount(users: UserInfo[], roleName: string) {
+    currentUsers.value = users;
+    currentRoleName.value = roleName;
+    showUsersCount.value = true;
+}
 
 /** 关闭弹窗 */
 function handlePopClose(refresh = false) {
@@ -212,6 +234,13 @@ const handleDelete = async (id: string | string[]) => {
         console.error("删除失败:", error);
     }
 };
+
+/** 关闭用户列表弹窗 */
+function handleUsersCountClose() {
+    showUsersCount.value = false;
+    currentRoleName.value = "";
+    currentUsers.value = [];
+}
 
 // 初始化
 onMounted(() => getLists());
@@ -319,7 +348,17 @@ onMounted(() => getLists());
                 th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
                 td: 'border-b border-default',
             }"
-        />
+        >
+            <template #users-cell="{ row }">
+                <UBadge
+                    class="cursor-pointer"
+                    color="primary"
+                    @click="handleUsersCount(row.original.users, row.original.name)"
+                >
+                    {{ row.original.users.length }}
+                </UBadge>
+            </template>
+        </UTable>
 
         <!-- 分页 -->
         <div class="mt-auto flex items-center justify-between gap-3 pt-4">
@@ -347,6 +386,14 @@ onMounted(() => getLists());
             v-if="showAssignPermissions"
             :id="currentId"
             @close="handleAssignPermissionsClose"
+        />
+
+        <!-- 用户列表 -->
+        <UsersCount
+            v-if="showUsersCount"
+            :users="currentUsers"
+            :roleName="currentRoleName"
+            @close="handleUsersCountClose"
         />
     </div>
 </template>

@@ -80,6 +80,8 @@
         "noPermissions": "ロールを操作する権限がありません。",
         "getRoleFailed": "ロールの取得に失敗しました。管理者に連絡してください。",
         "assignPermissionsSuccess": "権限割り当て成功",
-        "assignPermissionsFailed": "権限割り当て失敗"
+        "assignPermissionsFailed": "権限割り当て失敗",
+        "usersCount": "ロール人数",
+        "usersCountTitle": "ロール人数"
     }
 }

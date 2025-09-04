@@ -80,6 +80,8 @@
         "noPermissions": "您没有权限操作角色。",
         "getRoleFailed": "获取角色失败，请联系管理员。",
         "assignPermissionsSuccess": "权限分配成功",
-        "assignPermissionsFailed": "权限分配失败"
+        "assignPermissionsFailed": "权限分配失败",
+        "usersCount": "角色人数",
+        "usersCountTitle": "角色人数"
     }
 }

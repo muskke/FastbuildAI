@@ -76,6 +76,7 @@ export class RoleService extends BaseService<Role> {
 
         const queryBuilder = this.repository
             .createQueryBuilder("role")
+            .leftJoinAndSelect("role.users", "user")
             .leftJoinAndSelect("role.permissions", "permission")
             .orderBy("role.id", "DESC");
 
