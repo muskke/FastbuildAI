@@ -1,5 +1,6 @@
 import { BaseController } from "@common/base/controllers/base.controller";
 import { ConsoleController } from "@common/decorators";
+import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { Permissions } from "@common/decorators/permissions.decorator";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { Role } from "@common/modules/auth/entities/role.entity";
@@ -43,6 +44,7 @@ export class RoleController extends BaseController {
      * @returns 分页角色列表
      */
     @Get()
+    @BuildFileUrl(["**.avatar"])
     @Permissions({
         code: "list",
         name: "角色列表",

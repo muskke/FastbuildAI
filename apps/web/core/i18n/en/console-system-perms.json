@@ -80,6 +80,8 @@
         "noPermissions": "No permission to manage roles",
         "getRoleFailed": "Failed to load role",
         "assignPermissionsSuccess": "Permissions assigned",
-        "assignPermissionsFailed": "Assignment failed"
+        "assignPermissionsFailed": "Assignment failed",
+        "usersCount": "Users Count",
+        "usersCountTitle": "Users Count"
     }
 }
