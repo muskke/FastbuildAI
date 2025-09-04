@@ -1,4 +1,4 @@
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { cp, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -65,6 +65,43 @@ function buildReleaseMap() {
     return releaseMap;
 }
 
+/**
+ * 处理 SPA 加载图标路径替换
+ * 如果存在 PNG 文件，则替换为 PNG 路径，否则保持 SVG 路径
+ */
+function processSpaLoadingIcon() {
+    if (isSSR) return; // SSR 模式不需要处理
+
+    console.log(`${colors.blue}🔄 处理 SPA 加载图标路径替换...${colors.reset}`);
+
+    const templatePath = path.resolve(releasePath, "spa-loading-template.html");
+    const pngPath = path.resolve(cwd, "public/spa-loading.png");
+
+    if (!existsSync(templatePath)) {
+        console.log(`${colors.yellow}⚠️ 模板文件不存在: spa-loading-template.html${colors.reset}`);
+        return;
+    }
+
+    try {
+        let templateContent = readFileSync(templatePath, "utf-8");
+
+        // 检查 PNG 文件是否存在
+        const iconPath = existsSync(pngPath) ? "/spa-loading.png" : "/spa-loading.svg";
+
+        // 替换图片路径
+        templateContent = templateContent.replace(
+            /src="\/spa-loading\.(png|svg)"/g,
+            `src="${iconPath}"`,
+        );
+
+        // 写回文件
+        writeFileSync(templatePath, templateContent, "utf-8");
+        console.log(`${colors.green}✅ SPA 加载图标已更新为: ${iconPath}${colors.reset}`);
+    } catch (error) {
+        console.log(`${colors.red}❌ SPA 加载图标处理失败: ${error.message}${colors.reset}`);
+    }
+}
+
 // 复制文件或目录
 async function copyFile(src, dest) {
     if (!existsSync(src)) return;
@@ -121,6 +158,9 @@ async function build() {
                 copyFile(path.resolve(cwd, src), path.resolve(releasePath, dest)),
             ),
         );
+
+        // 处理 SPA 加载图标路径替换
+        processSpaLoadingIcon();
 
         // 输出成功信息
         console.log(`${colors.green}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);

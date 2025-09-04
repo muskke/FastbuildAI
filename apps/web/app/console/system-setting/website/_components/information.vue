@@ -17,6 +17,7 @@ const schema = object({
     description: string().optional(),
     icon: string().required(t("console-system.website.information.icon.required")),
     logo: string().required(t("console-system.website.information.logo.required")),
+    spaLoadingIcon: string().optional(),
 });
 
 /** 表单状态 */
@@ -25,6 +26,7 @@ const state = reactive<WebsiteInfo>({
     description: "",
     icon: "",
     logo: "",
+    spaLoadingIcon: "",
 });
 
 /** 完整的网站配置数据 */
@@ -41,6 +43,7 @@ const { lockFn: getWebsiteConfig, isLock: isLoadingConfig } = useLockFn(async ()
         state.description = config.webinfo.description || "";
         state.icon = config.webinfo.icon || "";
         state.logo = config.webinfo.logo || "";
+        state.spaLoadingIcon = config.webinfo.spaLoadingIcon || "";
     } catch (error) {
         console.error("Get website config failed:", error);
         message.error(t("console-system.website.messages.loadFailed"));
@@ -57,6 +60,7 @@ const { lockFn: handleSubmit, isLock } = useLockFn(async () => {
                 description: state.description,
                 icon: state.icon,
                 logo: state.logo,
+                spaLoadingIcon: state.spaLoadingIcon,
             },
         };
 
@@ -89,12 +93,14 @@ const resetForm = () => {
         state.description = websiteConfig.value.webinfo.description || "";
         state.icon = websiteConfig.value.webinfo.icon || "";
         state.logo = websiteConfig.value.webinfo.logo || "";
+        state.spaLoadingIcon = websiteConfig.value.webinfo.spaLoadingIcon || "";
         message.info(t("console-system.website.messages.resetSuccess"));
     } else {
         state.name = "";
         state.description = "";
         state.icon = "";
         state.logo = "";
+        state.spaLoadingIcon = "";
         message.info(t("console-system.website.messages.resetEmpty"));
     }
 };
@@ -160,6 +166,25 @@ onMounted(() => getWebsiteConfig());
                         v-model="state.logo"
                         class="h-24 w-24"
                         :text="t('console-system.website.information.logo.upload')"
+                        icon="i-lucide-upload"
+                        accept=".jpg,.png,.jpeg"
+                        :maxCount="1"
+                        :single="true"
+                    />
+                </div>
+            </UFormField>
+
+            <!-- SPA加载图标 -->
+            <UFormField
+                :label="t('console-system.website.information.spaLoadingIcon.label')"
+                name="spaLoadingIcon"
+                :description="t('console-system.website.information.spaLoadingIcon.description')"
+            >
+                <div class="flex items-start gap-4">
+                    <ProUploader
+                        v-model="state.spaLoadingIcon"
+                        class="h-24 w-24"
+                        :text="t('console-system.website.information.spaLoadingIcon.upload')"
                         icon="i-lucide-upload"
                         accept=".jpg,.png,.jpeg"
                         :maxCount="1"

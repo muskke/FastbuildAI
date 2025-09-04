@@ -33,6 +33,12 @@
                 "description": "推荐尺寸: 100x100px, 支持格式: PNG, JPG, JPEG",
                 "upload": "上传LOGO",
                 "required": "请上传网站Logo"
+            },
+            "spaLoadingIcon": {
+                "label": "加载图标",
+                "description": "推荐高度尺寸: 48px, 支持格式: PNG, JPG, JPEG",
+                "upload": "上传加载图标",
+                "required": "请上传加载图标"
             }
         },
         "agreement": {

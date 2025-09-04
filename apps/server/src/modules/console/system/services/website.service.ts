@@ -3,7 +3,10 @@ import { Dict } from "@common/modules/dict/entities/dict.entity";
 import { DictService } from "@common/modules/dict/services/dict.service";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import * as fs from "fs";
+import * as path from "path";
 import { Repository } from "typeorm";
+import { promisify } from "util";
 
 import { UpdateWebsiteDto } from "../dto/update-website.dto";
 
@@ -27,6 +30,7 @@ export class WebsiteService extends BaseService<Dict> {
             description: "FastbuildAI",
             icon: "",
             logo: "",
+            spaLoadingIcon: "",
         });
         const agreement = await this.getGroupConfig("agreement", {
             serviceTitle: "",
@@ -127,6 +131,10 @@ export class WebsiteService extends BaseService<Dict> {
 
         // 只更新传递的配置组
         if (webinfo) {
+            // 处理SPA加载图标
+            if (webinfo.spaLoadingIcon) {
+                await this.processSpaLoadingIcon(webinfo.spaLoadingIcon);
+            }
             await this.updateGroupConfig("webinfo", webinfo);
         }
         if (agreement) {
@@ -143,10 +151,95 @@ export class WebsiteService extends BaseService<Dict> {
     }
 
     /**
-     * 更新指定分组的配置
-     * @param group 配置分组
-     * @param data 配置数据对象
+     * 处理SPA加载图标
+     * @param iconPath 图标路径（可能是URL或相对路径）
      */
+    private async processSpaLoadingIcon(iconPath: string): Promise<void> {
+        try {
+            // 确保路径存在且有效
+            if (!iconPath) return;
+
+            // 获取项目根目录路径
+            const rootDir = path.resolve(process.cwd());
+            const targetDir = path.join(rootDir, "..", "..", "public/web");
+            const targetPath = path.join(targetDir, "spa-loading.png");
+
+            // 确保目标目录存在
+            if (!fs.existsSync(targetDir)) {
+                await promisify(fs.mkdir)(targetDir, { recursive: true });
+            }
+
+            let sourcePath: string;
+
+            // 判断iconPath是URL还是相对路径
+            if (iconPath.startsWith("http://") || iconPath.startsWith("https://")) {
+                // 如果是URL，需要转换为本地文件路径
+                try {
+                    const url = new URL(iconPath);
+                    // 假设URL路径对应的本地路径在项目根目录下
+                    // 例如: http://localhost:4090/uploads/image/xxx.png -> rootDir/uploads/image/xxx.png
+                    sourcePath = path.join(rootDir, "storage", url.pathname);
+                    console.log(sourcePath);
+                } catch (urlError) {
+                    this.logger.error(`无效的URL格式: ${iconPath}`);
+                    return;
+                }
+            } else {
+                // 如果是相对路径，直接拼接到根目录
+                sourcePath = path.join(rootDir, iconPath);
+            }
+
+            // 检查源文件是否存在
+            if (!fs.existsSync(sourcePath)) {
+                this.logger.error(`源文件不存在: ${sourcePath}`);
+                return;
+            }
+
+            // 复制文件到目标位置
+            await promisify(fs.copyFile)(sourcePath, targetPath);
+            this.logger.debug(`成功将SPA加载图标复制到: ${targetPath}`);
+
+            // 更新spa-loading-template.html中的图片源路径
+            await this.updateSpaLoadingTemplate(targetDir);
+        } catch (error) {
+            this.logger.error(`处理SPA加载图标失败: ${error.message}`);
+            throw error;
+        }
+    }
+
+    /**
+     * 更新SPA加载模板中的图片源路径
+     * @param targetDir 目标目录
+     */
+    private async updateSpaLoadingTemplate(targetDir: string): Promise<void> {
+        try {
+            const templatePath = path.join(targetDir, "index.html");
+
+            // 检查模板文件是否存在
+            if (!fs.existsSync(templatePath)) {
+                this.logger.warn(`SPA加载模板文件不存在: ${templatePath}`);
+                return;
+            }
+
+            // 读取模板文件内容
+            const templateContent = await promisify(fs.readFile)(templatePath, "utf8");
+
+            // 使用正则表达式替换img标签的src属性
+            // 匹配 <img ... src="任意路径" ... /> 并替换为 src="/spa-loading.png"
+            const updatedContent = templateContent.replace(
+                /(<img[^>]*\s+src=")[^"]*(")/gi,
+                "$1/spa-loading.png$2",
+            );
+
+            // 写回文件
+            await promisify(fs.writeFile)(templatePath, updatedContent, "utf8");
+            this.logger.debug(`成功更新SPA加载模板: ${templatePath}`);
+        } catch (error) {
+            this.logger.error(`更新SPA加载模板失败: ${error.message}`);
+            // 这里不抛出错误，因为模板更新失败不应该影响主流程
+        }
+    }
+
     private async updateGroupConfig(group: string, data: Record<string, any>) {
         if (!data) return;
 

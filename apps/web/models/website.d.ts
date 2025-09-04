@@ -10,6 +10,8 @@ export interface WebsiteInfo {
     icon: string;
     /** 网站Logo */
     logo: string;
+    /** SPA加载图标 */
+    spaLoadingIcon?: string;
 }
 
 /**
