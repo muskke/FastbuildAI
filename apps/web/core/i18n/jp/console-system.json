@@ -33,6 +33,12 @@
                 "description": "推奨サイズ: 100x100px, 対応フォーマット: PNG, JPG, JPEG",
                 "upload": "ロゴをアップロード",
                 "required": "サイトロゴをアップロードしてください"
+            },
+            "spaLoadingIcon": {
+                "label": "読み込みアイコン",
+                "description": "推奨高さ: 48px、対応形式: PNG, JPG, JPEG",
+                "upload": "読み込みアイコンをアップロード",
+                "required": "読み込みアイコンをアップロードしてください"
             }
         },
         "agreement": {
