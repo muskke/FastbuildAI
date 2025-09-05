@@ -33,7 +33,7 @@
     "deleteTitle": "删除MCP服务",
     "deleteMessage": "确定要删除选中的MCP服务吗？此操作不可恢复。",
     "jsonImportExample": "JSON导入示例",
-    "jsonImportCorrectExample": "JSON配置中只需包含 url 参数即可生效，其它参数即使填写也不会被使用",
+    "jsonImportCorrectExample": "JSON配置中必须包含 url 参数，可包含 headers 参数",
     "jsonImportErrorExample": "错误的 JSON 示例",
     "search": {
         "placeholder": "搜索MCP名称",

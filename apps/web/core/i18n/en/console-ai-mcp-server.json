@@ -33,7 +33,7 @@
     "deleteTitle": "Delete MCP services",
     "deleteMessage": "Are you sure you want to remove the MCP service you selected? This action is not reversed.",
     "jsonImportExample": "JSON import example",
-    "jsonImportCorrectExample": "Correct JSON example",
+    "jsonImportCorrectExample": "JSON configuration must include url parameter, can include headers parameter",
     "jsonImportErrorExample": "Bad JSON example",
     "search": {
         "placeholder": "Search MCP name",

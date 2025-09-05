@@ -33,7 +33,7 @@
     "deleteTitle": "MCPサービスを削除する",
     "deleteMessage": "選択したMCPサービスを削除してもよろしいですか？この操作は元に戻せません。",
     "jsonImportExample": "JSONインポート例",
-    "jsonImportCorrectExample": "正しい JSON の例",
+    "jsonImportCorrectExample": "JSON設定にはurlパラメータが必須で、headersパラメータを含めることができます",
     "jsonImportErrorExample": "間違ったJSONの例",
     "search": {
         "placeholder": "MCP名で検索",
