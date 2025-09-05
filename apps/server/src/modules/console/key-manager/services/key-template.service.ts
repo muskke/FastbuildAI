@@ -101,12 +101,11 @@ export class KeyTemplateService extends BaseService<KeyTemplate> {
      * @returns 分页结果
      */
     async paginate(queryKeyTemplateDto: QueryKeyTemplateDto) {
-        const { name, type, isEnabled, ...paginationDto } = queryKeyTemplateDto;
+        const { name, isEnabled, ...paginationDto } = queryKeyTemplateDto;
 
         // 构建查询条件
         const whereConditions = buildWhere<KeyTemplate>({
             name: name ? Like(`%${name}%`) : undefined,
-            type,
             isEnabled,
         });
 
@@ -260,7 +259,6 @@ export class KeyTemplateService extends BaseService<KeyTemplate> {
                 // 构建CreateKeyTemplateDto对象
                 const createDto: CreateKeyTemplateDto = {
                     name: templateData.name,
-                    type: templateData.type || KeyTemplateType.CUSTOM,
                     fieldConfig: templateData.fieldConfig,
                     isEnabled:
                         templateData.isEnabled !== undefined

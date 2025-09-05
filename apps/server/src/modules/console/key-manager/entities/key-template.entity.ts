@@ -69,17 +69,6 @@ export class KeyTemplate {
     icon?: string;
 
     /**
-     * 模板类型
-     */
-    @Column({
-        type: "enum",
-        enum: KeyTemplateType,
-        default: KeyTemplateType.CUSTOM,
-        comment: "模板类型：system-系统模板，custom-自定义模板",
-    })
-    type: KeyTemplateType;
-
-    /**
      * 字段配置
      */
     @Column({
