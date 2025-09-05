@@ -237,12 +237,21 @@ export function buildBreadcrumbs(
 
     walkFlat(usePermissionStore().menus, (menu, path) => {
         if (currentPath === path || currentPath.startsWith(path + "/")) {
+            if (menu.type === 1) {
+                trail.push({ name: menu.name, path: "" });
+                return;
+            }
             trail.push({ name: menu.name, path });
+            console.log("menu", menu);
         }
         return [];
     });
 
     trail.sort((a, b) => a.path.length - b.path.length);
+
+    // if (trail.length > 1) {
+    //     trail[0].path = "";
+    // }
 
     return [
         { label: homeLabel, to: homePath },
