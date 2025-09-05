@@ -212,6 +212,11 @@ const correctJson = `{
     "mcpServers": {
         "Your MCP Server Name": {
             "url": "xxxxx",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer Your Token"
+                ...
+            },
             ...
         }
     }
@@ -424,9 +429,9 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                             <template #content>
                                 <div class="flex flex-col gap-4 p-4">
                                     <div class="flex flex-col">
-                                        <div class="flex max-w-78 flex-col items-start gap-2">
+                                        <div class="flex w-fit flex-col items-start gap-2">
                                             <div
-                                                class="flex items-start gap-1 rounded-lg bg-blue-50 p-2 text-sm text-blue-800 dark:bg-blue-900/30 dark:text-blue-200"
+                                                class="flex w-full items-start gap-1 rounded-lg bg-blue-50 p-2 text-sm text-blue-800 dark:bg-blue-900/30 dark:text-blue-200"
                                             >
                                                 <UIcon size="20" name="i-tabler-alert-circle" />
                                                 <span>{{
