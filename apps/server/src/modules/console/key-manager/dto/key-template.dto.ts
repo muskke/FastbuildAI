@@ -74,13 +74,6 @@ export class CreateKeyTemplateDto {
     icon?: string;
 
     /**
-     * 模板类型
-     */
-    @IsEnum(KeyTemplateType, { message: "模板类型必须是有效的枚举值" })
-    @IsOptional()
-    type?: KeyTemplateType = KeyTemplateType.CUSTOM;
-
-    /**
      * 字段配置
      */
     @IsArray({ message: "字段配置必须是数组" })
@@ -119,13 +112,6 @@ export class QueryKeyTemplateDto extends PaginationDto {
     @IsString({ message: "模板名称必须是字符串" })
     @IsOptional()
     name?: string;
-
-    /**
-     * 模板类型
-     */
-    @IsEnum(KeyTemplateType, { message: "模板类型必须是有效的枚举值" })
-    @IsOptional()
-    type?: KeyTemplateType;
 
     /**
      * 启用状态

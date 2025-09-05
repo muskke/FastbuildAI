@@ -737,7 +737,7 @@ export class AiChatMessageController extends BaseController {
                     }
 
                     // 处理 DeepSeek 的 reasoning_content 字段
-                    if (chunk.choices[0].delta.reasoning_content) {
+                    if (chunk.choices[0].delta?.reasoning_content) {
                         // 记录深度思考开始时间
                         if (!reasoningStartTime) {
                             reasoningStartTime = Date.now();
@@ -754,7 +754,7 @@ export class AiChatMessageController extends BaseController {
                     }
 
                     // 处理工具调用（流式提示）
-                    if (chunk.choices[0].delta.tool_calls) {
+                    if (chunk.choices[0].delta?.tool_calls) {
                         // 获取工具调用信息
                         const toolCalls = chunk.choices[0].delta.tool_calls;
                         for (const toolCall of toolCalls) {
