@@ -33,6 +33,12 @@
                 "description": "Recommended: 100x100px PNG/JPG",
                 "upload": "Upload",
                 "required": "Logo required"
+            },
+            "spaLoadingIcon": {
+                "label": "Loading Icon",
+                "description": "Recommended height: 48px, Supported formats: PNG, JPG, JPEG",
+                "upload": "Upload Loading Icon",
+                "required": "Please upload a loading icon"
             }
         },
         "agreement": {
