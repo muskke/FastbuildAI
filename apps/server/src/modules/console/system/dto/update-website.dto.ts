@@ -8,12 +8,12 @@ class WebInfoDto {
     @IsOptional()
     description?: string;
 
-    @IsNotEmpty({ message: "网站图标不能为空" })
-    icon: string;
+    @IsOptional()
+    icon?: string;
 
-    @IsNotEmpty({ message: "网站logo不能为空" })
-    logo: string;
-    
+    @IsOptional()
+    logo?: string;
+
     /**
      * SPA加载图标
      */

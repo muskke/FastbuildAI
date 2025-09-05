@@ -15,9 +15,6 @@ const appStore = useAppStore();
 const schema = object({
     name: string().required(t("console-system.website.information.name.required")),
     description: string().optional(),
-    icon: string().required(t("console-system.website.information.icon.required")),
-    logo: string().required(t("console-system.website.information.logo.required")),
-    spaLoadingIcon: string().optional(),
 });
 
 /** 表单状态 */
@@ -58,9 +55,9 @@ const { lockFn: handleSubmit, isLock } = useLockFn(async () => {
             webinfo: {
                 name: state.name,
                 description: state.description,
-                icon: state.icon,
-                logo: state.logo,
-                spaLoadingIcon: state.spaLoadingIcon,
+                icon: state.icon || "",
+                logo: state.logo || "",
+                spaLoadingIcon: state.spaLoadingIcon || "",
             },
         };
 
@@ -82,7 +79,6 @@ const { lockFn: handleSubmit, isLock } = useLockFn(async () => {
         });
     } catch (error) {
         console.error("Save failed:", error);
-        message.error(t("console-system.website.messages.saveFailed"));
     }
 });
 
@@ -139,7 +135,6 @@ onMounted(() => getWebsiteConfig());
                 :label="t('console-system.website.information.icon.label')"
                 name="icon"
                 :description="t('console-system.website.information.icon.description')"
-                required
             >
                 <div class="flex items-start gap-4">
                     <ProUploader
@@ -159,7 +154,6 @@ onMounted(() => getWebsiteConfig());
                 :label="t('console-system.website.information.logo.label')"
                 name="logo"
                 :description="t('console-system.website.information.logo.description')"
-                required
             >
                 <div class="flex items-start gap-4">
                     <ProUploader
