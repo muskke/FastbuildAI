@@ -8,9 +8,11 @@ import { Playground } from "@common/decorators/playground.decorator";
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { UserPlayground } from "@common/interfaces/context.interface";
 import { RolePermissionService } from "@common/modules/auth/services/role-permission.service";
+import { DictService } from "@common/modules/dict/services/dict.service";
 import { UUIDValidationPipe } from "@common/pipe/param-validate.pipe";
 import { isEnabled } from "@common/utils/is.util";
-import { Body, Delete, Get, Inject, Param, Patch, Post, Query } from "@nestjs/common";
+import { LOGIN_TYPE } from "@fastbuildai/constants";
+import { Body, Delete, Get, Inject, Param, Patch, Post, Put, Query } from "@nestjs/common";
 import { In } from "typeorm";
 
 import { MenuService } from "../../menu/menu.service";
@@ -18,6 +20,7 @@ import { RoleService } from "../../role/role.service";
 import { BatchUpdateUserDto } from "../dto/batch-update-user.dto";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { BatchDeleteUserDto, DeleteUserDto } from "../dto/delete-user.dto";
+import { LoginSettingsConfig, UpdateLoginSettingsDto } from "../dto/login-settings.dto";
 import { QueryUserDto } from "../dto/query-user.dto";
 import { UpdateUserBalanceDto, UpdateUserDto } from "../dto/update-user.dto";
 import { UserService } from "../services/user.service";
@@ -33,6 +36,7 @@ export class UserController extends BaseController {
      * @param userService 用户服务
      * @param menuService 菜单服务
      * @param rolePermissionService 角色权限服务
+     * @param dictService 字典服务
      */
     constructor(
         private readonly userService: UserService,
@@ -41,6 +45,7 @@ export class UserController extends BaseController {
         @Inject(RolePermissionService)
         private readonly rolePermissionService: RolePermissionService,
         private readonly roleService: RoleService,
+        private readonly dictService: DictService,
     ) {
         super();
     }
@@ -112,31 +117,6 @@ export class UserController extends BaseController {
     @BuildFileUrl(["**.avatar"])
     async findAll(@Query() queryUserDto: QueryUserDto, @Playground() user: UserPlayground) {
         return await this.userService.list(queryUserDto, user);
-    }
-
-    /**
-     * 查询单个用户
-     *
-     * @param id 用户ID
-     * @returns 用户信息
-     */
-    @Get(":id")
-    @Permissions({
-        code: "detail",
-        name: "查看用户详情",
-        description: "根据ID查询用户信息",
-    })
-    @BuildFileUrl(["**.avatar"])
-    async findOneById(@Param("id", UUIDValidationPipe) id: string) {
-        const result = await this.userService.findOneById(id, {
-            excludeFields: ["password", "openid"],
-            relations: ["role"],
-        });
-
-        if (!result) {
-            throw HttpExceptionFactory.notFound("用户不存在");
-        }
-        return result;
     }
 
     /**
@@ -360,6 +340,53 @@ export class UserController extends BaseController {
     }
 
     /**
+     * 获取登录设置
+     *
+     * @returns 当前的登录设置配置
+     */
+    @Get("login-settings")
+    @Permissions({
+        code: "login-settings",
+        name: "查看登录设置",
+        description: "获取系统登录相关配置",
+    })
+    async getLoginSettings(): Promise<LoginSettingsConfig> {
+        // 从字典服务获取登录设置配置
+        const config = await this.dictService.get<LoginSettingsConfig>(
+            "login_settings",
+            this.getDefaultLoginSettings(),
+            "auth",
+        );
+
+        return config;
+    }
+
+    /**
+     * 设置登录设置
+     *
+     * @param config 登录设置配置
+     * @returns 设置后的登录设置配置
+     */
+    @Post("login-settings")
+    @Permissions({
+        code: "set-login-settings",
+        name: "设置登录设置",
+        description: "设置系统登录相关配置",
+    })
+    async setLoginSettings(@Body() config: LoginSettingsConfig): Promise<LoginSettingsConfig> {
+        // 验证配置的合理性
+        this.validateLoginSettings(config);
+
+        // 保存到字典服务
+        await this.dictService.set("login_settings", config, {
+            group: "auth",
+            description: "系统登录设置配置",
+        });
+
+        return config;
+    }
+
+    /**
      * 创建用户
      *
      * @param createUserDto 创建用户DTO
@@ -374,5 +401,82 @@ export class UserController extends BaseController {
     @BuildFileUrl(["**.avatar"])
     async create(@Body() createUserDto: CreateUserDto) {
         return await this.userService.createUser(createUserDto);
+    }
+
+    /**
+     * 查询单个用户
+     *
+     * @param id 用户ID
+     * @returns 用户信息
+     */
+    @Get(":id")
+    @Permissions({
+        code: "detail",
+        name: "查看用户详情",
+        description: "根据ID查询用户信息",
+    })
+    @BuildFileUrl(["**.avatar"])
+    async findOneById(@Param("id", UUIDValidationPipe) id: string) {
+        const result = await this.userService.findOneById(id, {
+            excludeFields: ["password", "openid"],
+            relations: ["role"],
+        });
+
+        if (!result) {
+            throw HttpExceptionFactory.notFound("用户不存在");
+        }
+        return result;
+    }
+
+    /**
+     * 获取默认登录设置
+     *
+     * @returns 默认的登录设置配置
+     */
+    private getDefaultLoginSettings(): LoginSettingsConfig {
+        return {
+            allowedLoginMethods: [LOGIN_TYPE.ACCOUNT, LOGIN_TYPE.PHONE, LOGIN_TYPE.WECHAT],
+            allowedRegisterMethods: [LOGIN_TYPE.ACCOUNT, LOGIN_TYPE.PHONE],
+            defaultLoginMethod: LOGIN_TYPE.ACCOUNT,
+            allowMultipleLogin: false,
+            showPolicyAgreement: true,
+        };
+    }
+
+    /**
+     * 验证登录设置配置的合理性
+     *
+     * @param config 登录设置配置
+     */
+    private validateLoginSettings(config: LoginSettingsConfig): void {
+        // 检查允许的登录方式不能为空
+        if (!config.allowedLoginMethods || config.allowedLoginMethods.length === 0) {
+            throw HttpExceptionFactory.paramError("至少需要启用一种登录方式");
+        }
+
+        // 检查默认登录方式必须在允许的登录方式中
+        if (!config.allowedLoginMethods.includes(config.defaultLoginMethod)) {
+            throw HttpExceptionFactory.paramError("默认登录方式必须在允许的登录方式列表中");
+        }
+
+        // 检查允许的注册方式不能为空
+        if (!config.allowedRegisterMethods || config.allowedRegisterMethods.length === 0) {
+            throw HttpExceptionFactory.paramError("至少需要启用一种注册方式");
+        }
+
+        // 检查登录方式和注册方式的值是否有效
+        const validLoginTypes = Object.values(LOGIN_TYPE);
+
+        for (const method of config.allowedLoginMethods) {
+            if (!validLoginTypes.includes(method)) {
+                throw HttpExceptionFactory.paramError(`无效的登录方式: ${method}`);
+            }
+        }
+
+        for (const method of config.allowedRegisterMethods) {
+            if (!validLoginTypes.includes(method)) {
+                throw HttpExceptionFactory.paramError(`无效的注册方式: ${method}`);
+            }
+        }
     }
 }

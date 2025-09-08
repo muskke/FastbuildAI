@@ -31,6 +31,7 @@
     },
     "dependencies": {
         "@fastbuildai/utils": "workspace:*",
+        "@fastbuildai/constans": "workspace:*",
         "@modelcontextprotocol/sdk": "^1.17.3",
         "@nestjs/axios": "^4.0.1",
         "@nestjs/bull": "^11.0.3",
