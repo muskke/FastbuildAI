@@ -2,19 +2,30 @@
  * 认证相关常量
  * @description 定义登录和认证相关的常量
  */
-export const LOGIN_METHOD = {
-    /** 微信登录 */
-    WECHAT: 3,
-    /** 手机号登录 */
-    PHONE: 2,
+
+/**
+ * 登录方式类型（数字枚举）
+ */
+export const LOGIN_TYPE = {
     /** 账号登录 */
     ACCOUNT: 1,
+    /** 手机号登录 */
+    PHONE: 2,
+    /** 微信登录 */
+    WECHAT: 3,
+} as const;
+export type LoginType = (typeof LOGIN_TYPE)[keyof typeof LOGIN_TYPE];
+
+/**
+ * 登录状态标识（字符串枚举）
+ */
+export const LOGIN_STATUS = {
     /** 绑定手机号 */
     BIND: "bind-login",
     /** 登录成功 */
     SUCCESS: "success-login",
 } as const;
-export type LoginMethod = (typeof LOGIN_METHOD)[keyof typeof LOGIN_METHOD];
+export type LoginStatus = (typeof LOGIN_STATUS)[keyof typeof LOGIN_STATUS];
 
 export const WECHAT_LOGIN_STATUS = {
     /** 二维码错误 */

@@ -39,7 +39,7 @@ const loginSchema = object({
 const loginState = reactive({
     username: "",
     password: "",
-    terminal: 1,
+    terminal: "1",
 });
 
 const { lockFn: onLoginSubmit, isLock } = useLockFn(async () => {
@@ -51,7 +51,6 @@ const { lockFn: onLoginSubmit, isLock } = useLockFn(async () => {
         return;
     }
     try {
-        // TODO: 调用登录接口
         const data = await apiAuthLogin(loginState);
         emits("success", data);
     } catch (error: any) {
