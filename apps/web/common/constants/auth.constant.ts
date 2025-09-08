@@ -4,19 +4,6 @@
  */
 
 /**
- * 登录方式类型（数字枚举）
- */
-export const LOGIN_TYPE = {
-    /** 账号登录 */
-    ACCOUNT: 1,
-    /** 手机号登录 */
-    PHONE: 2,
-    /** 微信登录 */
-    WECHAT: 3,
-} as const;
-export type LoginType = (typeof LOGIN_TYPE)[keyof typeof LOGIN_TYPE];
-
-/**
  * 登录状态标识（字符串枚举）
  */
 export const LOGIN_STATUS = {

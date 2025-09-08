@@ -9,6 +9,8 @@
             "@fastbuildai/ui/components/*": ["../../packages/ui/src/components/*"],
             "@fastbuildai/http": ["../../packages/http/src"],
             "@fastbuildai/http/*": ["../../packages/http/src/*"],
+            "@fastbuildai/constants": ["../../packages/constants/src"],
+            "@fastbuildai/constants/*": ["../../packages/constants/src/*"]
         }
     }
 }

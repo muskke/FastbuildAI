@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { LOGIN_TYPE } from "@fastbuildai/constants/auth";
 import { Motion } from "motion-v";
 import { nextTick } from "vue";
 
 import FooterCopyright from "@/common/components/layout/components/footer-copyright.vue";
 import AccountLogin from "@/common/components/login/account/index.vue";
 import LoginBind from "@/common/components/login/login-bind.vue";
-import PhoneLogin from "@/common/components/login/phone/index.vue";
+// import PhoneLogin from "@/common/components/login/phone/index.vue";
 import WechatLogin from "@/common/components/login/wechat/index.vue";
-import { LOGIN_STATUS, LOGIN_TYPE } from "@/common/constants/auth.constant";
+import { LOGIN_STATUS } from "@/common/constants/auth.constant";
 import type { LoginResponse } from "@/models/user";
 import type { WebsiteCopyright } from "@/models/website";
 import LogoFull from "@/public/logo-full.svg";
