@@ -336,8 +336,8 @@ export class UserController extends BaseController {
      */
     private getDefaultLoginSettings() {
         return {
-            allowedLoginMethods: [LOGIN_TYPE.ACCOUNT, LOGIN_TYPE.PHONE, LOGIN_TYPE.WECHAT],
-            allowedRegisterMethods: [LOGIN_TYPE.ACCOUNT, LOGIN_TYPE.PHONE],
+            allowedLoginMethods: [LOGIN_TYPE.ACCOUNT, LOGIN_TYPE.WECHAT],
+            allowedRegisterMethods: [LOGIN_TYPE.ACCOUNT, LOGIN_TYPE.WECHAT],
             defaultLoginMethod: LOGIN_TYPE.ACCOUNT,
             allowMultipleLogin: false,
             showPolicyAgreement: true,
