@@ -1,5 +1,4 @@
 import { BaseController } from "@common/base/controllers/base.controller";
-import { FileService } from "@common/base/services/file.service";
 import { BooleanNumberType } from "@common/constants";
 import { ConsoleController } from "@common/decorators/controller.decorator";
 import { BuildFileUrl } from "@common/decorators/file-url.decorator";
@@ -20,7 +19,7 @@ import { RoleService } from "../../role/role.service";
 import { BatchUpdateUserDto } from "../dto/batch-update-user.dto";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { BatchDeleteUserDto, DeleteUserDto } from "../dto/delete-user.dto";
-import { LoginSettingsConfig, UpdateLoginSettingsDto } from "../dto/login-settings.dto";
+import { LoginSettingsConfig } from "../dto/login-settings.dto";
 import { QueryUserDto } from "../dto/query-user.dto";
 import { UpdateUserBalanceDto, UpdateUserDto } from "../dto/update-user.dto";
 import { UserService } from "../services/user.service";
