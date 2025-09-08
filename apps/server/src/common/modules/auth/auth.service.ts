@@ -544,4 +544,26 @@ export class AuthService extends BaseService<User> {
             throw HttpExceptionFactory.internal("设置失败", BusinessCode.OPERATION_FAILED);
         }
     }
+
+    /**
+     * 设置单终端登录开关
+     *
+     * @param enabled 是否启用
+     * @returns 设置结果
+     */
+    async setSingleTerminalLoginEnabled(
+        enabled: boolean,
+    ): Promise<{ success: boolean; message: string }> {
+        try {
+            const result = await this.userTokenService.setSingleTerminalLoginEnabled(enabled);
+
+            return {
+                success: result,
+                message: result ? "设置成功" : "设置失败",
+            };
+        } catch (error) {
+            this.logger.error(`设置单终端登录开关失败: ${error.message}`);
+            throw HttpExceptionFactory.internal("设置失败", BusinessCode.OPERATION_FAILED);
+        }
+    }
 }

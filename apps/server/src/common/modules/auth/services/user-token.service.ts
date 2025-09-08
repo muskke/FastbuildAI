@@ -31,6 +31,11 @@ export class UserTokenService extends BaseService<UserToken> {
     private readonly MULTI_LOGIN_CONFIG_KEY = "multi_login";
 
     /**
+     * 单终端登录配置键
+     */
+    private readonly SINGLE_TERMINAL_LOGIN_CONFIG_KEY = "single_terminal_login";
+
+    /**
      * 令牌缓存前缀
      */
     private readonly TOKEN_CACHE_PREFIX = "auth:token:";
@@ -46,7 +51,6 @@ export class UserTokenService extends BaseService<UserToken> {
         private readonly userTokenRepository: Repository<UserToken>,
         private readonly jwtService: JwtService,
         private readonly dictService: DictService,
-        private readonly configService: ConfigService,
         private readonly cacheService: CacheService,
         private readonly redisService: RedisService,
     ) {
@@ -73,11 +77,11 @@ export class UserTokenService extends BaseService<UserToken> {
         // 获取令牌配置
         const tokenConfig = await this.getTokenConfig();
 
-        // 获取多端登录配置
-        const isMultiLoginEnabled = await this.isMultiLoginEnabled();
+        // 获取单终端登录配置
+        const isSingleTerminalLoginEnabled = await this.isSingleTerminalLoginEnabled();
 
-        // 如果不允许多端登录，则撤销该终端的所有令牌
-        if (!isMultiLoginEnabled) {
+        // 如果启用单终端登录，则撤销该用户在同一终端的所有其他令牌
+        if (isSingleTerminalLoginEnabled) {
             await this.revokeTokensByTerminal(userId, terminal);
         }
 
@@ -252,10 +256,23 @@ export class UserTokenService extends BaseService<UserToken> {
      */
     async revokeAllTokens(userId: string): Promise<number> {
         try {
+            // 先查找要撤销的令牌，以便清理缓存
+            const tokensToRevoke = await this.userTokenRepository.find({
+                where: { userId, isRevoked: false },
+            });
+
+            // 更新数据库中的令牌状态
             const result = await this.userTokenRepository.update(
                 { userId, isRevoked: false },
                 { isRevoked: true },
             );
+
+            // 清理被撤销令牌的缓存
+            for (const tokenRecord of tokensToRevoke) {
+                const cacheKey = `${this.TOKEN_CACHE_PREFIX}${tokenRecord.token}`;
+                await this.cacheService.del(cacheKey);
+                await this.redisService.del(cacheKey);
+            }
 
             return result.affected || 0;
         } catch (error) {
@@ -273,10 +290,23 @@ export class UserTokenService extends BaseService<UserToken> {
      */
     async revokeTokensByTerminal(userId: string, terminal: UserTerminalType): Promise<number> {
         try {
+            // 先查找要撤销的令牌，以便清理缓存
+            const tokensToRevoke = await this.userTokenRepository.find({
+                where: { userId, terminal, isRevoked: false },
+            });
+
+            // 更新数据库中的令牌状态
             const result = await this.userTokenRepository.update(
                 { userId, terminal, isRevoked: false },
                 { isRevoked: true },
             );
+
+            // 清理被撤销令牌的缓存
+            for (const tokenRecord of tokensToRevoke) {
+                const cacheKey = `${this.TOKEN_CACHE_PREFIX}${tokenRecord.token}`;
+                await this.cacheService.del(cacheKey);
+                await this.redisService.del(cacheKey);
+            }
 
             return result.affected || 0;
         } catch (error) {
@@ -402,6 +432,44 @@ export class UserTokenService extends BaseService<UserToken> {
             return true;
         } catch (error) {
             this.logger.error(`设置多端登录配置失败: ${error.message}`);
+            return false;
+        }
+    }
+
+    /**
+     * 检查是否启用单终端登录
+     *
+     * @returns 是否启用单终端登录
+     */
+    async isSingleTerminalLoginEnabled(): Promise<boolean> {
+        try {
+            return await this.dictService.get<boolean>(
+                this.SINGLE_TERMINAL_LOGIN_CONFIG_KEY,
+                true,
+                "auth",
+            );
+        } catch (error) {
+            this.logger.warn(`获取单终端登录配置失败，使用默认配置: ${error.message}`);
+            return true; // 默认启用单终端登录
+        }
+    }
+
+    /**
+     * 设置是否启用单终端登录
+     *
+     * @param enabled 是否启用
+     * @returns 设置结果
+     */
+    async setSingleTerminalLoginEnabled(enabled: boolean): Promise<boolean> {
+        try {
+            await this.dictService.set(this.SINGLE_TERMINAL_LOGIN_CONFIG_KEY, enabled, {
+                group: "auth", // 明确指定分组为 auth
+                description: "是否启用单终端登录（同一类型终端登录时挤掉对方）",
+            });
+
+            return true;
+        } catch (error) {
+            this.logger.error(`设置单终端登录配置失败: ${error.message}`);
             return false;
         }
     }
