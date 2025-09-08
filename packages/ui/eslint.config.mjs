@@ -1,8 +1,14 @@
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { config as baseConfig } from "@fastbuildai/config/eslint/base";
 import { config as httpConfig } from "@fastbuildai/config/eslint/http";
 import vuePlugin from "eslint-plugin-vue";
 import tseslint from "typescript-eslint";
 import vueParser from "vue-eslint-parser";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /** @type {import("eslint").Linter.Config} */
 export default [
@@ -12,7 +18,16 @@ export default [
     },
 
     // TypeScript 推荐配置
-    ...tseslint.configs.recommended,
+    ...tseslint.configs.recommended.map((config) => ({
+        ...config,
+        languageOptions: {
+            ...config.languageOptions,
+            parserOptions: {
+                ...config.languageOptions?.parserOptions,
+                tsconfigRootDir: __dirname,
+            },
+        },
+    })),
 
     // Vue 相关配置
     {
@@ -24,6 +39,7 @@ export default [
             parser: vueParser,
             parserOptions: {
                 parser: tseslint.parser,
+                tsconfigRootDir: __dirname,
                 extraFileExtensions: [".vue"],
                 ecmaFeatures: {
                     jsx: true,
@@ -51,6 +67,9 @@ export default [
         files: ["**/*.ts", "**/*.tsx"],
         languageOptions: {
             parser: tseslint.parser,
+            parserOptions: {
+                tsconfigRootDir: __dirname,
+            },
         },
     },
 

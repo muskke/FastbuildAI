@@ -2,7 +2,6 @@
  * 认证相关常量
  * @description 定义登录和认证相关的常量
  */
-
 export const LOGIN_METHOD = {
     /** 微信登录 */
     WECHAT: 3,
