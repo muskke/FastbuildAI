@@ -48,7 +48,7 @@ export function useMessage(): MessageService {
     const createMessage = (
         type: MessageType,
         msg: string,
-        opt: MessageOptions,
+        opt?: MessageOptions,
     ): MessageInstance => {
         const toastId = toast.add({
             ...DEFAULT_OPTIONS,
