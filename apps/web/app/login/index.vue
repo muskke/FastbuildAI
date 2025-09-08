@@ -7,7 +7,7 @@ import AccountLogin from "@/common/components/login/account/index.vue";
 import LoginBind from "@/common/components/login/login-bind.vue";
 import PhoneLogin from "@/common/components/login/phone/index.vue";
 import WechatLogin from "@/common/components/login/wechat/index.vue";
-import { LOGIN_METHOD } from "@/common/constants/auth.constant";
+import { LOGIN_STATUS, LOGIN_TYPE } from "@/common/constants/auth.constant";
 import type { LoginResponse } from "@/models/user";
 import type { WebsiteCopyright } from "@/models/website";
 import LogoFull from "@/public/logo-full.svg";
@@ -23,31 +23,31 @@ interface LoginComponentConfig {
     label: string;
 }
 
-const LOGIN_COMPONENTS: Record<string, LoginComponentConfig> = {
-    [LOGIN_METHOD.ACCOUNT]: {
+const LOGIN_COMPONENTS: Record<string | number, LoginComponentConfig> = {
+    [LOGIN_TYPE.ACCOUNT]: {
         component: AccountLogin,
         icon: "tabler:lock",
         label: "账号密码登录",
     },
-    // [LOGIN_METHOD.PHONE]: {
+    // [LOGIN_TYPE.PHONE]: {
     //     component: PhoneLogin,
     //     icon: "tabler:phone",
     //     label: "手机号登录",
     // },
-    [LOGIN_METHOD.WECHAT]: {
+    [LOGIN_TYPE.WECHAT]: {
         component: WechatLogin,
         icon: "tabler:brand-wechat",
         label: "微信登录",
     },
-    [LOGIN_METHOD.BIND]: {
+    [LOGIN_STATUS.BIND]: {
         component: LoginBind,
         icon: "",
         label: "绑定手机号",
     },
 };
 
-const DEFAULT_LOGIN_METHOD = appStore?.loginWay?.defaultLoginWay as unknown as string;
-const currentLoginMethod = ref<string>(DEFAULT_LOGIN_METHOD);
+const DEFAULT_LOGIN_METHOD = appStore?.loginWay?.defaultLoginWay || LOGIN_TYPE.ACCOUNT;
+const currentLoginMethod = ref<string | number>(DEFAULT_LOGIN_METHOD);
 const showLoginMethods = ref<boolean>(true);
 const containerStyle = ref<{ width: string; height: string }>({
     width: "300px",
@@ -56,13 +56,13 @@ const containerStyle = ref<{ width: string; height: string }>({
 
 const loginMethods = computed(() =>
     Object.entries(LOGIN_COMPONENTS)
-        .filter(([key]) => key !== LOGIN_METHOD.BIND && key !== LOGIN_METHOD.SUCCESS)
+        .filter(([key]) => key !== LOGIN_STATUS.BIND && key !== LOGIN_STATUS.SUCCESS)
         .map(([key, config]) => ({ name: key, ...config })),
 );
 const currentComponent = computed(() => LOGIN_COMPONENTS[currentLoginMethod.value]?.component);
 const currentComponentConfig = computed(() => LOGIN_COMPONENTS[currentLoginMethod.value]);
 
-function switchLoginMethod(methodName: string): void {
+function switchLoginMethod(methodName: string | number): void {
     if (LOGIN_COMPONENTS[methodName]) {
         currentLoginMethod.value = methodName;
     }
@@ -71,7 +71,7 @@ function switchLoginMethod(methodName: string): void {
 function loginHandle(data: LoginResponse & { hasBind: boolean }): void {
     if (appStore.loginWay.coerceMobile * 1 && !data.hasBind && !data.mobile) {
         userStore.tempLogin(data.token);
-        currentLoginMethod.value = LOGIN_METHOD.BIND;
+        currentLoginMethod.value = LOGIN_STATUS.BIND;
         return;
     }
     userStore.login(data.token);
@@ -89,7 +89,7 @@ async function updateContainerStyle(style: { width: string; height: string }) {
     // 等待更长时间确保组件完全渲染
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    if (containerRef.value && currentLoginMethod.value !== LOGIN_METHOD.SUCCESS) {
+    if (containerRef.value && currentLoginMethod.value !== LOGIN_STATUS.SUCCESS) {
         // 直接观察容器元素，而不是 Motion 组件内部
         resizeObserver = new ResizeObserver(updateContainerHeight);
         resizeObserver.observe(containerRef.value);
@@ -202,7 +202,7 @@ onUnmounted(() => {
                             <Motion
                                 v-if="
                                     loginMethods.length > 1 &&
-                                    currentLoginMethod !== 'LoginSuccess' &&
+                                    currentLoginMethod !== LOGIN_STATUS.SUCCESS &&
                                     showLoginMethods
                                 "
                                 :key="currentLoginMethod"
