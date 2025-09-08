@@ -1,6 +1,7 @@
 import { BaseController } from "@common/base/controllers/base.controller";
 import { BaseService } from "@common/base/services/base.service";
 import { FileService } from "@common/base/services/file.service";
+import { Public } from "@common/decorators";
 import { WebController } from "@common/decorators/controller.decorator";
 import { BuildFileUrl } from "@common/decorators/file-url.decorator";
 import { Playground } from "@common/decorators/playground.decorator";
@@ -11,13 +12,14 @@ import {
     ACCOUNT_LOG_TYPE_DESCRIPTION,
 } from "@common/modules/account/constants/account-log.constants";
 import { RolePermissionService } from "@common/modules/auth/services/role-permission.service";
+import { DictService } from "@common/modules/dict/services/dict.service";
+import { LOGIN_TYPE } from "@fastbuildai/constants";
 import { Agent } from "@modules/console/ai-agent/entities/agent.entity";
 import { AccountLog } from "@modules/console/finance/entities/account-log.entity";
 import { Body, Get, Inject, Logger, Patch, Query } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, IsNull, Like, Not, Repository } from "typeorm";
 
-import { AgentService } from "../../console/ai-agent/services/agent.service";
 import { DatasetMemberService } from "../../console/ai-datasets/services/datasets-member.service";
 import { UserService } from "../../console/user/services/user.service";
 import { AccountLogDto } from "./dto/account-log-dto";
@@ -38,6 +40,7 @@ export class UserController extends BaseController {
      * @param userService 用户服务
      * @param rolePermissionService 角色权限服务
      * @param datasetMemberService 知识库成员服务
+     * @param dictService 字典服务
      */
     constructor(
         private readonly userService: UserService,
@@ -45,6 +48,7 @@ export class UserController extends BaseController {
         private readonly rolePermissionService: RolePermissionService,
         private readonly fileService: FileService,
         private readonly datasetMemberService: DatasetMemberService,
+        private readonly dictService: DictService,
         @InjectRepository(Agent)
         private readonly agentRepository: Repository<Agent>,
         @InjectRepository(AccountLog)
@@ -305,5 +309,38 @@ export class UserController extends BaseController {
         });
 
         return { ...lists, userInfo };
+    }
+
+    /**
+     * 获取登录设置
+     *
+     * @returns 当前的登录设置配置
+     */
+    @Public()
+    @Get("login-settings")
+    async getLoginSettings() {
+        // 从字典服务获取登录设置配置
+        const config = await this.dictService.get(
+            "login_settings",
+            this.getDefaultLoginSettings(),
+            "auth",
+        );
+
+        return config;
+    }
+
+    /**
+     * 获取默认登录设置
+     *
+     * @returns 默认的登录设置配置
+     */
+    private getDefaultLoginSettings() {
+        return {
+            allowedLoginMethods: [LOGIN_TYPE.ACCOUNT, LOGIN_TYPE.PHONE, LOGIN_TYPE.WECHAT],
+            allowedRegisterMethods: [LOGIN_TYPE.ACCOUNT, LOGIN_TYPE.PHONE],
+            defaultLoginMethod: LOGIN_TYPE.ACCOUNT,
+            allowMultipleLogin: false,
+            showPolicyAgreement: true,
+        };
     }
 }
