@@ -1,11 +1,23 @@
 import { config as baseConfig } from "@fastbuildai/config/eslint/base";
 import { config as httpConfig } from "@fastbuildai/config/eslint/http";
 import vuePlugin from "eslint-plugin-vue";
+import { dirname } from "path";
 import tseslint from "typescript-eslint";
+import { fileURLToPath } from "url";
 import vueParser from "vue-eslint-parser";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import("eslint").Linter.Config} */
 export default [
+    // 全局设置 TS 解析根目录，避免多候选 tsconfigRootDir 报错
+    {
+        languageOptions: {
+            parserOptions: {
+                tsconfigRootDir: __dirname,
+            },
+        },
+    },
     // 忽略规则 - 排除自动生成的代码和构建目录
     {
         ignores: [".nuxt/**", ".output/**", "dist/**", "node_modules/**"],
