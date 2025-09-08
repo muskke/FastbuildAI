@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { LOGIN_TYPE } from "@fastbuildai/constants";
 import { ProInputPassword, useLockFn, useMessage } from "@fastbuildai/ui";
 import { Motion } from "motion-v";
 import { reactive } from "vue";
@@ -43,7 +44,11 @@ const loginState = reactive({
 });
 
 const { lockFn: onLoginSubmit, isLock } = useLockFn(async () => {
-    if (!userStore.isAgreed && !!appStore.loginWay.loginAgreement) {
+    if (
+        !userStore.isAgreed &&
+        !!appStore.loginWay.loginAgreement &&
+        appStore.loginSettings?.showPolicyAgreement
+    ) {
         toast.warning(t("login.messages.agreementRequired"), {
             title: t("login.messages.agreementTitle"),
             duration: 3000,
@@ -124,12 +129,20 @@ const { lockFn: onLoginSubmit, isLock } = useLockFn(async () => {
                     </template>
                 </UFormField>
 
-                <div class="mt-8 mb-4 text-left">
+                <div v-if="appStore.loginSettings?.showPolicyAgreement" class="mt-8 mb-4 text-left">
                     <PrivacyTerms v-model="userStore.isAgreed" />
                 </div>
 
-                <div class="flex flex-1 gap-2 pb-8">
+                <div
+                    class="flex flex-1 gap-2 pb-8"
+                    :class="{ 'mt-8': !appStore.loginSettings?.showPolicyAgreement }"
+                >
                     <UButton
+                        v-if="
+                            appStore.loginSettings?.allowedRegisterMethods.includes(
+                                LOGIN_TYPE.ACCOUNT,
+                            )
+                        "
                         variant="outline"
                         color="primary"
                         size="lg"
@@ -144,7 +157,11 @@ const { lockFn: onLoginSubmit, isLock } = useLockFn(async () => {
                         size="lg"
                         :ui="{ base: 'flex-1 justify-center' }"
                         :loading="isLock"
-                        :disabled="!userStore.isAgreed && !!appStore.loginWay.loginAgreement"
+                        :disabled="
+                            !userStore.isAgreed &&
+                            !!appStore.loginWay.loginAgreement &&
+                            appStore.loginSettings?.showPolicyAgreement
+                        "
                     >
                         {{ $t("login.loginNow") }}
                     </UButton>

@@ -161,7 +161,11 @@ onUnmounted(stopPolling);
 
                     <!-- 协议覆盖层 -->
                     <div
-                        v-if="!userStore.isAgreed && !!appStore.loginWay.loginAgreement"
+                        v-if="
+                            !userStore.isAgreed &&
+                            !!appStore.loginWay.loginAgreement &&
+                            appStore.loginSettings?.showPolicyAgreement
+                        "
                         class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm dark:bg-gray-800/60"
                     >
                         <UIcon
@@ -204,7 +208,10 @@ onUnmounted(stopPolling);
             class="relative"
         >
             <div class="mt-2 mb-8 text-left">
-                <PrivacyTerms v-model="userStore.isAgreed" />
+                <PrivacyTerms
+                    v-if="appStore.loginSettings?.showPolicyAgreement"
+                    v-model="userStore.isAgreed"
+                />
             </div>
         </Motion>
     </div>

@@ -181,6 +181,9 @@ importers:
 
   apps/server:
     dependencies:
+      '@fastbuildai/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
       '@fastbuildai/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -516,6 +519,9 @@ importers:
       '@fastbuildai/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@fastbuildai/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
       '@fastbuildai/http':
         specifier: workspace:*
         version: link:../../packages/http

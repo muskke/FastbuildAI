@@ -18,7 +18,7 @@
     "noDescription": "説明なし",
     "systemMcp": "システムMCP",
     "userMcp": "ユーザーMCP",
-    "quickMenu": "ショートカット",
+    "quickMenu": "クイック",
     "setQuickMenu": "ショートカットメニュー",
     "quickMenuSuccess": "設定成功",
     "quickMenuFailed": "設定失敗",

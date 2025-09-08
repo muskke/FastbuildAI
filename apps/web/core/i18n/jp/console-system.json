@@ -100,6 +100,46 @@
                 "description": "各分析プラットフォームでアプリ作成後、上にIDを入力してください"
             }
         },
+        "loginConfig": {
+            "title": "ログイン設定",
+            "registerType": {
+                "label": "登録方法",
+                "items": {
+                    "account": "アカウント登録",
+                    "weixin": "WeChat登録"
+                },
+                "description": "少なくとも1つの登録方法を選択する必要があります"
+            },
+            "loginType": {
+                "label": "ログイン方法",
+                "items": {
+                    "account": "アカウントログイン",
+                    "weixin": "WeChatログイン"
+                },
+                "description": "少なくとも1つのログイン方法を選択する必要があります"
+            },
+            "defaultLoginType": {
+                "label": "デフォルトログイン方法",
+                "items": {
+                    "account": "アカウントログイン",
+                    "weixin": "WeChatログイン"
+                },
+                "placeholder": "デフォルトのログイン方法を選択してください",
+                "required": "デフォルトのログイン方法を選択してください",
+                "description": "フロントエンドのデフォルトログイン方法を設定します"
+            },
+            "isSimultaneouslyOnline": {
+                "label": "複数ログイン",
+                "description": "複数のデバイスから同時にログインすることを許可する"
+            },
+            "isAgreement": {
+                "label": "利用規約表示",
+                "description": "ログイン/登録時に利用規約とプライバシーポリシーを表示する"
+            },
+            "open": "有効",
+            "close": "無効",
+            "updateSuccess": "ログイン設定が正常に保存されました！"
+        },
         "actions": {
             "save": "設定を保存",
             "saveChanges": "変更を保存",

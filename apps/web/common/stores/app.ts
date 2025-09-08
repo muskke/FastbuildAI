@@ -1,5 +1,6 @@
 import type { SiteConfig } from "@/models/global";
-import { apiGetSiteConfig } from "@/services/common";
+import type { LoginSettings } from "@/models/login-settings";
+import { apiGetLoginSettings, apiGetSiteConfig } from "@/services/common";
 
 export const useAppStore = defineStore("app", () => {
     const siteConfig = ref<SiteConfig | null>(null);
@@ -8,6 +9,7 @@ export const useAppStore = defineStore("app", () => {
         coerceMobile: 0,
         defaultLoginWay: 1,
     });
+    const loginSettings = ref<LoginSettings | null>(null);
 
     const getConfig = async () => {
         try {
@@ -15,6 +17,16 @@ export const useAppStore = defineStore("app", () => {
             return siteConfig.value;
         } catch (error) {
             console.error("获取网站配置失败:", error);
+            return null;
+        }
+    };
+
+    const getLoginSettings = async () => {
+        try {
+            loginSettings.value = await apiGetLoginSettings();
+            return loginSettings.value;
+        } catch (error) {
+            console.error("获取登录设置失败:", error);
             return null;
         }
     };
@@ -47,8 +59,10 @@ export const useAppStore = defineStore("app", () => {
     return {
         siteConfig,
         loginWay,
+        loginSettings,
 
         getConfig,
         getImageUrl,
+        getLoginSettings,
     };
 });

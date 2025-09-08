@@ -51,7 +51,11 @@ const registerState = reactive({
 });
 
 const { lockFn: onRegisterSubmit, isLock } = useLockFn(async () => {
-    if (!userStore.isAgreed && !!appStore.loginWay.loginAgreement) {
+    if (
+        !userStore.isAgreed &&
+        !!appStore.loginWay.loginAgreement &&
+        appStore.loginSettings?.showPolicyAgreement
+    ) {
         toast.warning(t("login.messages.agreementRequired"), {
             title: t("login.messages.agreementTitle"),
             duration: 3000,
@@ -61,7 +65,7 @@ const { lockFn: onRegisterSubmit, isLock } = useLockFn(async () => {
     try {
         // TODO: 调用注册接口
         const data = await apiAuthRegister({
-            terminal: 1,
+            terminal: "1",
             ...registerState,
         });
 
@@ -151,11 +155,14 @@ const { lockFn: onRegisterSubmit, isLock } = useLockFn(async () => {
                     </template>
                 </UFormField>
 
-                <div class="mt-8 mb-4 text-left">
+                <div v-if="appStore.loginSettings?.showPolicyAgreement" class="mt-8 mb-4 text-left">
                     <PrivacyTerms v-model="userStore.isAgreed" />
                 </div>
 
-                <div class="flex flex-1 gap-2 pb-8">
+                <div
+                    class="flex flex-1 gap-2 pb-8"
+                    :class="{ 'mt-8': !appStore.loginSettings?.showPolicyAgreement }"
+                >
                     <UButton
                         variant="outline"
                         color="primary"
@@ -171,7 +178,11 @@ const { lockFn: onRegisterSubmit, isLock } = useLockFn(async () => {
                         size="lg"
                         :loading="isLock"
                         :ui="{ base: 'flex-1 justify-center' }"
-                        :disabled="!userStore.isAgreed && !!appStore.loginWay.loginAgreement"
+                        :disabled="
+                            !userStore.isAgreed &&
+                            !!appStore.loginWay.loginAgreement &&
+                            appStore.loginSettings?.showPolicyAgreement
+                        "
                     >
                         {{ $t("login.registerNow") }}
                     </UButton>

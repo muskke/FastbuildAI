@@ -100,6 +100,46 @@
                 "description": "Create the app in your analytics platform, then paste the App ID above"
             }
         },
+        "loginConfig": {
+            "title": "Login Settings",
+            "registerType": {
+                "label": "Registration Methods",
+                "items": {
+                    "account": "Account Registration",
+                    "weixin": "WeChat Registration"
+                },
+                "description": "At least one registration method must be selected"
+            },
+            "loginType": {
+                "label": "Login Methods",
+                "items": {
+                    "account": "Account Login",
+                    "weixin": "WeChat Login"
+                },
+                "description": "At least one login method must be selected"
+            },
+            "defaultLoginType": {
+                "label": "Default Login Method",
+                "items": {
+                    "account": "Account Login",
+                    "weixin": "WeChat Login"
+                },
+                "placeholder": "Please select default login method",
+                "required": "Please select default login method",
+                "description": "Set the default login method for the frontend"
+            },
+            "isSimultaneouslyOnline": {
+                "label": "Multiple Logins",
+                "description": "Allow users to be logged in from multiple devices simultaneously"
+            },
+            "isAgreement": {
+                "label": "Enable Terms & Privacy",
+                "description": "Show Terms of Service and Privacy Policy during login/registration"
+            },
+            "open": "Enable",
+            "close": "Disable",
+            "updateSuccess": "Login settings saved successfully!"
+        },
         "actions": {
             "save": "Save",
             "saveChanges": "Save Changes",
