@@ -47,7 +47,7 @@ const LOGIN_COMPONENTS: Record<string | number, LoginComponentConfig> = {
     },
 };
 
-const DEFAULT_LOGIN_METHOD = appStore?.loginWay?.defaultLoginWay || LOGIN_TYPE.ACCOUNT;
+const DEFAULT_LOGIN_METHOD = appStore?.loginSettings?.defaultLoginMethod || LOGIN_TYPE.ACCOUNT;
 const currentLoginMethod = ref<string | number>(DEFAULT_LOGIN_METHOD);
 const showLoginMethods = ref<boolean>(true);
 const containerStyle = ref<{ width: string; height: string }>({
@@ -55,8 +55,17 @@ const containerStyle = ref<{ width: string; height: string }>({
     height: "400px",
 });
 
+const allowedLoginMethods = computed(() => {
+    const result = Object.fromEntries(
+        Object.entries(LOGIN_COMPONENTS).filter(([k]) =>
+            appStore?.loginSettings?.allowedLoginMethods.includes(Number(k)),
+        ),
+    );
+    return result;
+});
+
 const loginMethods = computed(() =>
-    Object.entries(LOGIN_COMPONENTS)
+    Object.entries(allowedLoginMethods.value)
         .filter(([key]) => key !== LOGIN_STATUS.BIND && key !== LOGIN_STATUS.SUCCESS)
         .map(([key, config]) => ({ name: key, ...config })),
 );

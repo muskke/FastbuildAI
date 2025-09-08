@@ -131,6 +131,7 @@ export interface UpdateUserFieldResponse {
 export interface WechatLoginCode {
     key: string;
     qrcode: string;
+    url: string;
 }
 
 /**
@@ -139,6 +140,8 @@ export interface WechatLoginCode {
 export interface WechatLoginTicket {
     status: string;
     data?: any;
+    is_scan: boolean;
+    user: LoginResponse;
 }
 
 /**

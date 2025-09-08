@@ -77,6 +77,46 @@
                 "required": "请输入备案跳转链接"
             }
         },
+        "loginConfig": {
+            "title": "登录设置",
+            "registerType": {
+                "label": "注册方式",
+                "items": {
+                    "account": "账号注册",
+                    "weixin": "微信注册"
+                },
+                "description": "必须选择其中一种注册方式"
+            },
+            "loginType": {
+                "label": "登录方式",
+                "items": {
+                    "account": "账号登录",
+                    "weixin": "微信登录"
+                },
+                "description": "必须选择其中一种登录方式"
+            },
+            "defaultLoginType": {
+                "label": "默认登录方式",
+                "items": {
+                    "account": "账号登录",
+                    "weixin": "微信登录"
+                },
+                "placeholder": "请选择默认登录方式",
+                "required": "请选择默认登录方式",
+                "description": "设置在前台的默认登录方式"
+            },
+            "isSimultaneouslyOnline": {
+                "label": "多处登录",
+                "description": "是否允许多处同时登录"
+            },
+            "isAgreement": {
+                "label": "是否开启协议",
+                "description": "用户登录/注册时，是否显示服务协议和隐私政策"
+            },
+            "open": "开启",
+            "close": "关闭",
+            "updateSuccess": "登录设置保存成功！"
+        },
         "statistics": {
             "title": "站点统计配置",
             "description": "配置网站统计分析工具",

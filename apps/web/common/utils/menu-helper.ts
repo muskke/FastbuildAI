@@ -242,7 +242,6 @@ export function buildBreadcrumbs(
                 return;
             }
             trail.push({ name: menu.name, path });
-            console.log("menu", menu);
         }
         return [];
     });

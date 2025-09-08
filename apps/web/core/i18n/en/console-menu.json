@@ -94,7 +94,8 @@
         "PayConfig": "Payments",
         "agreement": "Policy agreements",
         "channelManagement": "Channels",
-        "wechatOaConfig": "WeChat OA"
+        "wechatOaConfig": "WeChat OA",
+        "loginConfig": "Login Settings"
     },
     "pluginMarket": "Plugins",
     "myPlugins": "My Plugins",

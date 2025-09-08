@@ -1,4 +1,5 @@
 import type { SiteConfig } from "@/models/global";
+import type { LoginSettings } from "@/models/login-settings";
 import type { WebsiteConfig } from "@/models/website";
 
 // ==================== 网站配置相关 API ====================
@@ -19,6 +20,15 @@ export function apiGetSiteConfig(): Promise<SiteConfig> {
  */
 export function apiGetAgreementConfig(): Promise<{ agreement: WebsiteConfig["agreement"] }> {
     return useWebGet<{ agreement: WebsiteConfig["agreement"] }>("/config/agreement");
+}
+
+/**
+ * 获取登录设置
+ * @description 获取前台登录页面的配置信息（登录方式、默认登录方式、是否允许多次登录、是否显示协议等）
+ * @returns {Promise<LoginSettings>} 登录设置信息
+ */
+export function apiGetLoginSettings(): Promise<LoginSettings> {
+    return useWebGet<LoginSettings>("/user/login-settings");
 }
 
 // ==================== 文件上传相关 API ====================

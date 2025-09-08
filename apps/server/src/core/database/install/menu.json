@@ -1436,6 +1436,34 @@
                                 "pluginPackName": null
                             }
                         ]
+                    },
+                    {
+                        "name": "console-menu.systemSettings.loginConfig",
+                        "code": "system-loginConfig-list",
+                        "path": "loginConfig",
+                        "icon": "",
+                        "component": "/console/system-setting/loginConfig/index",
+                        "permissionCode": "system-loginConfig:list",
+                        "sort": 0,
+                        "isHidden": 0,
+                        "type": 2,
+                        "sourceType": 1,
+                        "pluginPackName": "",
+                        "children": [
+                            {
+                                "name": "console-system.website.actions.save",
+                                "code": "system-loginConfig-save",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "system-loginConfig:setConfig",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            }
+                        ]
                     }
                 ]
             }

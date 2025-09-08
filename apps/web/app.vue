@@ -24,6 +24,11 @@ await useAsyncData("config", () => appStore.getConfig(), {
     lazy: import.meta.server,
 });
 
+/** 获取登录设置 */
+await useAsyncData("loginSettings", () => appStore.getLoginSettings(), {
+    lazy: import.meta.server,
+});
+
 useHead({
     title: appStore.siteConfig?.webinfo?.name,
     meta: [

@@ -94,7 +94,8 @@
         "PayConfig": "支付配置",
         "agreement": "政策协议",
         "channelManagement": "渠道管理",
-        "wechatOaConfig": "公众号配置"
+        "wechatOaConfig": "公众号配置",
+        "loginConfig": "登录设置"
     },
     "pluginMarket": "插件市场",
     "myPlugins": "我的插件",
