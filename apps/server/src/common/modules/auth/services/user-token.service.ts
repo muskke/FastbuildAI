@@ -26,16 +26,6 @@ export class UserTokenService extends BaseService<UserToken> {
     private readonly TOKEN_CONFIG_KEY = "token";
 
     /**
-     * 多端登录配置键
-     */
-    private readonly MULTI_LOGIN_CONFIG_KEY = "multi_login";
-
-    /**
-     * 单终端登录配置键
-     */
-    private readonly SINGLE_TERMINAL_LOGIN_CONFIG_KEY = "single_terminal_login";
-
-    /**
      * 令牌缓存前缀
      */
     private readonly TOKEN_CACHE_PREFIX = "auth:token:";
@@ -77,11 +67,11 @@ export class UserTokenService extends BaseService<UserToken> {
         // 获取令牌配置
         const tokenConfig = await this.getTokenConfig();
 
-        // 获取单终端登录配置
-        const isSingleTerminalLoginEnabled = await this.isSingleTerminalLoginEnabled();
+        // 获取登录设置配置
+        const loginSettings = await this.getLoginSettings();
 
-        // 如果启用单终端登录，则撤销该用户在同一终端的所有其他令牌
-        if (isSingleTerminalLoginEnabled) {
+        // 如果不允许多处登录，则撤销该用户在同一终端的所有其他令牌
+        if (!loginSettings.allowMultipleLogin) {
             await this.revokeTokensByTerminal(userId, terminal);
         }
 
@@ -403,74 +393,22 @@ export class UserTokenService extends BaseService<UserToken> {
     }
 
     /**
-     * 检查是否启用多端登录
+     * 获取登录设置配置
      *
-     * @returns 是否启用多端登录
+     * @returns 登录设置配置
      */
-    async isMultiLoginEnabled(): Promise<boolean> {
+    private async getLoginSettings(): Promise<{ allowMultipleLogin: boolean }> {
         try {
-            return await this.dictService.get<boolean>(this.MULTI_LOGIN_CONFIG_KEY, false, "auth");
-        } catch (error) {
-            this.logger.warn(`获取多端登录配置失败，使用默认配置: ${error.message}`);
-            return false;
-        }
-    }
-
-    /**
-     * 设置是否启用多端登录
-     *
-     * @param enabled 是否启用
-     * @returns 设置结果
-     */
-    async setMultiLoginEnabled(enabled: boolean): Promise<boolean> {
-        try {
-            await this.dictService.set(this.MULTI_LOGIN_CONFIG_KEY, enabled, {
-                group: "auth", // 明确指定分组为 auth
-                description: "是否允许用户在同一终端多处登录",
-            });
-
-            return true;
-        } catch (error) {
-            this.logger.error(`设置多端登录配置失败: ${error.message}`);
-            return false;
-        }
-    }
-
-    /**
-     * 检查是否启用单终端登录
-     *
-     * @returns 是否启用单终端登录
-     */
-    async isSingleTerminalLoginEnabled(): Promise<boolean> {
-        try {
-            return await this.dictService.get<boolean>(
-                this.SINGLE_TERMINAL_LOGIN_CONFIG_KEY,
-                true,
+            const config = await this.dictService.get<{ allowMultipleLogin: boolean }>(
+                "login_settings",
+                { allowMultipleLogin: false }, // 默认不允许多处登录
                 "auth",
             );
-        } catch (error) {
-            this.logger.warn(`获取单终端登录配置失败，使用默认配置: ${error.message}`);
-            return true; // 默认启用单终端登录
-        }
-    }
 
-    /**
-     * 设置是否启用单终端登录
-     *
-     * @param enabled 是否启用
-     * @returns 设置结果
-     */
-    async setSingleTerminalLoginEnabled(enabled: boolean): Promise<boolean> {
-        try {
-            await this.dictService.set(this.SINGLE_TERMINAL_LOGIN_CONFIG_KEY, enabled, {
-                group: "auth", // 明确指定分组为 auth
-                description: "是否启用单终端登录（同一类型终端登录时挤掉对方）",
-            });
-
-            return true;
+            return config;
         } catch (error) {
-            this.logger.error(`设置单终端登录配置失败: ${error.message}`);
-            return false;
+            this.logger.warn(`获取登录设置配置失败，使用默认配置: ${error.message}`);
+            return { allowMultipleLogin: false }; // 默认不允许多处登录
         }
     }
 }

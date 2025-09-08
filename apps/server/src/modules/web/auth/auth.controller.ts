@@ -128,31 +128,6 @@ export class AuthController extends BaseController {
     }
 
     /**
-     * 设置多端登录开关
-     *
-     * @param enabled 是否启用
-     * @returns 设置结果
-     */
-    @Post("multi-login")
-    async setMultiLoginEnabled(@Body("enabled") enabled: boolean) {
-        return this.authService.setMultiLoginEnabled(enabled);
-    }
-
-    /**
-     * 获取多端登录开关状态
-     *
-     * @returns 多端登录开关状态
-     */
-    @Get("multi-login")
-    async getMultiLoginStatus() {
-        // 从用户令牌服务中获取多端登录状态
-        const isEnabled = await this.authService.userTokenService.isMultiLoginEnabled();
-
-        return {
-            enabled: isEnabled,
-        };
-    }
-    /**
      * 获取微信二维码
      *
      * 生成用于微信登录的临时二维码

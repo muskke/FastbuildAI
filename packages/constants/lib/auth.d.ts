@@ -9,7 +9,6 @@ export declare const LOGIN_TYPE: {
     /** 账号登录 */
     readonly ACCOUNT: 1;
     /** 手机号登录 */
-    readonly PHONE: 2;
     /** 微信登录 */
     readonly WECHAT: 3;
 };
