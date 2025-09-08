@@ -1,3 +1,4 @@
+import type { LayoutConfig } from "@/app/console/decorate/layout/types";
 import type { LayoutData, MicropageFormData } from "@/models/decorate.d.ts";
 
 /**
@@ -15,7 +16,7 @@ export function apiGetLayoutConfig(type: string): Promise<LayoutData> {
  * @param data 布局配置数据
  * @returns 保存结果
  */
-export function apiSaveLayoutConfig(type: string, data: LayoutData): Promise<LayoutData> {
+export function apiSaveLayoutConfig(type: string, data: LayoutConfig): Promise<LayoutData> {
     return useConsolePost(`/decorate-page/layout/${type}`, data);
 }
 
