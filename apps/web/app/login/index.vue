@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LOGIN_TYPE } from "@fastbuildai/constants/auth";
+import { LOGIN_TYPE } from "@fastbuildai/constants";
 import { Motion } from "motion-v";
 import { nextTick } from "vue";
 
