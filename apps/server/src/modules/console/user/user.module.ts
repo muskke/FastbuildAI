@@ -1,6 +1,7 @@
 import { AccountLogModule } from "@common/modules/account/account-log.module";
 import { Role } from "@common/modules/auth/entities/role.entity";
 import { User } from "@common/modules/auth/entities/user.entity";
+import { DictModule } from "@common/modules/dict/dict.module";
 import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
@@ -18,6 +19,7 @@ import { UserService } from "./services/user.service";
         MenuModule,
         RoleModule,
         forwardRef(() => AccountLogModule),
+        DictModule,
     ],
     controllers: [UserController],
     providers: [UserService],
