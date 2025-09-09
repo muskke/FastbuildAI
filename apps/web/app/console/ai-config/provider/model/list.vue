@@ -94,6 +94,10 @@ const columns = ref<TableColumn<AiModelInfo>[]>([
         header: t("console-ai-provider.model.table.modelType"),
     },
     {
+        accessorKey: "billingRule",
+        header: t("console-ai-provider.model.form.billing"),
+    },
+    {
         accessorKey: "isActive",
         header: t("console-ai-provider.model.table.isActive"),
     },
@@ -577,6 +581,11 @@ onMounted(async () => getLists());
                         <UBadge variant="soft" color="neutral">
                             {{ row.original.modelType?.toLocaleUpperCase().replaceAll("-", " ") }}
                         </UBadge>
+                    </template>
+                    <template #billingRule-cell="{ row }">
+                        {{ row.original.billingRule?.power }}
+                        {{ t("console-ai-provider.model.form.power") }} /
+                        {{ row.original.billingRule?.tokens }} Tokens
                     </template>
                     <template #isActive-cell="{ row }">
                         <USwitch
