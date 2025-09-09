@@ -1,5 +1,14 @@
+import { FileService } from "@common/base/services/file.service";
 import { AppEntity } from "@common/decorators";
-import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { getGlobalContainer } from "@common/utils/global-container.util";
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    CreateDateColumn,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from "typeorm";
 
 import {
     AutoQuestionsConfig,
@@ -265,4 +274,17 @@ export class Agent {
      */
     @UpdateDateColumn({ comment: "更新时间" })
     updatedAt: Date;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    private async setAvatar() {
+        if (this.avatar) {
+            try {
+                const fileService = getGlobalContainer().get(FileService);
+                this.avatar = await fileService.set(this.avatar);
+            } catch (error) {
+                console.warn("获取FileService失败:", error);
+            }
+        }
+    }
 }
