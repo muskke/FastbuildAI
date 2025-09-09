@@ -75,7 +75,7 @@ export class FileDownloader {
     static async isInvalidPluginPackage(
         pluginPath: string,
         options: PluginValidationOptions = {
-            requiredDirs: ["modules"],
+            requiredDirs: [],
             checkValidFiles: true,
         },
     ): Promise<boolean> {
@@ -194,7 +194,7 @@ export class FileDownloader {
     static isInvalidPluginPackageSync(
         pluginPath: string,
         options: PluginValidationOptionsSync = {
-            requiredDirs: ["modules"],
+            requiredDirs: [],
             checkValidFiles: true,
         },
     ): boolean {
@@ -458,7 +458,7 @@ export class PluginFileManager {
     static async isInvalidPluginPackage(
         pluginPath: string,
         options: PluginValidationOptions = {
-            requiredDirs: ["modules"],
+            requiredDirs: [],
             checkValidFiles: true,
         },
     ): Promise<{ isValid: boolean; reason: string }> {
@@ -519,7 +519,7 @@ export class PluginFileManager {
                     if (!exists || !isFile) {
                         return {
                             isValid: true,
-                            reason: `插件包目录中不存在必须存在的文件 ${file}`,
+                            reason: `插件包目录中必要文件不存在 ${file}`,
                         };
                     }
                 }
@@ -602,7 +602,7 @@ export class PluginFileManager {
     static isInvalidPluginPackageSync(
         pluginPath: string,
         options: PluginValidationOptionsSync = {
-            requiredDirs: ["modules"],
+            requiredDirs: [],
             checkValidFiles: true,
         },
     ): { isValid: boolean; reason: string } {

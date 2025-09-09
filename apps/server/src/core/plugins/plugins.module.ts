@@ -4,7 +4,6 @@ import { isNestModule } from "@common/utils/is.util";
 import { TerminalLogger } from "@common/utils/log.util";
 import { getPackageJson, getPackageJsonSync } from "@common/utils/system.util";
 import { table3BorderStyle } from "@fastbuildai/config/ui/table";
-import { parsePackageName } from "@fastbuildai/utils";
 import { DynamicModule, Injectable, Module, OnModuleInit } from "@nestjs/common";
 import chalk from "chalk";
 import Table from "cli-table3";
