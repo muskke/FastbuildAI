@@ -995,7 +995,7 @@
                 "icon": "i-lucide-paint-roller",
                 "component": "",
                 "permissionCode": null,
-                "sort": 800,
+                "sort": 400,
                 "isHidden": 0,
                 "type": 1,
                 "sourceType": 1,
