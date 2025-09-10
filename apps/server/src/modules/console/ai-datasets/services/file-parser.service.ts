@@ -185,13 +185,6 @@ export class FileParserService {
 
             // 将 Markdown 转换为纯文本，保留基本结构
             let text = markdown
-                .replace(/_([^_]+)_/g, "$1")
-                // 统一换行符
-                .replace(/\r\n/g, "\n")
-                .replace(/\r/g, "\n")
-                // 合并多个空行
-                .replace(/\n{3,}/g, "\n\n")
-                // 去除行首行尾空格
                 .replace(/[ ]+\n/g, "\n")
                 .replace(/\n[ ]+/g, "\n")
                 .trim();
