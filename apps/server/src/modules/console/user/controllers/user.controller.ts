@@ -345,7 +345,7 @@ export class UserController extends BaseController {
      */
     @Get("login-settings")
     @Permissions({
-        code: "login-settings",
+        code: "get-login-settings",
         name: "查看登录设置",
         description: "获取系统登录相关配置",
     })
