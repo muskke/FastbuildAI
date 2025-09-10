@@ -346,7 +346,7 @@ export class UserController extends BaseController {
     @Get("login-settings")
     @Permissions({
         code: "get-login-settings",
-        name: "查看登录设置",
+        name: "获取登录设置",
         description: "获取系统登录相关配置",
     })
     async getLoginSettings(): Promise<LoginSettingsConfig> {
@@ -458,11 +458,6 @@ export class UserController extends BaseController {
             throw HttpExceptionFactory.paramError("默认登录方式必须在允许的登录方式列表中");
         }
 
-        // 检查允许的注册方式不能为空
-        if (!config.allowedRegisterMethods || config.allowedRegisterMethods.length === 0) {
-            throw HttpExceptionFactory.paramError("至少需要启用一种注册方式");
-        }
-
         // 检查登录方式和注册方式的值是否有效
         const validLoginTypes = Object.values(LOGIN_TYPE);
 
@@ -472,9 +467,12 @@ export class UserController extends BaseController {
             }
         }
 
-        for (const method of config.allowedRegisterMethods) {
-            if (!validLoginTypes.includes(method)) {
-                throw HttpExceptionFactory.paramError(`无效的注册方式: ${method}`);
+        // 注册方式可以为空，但如果不为空则需要验证有效性
+        if (config.allowedRegisterMethods && config.allowedRegisterMethods.length > 0) {
+            for (const method of config.allowedRegisterMethods) {
+                if (!validLoginTypes.includes(method)) {
+                    throw HttpExceptionFactory.paramError(`无效的注册方式: ${method}`);
+                }
             }
         }
     }
