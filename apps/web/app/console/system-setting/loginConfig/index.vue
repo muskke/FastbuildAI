@@ -55,10 +55,6 @@ watch(
 
 // 校验规则
 const schema = object({
-    allowedRegisterMethods: array().min(
-        1,
-        t("console-system.website.loginConfig.registerType.description"),
-    ),
     allowedLoginMethods: array().min(
         1,
         t("console-system.website.loginConfig.loginType.description"),
@@ -170,7 +166,6 @@ onMounted(() => {
                     }"
                 >
                     <template #label>
-                        <span class="mr-1 text-red-500">*</span>
                         <span>
                             {{ t("console-system.website.loginConfig.registerType.label") }}
                         </span>
