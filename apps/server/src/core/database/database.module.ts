@@ -176,7 +176,10 @@ function getEntityModule(entity: EntityMetadata): string {
                 };
             },
             dataSourceFactory: async (options: PostgresConnectionOptions) => {
-                const dataSource = await new DataSource(options).initialize();
+                const dataSource = await new DataSource({
+                    ...options,
+                    logging: false,
+                }).initialize();
 
                 // 查询并打印数据库类型和版本信息
                 try {

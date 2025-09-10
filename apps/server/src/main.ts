@@ -5,7 +5,7 @@ const startTime = Date.now();
 
 import { FileService } from "@common/base/services/file.service";
 import { setGlobalContainer } from "@common/utils/global-container.util";
-import { setAssetsDir, tryListen } from "@common/utils/system.util";
+import { printBrandLogo, setAssetsDir, tryListen } from "@common/utils/system.util";
 import { HttpLoggerInterceptor, LoggerModule } from "@core/logger";
 // import { loadAllPlugins, updatePluginListCache } from "@core/plugins/plugins.module";
 import { ValidationPipe } from "@nestjs/common";
@@ -112,5 +112,7 @@ process.on("unhandledRejection", (reason, promise) => {
         console.error("生产环境检测到未处理的Promise拒绝，建议检查代码");
     }
 });
+
+printBrandLogo();
 
 bootstrap();
