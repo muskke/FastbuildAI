@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useMessage } from "@fastbuildai/ui";
+import type { RadioGroupItem } from "@nuxt/ui";
 import { useI18n } from "vue-i18n";
 import { array, boolean, number, object } from "yup";
 
@@ -88,12 +89,25 @@ const loginTypeItems = computed(() => [
     {
         value: LoginMethod.ACCOUNT.toString(),
         label: t("console-system.website.loginConfig.loginType.items.account"),
+        disabled: formData.value.defaultLoginMethod === LoginMethod.ACCOUNT,
     },
     {
         value: LoginMethod.WEIXIN.toString(),
         label: t("console-system.website.loginConfig.loginType.items.weixin"),
+        disabled: formData.value.defaultLoginMethod === LoginMethod.WEIXIN,
     },
 ]);
+
+// 默认登录类型
+const defaultLoginMethod = computed(() => {
+    let defaultLoginMethod: RadioGroupItem[] = [];
+    loginTypeItems.value.forEach((item) => {
+        if (formData.value.allowedLoginMethods.includes(Number(item.value))) {
+            defaultLoginMethod.push(item);
+        }
+    });
+    return defaultLoginMethod;
+});
 
 // 提交表单
 const onSubmit = () => {
@@ -220,7 +234,7 @@ onMounted(() => {
                     </template>
                     <URadioGroup
                         v-model="uiFormData.defaultLoginMethod"
-                        :items="loginTypeItems"
+                        :items="defaultLoginMethod"
                         orientation="horizontal"
                         :ui="{
                             fieldset: 'space-x-4',
