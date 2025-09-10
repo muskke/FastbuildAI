@@ -67,7 +67,6 @@ const initialMessages = messagesData.value.items.map((item: AiMessage) => {
         content: item.errorMessage || item.content,
         status: item.errorMessage ? ("failed" as const) : ("completed" as const),
         mcpToolCalls: item.mcpToolCalls,
-        userConsumedPower: item.userConsumedPower || 0,
     };
 });
 
@@ -136,7 +135,6 @@ async function loadMoreMessages() {
                 content: item.errorMessage || item.content,
                 status: item.errorMessage ? ("failed" as const) : ("completed" as const),
                 mcpToolCalls: item.mcpToolCalls,
-                userConsumedPower: item.userConsumedPower,
             }),
         );
         messages.value.unshift(...newMessages);

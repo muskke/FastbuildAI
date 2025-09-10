@@ -152,7 +152,6 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
             status: "loading",
             mcpToolCalls: [],
             avatar: reactiveChatConfig.value.avatar,
-            userConsumedPower: 0,
         };
 
         messages.value.push(aiMessage);
@@ -164,7 +163,6 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
                 .map((msg) => ({
                     role: msg.role as "user" | "assistant" | "system",
                     content: msg.content,
-                    userConsumedPower: msg.userConsumedPower || 0,
                 }));
 
             // 使用自定义API函数或默认的 apiChatStream
@@ -356,7 +354,6 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
             content,
             status: "completed",
             mcpToolCalls: [],
-            userConsumedPower: 0,
         });
     }
 

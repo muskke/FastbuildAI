@@ -148,7 +148,7 @@ export interface AiMessage {
     /** 错误信息 */
     errorMessage?: string;
     /** 用户消耗算力 */
-    userConsumedPower: number;
+    userConsumedPower?: number;
     /** 模型响应的原始数据 */
     rawResponse?: Record<string, any>;
     /** 扩展数据 */
