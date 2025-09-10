@@ -209,6 +209,10 @@ export const getPackageJsonSync = (dirPath: string): PluginPackageJson => {
     }
 };
 
+/**
+ * 设置静态资源目录
+ * @param app NestExpressApplication实例
+ */
 export const setAssetsDir = async (app: NestExpressApplication) => {
     const dirs = [
         {
@@ -230,4 +234,14 @@ export const setAssetsDir = async (app: NestExpressApplication) => {
             prefix: dir.prefix,
         });
     });
+};
+
+export const printBrandLogo = () => {
+    console.log(`                                                                                                           
+        _|_|_|_|                           _|       _|                    _|   _|         _|     \x1b[38;2;97;95;255m_|_|     _|_|_|\x1b[0m  
+        _|           _|_|_|     _|_|_|   _|_|_|_|   _|_|_|     _|    _|        _|     _|_|_|   \x1b[38;2;97;95;255m_|    _|     _|\x1b[0m    
+        _|_|_|     _|    _|   _|_|         _|       _|    _|   _|    _|   _|   _|   _|    _|   \x1b[38;2;97;95;255m_|_|_|_|     _|\x1b[0m    
+        _|         _|    _|       _|_|     _|       _|    _|   _|    _|   _|   _|   _|    _|   \x1b[38;2;97;95;255m_|    _|     _|\x1b[0m    
+        _|           _|_|_|   _|_|_|         _|_|   _|_|_|       _|_|_|   _|   _|     _|_|_|   \x1b[38;2;97;95;255m_|    _|   _|_|_|\x1b[0m                                                                                                         
+        `);
 };

@@ -146,7 +146,7 @@ onMounted(() => getWebsiteConfig());
 </script>
 
 <template>
-    <div class="agreement-container relative mt-8">
+    <div class="agreement-container relative">
         <!-- 表单 -->
         <div class="mb-4 inline-block w-auto">
             <UTabs v-model="activeTab" :items="items" />

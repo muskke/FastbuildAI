@@ -39,7 +39,7 @@ const currentComponent = computed(() => {
 </script>
 
 <template>
-    <div class="system-website mt-8">
+    <div class="system-website">
         <div class="inline-block w-auto">
             <UTabs
                 v-model="activeTab"
