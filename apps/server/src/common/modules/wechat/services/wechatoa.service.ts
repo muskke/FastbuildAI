@@ -1,7 +1,11 @@
 import { HttpExceptionFactory } from "@common/exceptions/http-exception.factory";
 import { AuthService } from "@common/modules/auth/auth.service";
+import { DictService } from "@common/modules/dict/services/dict.service";
+import { isEnabled } from "@common/utils/is.util";
 import { RedisService } from "@core/redis/redis.service";
+import { LOGIN_TYPE } from "@fastbuildai/constants";
 import { WxOaConfigService } from "@modules/console/channel/services/wxoaconfig.service";
+import { LoginSettingsConfig } from "@modules/console/user/dto/login-settings.dto";
 import { Injectable } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
@@ -50,11 +54,14 @@ export class WechatOaService {
      * @param wxoaconfigService 微信公众号配置服务
      * @param redisService Redis缓存服务
      * @param authService 认证服务
+     * @param dictService 字典服务
+     * @param eventEmitter 事件发射器
      */
     constructor(
         private readonly wxoaconfigService: WxOaConfigService,
         private readonly redisService: RedisService,
         private readonly authService: AuthService,
+        private readonly dictService: DictService,
         private readonly eventEmitter: EventEmitter2,
     ) {}
 
@@ -214,20 +221,91 @@ export class WechatOaService {
         const { openid, is_scan } = scene;
         // 如果已扫描且openid不为空，则自动登录/注册用户
         if (is_scan && openid !== "") {
-            // 调用认证服务进行自动登录或注册
-            const result = await this.authService.loginOrRegisterByOpenid(openid);
-            if (result.user.token) {
-                // 发送登录成功消息
-                await this.sendTemplateMessage(openid, "登录成功");
+            // 检查用户是否已存在
+            const existingUser = await this.authService.findOne({
+                where: { openid },
+            });
+
+            if (existingUser) {
+                // 用户已存在，检查用户状态
+                if (!isEnabled(existingUser.status)) {
+                    // 用户状态已停用，发送提示消息
+                    await this.sendTemplateMessage(openid, "账号已被停用，请联系管理员处理");
+                    return {
+                        is_scan,
+                        error: "账号已被停用，请联系管理员处理",
+                    };
+                }
+
+                // 用户状态正常，直接登录
+                const result = await this.authService.loginOrRegisterByOpenid(openid);
+                if (result.user.token) {
+                    // 发送登录成功消息
+                    await this.sendTemplateMessage(openid, "登录成功");
+                }
+                return {
+                    ...result,
+                    is_scan,
+                };
+            } else {
+                // 用户不存在，检查是否允许微信注册
+                const loginSettings = await this.getLoginSettings();
+
+                if (
+                    !loginSettings.allowedRegisterMethods ||
+                    !loginSettings.allowedRegisterMethods.includes(LOGIN_TYPE.WECHAT)
+                ) {
+                    // 微信注册已关闭，发送提示消息
+                    await this.sendTemplateMessage(openid, "注册功能已关闭，请联系管理员处理");
+                    return {
+                        is_scan,
+                        error: "注册功能已关闭，请联系管理员处理",
+                    };
+                }
+
+                // 允许微信注册，进行自动注册
+                const result = await this.authService.loginOrRegisterByOpenid(openid);
+                if (result.user.token) {
+                    // 发送注册成功消息
+                    await this.sendTemplateMessage(openid, "注册并登录成功");
+                }
+                return {
+                    ...result,
+                    is_scan,
+                };
             }
-            return {
-                ...result,
-                is_scan,
-            };
         }
 
         return {
             is_scan,
+        };
+    }
+
+    /**
+     * 获取登录设置配置
+     *
+     * @returns 登录设置配置
+     */
+    private async getLoginSettings(): Promise<LoginSettingsConfig> {
+        return await this.dictService.get<LoginSettingsConfig>(
+            "login_settings",
+            this.getDefaultLoginSettings(),
+            "auth",
+        );
+    }
+
+    /**
+     * 获取默认登录设置配置
+     *
+     * @returns 默认的登录设置配置
+     */
+    private getDefaultLoginSettings(): LoginSettingsConfig {
+        return {
+            allowedLoginMethods: [LOGIN_TYPE.ACCOUNT, LOGIN_TYPE.WECHAT],
+            allowedRegisterMethods: [LOGIN_TYPE.ACCOUNT],
+            defaultLoginMethod: LOGIN_TYPE.ACCOUNT,
+            allowMultipleLogin: false,
+            showPolicyAgreement: true,
         };
     }
 
