@@ -388,17 +388,17 @@ AI回复：${response}`;
     }
 
     protected mergeConfigurations(agent: Agent, dto: AgentChatDto): Agent {
-        return {
-            ...agent,
-            modelConfig: dto.modelConfig ?? agent.modelConfig,
-            datasetIds: dto.datasetIds ?? agent.datasetIds,
-            rolePrompt: dto.rolePrompt ?? agent.rolePrompt,
-            showContext: dto.showContext ?? agent.showContext,
-            showReference: dto.showReference ?? agent.showReference,
-            enableFeedback: dto.enableFeedback ?? agent.enableFeedback,
-            enableWebSearch: dto.enableWebSearch ?? agent.enableWebSearch,
-            autoQuestions: dto.autoQuestions ?? agent.autoQuestions,
-        };
+        // 直接修改原对象，保持实体方法完整性
+        agent.modelConfig = dto.modelConfig ?? agent.modelConfig;
+        agent.datasetIds = dto.datasetIds ?? agent.datasetIds;
+        agent.rolePrompt = dto.rolePrompt ?? agent.rolePrompt;
+        agent.showContext = dto.showContext ?? agent.showContext;
+        agent.showReference = dto.showReference ?? agent.showReference;
+        agent.enableFeedback = dto.enableFeedback ?? agent.enableFeedback;
+        agent.enableWebSearch = dto.enableWebSearch ?? agent.enableWebSearch;
+        agent.autoQuestions = dto.autoQuestions ?? agent.autoQuestions;
+
+        return agent;
     }
 
     protected async shouldPerformRetrieval(
