@@ -27,7 +27,7 @@ export interface ModelBillingConfig {
  */
 export interface ModelConfig {
     /** 模型ID */
-    id: string;
+    id?: string;
     /** 模型参数配置 */
     options?: {
         /** 温度参数 */
@@ -158,4 +158,23 @@ export interface MessageMetadata {
     };
     /** 其他扩展数据 */
     [key: string]: unknown;
+}
+
+/**
+ * 第三方平台集成配置类型
+ * 通用的配置接口，支持各种第三方平台的集成
+ */
+export interface ThirdPartyIntegrationConfig {
+    /** 应用/机器人ID */
+    appId: string;
+    /** API 密钥 */
+    apiKey: string;
+    /** API 端点地址 */
+    baseURL: string;
+    /** 扩展配置，支持各平台特有配置 */
+    extendedConfig?: Record<string, any>;
+    /** 变量映射配置 */
+    variableMapping?: Record<string, string>;
+    /** 是否使用平台的对话历史管理 */
+    useExternalConversation?: boolean;
 }

@@ -2,6 +2,7 @@
 import { useMessage } from "@fastbuildai/ui";
 import { computed, onMounted, reactive, ref } from "vue";
 
+import { type PluginView, usePluginSlots } from "@/common/utils/plugins.utils";
 import type { Agent } from "@/models/ai-agent";
 import { apiGetAgentDetail } from "@/services/console/ai-agent";
 import type { PublishAgentParams, PublishConfig } from "@/services/web/ai-agent-publish";
@@ -31,12 +32,57 @@ const agent = ref<Agent>();
 // 标签页管理
 const activeTab = ref("status");
 
-const tabs = [
-    { value: "status", label: t("console-ai-agent.publish.status"), icon: "i-lucide-globe" },
-    { value: "settings", label: t("console-ai-agent.publish.settings"), icon: "i-lucide-settings" },
-    { value: "embed", label: t("console-ai-agent.publish.embed"), icon: "i-lucide-code" },
-    { value: "api", label: t("console-ai-agent.publish.api"), icon: "i-lucide-terminal" },
-];
+type TabItem = {
+    value: string;
+    label: string;
+    icon?: string;
+    component: Component | ReturnType<typeof defineAsyncComponent>;
+};
+
+const tabs = ref<TabItem[]>([
+    {
+        value: "status",
+        label: t("console-ai-agent.publish.status"),
+        icon: "i-lucide-globe",
+        component: markRaw(PublishStatus),
+    },
+    {
+        value: "settings",
+        label: t("console-ai-agent.publish.settings"),
+        icon: "i-lucide-settings",
+        component: markRaw(PublishSettings),
+    },
+    {
+        value: "embed",
+        label: t("console-ai-agent.publish.embed"),
+        icon: "i-lucide-code",
+        component: markRaw(EmbedCode),
+    },
+    {
+        value: "api",
+        label: t("console-ai-agent.publish.api"),
+        icon: "i-lucide-terminal",
+        component: markRaw(ApiGuide),
+    },
+]);
+
+// 插件 tabs
+const pluginTabs = usePluginSlots<TabItem>("ai-agent:publish:tabs").value.map(
+    (slot: PluginView<{ value: string; label: string; icon?: string }>) => ({
+        value: slot.meta?.value,
+        label: t(slot.meta?.label as string),
+        icon: slot.meta?.icon,
+        component: markRaw(slot.component),
+    }),
+);
+
+console.log(pluginTabs, usePluginSlots<TabItem>("ai-agent:publish:tabs"));
+
+tabs.value = [...tabs.value, ...pluginTabs] as TabItem[];
+
+const currentComponent = computed(() => {
+    return tabs.value.find((tab) => tab.value === activeTab.value)?.component;
+});
 
 // 发布配置
 const publishConfig = reactive<PublishConfig>({
@@ -217,28 +263,19 @@ definePageMeta({ layout: "full-screen" });
                     ]"
                     @click="activeTab = tab.value"
                 >
-                    <UIcon :name="tab.icon" class="size-4" />
+                    <UIcon :name="tab.icon as string" class="size-4" />
                     {{ tab.label }}
                 </button>
             </div>
 
             <!-- 标签页内容 -->
             <div class="flex-1 overflow-auto p-4">
-                <!-- 发布状态 -->
-                <PublishStatus v-if="activeTab === 'status'" :agent="agent" />
-
-                <!-- 发布配置 -->
-                <PublishSettings
-                    v-else-if="activeTab === 'settings'"
+                <component
+                    v-if="currentComponent"
+                    :is="currentComponent"
                     :agent="agent"
                     @update="handleConfigUpdate"
                 />
-
-                <!-- 嵌入代码 -->
-                <EmbedCode v-else-if="activeTab === 'embed'" :agent="agent" />
-
-                <!-- API指南 -->
-                <ApiGuide v-else-if="activeTab === 'api'" :agent="agent" />
             </div>
         </div>
     </div>

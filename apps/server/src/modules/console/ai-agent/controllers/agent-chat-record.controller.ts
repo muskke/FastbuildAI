@@ -5,7 +5,7 @@ import { Permissions } from "@common/decorators/permissions.decorator";
 import { UserPlayground } from "@common/interfaces/context.interface";
 import { Body, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
 
-import { BatchDeleteChatRecordDto, QueryAgentChatRecordDto } from "../dto/agent.dto";
+import { BatchDeleteChatRecordDto, QueryAgentChatRecordDto } from "../dto/agent";
 import { AgentChatRecordService } from "../services/agent-chat-record.service";
 
 /**

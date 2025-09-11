@@ -2,11 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { readFileSync } from "fs";
 import { join } from "path";
 
-import {
-    AgentTemplateDto,
-    CreateAgentFromTemplateDto,
-    QueryTemplateDto,
-} from "../dto/agent-template.dto";
+import { AgentTemplateDto, CreateAgentFromTemplateDto, QueryTemplateDto } from "../dto/template";
 
 /**
  * 智能体模板服务

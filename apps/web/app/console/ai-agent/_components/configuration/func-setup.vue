@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { usePluginSlots } from "@/common/utils/plugins.utils";
 import type { FormFieldConfig, UpdateAgentConfigParams } from "@/models/ai-agent";
 
 const Context = defineAsyncComponent(() => import("./_func_components/context.vue"));
@@ -18,27 +19,47 @@ const emit = defineEmits<{
 }>();
 
 const state = useVModel(props, "modelValue", emit);
+
+const isThirdParty = computed(() => {
+    return usePluginSlots("agent:config:third-party").value.filter(
+        (slot) => slot.meta?.platform === state.value.createMode,
+    ).length;
+});
+
+const ThirdPartyIntegration = computed(() => {
+    console.log(usePluginSlots("agent:config:third-party").value, state.value.createMode);
+    return usePluginSlots("agent:config:third-party").value.find(
+        (slot) => slot.meta?.platform === state.value.createMode,
+    )?.component;
+});
 </script>
 
 <template>
     <div class="space-y-4 overflow-y-auto">
-        <!-- 角色设定提示词区域 -->
-        <Prompt v-model="state.rolePrompt as string" />
+        <template v-if="!isThirdParty">
+            <!-- 角色设定提示词区域 -->
+            <Prompt v-model="state.rolePrompt as string" />
 
-        <!-- 角色设定变量修改区域 -->
-        <Variable v-model="state.formFields as FormFieldConfig[]" />
+            <!-- 角色设定变量修改区域 -->
+            <Variable v-model="state.formFields as FormFieldConfig[]" />
 
-        <!-- 角色设定知识库修改区域 -->
-        <Datasets v-model="state.datasetIds as string[]" />
+            <!-- 角色设定知识库修改区域 -->
+            <Datasets v-model="state.datasetIds as string[]" />
 
-        <!-- 对话上下文 -->
-        <Context v-model="state.showContext as boolean" />
+            <!-- 对话上下文 -->
+            <Context v-model="state.showContext as boolean" />
 
-        <!-- 引用来源 -->
-        <Reference v-model="state.showReference as boolean" />
+            <!-- 引用来源 -->
+            <Reference v-model="state.showReference as boolean" />
 
-        <!-- 反馈按钮 -->
-        <Feedback v-model="state.enableFeedback as boolean" />
+            <!-- 反馈按钮 -->
+            <Feedback v-model="state.enableFeedback as boolean" />
+        </template>
+
+        <template v-else>
+            <!-- 第三方平台集成 -->
+            <component :is="ThirdPartyIntegration" v-model="state.thirdPartyIntegration" />
+        </template>
 
         <!-- 公开设置 -->
         <Public v-model="state.isPublic as boolean" />

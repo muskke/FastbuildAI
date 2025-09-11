@@ -1,6 +1,4 @@
-import { AccountLogModule } from "@common/modules/account/account-log.module";
 import { User } from "@common/modules/auth/entities/user.entity";
-import { KeyManagerModule } from "@modules/console/key-manager/key-manager.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
@@ -16,6 +14,7 @@ import { Agent } from "./entities/agent.entity";
 import { AgentAnnotation } from "./entities/agent-annotation.entity";
 import { AgentChatMessage } from "./entities/agent-chat-message.entity";
 import { AgentChatRecord } from "./entities/agent-chat-record.entity";
+import { ChatHandlersModule } from "./handlers/handlers.module";
 import { AgentService } from "./services/agent.service";
 import { AgentAnnotationService } from "./services/agent-annotation.service";
 import { AgentChatService } from "./services/agent-chat.service";
@@ -31,10 +30,7 @@ import { PublicAgentChatService } from "./services/v1-agent-chat.service";
 @Module({
     imports: [
         TypeOrmModule.forFeature([Agent, AgentAnnotation, AgentChatRecord, AgentChatMessage, User]),
-        AiConsoleModule, // 导入AI控制台模块，用于模型服务
-        AiDatasetsModule, // 导入知识库模块，用于检索服务
-        AccountLogModule,
-        KeyManagerModule,
+        ChatHandlersModule, // 导入聊天处理器模块（已包含其他依赖模块）
     ],
     controllers: [
         AgentController,
@@ -59,6 +55,7 @@ import { PublicAgentChatService } from "./services/v1-agent-chat.service";
         AgentChatService,
         AgentChatMessageService,
         AgentTemplateService,
+        PublicAgentChatService,
     ],
 })
 export class AiAgentModule {}
