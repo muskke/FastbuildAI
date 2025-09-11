@@ -167,7 +167,6 @@ export class ThirdPartyIntegrationConfigDto {
      */
     @IsOptional()
     @IsString({ message: "应用ID必须是字符串" })
-    @IsNotEmpty({ message: "应用ID不能为空" })
     appId?: string;
 
     /**
@@ -175,7 +174,6 @@ export class ThirdPartyIntegrationConfigDto {
      */
     @IsOptional()
     @IsString({ message: "API密钥必须是字符串" })
-    @IsNotEmpty({ message: "API密钥不能为空" })
     apiKey?: string;
 
     /**
@@ -183,7 +181,6 @@ export class ThirdPartyIntegrationConfigDto {
      */
     @IsOptional()
     @IsString({ message: "API端点地址必须是字符串" })
-    @IsNotEmpty({ message: "API端点地址不能为空" })
     baseURL?: string;
 
     /**
