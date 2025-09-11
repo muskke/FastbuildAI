@@ -19,7 +19,7 @@ enum LoginMethod {
 // 表单数据
 const formData = ref<LoginSettings>({
     allowedLoginMethods: [1, 3],
-    allowedRegisterMethods: [1],
+    allowedRegisterMethods: [1, 3],
     defaultLoginMethod: 1,
     allowMultipleLogin: false,
     showPolicyAgreement: true,
@@ -28,9 +28,17 @@ const formData = ref<LoginSettings>({
 // UI表单数据（用于组件绑定）
 const uiFormData = ref({
     allowedLoginMethods: ["1", "3"],
-    allowedRegisterMethods: ["1"],
+    allowedRegisterMethods: ["1", "3"],
     defaultLoginMethod: "1",
 });
+
+// 保存从接口获取的原始数据，用于重置表单
+const originalFormData = ref<LoginSettings | null>(null);
+const originalUiFormData = ref<{
+    allowedLoginMethods: string[];
+    allowedRegisterMethods: string[];
+    defaultLoginMethod: string;
+} | null>(null);
 
 // 监听UI表单数据变化，同步到业务表单数据
 watch(
@@ -77,11 +85,10 @@ const registerTypeItems = computed(() => [
         value: LoginMethod.ACCOUNT.toString(),
         label: t("console-system.website.loginConfig.registerType.items.account"),
     },
-    // {
-    //     value: LoginMethod.WEIXIN.toString(),
-    //     label: t("console-system.website.loginConfig.registerType.items.weixin"),
-    //     disabled: true,
-    // },
+    {
+        value: LoginMethod.WEIXIN.toString(),
+        label: t("console-system.website.loginConfig.registerType.items.weixin"),
+    },
 ]);
 
 // 登录类型
@@ -114,26 +121,33 @@ const onSubmit = () => {
     updateLoginSettings();
 };
 
-// 重置表单
+/**
+ * 重置表单为从接口获取的原始数据
+ */
 const resetForm = () => {
-    formData.value = {
-        allowedLoginMethods: [1, 3],
-        allowedRegisterMethods: [1],
-        defaultLoginMethod: 1,
-        allowMultipleLogin: false,
-        showPolicyAgreement: true,
-    };
-    uiFormData.value = {
-        allowedLoginMethods: ["1", "3"],
-        allowedRegisterMethods: ["1"],
-        defaultLoginMethod: "1",
-    };
+    if (originalFormData.value && originalUiFormData.value) {
+        // 使用深拷贝避免引用问题
+        formData.value = { ...originalFormData.value };
+        uiFormData.value = { ...originalUiFormData.value };
+    }
 };
 
-// 获取登录设置
+/**
+ * 获取登录设置并保存原始数据
+ */
 const getLoginSettings = async () => {
     try {
         const data = await apiGetLoginSettings();
+
+        // 保存原始数据用于重置
+        originalFormData.value = { ...data };
+        originalUiFormData.value = {
+            allowedLoginMethods: data.allowedLoginMethods.map((method) => method.toString()),
+            allowedRegisterMethods: data.allowedRegisterMethods.map((method) => method.toString()),
+            defaultLoginMethod: data.defaultLoginMethod.toString(),
+        };
+
+        // 设置当前表单数据
         formData.value = data;
         uiFormData.value = {
             allowedLoginMethods: data.allowedLoginMethods.map((method) => method.toString()),
