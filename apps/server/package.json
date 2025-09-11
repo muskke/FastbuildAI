@@ -7,7 +7,7 @@
     "license": "UNLICENSED",
     "scripts": {
         "dev": "NODE_ENV=development nest start --watch -b swc --type-check",
-        "build": "NODE_ENV=production nest build -b swc --type-check",
+        "build": "NODE_ENV=production NODE_OPTIONS=--max-old-space-size=2048 nest build -b swc --type-check",
         "start": "NODE_ENV=production nest start -b swc --type-check",
         "pm2:dev": "NODE_ENV=development node ./libs/scripts/start.mjs",
         "pm2:start": "NODE_ENV=production node ./libs/scripts/start.mjs",
