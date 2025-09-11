@@ -83,6 +83,9 @@ const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
         get quickCommands() {
             return props.agent.quickCommands;
         },
+        get thirdPartyIntegration() {
+            return props.agent.thirdPartyIntegration;
+        },
     },
     onToolCall(message) {},
     onResponse(response) {
@@ -124,8 +127,8 @@ async function scrollToBottom(animate = true) {
 
 async function handleSubmitMessage(content: string) {
     if (!content.trim() || isLoading.value) return;
-    if (!props.agent.modelConfig?.id)
-        return toast.warning(t("console-ai-agent.modelNotConfigured"));
+    if (!props.agent.modelConfig?.id && props.agent.createMode === "direct")
+        return toast.warning(t("console-ai-agent.configuration.modelNotConfigured"));
 
     // 验证表单字段必填项
     const formFields = props.agent.formFields || [];

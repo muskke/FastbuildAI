@@ -6,7 +6,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { AgentChatDto } from "../dto/agent.dto";
+import { AgentChatDto } from "../dto/agent";
 import { Agent } from "../entities/agent.entity";
 import { AgentChatMessage } from "../entities/agent-chat-message.entity";
 import { AgentChatRecord } from "../entities/agent-chat-record.entity";

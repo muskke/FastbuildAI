@@ -4,6 +4,7 @@ import { isNestModule } from "@common/utils/is.util";
 import { TerminalLogger } from "@common/utils/log.util";
 import { getPackageJson, getPackageJsonSync } from "@common/utils/system.util";
 import { table3BorderStyle } from "@fastbuildai/config/ui/table";
+import { parsePackageName } from "@fastbuildai/utils";
 import { DynamicModule, Injectable, Module, OnModuleInit } from "@nestjs/common";
 import chalk from "chalk";
 import Table from "cli-table3";
@@ -12,6 +13,7 @@ import * as path from "path";
 
 import { CacheModule } from "../cache/cache.module";
 import { CacheService } from "../cache/cache.service";
+import { PluginRegistry } from "./plugin-registry";
 
 // 全局缓存插件信息
 let cachedPluginList: PluginConfigItem[] = [];
@@ -405,17 +407,17 @@ export class PluginsCacheService implements OnModuleInit {
 
 @Module({
     imports: [CacheModule],
-    providers: [PluginsCacheService],
-    exports: [PluginsCacheService],
+    providers: [PluginsCacheService, PluginRegistry],
+    exports: [PluginsCacheService, PluginRegistry],
 })
 export class PluginsCoreModule {
     static async register(plugins: DynamicModule[]): Promise<DynamicModule> {
         return {
             module: PluginsCoreModule,
             imports: [...plugins],
-            providers: [PluginsCacheService],
+            providers: [PluginsCacheService, PluginRegistry],
             controllers: [],
-            exports: [...plugins, PluginsCacheService],
+            exports: [PluginsCacheService, PluginRegistry],
         };
     }
 }

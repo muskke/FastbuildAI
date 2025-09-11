@@ -108,6 +108,8 @@ export interface Agent extends BaseEntity {
         showBranding?: boolean;
         allowDownloadHistory?: boolean;
     };
+    /** 第三方平台集成配置 */
+    thirdPartyIntegration?: ThirdPartyIntegrationConfig;
     [index: string]: any;
 }
 
@@ -137,6 +139,24 @@ export interface QuickCommandConfig {
     replyType: "custom" | "model";
     /** 回复内容 */
     replyContent: string;
+}
+
+/**
+ * 第三方平台集成配置类型
+ */
+export interface ThirdPartyIntegrationConfig {
+    /** 应用/机器人ID */
+    appId?: string;
+    /** API 密钥 */
+    apiKey: string;
+    /** API 端点地址 */
+    baseURL: string;
+    /** 扩展配置，支持各平台特有配置 */
+    extendedConfig?: Record<string, any>;
+    /** 变量映射配置 */
+    variableMapping?: Record<string, string>;
+    /** 是否使用平台的对话历史管理 */
+    useExternalConversation?: boolean;
 }
 
 /**
@@ -271,6 +291,10 @@ export interface UpdateAgentConfigParams {
     isPublic?: boolean;
     /** 计费配置 */
     billingConfig?: BillingConfig;
+    /** 创建模式 */
+    createMode?: string;
+    /** 第三方平台集成配置 */
+    thirdPartyIntegration?: ThirdPartyIntegrationConfig | object;
 }
 
 /**

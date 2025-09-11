@@ -26,7 +26,11 @@
         "name": "智能体名称",
         "namePlaceholder": "请输入智能体名称",
         "description": "智能体描述",
-        "descriptionPlaceholder": "请输入智能体描述"
+        "descriptionPlaceholder": "请输入智能体描述",
+        "mode": "创建模式",
+        "modes": {
+            "direct": "直接创建"
+        }
     },
     "menu": {
         "arrange": "编排",

@@ -6,7 +6,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 
-import { BatchDeleteChatRecordDto, QueryAgentChatRecordDto } from "../dto/agent.dto";
+import { BatchDeleteChatRecordDto, QueryAgentChatRecordDto } from "../dto/agent";
 import { AgentChatRecord } from "../entities/agent-chat-record.entity";
 import { AgentChatMessageService } from "./agent-chat-message.service";
 
@@ -178,6 +178,19 @@ export class AgentChatRecordService extends BaseService<AgentChatRecord> {
             updatedAt: new Date(),
         });
         this.logger.log(`[+] 对话记录统计更新成功: ${id}`);
+    }
+
+    /**
+     * 更新对话记录的 metadata
+     * @param id 对话记录ID
+     * @param metadata 新的 metadata 对象
+     */
+    async updateMetadata(id: string, metadata: Record<string, any>): Promise<void> {
+        await this.chatRecordRepository.update(id, {
+            metadata,
+            updatedAt: new Date(),
+        });
+        this.logger.log(`[+] 对话记录 metadata 更新成功: ${id}`);
     }
 
     /**
