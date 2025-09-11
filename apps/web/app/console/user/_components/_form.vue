@@ -170,7 +170,6 @@ const resetForm = () => {
 /** 重置密码 */
 const handleEditPassword = () => {
     isEditPassword.value = true;
-    console.log("handleEditPassword", isEditPassword.value);
 };
 
 /** 提交表单 */
