@@ -116,7 +116,7 @@
                     "account": "Account Login",
                     "weixin": "WeChat Login"
                 },
-                "description": "At least one login method must be selected"
+                "description": "At least one login method must be retained, and the default login method cannot be removed"
             },
             "defaultLoginType": {
                 "label": "Default Login Method",
