@@ -10,7 +10,7 @@ import {
     QueryAgentAnnotationDto,
     ReviewAnnotationDto,
     UpdateAgentAnnotationDto,
-} from "../dto/agent-annotation.dto";
+} from "../dto/annotation";
 import { AgentAnnotation, AnnotationReviewStatus } from "../entities/agent-annotation.entity";
 import { AgentChatMessage } from "../entities/agent-chat-message.entity";
 

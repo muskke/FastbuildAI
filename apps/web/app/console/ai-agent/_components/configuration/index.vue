@@ -42,6 +42,7 @@ const state = reactive<UpdateAgentConfigParams>({
     avatar: "",
     chatAvatar: "",
     rolePrompt: "",
+    createMode: "direct",
     showContext: true,
     showReference: true,
     enableFeedback: true,
@@ -69,6 +70,7 @@ const state = reactive<UpdateAgentConfigParams>({
     },
     formFields: [],
     formFieldsInputs: {},
+    thirdPartyIntegration: {},
 });
 
 function handleVariableModalOpen() {
@@ -111,7 +113,10 @@ onMounted(() => {
             <div class="flex h-full min-h-0 w-1/2 flex-none flex-col">
                 <!-- 模型参数配置 -->
                 <div class="mb-4 flex justify-end gap-3 p-0.5">
-                    <ModelConfig v-model="state.modelConfig!" />
+                    <ModelConfig
+                        v-if="state.createMode === 'direct'"
+                        v-model="state.modelConfig!"
+                    />
 
                     <AccessControl :codes="['ai-agent:update']">
                         <UButton

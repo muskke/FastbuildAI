@@ -9,6 +9,7 @@ interface KnowledgeChunk {
     chunkIndex?: number;
     documentId: string;
     metadata?: any;
+    datasetName?: string;
 }
 
 interface KnowledgeReference {
@@ -50,7 +51,11 @@ function openKnowledgeBase(datasetId: string, documentId: string) {
             :key="refIdx"
             :ui="{ content: 'flex flex-col' }"
         >
-            <UButton :label="ref?.chunks?.[0]?.fileName" color="neutral" variant="ghost" />
+            <UButton
+                :label="ref?.chunks?.[0]?.fileName || ref?.chunks?.[0]?.datasetName"
+                color="neutral"
+                variant="ghost"
+            />
 
             <template #content>
                 <div

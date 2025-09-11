@@ -7,8 +7,8 @@ import { PublicAccessTokenGuard } from "@common/guards/public-access-token.guard
 import { Body, Delete, Get, Param, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { Request, Response } from "express";
 
-import { AgentChatDto } from "../dto/agent.dto";
-import { CreateAgentAnnotationDto, UpdateAgentAnnotationDto } from "../dto/agent-annotation.dto";
+import { AgentChatDto } from "../dto/agent";
+import { CreateAgentAnnotationDto, UpdateAgentAnnotationDto } from "../dto/annotation";
 import {
     CreatorBillingStrategy,
     SmartUserBillingStrategy,

@@ -1,14 +1,5 @@
-import { FileService } from "@common/base/services/file.service";
 import { AppEntity } from "@common/decorators";
-import { getGlobalContainer } from "@common/utils/global-container.util";
-import {
-    BeforeInsert,
-    BeforeUpdate,
-    Column,
-    CreateDateColumn,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-} from "typeorm";
+import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 import {
     AutoQuestionsConfig,
@@ -16,6 +7,7 @@ import {
     ModelBillingConfig,
     ModelConfig,
     QuickCommandConfig,
+    ThirdPartyIntegrationConfig,
 } from "../interfaces/agent-config.interface";
 
 /**
@@ -40,6 +32,12 @@ export class Agent {
      */
     @Column({ type: "text", nullable: true, comment: "智能体描述" })
     description?: string;
+
+    /**
+     * 创建模式
+     */
+    @Column({ type: "text", nullable: true, comment: "创建模式" })
+    createMode: string;
 
     /**
      * 智能体头像
@@ -264,6 +262,14 @@ export class Agent {
     };
 
     /**
+     * 第三方平台集成配置
+     * 支持与 Dify、Coze 等第三方平台的集成
+     * 当启用时，智能体将使用第三方平台的能力而非本地模型
+     */
+    @Column({ type: "json", nullable: true, comment: "第三方平台集成配置" })
+    thirdPartyIntegration?: ThirdPartyIntegrationConfig;
+
+    /**
      * 创建时间
      */
     @CreateDateColumn({ comment: "创建时间" })
@@ -274,17 +280,4 @@ export class Agent {
      */
     @UpdateDateColumn({ comment: "更新时间" })
     updatedAt: Date;
-
-    @BeforeInsert()
-    @BeforeUpdate()
-    private async setAvatar() {
-        if (this.avatar) {
-            try {
-                const fileService = getGlobalContainer().get(FileService);
-                this.avatar = await fileService.set(this.avatar);
-            } catch (error) {
-                console.warn("获取FileService失败:", error);
-            }
-        }
-    }
 }
