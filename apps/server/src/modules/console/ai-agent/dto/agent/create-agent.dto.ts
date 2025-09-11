@@ -1,7 +1,5 @@
-import { Type } from "class-transformer";
-import { IsNotEmpty, IsOptional, IsString, IsUUID, ValidateNested } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
 
-import { IsThirdPartyIntegrationValid } from "../../validators/third-party-integration.validator";
 import { ThirdPartyIntegrationConfigDto } from "./common-agent.dto";
 
 /**
@@ -43,7 +41,6 @@ export class CreateAgentDto {
      * 当创建模式为第三方平台时必填
      */
     @IsOptional()
-    @IsThirdPartyIntegrationValid()
     thirdPartyIntegration?: ThirdPartyIntegrationConfigDto;
 
     /**
@@ -146,8 +143,6 @@ export class ImportAgentDto {
      * 第三方平台集成配置
      */
     @IsOptional()
-    @ValidateNested()
-    @Type(() => ThirdPartyIntegrationConfigDto)
     thirdPartyIntegration?: ThirdPartyIntegrationConfigDto;
 
     /**
