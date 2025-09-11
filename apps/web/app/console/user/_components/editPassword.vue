@@ -228,6 +228,10 @@ const isSubmitDisabled = computed(() => {
     return isBusy;
 });
 
+defineShortcuts({
+    escape: () => (showNewPasswordModal.value ? closeNewPasswordModal() : handleClose()),
+});
+
 /**
  * 获取当前操作状态
  */
