@@ -10,7 +10,7 @@ import {
     QueryAgentAnnotationDto,
     ReviewAnnotationDto,
     UpdateAgentAnnotationDto,
-} from "../dto/agent-annotation.dto";
+} from "../dto/annotation";
 import { AgentAnnotationService } from "../services/agent-annotation.service";
 
 /**

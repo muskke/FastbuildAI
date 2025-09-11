@@ -38,7 +38,7 @@ const retrievalModeMap = {
 <template>
     <div
         v-if="references && references.length > 0"
-        class="border-default bg-muted mb-2 rounded-lg border p-2"
+        class="border-default bg-muted mb-4 rounded-lg border p-2"
     >
         <UCollapsible
             class="group"
@@ -70,6 +70,7 @@ const retrievalModeMap = {
                     </div>
 
                     <div
+                        v-if="ref.retrievalMode"
                         name="knowledge"
                         class="bg-primary/15 text-primary max-w-[40vw] truncate rounded px-2 py-1 text-xs sm:max-w-[16rem]"
                         :title="

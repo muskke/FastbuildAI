@@ -14,12 +14,8 @@ import {
     QueryAgentDto,
     QueryAgentStatisticsDto,
     UpdateAgentConfigDto,
-} from "../dto/agent.dto";
-import {
-    AgentTemplateDto,
-    CreateAgentFromTemplateDto,
-    QueryTemplateDto,
-} from "../dto/agent-template.dto";
+} from "../dto/agent";
+import { AgentTemplateDto, CreateAgentFromTemplateDto, QueryTemplateDto } from "../dto/template";
 import { NoBillingStrategy } from "../interfaces/billing-strategy.interface";
 import { AgentService } from "../services/agent.service";
 import { AgentChatService } from "../services/agent-chat.service";

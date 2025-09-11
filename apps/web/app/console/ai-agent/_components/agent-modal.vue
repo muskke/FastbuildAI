@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ProModal, ProUploader, useLockFn, useMessage } from "@fastbuildai/ui";
-import { onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { object, string } from "yup";
 
+import { usePluginSlots } from "@/common/utils/plugins.utils";
 import type { Agent, UpdateAgentConfigParams } from "@/models/ai-agent";
 import {
     apiCreateAgent,
@@ -31,6 +32,28 @@ const formData = ref<UpdateAgentConfigParams>({
     name: "",
     description: "",
     avatar: "",
+    createMode: "direct",
+    thirdPartyIntegration: {},
+});
+
+// 创建模式选项
+const createModes = computed(() => {
+    const modes = [
+        {
+            value: "direct",
+            label: t("console-ai-agent.create.modes.direct"),
+            icon: "i-lucide-zap",
+        },
+    ];
+
+    // 获取插件贡献的创建模式
+    const pluginModes = usePluginSlots("agent:create:modes").value.map((slot) => ({
+        value: slot.meta?.value,
+        label: t(slot.meta?.label as string),
+        icon: slot.meta?.icon,
+    }));
+
+    return [...modes, ...pluginModes];
 });
 
 // 表单校验规则
@@ -69,7 +92,13 @@ const { lockFn: submitForm, isLock } = useLockFn(async () => {
             toast.success(t("common.message.updateSuccess"));
         } else {
             // 创建模式：调用创建接口
-            await apiCreateAgent(formData.value);
+            await apiCreateAgent({
+                name: formData.value.name,
+                description: formData.value.description,
+                avatar: formData.value.avatar,
+                createMode: formData.value.createMode,
+                thirdPartyIntegration: formData.value.thirdPartyIntegration,
+            });
             toast.success(t("common.message.createSuccess"));
         }
         emits("close", true);
@@ -110,6 +139,71 @@ onMounted(async () => {
         <!-- 表单内容 -->
         <UForm v-else :schema="schema" :state="formData" class="space-y-4" @submit="submitForm">
             <div class="flex flex-col gap-4">
+                <!-- 创建模式选择（仅创建时显示） -->
+                <UFormField
+                    v-if="!props.id && createModes.length != 1"
+                    :label="$t('console-ai-agent.create.mode')"
+                    name="createMode"
+                >
+                    <!-- 卡片选择器 -->
+                    <div class="grid grid-cols-3 gap-4">
+                        <div
+                            v-for="mode in createModes"
+                            :key="mode.value as string"
+                            class="group hover:border-primary/50 relative cursor-pointer rounded-lg border-2 px-4 py-3 text-center transition-colors"
+                            :class="{
+                                'border-primary bg-primary/5': formData.createMode === mode.value,
+                                'border-gray-200 bg-white': formData.createMode !== mode.value,
+                            }"
+                            @click="formData.createMode = mode.value as string"
+                        >
+                            <!-- 选中标识 -->
+                            <div
+                                v-if="formData.createMode === mode.value"
+                                class="bg-primary absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full text-white"
+                            >
+                                <UIcon name="i-lucide-check" class="h-3 w-3" />
+                            </div>
+
+                            <!-- 图标 -->
+                            <div class="mb-2 flex justify-center">
+                                <div
+                                    class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg"
+                                    :class="{
+                                        'bg-primary text-white': formData.createMode === mode.value,
+                                        'bg-gray-100 text-gray-600':
+                                            formData.createMode !== mode.value,
+                                    }"
+                                >
+                                    <!-- 如果是字符串类型的图标类名 -->
+                                    <UIcon
+                                        v-if="
+                                            mode.icon &&
+                                            typeof mode.icon === 'string' &&
+                                            !mode.icon.includes('.')
+                                        "
+                                        :name="mode.icon"
+                                        class="h-6 w-6"
+                                    />
+                                    <!-- 如果是其他类型的图标（SVG URL 或导入的 SVG 对象） -->
+                                    <component
+                                        v-else-if="mode.icon"
+                                        :is="mode.icon"
+                                        :src="mode.icon as string"
+                                        :alt="mode.label"
+                                        filled
+                                        :fontControlled="false"
+                                        class="size-8 object-contain"
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- 标题 -->
+                            <div class="text-foreground font-medium">{{ mode.label }}</div>
+                        </div>
+                    </div>
+                </UFormField>
+
                 <UFormField :label="$t('console-ai-agent.create.avatar')" name="avatar">
                     <ProUploader
                         v-model="formData.avatar"

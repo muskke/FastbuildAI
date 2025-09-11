@@ -13,8 +13,8 @@ import {
     QueryAgentDto,
     QueryAgentStatisticsDto,
     UpdateAgentConfigDto,
-} from "../dto/agent.dto";
-import { CreateAgentFromTemplateDto } from "../dto/agent-template.dto";
+} from "../dto/agent";
+import { CreateAgentFromTemplateDto } from "../dto/template";
 import { Agent } from "../entities/agent.entity";
 import { AgentAnnotation } from "../entities/agent-annotation.entity";
 import { AgentChatMessage } from "../entities/agent-chat-message.entity";
@@ -38,7 +38,13 @@ export class AgentService extends BaseService<Agent> {
 
     // 创建新智能体
     async createAgent(dto: CreateAgentDto, user: UserPlayground): Promise<Agent> {
-        const { name, description, avatar } = dto;
+        const {
+            name,
+            description,
+            avatar,
+            createMode = "direct",
+            thirdPartyIntegration = {},
+        } = dto;
 
         await this.checkNameUniqueness(name);
 
@@ -48,6 +54,8 @@ export class AgentService extends BaseService<Agent> {
                 description,
                 avatar: avatar || this.defaultAvatar,
                 showContext: true,
+                createMode,
+                thirdPartyIntegration: thirdPartyIntegration || {},
                 showReference: true,
                 enableFeedback: false,
                 enableWebSearch: false,
