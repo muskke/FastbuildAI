@@ -203,7 +203,9 @@
         "searchModel": "搜索模型...",
         "colorSelect": "请选择颜色",
         "mcpSelect": "请选择MCP...",
-        "modelsCount": "个模型"
+        "modelsCount": "个模型",
+        "keySelect": "请选择密钥",
+        "searchKey": "搜索密钥..."
     },
     "colorPicker": {
         "presetColors": "预设颜色",

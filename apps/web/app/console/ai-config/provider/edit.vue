@@ -35,6 +35,12 @@ const allModelTypes = ref<ModelType[]>([]);
 
 const detail = ref<AiProviderInfo | null>(null);
 
+/**
+ * 表单实例引用
+ * 用于在自定义选择组件（如 KeyPoolSelect）变化时主动触发表单校验
+ */
+const formRef = ref<any>(null);
+
 const formData = reactive<CreateAiProviderRequest>({
     provider: "",
     name: "",
@@ -104,6 +110,15 @@ function goToApiKeyManage() {
     });
 }
 
+/**
+ * 选择密钥池后触发表单整体验证
+ * 解决首次选择值后错误提示没有及时消失的问题
+ */
+function onKeyPoolChange() {
+    // 这里整体校验，保持与其他表单使用方式一致
+    formRef.value?.validate?.();
+}
+
 // 提交表单
 const { lockFn: submitForm, isLock } = useLockFn(async () => {
     try {
@@ -145,7 +160,7 @@ onMounted(async () => providerId.value && (await fetchDetail()));
             <UIcon name="i-lucide-loader-2" class="size-8 animate-spin" />
         </div>
 
-        <UForm v-else :state="formData" :schema="providerSchema" @submit="submitForm">
+        <UForm v-else ref="formRef" :state="formData" :schema="providerSchema" @submit="submitForm">
             <!-- 基本信息 -->
             <div class="pb-2">
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -219,7 +234,7 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                                 variant="link"
                                 class="cursor-pointer gap-0"
                                 trailing-icon="i-lucide-arrow-right"
-                                :ui="{ trailingIcon: 'size-4' }"
+                                :ui="{ trailingIcon: 'size-4', base: 'p-0' }"
                                 @click="goToApiKeyManage()"
                             >
                                 {{ t("console-ai-provider.form.goToApiKeyManage") }}
@@ -233,31 +248,30 @@ onMounted(async () => providerId.value && (await fetchDetail()));
                                 ui: { base: 'w-full' },
                                 class: 'bg-background',
                             }"
+                            @change="onKeyPoolChange"
                         />
                     </UFormField>
                 </div>
-                <div class="flex flex-col justify-center">
-                    <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
-                        <div class="flex h-8 items-center">
-                            <URadioGroup
-                                class="my-2"
-                                v-model="isActiveString"
-                                :items="[
-                                    {
-                                        label: t('console-ai-provider.form.isActiveEnabled'),
-                                        value: 'true',
-                                    },
-                                    {
-                                        label: t('console-ai-provider.form.isActiveDisabled'),
-                                        value: 'false',
-                                    },
-                                ]"
-                                orientation="horizontal"
-                                color="primary"
-                            />
-                        </div>
-                    </UFormField>
-                </div>
+                <UFormField :label="t('console-ai-provider.form.isActive')" name="isActive">
+                    <div class="flex h-8 items-center">
+                        <URadioGroup
+                            class="my-2"
+                            v-model="isActiveString"
+                            :items="[
+                                {
+                                    label: t('console-ai-provider.form.isActiveEnabled'),
+                                    value: 'true',
+                                },
+                                {
+                                    label: t('console-ai-provider.form.isActiveDisabled'),
+                                    value: 'false',
+                                },
+                            ]"
+                            orientation="horizontal"
+                            color="primary"
+                        />
+                    </div>
+                </UFormField>
             </div>
 
             <!-- 模型类型 -->

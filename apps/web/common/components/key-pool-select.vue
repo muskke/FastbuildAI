@@ -103,7 +103,6 @@ async function loadData() {
                 ? findKeyConfig(localStorage.getItem("modelId") ?? "")
                 : null) ??
             findKeyConfig(props.modelValue) ??
-            allKeyConfigs.value[0] ??
             null;
 
         if (selected.value) selectModel(selected.value);
@@ -152,8 +151,8 @@ onMounted(() => {
             v-bind="props.buttonUi"
             @click.stop
         >
-            <span class="truncate">
-                {{ selectedDisplayText || t("console-common.placeholder.modelSelect") }}
+            <span class="truncate" :class="{ 'text-muted-foreground': !selectedDisplayText }">
+                {{ selectedDisplayText || t("console-common.placeholder.keySelect") }}
             </span>
             <div class="flex items-center gap-2">
                 <UIcon
@@ -174,19 +173,24 @@ onMounted(() => {
             <div class="border-border bg-background w-[380px] rounded-lg border shadow-lg">
                 <!-- Search bar -->
                 <div class="p-3">
-                    <UInput
-                        v-model="search"
-                        :placeholder="t('console-common.placeholder.searchModel')"
-                        size="sm"
-                        class="w-full"
-                        :ui="{
-                            base: 'bg-muted/30 border-border/50 focus:border-primary/50 focus:ring-primary/20',
-                        }"
-                    >
-                        <template #leading>
-                            <UIcon name="i-lucide-search" class="text-muted-foreground h-4 w-4" />
-                        </template>
-                    </UInput>
+                    <UFormField :required="false">
+                        <UInput
+                            v-model="search"
+                            :placeholder="t('console-common.placeholder.searchKey')"
+                            size="sm"
+                            class="w-full"
+                            :ui="{
+                                base: 'bg-muted/30 border-border/50 focus:border-primary/50 focus:ring-primary/20',
+                            }"
+                        >
+                            <template #leading>
+                                <UIcon
+                                    name="i-lucide-search"
+                                    class="text-muted-foreground h-4 w-4"
+                                />
+                            </template>
+                        </UInput>
+                    </UFormField>
                 </div>
 
                 <!-- Content area -->
