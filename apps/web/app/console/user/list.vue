@@ -105,7 +105,6 @@ const handleDeleteUser = (user: UserInfo) => {
 const handleEditPower = (user: UserInfo) => {
     selectedUser.value = user;
     editPowerVisible.value = true;
-    console.log("handleEditPower", user);
 };
 
 /**
@@ -258,6 +257,11 @@ onMounted(() => getLists());
         </div>
 
         <!-- 编辑余额 -->
-        <EditPower v-if="editPowerVisible" :user="selectedUser" @close="editPowerVisible = false" />
+        <EditPower
+            v-if="editPowerVisible"
+            :user="selectedUser"
+            @get-list="getLists"
+            @close="editPowerVisible = false"
+        />
     </div>
 </template>
