@@ -2,9 +2,9 @@
     "accountBalance": {
         "searchPlaceholder": "请输入用户ID/昵称/手机号",
         "selectPlaceholder": "变动类型",
-        "systemRecharge": "系统充值",
-        "systemRechargeGift": "系统充值赠送",
-        "systemRechargeRefund": "系统充值退款",
+        "userRecharge": "用户充值",
+        "userRechargeGift": "用户充值赠送",
+        "userRechargeRefund": "用户充值退款",
         "systemIncreasePower": "系统手动增加算力",
         "systemDecreasePower": "系统手动减扣算力",
         "basicConversation": "基本对话",
@@ -17,7 +17,7 @@
             "changeAmount": "变动数量",
             "leftAmount": "剩余数量",
             "accountTypeDesc": "变动类型",
-            "associationUser": "管理员",
+            "associationUser": "操作人",
             "createdAt": "记录时间",
             "consumeSourceDesc": "来源"
         }

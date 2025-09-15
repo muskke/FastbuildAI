@@ -472,7 +472,7 @@ onMounted(() => {
                         v-model:size="paging.pageSize"
                         show-edges
                         :total="paging.total"
-                        @change=""
+                        @change="getOrderList()"
                     />
                     <div class="text-muted flex items-center gap-2 text-sm">
                         <span>{{ t("console-common.goTo") }}</span>
