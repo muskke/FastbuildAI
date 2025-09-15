@@ -16,6 +16,7 @@ const props = defineProps<{
 
 const emits = defineEmits<{
     (e: "close", refresh?: boolean): void;
+    (e: "get-list"): void;
 }>();
 
 // 余额调整表单数据
@@ -64,6 +65,7 @@ const handleConfirmPowerEdit = async () => {
         }
 
         toast.success(t("console-user.form.adjustPowerSuccess"));
+        emits("get-list");
         emits("close", true);
     } catch (error) {
         console.error("调整余额失败:", error);
