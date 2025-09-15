@@ -929,34 +929,6 @@
                                 "pluginPackName": null
                             }
                         ]
-                    },
-                    {
-                        "name": "console-menu.systemSettings.loginConfig",
-                        "code": "system-loginConfig-get",
-                        "path": "loginConfig",
-                        "icon": "",
-                        "component": "/console/system-setting/loginConfig/index",
-                        "permissionCode": "users:get-login-settings",
-                        "sort": 0,
-                        "isHidden": 0,
-                        "type": 2,
-                        "sourceType": 1,
-                        "pluginPackName": "",
-                        "children": [
-                            {
-                                "name": "console-system.website.actions.save",
-                                "code": "system-loginConfig-set",
-                                "path": "",
-                                "icon": "",
-                                "component": "",
-                                "permissionCode": "users:set-login-settings",
-                                "sort": 0,
-                                "isHidden": 0,
-                                "type": 3,
-                                "sourceType": 1,
-                                "pluginPackName": null
-                            }
-                        ]
                     }
                 ]
             },
@@ -1457,6 +1429,34 @@
                                 "icon": "",
                                 "component": "",
                                 "permissionCode": "system-website:setConfig",
+                                "sort": 0,
+                                "isHidden": 0,
+                                "type": 3,
+                                "sourceType": 1,
+                                "pluginPackName": null
+                            }
+                        ]
+                    },
+                    {
+                        "name": "console-menu.systemSettings.loginConfig",
+                        "code": "system-loginConfig-get",
+                        "path": "loginConfig",
+                        "icon": "",
+                        "component": "/console/system-setting/loginConfig/index",
+                        "permissionCode": "users:get-login-settings",
+                        "sort": 0,
+                        "isHidden": 0,
+                        "type": 2,
+                        "sourceType": 1,
+                        "pluginPackName": "",
+                        "children": [
+                            {
+                                "name": "console-system.website.actions.save",
+                                "code": "system-loginConfig-set",
+                                "path": "",
+                                "icon": "",
+                                "component": "",
+                                "permissionCode": "users:set-login-settings",
                                 "sort": 0,
                                 "isHidden": 0,
                                 "type": 3,
