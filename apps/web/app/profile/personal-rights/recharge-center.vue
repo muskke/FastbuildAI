@@ -217,6 +217,12 @@ definePageMeta({
     inSystem: true,
     inLinkSelector: true,
 });
+
+//跳转到充值记录
+const toRechargeRecord = () => {
+    close();
+    router.push("/profile/power-detail");
+};
 </script>
 
 <template>
@@ -445,16 +451,27 @@ definePageMeta({
                 :model-value="rechargeSuccess"
                 @update:model-value="close"
             >
-                <div class="flex flex-col items-center justify-center gap-2 p-4">
-                    <div class="flex items-center justify-center gap-2">
-                        <UIcon name="tabler:circle-check-filled" class="text-2xl text-green-500" />
-                        <h1 class="text-xl font-bold">
-                            {{ t("web-personal-rights.rechargeCenter.rechargeSuccess") }}
-                        </h1>
+                <div class="space-y-4">
+                    <div class="flex flex-col items-center justify-center gap-2 p-4">
+                        <div class="flex items-center justify-center gap-2">
+                            <UIcon
+                                name="tabler:circle-check-filled"
+                                class="text-2xl text-green-500"
+                            />
+                            <h1 class="text-xl font-bold">
+                                {{ t("web-personal-rights.rechargeCenter.rechargeSuccess") }}
+                            </h1>
+                        </div>
+                        <p class="text-muted-foreground text-sm">
+                            {{ t("web-personal-rights.rechargeCenter.rechargeSuccessTip") }}
+                        </p>
                     </div>
-                    <p class="text-muted-foreground text-sm">
-                        {{ t("web-personal-rights.rechargeCenter.rechargeSuccessTip") }}
-                    </p>
+                    <div class="flex justify-end gap-2">
+                        <UButton color="neutral" variant="soft" @click="close"> 继续充值 </UButton>
+                        <UButton color="primary" type="submit" @click="toRechargeRecord">
+                            查看记录
+                        </UButton>
+                    </div>
                 </div>
             </ProModal>
         </div>
