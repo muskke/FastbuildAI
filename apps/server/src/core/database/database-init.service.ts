@@ -636,16 +636,13 @@ export class DatabaseInitService implements OnModuleInit {
     /**
      * 检查系统是否已安装
      *
-     * 通过检查 .installed 文件和数据库中的安装标记来判断
+     * 以数据库中的is_installed为唯一判断依据
+     * 如果is_installed为true但.installed文件不存在，会自动创建文件
      *
      * @returns 系统是否已安装
      */
     private async checkSystemInstalled(): Promise<boolean> {
         try {
-            // 检查 .installed 文件是否存在
-            const installFilePath = path.join(process.cwd(), "data", ".installed");
-            const fileExists = await fse.pathExists(installFilePath);
-
             // 检查数据库中的安装标记
             let dbInstalled = false;
             try {
@@ -654,16 +651,62 @@ export class DatabaseInitService implements OnModuleInit {
                 dbInstalled = isEnabled(installStatus);
             } catch (e) {
                 // 如果查询失败，可能是表不存在，视为未安装
-                console.error("e", e);
+                this.logger.error("检查数据库安装状态失败", e);
                 dbInstalled = false;
             }
 
-            // 两者都为 true 时才认为系统已安装
-            return fileExists && dbInstalled;
+            // 检查 .installed 文件是否存在
+            const installFilePath = path.join(process.cwd(), "data", ".installed");
+            const fileExists = await fse.pathExists(installFilePath);
+
+            // 如果数据库标记为已安装，但.installed文件不存在，自动创建文件
+            if (dbInstalled && !fileExists) {
+                this.logger.log("📁 数据库标记为已安装，但.installed文件不存在，正在自动创建...");
+                await this.createInstallFile();
+                this.logger.log("✅ 已自动创建 .installed 文件");
+            } else if (!dbInstalled && fileExists) {
+                this.logger.warn("⚠️ 数据库标记为未安装，但.installed文件存在，将以数据库状态为准");
+            }
+
+            // 仅以数据库标记为判断依据
+            return dbInstalled;
         } catch (e) {
             // 出错时默认为未安装，确保安全
-            console.error("e", e);
+            this.logger.error("检查系统安装状态时出错", e);
             return false;
+        }
+    }
+
+    /**
+     * 创建 .installed 文件
+     *
+     * 用于补全迁移场景下缺失的文件标记
+     */
+    private async createInstallFile(): Promise<void> {
+        try {
+            // 创建 data 目录（如果不存在）
+            const dataDir = path.join(process.cwd(), "data");
+            await fse.ensureDir(dataDir);
+
+            // 创建 .installed 文件
+            const installFilePath = path.join(dataDir, ".installed");
+            const currentVersion = await this.getCurrentVersion();
+
+            await fse.writeFile(
+                installFilePath,
+                JSON.stringify(
+                    {
+                        installed_at: new Date().toISOString(),
+                        version: currentVersion,
+                        migration_auto_created: true, // 标记为迁移时自动创建
+                    },
+                    null,
+                    2,
+                ),
+            );
+        } catch (e) {
+            this.logger.error(`创建 .installed 文件失败: ${e.message}`);
+            // 不抛出异常，以免影响判断已安装状态
         }
     }
 
