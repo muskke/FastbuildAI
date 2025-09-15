@@ -123,6 +123,7 @@ const models = computed(() => {
                                 size="lg"
                                 :min="1"
                                 class="w-full"
+                                :disabled="true"
                                 :ui="{ base: 'pr-15' }"
                                 @blur="
                                     if (row.original.billingRule.tokens < 1)

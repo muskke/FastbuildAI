@@ -402,6 +402,7 @@ defineExpose({ resetForm });
                                             :min="1"
                                             class="flex-1"
                                             :ui="{ base: 'pr-15' }"
+                                            :disabled="true"
                                             @blur="
                                                 if (formData.billingRule.tokens < 1)
                                                     formData.billingRule.tokens = 1;
