@@ -2,9 +2,9 @@
     "accountBalance": {
         "searchPlaceholder": "ユーザーID／ニックネーム／携帯番号を入力してください",
         "selectPlaceholder": "変動タイプ",
-        "systemRecharge": "システムチャージ",
-        "systemRechargeGift": "システムチャージ特典",
-        "systemRechargeRefund": "システムチャージ返金",
+        "userRecharge": "ユーザーチャージ",
+        "userRechargeGift": "ユーザーチャージ特典",
+        "userRechargeRefund": "ユーザーチャージ返金",
         "systemIncreasePower": "システム手動算力増加",
         "systemDecreasePower": "システム手動算力削減",
         "basicConversation": "基本対話",

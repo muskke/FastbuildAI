@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { TableColumn } from "@nuxt/ui";
+import { ProPaginaction } from "@fastbuildai/ui";
+import type { Column, Row } from "@tanstack/table-core";
 import { resolveComponent } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -12,7 +13,7 @@ const { t } = useI18n();
 const inputValue = ref("");
 const selectValue = ref<string | null>(null);
 
-const columns: TableColumn<AccountBalanceListItem>[] = [
+const columns = computed(() => [
     {
         accessorKey: "accountNo",
         header: t("console-financial.accountBalance.table.userNo"),
@@ -43,7 +44,7 @@ const columns: TableColumn<AccountBalanceListItem>[] = [
     },
     {
         accessorKey: "createdAt",
-        header: ({ column }) => {
+        header: ({ column }: { column: Column<AccountBalanceListItem> }) => {
             const isSorted = column.getIsSorted();
 
             return h(UButton, {
@@ -59,7 +60,7 @@ const columns: TableColumn<AccountBalanceListItem>[] = [
                 onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
             });
         },
-        cell: ({ row }) => {
+        cell: ({ row }: { row: Row<AccountBalanceListItem> }) => {
             const createdAt = row.getValue("createdAt") as string;
             return h(TimeDisplay, {
                 datetime: createdAt,
@@ -67,7 +68,7 @@ const columns: TableColumn<AccountBalanceListItem>[] = [
             });
         },
     },
-];
+]);
 
 const accountBalanceList = ref<AccountBalanceListItem[]>([]);
 
@@ -118,15 +119,15 @@ onMounted(() => {
                         value: null,
                     },
                     {
-                        label: t('console-financial.accountBalance.systemRecharge'),
+                        label: t('console-financial.accountBalance.userRecharge'),
                         value: '100',
                     },
                     {
-                        label: t('console-financial.accountBalance.systemRechargeGift'),
+                        label: t('console-financial.accountBalance.userRechargeGift'),
                         value: '101',
                     },
                     {
-                        label: t('console-financial.accountBalance.systemRechargeRefund'),
+                        label: t('console-financial.accountBalance.userRechargeRefund'),
                         value: '102',
                     },
                     {
@@ -199,7 +200,12 @@ onMounted(() => {
 
         <!-- 分页 -->
         <div class="flex justify-end py-4">
-            <UPagination v-model:page="paging.page" :total="paging.total" @change="getLists" />
+            <ProPaginaction
+                v-model:page="paging.page"
+                v-model:size="paging.pageSize"
+                :total="paging.total"
+                @change="getLists"
+            />
         </div>
     </div>
 </template>
