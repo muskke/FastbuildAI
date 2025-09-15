@@ -162,7 +162,7 @@ export class PayService extends BaseService<Payconfig> {
                     ACTION.INC,
                     power,
                     order.orderNo,
-                    order.userId,
+                    null,
                     "充值成功",
                     {
                         type: ACCOUNT_LOG_SOURCE.RECHARGE,
@@ -180,7 +180,7 @@ export class PayService extends BaseService<Payconfig> {
                     ACTION.INC,
                     givePower,
                     order.orderNo,
-                    order.userId,
+                    null,
                     "充值成功",
                     {
                         type: ACCOUNT_LOG_SOURCE.RECHARGE,

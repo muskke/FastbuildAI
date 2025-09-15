@@ -54,9 +54,9 @@ export type ACTION_VALUE = (typeof ACTION)[keyof typeof ACTION];
  * 余额变动描述
  */
 export const ACCOUNT_LOG_TYPE_DESCRIPTION = {
-    [ACCOUNT_LOG_TYPE.RECHARGE_INC]: "系统充值",
-    [ACCOUNT_LOG_TYPE.RECHARGE_GIVE_INC]: "系统充值赠送",
-    [ACCOUNT_LOG_TYPE.RECHARGE_DEC]: "系统充值退款",
+    [ACCOUNT_LOG_TYPE.RECHARGE_INC]: "用户充值",
+    [ACCOUNT_LOG_TYPE.RECHARGE_GIVE_INC]: "用户充值赠送",
+    [ACCOUNT_LOG_TYPE.RECHARGE_DEC]: "用户充值退款",
     [ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_INC]: "系统手动增加算力",
     [ACCOUNT_LOG_TYPE.SYSTEM_MANUAL_DEC]: "系统手动减扣算力",
     [ACCOUNT_LOG_TYPE.CHAT_DEC]: "基本对话",
