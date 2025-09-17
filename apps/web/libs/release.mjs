@@ -95,7 +95,7 @@ function processSpaLoadingIcon() {
         );
 
         // 写回文件
-        writeFileSync(templatePath, templateContent, { encoding: "utf-8", mode: 0o644 });
+        writeFileSync(templatePath, templateContent, { encoding: "utf-8", mode: 0o777 });
         console.log(`${colors.green}✅ SPA 加载图标已更新为: ${iconPath}${colors.reset}`);
     } catch (error) {
         console.log(`${colors.red}❌ SPA 加载图标处理失败: ${error.message}${colors.reset}`);
@@ -122,10 +122,10 @@ async function copyFile(src, dest) {
         // 设置文件权限
         if (process.platform !== "win32") {
             // 非Windows系统才设置权限
-            // 如果是目录，设置为777，如果是文件，设置为644
+            // 如果是目录，设置为777，如果是文件，设置为777
             const stat = await lstat(dest);
             const isDir = stat.isDirectory();
-            await chmod(dest, isDir ? 0o777 : 0o644);
+            await chmod(dest, isDir ? 0o777 : 0o777);
         }
     } catch (error) {
         console.log(`${colors.red}复制文件失败: ${src} -> ${dest}${colors.reset}`);
@@ -166,7 +166,7 @@ async function setPermissionsRecursively(dirPath) {
                 await setPermissionsRecursively(fullPath);
             } else {
                 // 如果是文件，设置文件权限
-                await chmod(fullPath, 0o644);
+                await chmod(fullPath, 0o777);
             }
         }
     } catch (error) {
