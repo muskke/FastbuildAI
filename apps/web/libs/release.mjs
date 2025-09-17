@@ -107,7 +107,7 @@ async function copyFile(src, dest) {
     if (!existsSync(src)) return;
 
     // 确保目标目录存在
-    await mkdir(path.dirname(dest), { recursive: true, mode: 0o755 });
+    await mkdir(path.dirname(dest), { recursive: true, mode: 0o777 });
 
     // 处理已存在的目标
     const isUpdate = existsSync(dest);
@@ -120,11 +120,12 @@ async function copyFile(src, dest) {
         await cp(src, dest, { recursive: true, force: true });
 
         // 设置文件权限
-        if (process.platform !== 'win32') { // 非Windows系统才设置权限
-            // 如果是目录，设置为755，如果是文件，设置为644
+        if (process.platform !== "win32") {
+            // 非Windows系统才设置权限
+            // 如果是目录，设置为777，如果是文件，设置为644
             const stat = await lstat(dest);
             const isDir = stat.isDirectory();
-            await chmod(dest, isDir ? 0o755 : 0o644);
+            await chmod(dest, isDir ? 0o777 : 0o644);
         }
     } catch (error) {
         console.log(`${colors.red}复制文件失败: ${src} -> ${dest}${colors.reset}`);
@@ -145,21 +146,21 @@ async function copyFile(src, dest) {
  * @param {string} dirPath 目录路径
  */
 async function setPermissionsRecursively(dirPath) {
-    if (process.platform === 'win32') return; // Windows不设置权限
-    
+    if (process.platform === "win32") return; // Windows不设置权限
+
     try {
         console.log(`${colors.blue}设置目录权限: ${dirPath}${colors.reset}`);
-        
+
         // 设置当前目录的权限
-        await chmod(dirPath, 0o755);
-        
+        await chmod(dirPath, 0o777);
+
         // 读取目录内容
         const entries = readdirSync(dirPath, { withFileTypes: true });
-        
+
         // 遍历目录内容
         for (const entry of entries) {
             const fullPath = path.join(dirPath, entry.name);
-            
+
             if (entry.isDirectory()) {
                 // 如果是目录，递归设置
                 await setPermissionsRecursively(fullPath);
@@ -169,7 +170,9 @@ async function setPermissionsRecursively(dirPath) {
             }
         }
     } catch (error) {
-        console.log(`${colors.yellow}警告: 设置权限失败: ${dirPath}, 错误: ${error.message}${colors.reset}`);
+        console.log(
+            `${colors.yellow}警告: 设置权限失败: ${dirPath}, 错误: ${error.message}${colors.reset}`,
+        );
     }
 }
 
@@ -192,7 +195,7 @@ async function build() {
         }
 
         // 确保目标目录存在
-        await mkdir(releasePath, { recursive: true, mode: 0o755 });
+        await mkdir(releasePath, { recursive: true, mode: 0o777 });
 
         // 获取发布映射并执行复制
         const releaseMap = buildReleaseMap();
@@ -208,7 +211,7 @@ async function build() {
 
         // 处理 SPA 加载图标路径替换
         processSpaLoadingIcon();
-        
+
         // 递归设置所有文件和目录的权限
         console.log(`${colors.blue}开始设置文件和目录权限...${colors.reset}`);
         await setPermissionsRecursively(releasePath);
