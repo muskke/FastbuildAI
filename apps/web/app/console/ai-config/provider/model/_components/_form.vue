@@ -105,7 +105,7 @@ const formData = reactive({
     modelType: undefined,
     billingRule: {
         power: 0,
-        tokens: 1,
+        tokens: 1000,
     },
 });
 
