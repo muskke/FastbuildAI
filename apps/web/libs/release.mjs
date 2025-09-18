@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { cp, mkdir, rm } from "node:fs/promises";
+import { cp, mkdir, rm, chmod, lstat } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
@@ -95,7 +95,7 @@ function processSpaLoadingIcon() {
         );
 
         // 写回文件
-        writeFileSync(templatePath, templateContent, "utf-8");
+        writeFileSync(templatePath, templateContent, { encoding: "utf-8", mode: 0o777 });
         console.log(`${colors.green}✅ SPA 加载图标已更新为: ${iconPath}${colors.reset}`);
     } catch (error) {
         console.log(`${colors.red}❌ SPA 加载图标处理失败: ${error.message}${colors.reset}`);
@@ -107,7 +107,7 @@ async function copyFile(src, dest) {
     if (!existsSync(src)) return;
 
     // 确保目标目录存在
-    await mkdir(path.dirname(dest), { recursive: true });
+    await mkdir(path.dirname(dest), { recursive: true, mode: 0o777 });
 
     // 处理已存在的目标
     const isUpdate = existsSync(dest);
@@ -116,7 +116,22 @@ async function copyFile(src, dest) {
     }
 
     // 执行复制
-    await cp(src, dest, { recursive: true, force: true });
+    try {
+        await cp(src, dest, { recursive: true, force: true });
+
+        // 设置文件权限
+        if (process.platform !== "win32") {
+            // 非Windows系统才设置权限
+            // 如果是目录，设置为777，如果是文件，设置为777
+            const stat = await lstat(dest);
+            const isDir = stat.isDirectory();
+            await chmod(dest, isDir ? 0o777 : 0o777);
+        }
+    } catch (error) {
+        console.log(`${colors.red}复制文件失败: ${src} -> ${dest}${colors.reset}`);
+        console.log(`${colors.red}错误信息: ${error.message}${colors.reset}`);
+        throw error;
+    }
 
     // 输出日志
     const relativeSrc = path.relative(cwd, src);
@@ -124,6 +139,41 @@ async function copyFile(src, dest) {
     const logColor = isUpdate ? colors.yellow : colors.blue;
     const logIcon = isUpdate ? "🔄 更新:" : "📦 新增:";
     console.log(`${logColor}${logIcon} ${relativeSrc} → ${relativeDest}${colors.reset}`);
+}
+
+/**
+ * 递归设置目录和文件的权限
+ * @param {string} dirPath 目录路径
+ */
+async function setPermissionsRecursively(dirPath) {
+    if (process.platform === "win32") return; // Windows不设置权限
+
+    try {
+        console.log(`${colors.blue}设置目录权限: ${dirPath}${colors.reset}`);
+
+        // 设置当前目录的权限
+        await chmod(dirPath, 0o777);
+
+        // 读取目录内容
+        const entries = readdirSync(dirPath, { withFileTypes: true });
+
+        // 遍历目录内容
+        for (const entry of entries) {
+            const fullPath = path.join(dirPath, entry.name);
+
+            if (entry.isDirectory()) {
+                // 如果是目录，递归设置
+                await setPermissionsRecursively(fullPath);
+            } else {
+                // 如果是文件，设置文件权限
+                await chmod(fullPath, 0o777);
+            }
+        }
+    } catch (error) {
+        console.log(
+            `${colors.yellow}警告: 设置权限失败: ${dirPath}, 错误: ${error.message}${colors.reset}`,
+        );
+    }
 }
 
 // 主构建流程
@@ -145,7 +195,7 @@ async function build() {
         }
 
         // 确保目标目录存在
-        await mkdir(releasePath, { recursive: true });
+        await mkdir(releasePath, { recursive: true, mode: 0o777 });
 
         // 获取发布映射并执行复制
         const releaseMap = buildReleaseMap();
@@ -161,6 +211,11 @@ async function build() {
 
         // 处理 SPA 加载图标路径替换
         processSpaLoadingIcon();
+
+        // 递归设置所有文件和目录的权限
+        console.log(`${colors.blue}开始设置文件和目录权限...${colors.reset}`);
+        await setPermissionsRecursively(releasePath);
+        console.log(`${colors.green}权限设置完成${colors.reset}`);
 
         // 输出成功信息
         console.log(`${colors.green}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);

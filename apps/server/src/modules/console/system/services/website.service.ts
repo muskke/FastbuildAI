@@ -164,11 +164,6 @@ export class WebsiteService extends BaseService<Dict> {
             const targetDir = path.join(rootDir, "..", "..", "public/web");
             const targetPath = path.join(targetDir, "spa-loading.png");
 
-            // 确保目标目录存在
-            if (!fs.existsSync(targetDir)) {
-                await promisify(fs.mkdir)(targetDir, { recursive: true });
-            }
-
             let sourcePath: string;
 
             // 判断iconPath是URL还是相对路径
@@ -179,7 +174,7 @@ export class WebsiteService extends BaseService<Dict> {
                     // 假设URL路径对应的本地路径在项目根目录下
                     // 例如: http://localhost:4090/uploads/image/xxx.png -> rootDir/uploads/image/xxx.png
                     sourcePath = path.join(rootDir, "storage", url.pathname);
-                    console.log(sourcePath);
+                    this.logger.debug(`源文件路径: ${sourcePath}`);
                 } catch (urlError) {
                     this.logger.error(`无效的URL格式: ${iconPath}`);
                     return;
@@ -195,15 +190,62 @@ export class WebsiteService extends BaseService<Dict> {
                 return;
             }
 
-            // 复制文件到目标位置
-            await promisify(fs.copyFile)(sourcePath, targetPath);
-            this.logger.debug(`成功将SPA加载图标复制到: ${targetPath}`);
+            // 检查源文件是否可读
+            try {
+                await promisify(fs.access)(sourcePath, fs.constants.R_OK);
+            } catch (accessError) {
+                this.logger.error(`没有源文件的读取权限: ${sourcePath}`);
+                // 存储原始图标路径，不进行物理复制
+                return;
+            }
 
-            // 更新spa-loading-template.html中的图片源路径
-            await this.updateSpaLoadingTemplate(targetDir);
+            // 确保目标目录存在
+            try {
+                if (!fs.existsSync(targetDir)) {
+                    await promisify(fs.mkdir)(targetDir, { recursive: true, mode: 0o755 });
+                }
+            } catch (mkdirError) {
+                this.logger.error(`无法创建目标目录: ${targetDir}, 错误: ${mkdirError.message}`);
+                // 存储原始图标路径，不进行物理复制
+                return;
+            }
+
+            // 检查目标目录是否可写
+            try {
+                await promisify(fs.access)(targetDir, fs.constants.W_OK);
+            } catch (accessError) {
+                this.logger.error(`没有目标目录的写入权限: ${targetDir}`);
+                // 存储原始图标路径，不进行物理复制
+                return;
+            }
+
+            // 如果目标文件已存在，先尝试删除
+            try {
+                if (fs.existsSync(targetPath)) {
+                    await promisify(fs.unlink)(targetPath);
+                }
+            } catch (unlinkError) {
+                this.logger.error(
+                    `无法删除已存在的目标文件: ${targetPath}, 错误: ${unlinkError.message}`,
+                );
+                // 如果无法删除，可能是权限问题，尝试继续复制（可能会失败）
+            }
+
+            // 复制文件到目标位置
+            try {
+                await promisify(fs.copyFile)(sourcePath, targetPath);
+                this.logger.debug(`成功将SPA加载图标复制到: ${targetPath}`);
+
+                // 更新spa-loading-template.html中的图片源路径
+                await this.updateSpaLoadingTemplate(targetDir);
+            } catch (copyError) {
+                this.logger.error(`复制文件失败: ${copyError.message}`);
+                this.logger.warn(`将使用原始图标路径而不是物理复制`);
+                // 存储原始图标路径，不进行物理复制
+            }
         } catch (error) {
             this.logger.error(`处理SPA加载图标失败: ${error.message}`);
-            throw error;
+            // 不抛出错误，允许流程继续，仅记录错误
         }
     }
 
