@@ -34,6 +34,10 @@ const columns = computed<TableColumn<UserInfo>[]>(() => [
         header: t("console-user.form.role"),
     },
     {
+        accessorKey: "realName",
+        header: t("console-user.form.realName"),
+    },
+    {
         accessorKey: "createdAt",
         header: t("console-common.createAt"),
         cell: ({ row }) => {
