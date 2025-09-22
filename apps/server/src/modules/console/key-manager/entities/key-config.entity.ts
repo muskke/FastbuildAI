@@ -6,6 +6,7 @@ import {
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -108,5 +109,5 @@ export class KeyConfig {
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "template_id" })
-    template: Awaited<KeyTemplate>;
+    template: Relation<KeyTemplate>;
 }

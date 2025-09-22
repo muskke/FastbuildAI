@@ -7,6 +7,7 @@ import {
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -236,7 +237,7 @@ export class AiChatMessage {
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "conversation_id" })
-    conversation: Awaited<AiChatRecord>;
+    conversation: Relation<AiChatRecord>;
 
     /**
      * 使用的AI模型
@@ -245,5 +246,5 @@ export class AiChatMessage {
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "model_id" })
-    model: Awaited<AiModel>;
+    model: Relation<AiModel>;
 }

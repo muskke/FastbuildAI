@@ -219,13 +219,13 @@ export class AiMcpServer {
      * 用户关联记录
      */
     @OneToMany(() => AiUserMcpServer, (userMcpServer) => userMcpServer.mcpServer)
-    userMcpServer: Awaited<AiUserMcpServer[]>;
+    userMcpServer: Relation<AiUserMcpServer[]>;
 
     /**
      * 工具关联记录
      */
     @OneToMany(() => AiMcpTool, (tool) => tool.mcpServer)
-    tools: Awaited<AiMcpTool[]>;
+    tools: Relation<AiMcpTool[]>;
 
     /**
      * 创建者用户ID

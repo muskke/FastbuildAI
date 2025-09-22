@@ -5,6 +5,7 @@ import {
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -126,7 +127,7 @@ export class DatasetsSegments {
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "dataset_id" })
-    dataset?: Awaited<Datasets>;
+    dataset?: Relation<Datasets>;
 
     /**
      * 关联的文档实体
@@ -135,5 +136,5 @@ export class DatasetsSegments {
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "document_id" })
-    document?: Awaited<DatasetsDocument>;
+    document?: Relation<DatasetsDocument>;
 }

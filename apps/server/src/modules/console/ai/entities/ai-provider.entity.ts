@@ -10,6 +10,7 @@ import {
     Index,
     OneToMany,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -159,7 +160,7 @@ export class AiProvider {
      * 关联的模型列表
      */
     @OneToMany(() => AiModel, (model) => model.provider)
-    models: Awaited<AiModel[]>;
+    models: Relation<AiModel[]>;
 
     @BeforeInsert()
     @BeforeUpdate()

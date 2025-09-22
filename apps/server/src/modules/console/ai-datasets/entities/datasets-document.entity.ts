@@ -6,6 +6,7 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -123,11 +124,11 @@ export class DatasetsDocument {
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "dataset_id" })
-    dataset?: Awaited<Datasets>;
+    dataset?: Relation<Datasets>;
 
     /**
      * 文档下的分段列表
      */
     @OneToMany(() => DatasetsSegments, (segment) => segment.document)
-    segments?: Awaited<DatasetsSegments[]>;
+    segments?: Relation<DatasetsSegments[]>;
 }
