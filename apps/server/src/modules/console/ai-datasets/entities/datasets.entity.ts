@@ -4,6 +4,7 @@ import {
     CreateDateColumn,
     OneToMany,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -122,19 +123,19 @@ export class Datasets {
      * 知识库下的文档列表
      */
     @OneToMany(() => DatasetsDocument, (document) => document.dataset)
-    documents?: Awaited<DatasetsDocument[]>;
+    documents?: Relation<DatasetsDocument[]>;
 
     /**
      * 知识库下的分段列表
      */
     @OneToMany(() => DatasetsSegments, (segment) => segment.dataset)
-    segments?: Awaited<DatasetsSegments[]>;
+    segments?: Relation<DatasetsSegments[]>;
 
     /**
      * 知识库团队成员列表
      */
     @OneToMany(() => DatasetMember, (member) => member.dataset)
-    members?: Awaited<DatasetMember[]>;
+    members?: Relation<DatasetMember[]>;
 
     /**
      * 关联应用（智能体）数量

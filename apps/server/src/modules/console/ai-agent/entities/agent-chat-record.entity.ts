@@ -8,6 +8,7 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -187,5 +188,5 @@ export class AgentChatRecord {
     @OneToMany(() => AgentChatMessage, (message) => message.conversation, {
         cascade: true,
     })
-    messages?: Awaited<AgentChatMessage[]>;
+    messages?: Relation<AgentChatMessage[]>;
 }

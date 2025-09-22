@@ -8,6 +8,7 @@ import {
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -178,5 +179,5 @@ export class AiModel {
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "provider_id" })
-    provider: Awaited<AiProvider>;
+    provider: Relation<AiProvider>;
 }

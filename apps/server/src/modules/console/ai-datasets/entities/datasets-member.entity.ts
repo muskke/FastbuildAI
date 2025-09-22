@@ -7,6 +7,7 @@ import {
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -92,7 +93,7 @@ export class DatasetMember {
         createForeignKeyConstraints: false,
     })
     @JoinColumn({ name: "dataset_id" })
-    dataset?: Awaited<Datasets>;
+    dataset?: Relation<Datasets>;
 
     /**
      * 关联的用户

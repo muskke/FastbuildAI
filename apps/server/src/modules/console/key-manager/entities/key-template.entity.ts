@@ -9,6 +9,7 @@ import {
     CreateDateColumn,
     OneToMany,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -105,7 +106,7 @@ export class KeyTemplate {
      * 关联的密钥配置
      */
     @OneToMany(() => KeyConfig, (keyConfig) => keyConfig.template)
-    keyConfigs: Awaited<KeyConfig[]>;
+    keyConfigs: Relation<KeyConfig[]>;
 
     @BeforeInsert()
     @BeforeUpdate()

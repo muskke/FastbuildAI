@@ -8,6 +8,7 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -184,5 +185,5 @@ export class AiChatRecord {
     @OneToMany(() => AiChatMessage, (message) => message.conversation, {
         cascade: true,
     })
-    messages: Awaited<AiChatMessage[]>;
+    messages: Relation<AiChatMessage[]>;
 }

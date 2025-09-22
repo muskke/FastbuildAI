@@ -5,6 +5,7 @@ import {
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 
@@ -74,7 +75,7 @@ export class AiMcpTool {
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "mcp_server_id" })
-    mcpServer: Awaited<AiMcpServer>;
+    mcpServer: Relation<AiMcpServer>;
 
     /**
      * 创建时间
