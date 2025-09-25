@@ -114,7 +114,14 @@
         "confirmPasswordPlaceholder": "请再次输入新密码",
         "passwordRequirement": "密码长度不少于6个字符",
         "passwordChangeSuccess": "密码修改成功",
-        "passwordChangeFailed": "密码修改失败，请重试"
+        "passwordChangeFailed": "密码修改失败，请重试",
+        "bindWechat": "绑定微信",
+        "wechatBindSuccess": "微信绑定成功",
+        "wechatBindFailed": "微信绑定失败，请重试",
+        "wechatBind": "绑定",
+        "wechatBindTitle": "绑定微信",
+        "wechatBindQrCode": "微信绑定二维码",
+        "refreshQrCode": "刷新二维码"
     },
     "mcp-server": {
         "detail": {
