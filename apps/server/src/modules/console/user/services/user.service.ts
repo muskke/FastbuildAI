@@ -104,7 +104,7 @@ export class UserService extends BaseService<User> {
         }
 
         // 如果没有任何查询条件，添加默认的排除超级管理员条件
-        if (!isEnabled(user.isRoot)) {
+        if (!isEnabled(user.isRoot) && where.length === 0) {
             where.push({ isRoot: 0 });
         }
 
