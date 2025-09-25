@@ -16,6 +16,8 @@ export interface UserInfo {
     id: string;
     /** 用户名 */
     username: string;
+    /* openid */
+    openid?: string;
     /** 用户编号 */
     userNo?: string;
     /** 密码 */

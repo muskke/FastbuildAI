@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { usePollingTask } from "@fastbuildai/ui/composables/usePollingTask";
-import { da } from "@nuxt/ui/runtime/locale/index.js";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import ProModal from "@fastbuildai/ui/components/pro-modal.vue";
+import { useI18n } from "vue-i18n";
+import { apiCheckTicket, apiGetWechatAuthorizedStatus, apiGetWechatBindStatus, apiGetWxCode } from "@/services/web/user";
+import { useMessage } from "@fastbuildai/ui/composables/useMessage";
 
 import { WECHAT_LOGIN_STATUS, type WechatLoginStatus } from "@/common/constants";
-import type { LoginResponse } from "@/models/user";
-import { apiCheckTicket, apiGetWxCode, apiGetWechatAuthorizedStatus } from "@/services/web/user";
-
-const PrivacyTerms = defineAsyncComponent(() => import("../privacy-terms.vue"));
+import type { LoginResponse } from "@/models";
 
 interface StatusConfigType {
     icon: string;
@@ -16,18 +15,25 @@ interface StatusConfigType {
     showRefresh?: boolean;
 }
 
-const emits = defineEmits<{
-    (e: "updateStyle", v: { width: string; height: string }): void;
-    (e: "update:showLoginMethods", v: boolean): void;
-    (e: "success", v: LoginResponse): void;
+const props = defineProps<{
+    loading?: boolean;
 }>();
 
-const appStore = useAppStore();
+const emits = defineEmits<{
+    (e: "success", v: LoginResponse): void;
+    (e: "close", v: boolean): void;
+}>();
+
+// 国际化
+const { t } = useI18n();
+const toast = useMessage();
 const userStore = useUserStore();
-const qrCodeUrl = ref<string>("");
-const qrCodeKey = ref<string>("");
-const loginStatus = ref<WechatLoginStatus>(WECHAT_LOGIN_STATUS.NORMAL);
+
+const isOpen = ref(false);
 const isLoading = ref<boolean>(false);
+const qrCodeKey = ref<string>("");
+const qrCodeUrl = ref<string>("");
+const loginStatus = ref<WechatLoginStatus>(WECHAT_LOGIN_STATUS.NORMAL);
 
 // 状态相关计算属性
 const statusConfig = computed<StatusConfigType>(() => {
@@ -40,7 +46,7 @@ const statusConfig = computed<StatusConfigType>(() => {
         [WECHAT_LOGIN_STATUS.LOGIN_SUCCESS]: {
             icon: "i-lucide-check-circle",
             color: "text-green-500",
-            message: "登录成功，正在跳转...",
+            message: "绑定成功，正在跳转...",
         },
         [WECHAT_LOGIN_STATUS.INVALID]: {
             icon: "i-lucide-alert-circle",
@@ -51,7 +57,7 @@ const statusConfig = computed<StatusConfigType>(() => {
         [WECHAT_LOGIN_STATUS.LOGIN_FAIL]: {
             icon: "i-lucide-alert-circle",
             color: "text-red-500",
-            message: "登录失败，请重试",
+            message: "绑定失败，请重试",
             showRefresh: true,
         },
         [WECHAT_LOGIN_STATUS.CODE_ERROR]: {
@@ -72,8 +78,8 @@ const { start: startPolling, clear: stopPolling } = usePollingTask(
         }
 
         try {
-            const data = await apiCheckTicket({ key: qrCodeKey.value });
-
+            const data = await apiGetWechatBindStatus({ key: qrCodeKey.value, id: userStore.userInfo?.id });
+            
             // 未注册用户：需要先授权
             if ((data as any)?.need_authorization === true) {
                 loginStatus.value = WECHAT_LOGIN_STATUS.SCANNED_CODE;
@@ -86,12 +92,12 @@ const { start: startPolling, clear: stopPolling } = usePollingTask(
                 return;
             }
 
-            // 已注册用户或授权后返回的最终登录结果
-            if (data?.is_scan && (data as any)?.user?.token) {
-                loginStatus.value = WECHAT_LOGIN_STATUS.LOGIN_SUCCESS;
+            // 已绑定过的微信，提示用户
+            if (data?.is_scan && (data as any)?.error) {
+                loginStatus.value = WECHAT_LOGIN_STATUS.LOGIN_FAIL;
                 stopPolling();
                 stopAuthPolling();
-                handleLoginSuccess((data as any).user);
+                toast.error((data as any)?.error || "绑定失败，请重试");
             }
         } catch (error) {
             console.error("检查登录状态失败:", error);
@@ -136,12 +142,15 @@ const { start: startAuthPolling, clear: stopAuthPolling } = usePollingTask(
                     stopFn();
                     isAuthPolling.value = false;
                     handleLoginSuccess((data as any).user);
+                    handleClose(false)
                 }
             }
         } catch (err) {
             console.error("检查授权状态失败:", err);
             stopFn();
             isAuthPolling.value = false;
+            loginStatus.value = WECHAT_LOGIN_STATUS.LOGIN_FAIL;
+            toast.error(t("common.profile.wechatBindFailed"));
         }
     },
     {
@@ -152,6 +161,10 @@ const { start: startAuthPolling, clear: stopAuthPolling } = usePollingTask(
         },
     },
 );
+
+function handleLoginSuccess(v: LoginResponse): void {
+    emits("success", v);
+}
 
 async function fetchQrCode(): Promise<void> {
     try {
@@ -171,13 +184,11 @@ async function fetchQrCode(): Promise<void> {
     }
 }
 
-function handleLoginSuccess(v: LoginResponse): void {
-    emits("success", v);
+function handleClose(reconnecting: boolean): void {
+    emits("close", reconnecting);
 }
 
 onMounted(() => {
-    emits("updateStyle", { width: "400px", height: "372px" });
-    emits("update:showLoginMethods", true);
     fetchQrCode();
 });
 
@@ -185,94 +196,53 @@ onUnmounted(() => {
     stopPolling();
     stopAuthPolling();
 });
+
 </script>
 
 <template>
-    <div class="flex flex-col items-center justify-between px-8 pt-8">
-        <Motion
-            :initial="{ opacity: 0, y: 10 }"
-            :animate="{ opacity: 1, y: 0 }"
-            :transition="{
-                type: 'tween',
-                stiffness: 200,
-                damping: 30,
-                delay: 0.3,
-            }"
-            class="pb-3 text-center"
-        >
-            <h2 class="mb-2 text-xl font-bold">微信扫码登录</h2>
-            <p class="text-muted-foreground mb-4 text-sm">请使用微信扫描二维码登录</p>
-
-            <!-- 二维码容器 -->
+    <ProModal
+        :model-value="true"
+        :title="t('common.profile.wechatBindTitle')"
+        :ui="{ content: 'max-w-md' }"
+        :show-footer="true"
+        @update:model-value="(value: boolean) => !value && handleClose(value)"
+    >
+        <div class="space-y-4 py-2 flex justify-center">
             <div
                 class="relative flex h-50 w-50 items-center justify-center overflow-hidden rounded-lg border p-1 dark:border-gray-700"
             >
-                <template v-if="isLoading">
-                    <div class="h-40 w-40 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-                </template>
-
-                <template v-else>
-                    <img
-                        :src="qrCodeUrl"
-                        alt="微信登录二维码"
-                        class="pointer-events-none h-full w-full select-none"
-                        v-if="qrCodeUrl"
-                    />
-
-                    <!-- 协议覆盖层 -->
-                    <div
-                        v-if="
-                            !userStore.isAgreed &&
-                            !!appStore.loginWay.loginAgreement &&
-                            appStore.loginSettings?.showPolicyAgreement
-                        "
-                        class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm dark:bg-gray-800/60"
-                    >
-                        <UIcon
-                            name="i-lucide-alert-triangle"
-                            class="mb-2 text-5xl text-yellow-500"
-                        />
-                        <p class="text-sm text-gray-700 dark:text-gray-300">请先阅读并勾选协议</p>
-                    </div>
-
-                    <!-- 状态覆盖层 -->
-                    <div
-                        v-if="statusConfig.message"
-                        class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm dark:bg-gray-800/60"
-                    >
-                        <UIcon
-                            :name="statusConfig.icon"
-                            :class="statusConfig.color"
-                            class="mb-2 text-5xl"
-                        />
-                        <p class="mb-3 text-sm text-gray-700 dark:text-gray-300">
-                            {{ statusConfig.message }}
-                        </p>
-                        <UButton v-if="statusConfig.showRefresh" size="xs" @click="fetchQrCode">
-                            刷新二维码
-                        </UButton>
-                    </div>
-                </template>
-            </div>
-        </Motion>
-
-        <Motion
-            :initial="{ opacity: 0, y: 10 }"
-            :animate="{ opacity: 1, y: 0 }"
-            :transition="{
-                type: 'tween',
-                stiffness: 200,
-                damping: 30,
-                delay: 0.5,
-            }"
-            class="relative"
-        >
-            <div class="mt-2 mb-8 text-left">
-                <PrivacyTerms
-                    v-if="appStore.loginSettings?.showPolicyAgreement"
-                    v-model="userStore.isAgreed"
+                <img
+                    :src="qrCodeUrl"
+                    :alt="t('common.profile.wechatBindQrCode')"
+                    class="pointer-events-none h-full w-full select-none"
+                    v-if="qrCodeUrl"
                 />
+                <!-- 状态覆盖层 -->
+                <div
+                    v-if="statusConfig.message"
+                    class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm dark:bg-gray-800/60"
+                >
+                    <UIcon
+                        :name="statusConfig.icon"
+                        :class="statusConfig.color"
+                        class="mb-2 text-5xl"
+                    />
+                    <p class="mb-3 text-sm text-gray-700 dark:text-gray-300">
+                        {{ statusConfig.message }}
+                    </p>
+                    <UButton v-if="statusConfig.showRefresh" size="xs" @click="fetchQrCode">
+                        {{ t('common.profile.refreshQrCode') }}
+                    </UButton>
+                </div>
             </div>
-        </Motion>
-    </div>
+        </div>
+
+        <template #footer>
+            <div class="flex justify-end gap-2">
+                <UButton variant="soft" @click="handleClose(false)">{{
+                    t("console-common.cancel")
+                }}</UButton>
+            </div>
+        </template>
+    </ProModal>
 </template>
