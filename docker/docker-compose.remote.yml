@@ -1,0 +1,132 @@
+# 定义通用资源配置
+x-resource-config: &resource-config
+    deploy:
+        resources:
+            limits:
+                memory: ${DOCKER_MEMORY_LIMIT:-3584M}
+                cpus: "${DOCKER_CPU_LIMIT:-1.0}"
+            reservations:
+                memory: ${DOCKER_MEMORY_RESERVATION:-512M}
+
+services:
+    # Node.js 开发环境
+    nodejs:
+        image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/node:22.18.0
+        container_name: fastbuildai-nodejs${DOCKER_CONTAINER_SUFFIX:-}
+        restart: on-failure:3
+        working_dir: /fastbuildai
+        volumes:
+            - ../:/fastbuildai
+            - /fastbuildai/node_modules
+            - /fastbuildai/apps/server/node_modules
+            - /fastbuildai/apps/web/node_modules
+            - /fastbuildai/apps/mobile/node_modules
+            - /fastbuildai/packages/assets/node_modules
+            - /fastbuildai/packages/config/node_modules
+            - /fastbuildai/packages/designer/node_modules
+            - /fastbuildai/packages/http/node_modules
+            - /fastbuildai/packages/ui/node_modules
+            - /fastbuildai/packages/utils/node_modules
+        ports:
+            - "${SERVER_PORT:-4090}:${SERVER_PORT:-4090}"
+        environment:
+            TZ: Asia/Shanghai
+            SERVER_PORT: ${SERVER_PORT:-4090}
+            QUICK_START_MODE: ${QUICK_START_MODE:-false}
+            NPM_REGISTRY_URL: ${NPM_REGISTRY_URL:-}
+            DB_USERNAME: ${DB_USERNAME:-postgres}
+            DB_PASSWORD: ${DB_PASSWORD:-postgres}
+            DB_DATABASE: ${DB_DATABASE:-fastbuildai}
+            DB_HOST: ${DB_HOST}
+            DB_PORT: ${DB_PORT:-5432}
+            REDIS_HOST: ${REDIS_HOST}
+            REDIS_PORT: ${REDIS_PORT:-6379}
+            REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+        command: |
+            sh -c '
+            set -e
+            echo "🚀 Starting FastbuildAI container..."
+
+            if [ -z "$QUICK_START_MODE" ]; then
+            QUICK_START_MODE="false"
+            echo "⚠️  QUICK_START_MODE is empty, setting default value: false"
+            fi      
+
+            echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
+
+            # 先检查并设置镜像
+            if [ -n "$NPM_REGISTRY_URL" ]; then
+            echo "🔧 Using custom registry: $NPM_REGISTRY_URL"
+            if command -v npm >/dev/null 2>&1; then
+                npm config set registry "$NPM_REGISTRY_URL"
+            fi
+            if command -v pnpm >/dev/null 2>&1; then
+                pnpm config set registry "$NPM_REGISTRY_URL"
+            fi
+            else
+            echo "⚠️ NPM_REGISTRY_URL not set, using default registry"
+            fi
+
+            # 再检查并安装 pnpm
+            if ! command -v pnpm >/dev/null 2>&1; then
+            echo "📦 Installing pnpm..."
+            npm install -g pnpm
+            # 安装完 pnpm 后再次设置镜像
+            if [ -n "$NPM_REGISTRY_URL" ]; then
+                pnpm config set registry "$NPM_REGISTRY_URL"
+            fi
+            fi
+
+            # 统一 store 到项目目录，避免宿主机 ~/.pnpm-store 权限问题
+            echo "🔧 Setting pnpm store directory..."
+            pnpm config set store-dir .pnpm-store
+
+            # 确保目录存在
+            echo "📁 Creating directories..."
+            mkdir -p /fastbuildai/.pnpm-store /fastbuildai/node_modules
+
+            # 只修顶层目录权限
+            echo "🧹 Fixing permissions..."
+            chown $(id -u):$(id -g) /fastbuildai/.pnpm-store /fastbuildai/node_modules || true
+            chmod 775 /fastbuildai/.pnpm-store /fastbuildai/node_modules || true
+
+            # 安装依赖
+            echo "📦 Installing dependencies..."
+
+            if [ -d "node_modules" ]; then
+            echo "📁 node_modules exists, using force install..."
+            yes | pnpm install --store-dir .pnpm-store
+            else
+            echo "📁 node_modules not found, installing..."
+            yes | pnpm install --store-dir .pnpm-store
+            fi
+
+            echo "✅ Install dependencies completed!"
+
+            if [ ! -f "/fastbuildai/public/index.html" ] || [ "$QUICK_START_MODE" = "false" ]; then
+            echo "🌐 Building web application..."
+            pnpm --filter ./apps/web run generate
+            fi
+
+            if [ ! -d "/fastbuildai/apps/server/dist" ] || [ "$QUICK_START_MODE" = "false" ]; then
+            echo "🔧 Building server application..."
+            pnpm --filter ./apps/server run build
+            fi
+
+            echo "🔍 Debug: QUICK_START_MODE = [$QUICK_START_MODE]"
+            echo "🎯 Starting production server..."
+            exec pnpm --filter ./apps/server run start:prod
+            '
+        networks:
+            - fastbuildai-network
+        <<: *resource-config
+        healthcheck:
+            test: ["CMD-SHELL", "ps aux | grep 'dist/main' | grep -v grep || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 10
+            start_period: 180s
+
+networks:
+    fastbuildai-network:
+        driver: bridge
