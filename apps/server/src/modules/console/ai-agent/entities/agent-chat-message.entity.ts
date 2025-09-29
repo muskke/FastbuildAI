@@ -7,6 +7,7 @@ import {
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Relation,
 } from "typeorm";
 
 import { AIRawResponse, MessageMetadata, TokenUsage } from "../interfaces/agent-config.interface";
@@ -185,5 +186,5 @@ export class AgentChatMessage {
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "conversation_id" })
-    conversation: AgentChatRecord;
+    conversation: Relation<AgentChatRecord>;
 }

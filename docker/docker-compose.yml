@@ -33,7 +33,7 @@ services:
 
     # PostgreSQL 数据库服务 (with pgvector)
     postgres:
-        image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/postgres:17.6
+        image: registry.cn-guangzhou.aliyuncs.com/likeadmin/postgres:17.5
         container_name: fastbuildai-postgres${DOCKER_CONTAINER_SUFFIX:-}
         restart: always
         environment:
