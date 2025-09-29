@@ -8,6 +8,7 @@ import { apiUpdateUserField } from "@/services/web/user";
 
 import NicknameModal from "./_components/nickname-modal.vue";
 import PasswordModal from "./_components/password-modal.vue";
+import WechatModal from "./_components/wechat-modal.vue";
 
 // 组合式函数
 const { t } = useI18n();
@@ -64,6 +65,26 @@ async function copyUser() {
 }
 
 /**
+ * 绑定微信
+ */
+const openWechatModal = ref(false);
+async function handleBindWechat() {
+    openWechatModal.value = true;
+}
+
+/**
+ * 绑定微信成功
+ */
+function handleBindSuccess() {
+    userStore.getUser();
+    toast.success(t("common.profile.wechatBindSuccess"));
+}
+
+function closeWechatModal(reconnecting: boolean) {
+    openWechatModal.value = false;
+}
+
+/**
  * 注销账号
  */
 function unrealized() {
@@ -90,16 +111,9 @@ definePageMeta({
 
             <div class="bg-accent mb-6 flex items-center rounded-xl p-6">
                 <div>
-                    <ProUploader
-                        v-model="userStore.userInfo!.avatar"
-                        class="size-16 overflow-hidden !rounded-full"
-                        :text="t('common.profile.uploadAvatar')"
-                        icon="i-lucide-user"
-                        accept=".jpg,.png,.jpeg"
-                        :maxCount="1"
-                        :single="true"
-                        @success="updateUserFieldLockFn('avatar', $event.url)"
-                    />
+                    <ProUploader v-model="userStore.userInfo!.avatar" class="size-16 overflow-hidden !rounded-full"
+                        :text="t('common.profile.uploadAvatar')" icon="i-lucide-user" accept=".jpg,.png,.jpeg"
+                        :maxCount="1" :single="true" @success="updateUserFieldLockFn('avatar', $event.url)" />
                 </div>
                 <div class="ml-4">
                     <div class="text-foreground text-md font-semibold">
@@ -115,21 +129,10 @@ definePageMeta({
                 <!-- 昵称 -->
                 <UFormField :label="t('common.profile.nickname')" required name="nickname">
                     <div class="flex items-center gap-2">
-                        <UInput
-                            v-model="userStore.userInfo!.nickname"
-                            variant="soft"
-                            color="neutral"
-                            size="lg"
-                            disabled
-                            :ui="{ root: 'w-full' }"
-                        />
-                        <NicknameModal
-                            :loading="isLoading"
-                            :current-value="userStore.userInfo?.nickname"
-                            class="flex-none"
-                            size="lg"
-                            @success="(e) => updateUserFieldLockFn('nickname', e)"
-                        >
+                        <UInput v-model="userStore.userInfo!.nickname" variant="soft" color="neutral" size="lg" disabled
+                            :ui="{ root: 'w-full' }" />
+                        <NicknameModal :loading="isLoading" :current-value="userStore.userInfo?.nickname"
+                            class="flex-none" size="lg" @success="(e) => updateUserFieldLockFn('nickname', e)">
                             <UButton variant="soft"> {{ t("console-common.edit") }} </UButton>
                         </NicknameModal>
                     </div>
@@ -138,14 +141,8 @@ definePageMeta({
                 <!-- 用户编号 -->
                 <UFormField :label="t('common.profile.userNo')" name="userNo">
                     <div class="flex items-center gap-2">
-                        <UInput
-                            v-model="userStore.userInfo!.userNo"
-                            variant="soft"
-                            color="neutral"
-                            size="lg"
-                            disabled
-                            :ui="{ root: 'w-full' }"
-                        />
+                        <UInput v-model="userStore.userInfo!.userNo" variant="soft" color="neutral" size="lg" disabled
+                            :ui="{ root: 'w-full' }" />
                         <UButton size="lg" class="flex-none" variant="soft" @click="copyUserNo">
                             {{ t("console-common.copy") }}
                         </UButton>
@@ -155,14 +152,8 @@ definePageMeta({
                 <!-- 账号 -->
                 <UFormField :label="t('common.profile.username')" name="username">
                     <div class="flex items-center gap-2">
-                        <UInput
-                            v-model="userStore.userInfo!.username"
-                            variant="soft"
-                            color="neutral"
-                            size="lg"
-                            disabled
-                            :ui="{ root: 'w-full' }"
-                        />
+                        <UInput v-model="userStore.userInfo!.username" variant="soft" color="neutral" size="lg" disabled
+                            :ui="{ root: 'w-full' }" />
                         <UButton size="lg" class="flex-none" variant="soft" @click="copyUser">
                             {{ t("console-common.copy") }}
                         </UButton>
@@ -172,14 +163,8 @@ definePageMeta({
                 <!-- 邮箱 -->
                 <UFormField :label="t('common.profile.email')" name="email">
                     <div class="flex items-center gap-2">
-                        <UInput
-                            :model-value="userStore.userInfo!.email || '-'"
-                            variant="soft"
-                            color="neutral"
-                            size="lg"
-                            disabled
-                            :ui="{ root: 'w-full' }"
-                        />
+                        <UInput :model-value="userStore.userInfo!.email || '-'" variant="soft" color="neutral" size="lg"
+                            disabled :ui="{ root: 'w-full' }" />
                         <UButton size="lg" class="flex-none" variant="soft" @click="unrealized">
                             {{ t("console-common.update") }}
                         </UButton>
@@ -189,14 +174,8 @@ definePageMeta({
                 <!-- 手机号 -->
                 <UFormField :label="t('common.profile.phone')" name="phone">
                     <div class="flex items-center gap-2">
-                        <UInput
-                            :model-value="userStore.userInfo!.phone || '-'"
-                            variant="soft"
-                            color="neutral"
-                            size="lg"
-                            disabled
-                            :ui="{ root: 'w-full' }"
-                        />
+                        <UInput :model-value="userStore.userInfo!.phone || '-'" variant="soft" color="neutral" size="lg"
+                            disabled :ui="{ root: 'w-full' }" />
                         <UButton size="lg" class="flex-none" variant="soft" @click="unrealized">
                             {{ t("console-common.update") }}
                         </UButton>
@@ -206,19 +185,10 @@ definePageMeta({
                 <!-- 注册时间 -->
                 <UFormField :label="t('common.profile.registrationTime')" name="createdAt">
                     <div class="flex items-center gap-2">
-                        <UInput
-                            variant="soft"
-                            color="neutral"
-                            size="lg"
-                            disabled
-                            :ui="{ root: 'w-full' }"
-                        >
+                        <UInput variant="soft" color="neutral" size="lg" disabled :ui="{ root: 'w-full' }">
                             <template #leading>
-                                <TimeDisplay
-                                    v-if="userStore.userInfo?.createdAt"
-                                    :datetime="userStore.userInfo.createdAt as unknown as Date"
-                                    mode="datetime"
-                                />
+                                <TimeDisplay v-if="userStore.userInfo?.createdAt"
+                                    :datetime="userStore.userInfo.createdAt as unknown as Date" mode="datetime" />
                                 <span v-else>-</span>
                             </template>
                         </UInput>
@@ -235,18 +205,10 @@ definePageMeta({
                 <!-- 修改密码 -->
                 <UFormField :label="t('common.profile.loginPassword')" name="password">
                     <div class="flex items-center gap-2">
-                        <UInput
-                            :model-value="
-                                userStore.userInfo!.password
-                                    ? t('common.profile.passwordSet')
-                                    : t('common.profile.passwordSet')
-                            "
-                            variant="soft"
-                            color="neutral"
-                            size="lg"
-                            disabled
-                            :ui="{ root: 'w-full' }"
-                        />
+                        <UInput :model-value="userStore.userInfo!.password
+                                ? t('common.profile.passwordSet')
+                                : t('common.profile.passwordSet')
+                            " variant="soft" color="neutral" size="lg" disabled :ui="{ root: 'w-full' }" />
                         <PasswordModal :loading="isLoading" class="flex-none" size="lg">
                             <UButton size="lg" variant="soft">
                                 {{ t("console-common.update") }}
@@ -255,29 +217,32 @@ definePageMeta({
                     </div>
                 </UFormField>
 
+                <!-- 绑定微信 -->
+                <UFormField :label="t('common.profile.bindWechat')" name="bindWechat">
+                    <div class="flex items-center gap-2">
+                        <UInput :model-value="userStore.userInfo?.openid
+                                ? '已绑定微信'
+                                : '未绑定微信'
+                            " variant="soft" color="neutral" size="lg" disabled :ui="{ root: 'w-full' }" />
+                        <UButton size="lg" class="flex-none" variant="soft" :disabled="!!userStore.userInfo?.openid" @click="handleBindWechat">
+                            {{ t('common.profile.wechatBind') }}
+                        </UButton>
+                    </div>
+                </UFormField>
+
                 <!-- 注销账号 -->
                 <UFormField :label="t('common.profile.deactivateAccount')" name="deactivate">
                     <div class="flex items-center gap-2">
-                        <UInput
-                            :model-value="t('common.profile.deactivateWarning')"
-                            variant="soft"
-                            color="neutral"
-                            size="lg"
-                            disabled
-                            :ui="{ root: 'w-full' }"
-                        />
-                        <UButton
-                            size="lg"
-                            class="flex-none"
-                            variant="soft"
-                            color="error"
-                            @click="unrealized"
-                        >
+                        <UInput :model-value="t('common.profile.deactivateWarning')" variant="soft" color="neutral"
+                            size="lg" disabled :ui="{ root: 'w-full' }" />
+                        <UButton size="lg" class="flex-none" variant="soft" color="error" @click="unrealized">
                             {{ t("common.profile.deactivate") }}
                         </UButton>
                     </div>
                 </UFormField>
             </div>
         </section>
+
+        <WechatModal v-if="openWechatModal" :loading="isLoading" class="flex-none" size="lg" @close="closeWechatModal" @success="handleBindSuccess" />
     </div>
 </template>

@@ -331,6 +331,7 @@ export class AuthService extends BaseService<User> {
                 username,
                 password: "",
                 nickname: randomNickname,
+                userNo: await generateNo(this.userRepository, "userNo"),
                 status: BooleanNumber.YES, // 默认启用
                 source: UserCreateSource.WECHAT, // 标记为微信注册
                 avatar: `/static/avatars/${randomAvatarIndex}.png`,

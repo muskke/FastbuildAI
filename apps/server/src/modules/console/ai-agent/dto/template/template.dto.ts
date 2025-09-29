@@ -314,7 +314,6 @@ export class CreateAgentFromTemplateDto {
      * 模板ID
      */
     @IsNotEmpty({ message: "模板ID不能为空" })
-    @IsUUID(4, { message: "模板ID必须是有效的UUID" })
     templateId: string;
 
     /**

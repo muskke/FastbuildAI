@@ -81,6 +81,33 @@ export function apiCheckTicket(params?: { key: string }): Promise<WechatLoginTic
     return useWebGet(`/auth/wechat-qrcode-status/${params?.key}`);
 }
 
+/**
+ * 获取微信登录绑定二维码状态
+ * @description 前端轮询调用，判断当前二维码会话是否已在手机端完成绑定
+ * @param params 票据参数
+ * @param params.key 场景值 scene_str（即二维码 key）
+ * @returns {Promise<{ is_scan: boolean; is_bound: boolean; expired?: boolean }>} 绑定状态
+ */
+export function apiGetWechatBindStatus(params: { key: string; id?: string }): Promise<WechatLoginTicket> {
+    return useWebGet(`/auth/wechat-qrcode-bind-status/${params?.key}`, { id: params?.id });
+}
+
+/**
+ * 查询微信网页授权状态
+ * @description 前端轮询调用，判断当前二维码会话是否已在手机端完成授权（头像、昵称）
+ * @param params 查询参数
+ * @param params.key 场景值 scene_str（即二维码 key）
+ * @returns {Promise<{ is_scan: boolean; is_authorized: boolean; expired?: boolean }>} 授权状态
+ */
+export function apiGetWechatAuthorizedStatus(params: {
+    /** 二维码场景值（scene_str） */
+    key: string;
+}): Promise<{ is_scan: boolean; is_authorized: boolean; expired?: boolean }> {
+    return useWebGet<{ is_scan: boolean; is_authorized: boolean; expired?: boolean }>(
+        `/auth/wechat-authorized-status/${params.key}`,
+    );
+}
+
 // ==================== 短信验证相关 API ====================
 
 /**
