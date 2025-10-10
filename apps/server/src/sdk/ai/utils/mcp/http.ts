@@ -1,29 +1,32 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 
 import { McpServerOptions, MCPTool } from "./type";
 
-export class McpServerSSE {
+/**
+ * MCP client wrapper based on Streamable HTTP
+ *
+ * Goal: Provide equivalent HTTP transport implementation while maintaining identical input/output with `sse.ts`.
+ */
+export class McpServerHttp {
     protected client: Client;
-    protected transport: SSEClientTransport;
+    protected transport: StreamableHTTPClientTransport;
     private tools: MCPTool[] = [];
     public readonly options: McpServerOptions;
 
     constructor(options: McpServerOptions) {
         this.options = options;
-        // Initialize MCP transport layer with custom headers support
-        this.transport = new SSEClientTransport(new URL(options.url), {
+        // Initialize MCP transport layer (Streamable HTTP) with custom headers support
+        this.transport = new StreamableHTTPClientTransport(new URL(options.url), {
             requestInit: {
                 headers: options.customHeaders || {},
             },
         });
-        console.log(options.customHeaders);
-
         // Initialize MCP client
         this.client = new Client(
             {
-                name: "fastbuildai-mcp-client",
-                version: "1.0.0",
+                name: options.name || "fastbuildai-mcp-client",
+                version: options.version || "1.0.0",
             },
             {
                 capabilities: {
