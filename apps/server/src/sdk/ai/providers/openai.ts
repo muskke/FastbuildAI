@@ -95,14 +95,22 @@ export class OpenAIAdapter implements Adapter {
 
             const data = await response.json();
 
-            // 标准化返回格式
             return {
                 results: data.results || data.rankings || [],
                 model: data.model || requestBody.model,
             };
         } catch (error) {
             console.error(`${this.name} 重排服务调用失败:`, error);
-            throw new Error(`${this.name} 重排服务调用失败: ${error.message}`);
+            throw new Error(`${this.name} 重排服务调用失败: ${(error as Error).message}`);
+        }
+    }
+
+    async models() {
+        try {
+            const response = await this.client.models.list();
+            return response.data;
+        } catch (error) {
+            throw new Error((error as Error).message);
         }
     }
 }

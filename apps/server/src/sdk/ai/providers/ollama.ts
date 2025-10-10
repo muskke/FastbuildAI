@@ -7,7 +7,7 @@ export class OllamaAdapter extends OpenAIAdapter implements Adapter {
     name = "ollama";
     constructor(options: ClientOptions) {
         if (!options.baseURL) {
-            options.baseURL = "http://localhost:11434";
+            options.baseURL = "http://localhost:11434/v1";
         }
         if (!options.apiKey) {
             options.apiKey = "ollama";
