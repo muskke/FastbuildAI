@@ -6,7 +6,7 @@ import { buildWhere } from "@common/utils/helper.util";
 import { isEnabled } from "@common/utils/is.util";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { McpServer } from "@sdk/ai/utils/mcp/sse";
+import { McpServerSSE } from "@sdk/ai/utils/mcp/sse";
 import { FindOptionsWhere, IsNull, Like, Repository } from "typeorm";
 
 import {
@@ -264,14 +264,14 @@ export class AiMcpServerService extends BaseService<AiMcpServer> {
             throw HttpExceptionFactory.notFound(`ID为 ${id} 的MCP服务不存在`);
         }
 
-        let mcpClient: McpServer | null = null;
+        let mcpClient: McpServerSSE | null = null;
         let connectable = false;
         let toolsInfo = undefined;
         let errorMessage = "";
 
         try {
             // 创建MCP客户端实例
-            mcpClient = new McpServer({
+            mcpClient = new McpServerSSE({
                 url: mcpServer.url,
                 name: mcpServer.name,
                 description: mcpServer.description,
