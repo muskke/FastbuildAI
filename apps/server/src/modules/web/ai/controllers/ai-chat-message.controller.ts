@@ -22,7 +22,9 @@ import { KeyConfigService } from "@modules/console/key-manager/services/key-conf
 import { Body, Post, Res } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { getProvider, TextGenerator } from "@sdk/ai";
-import { convertMCPToolsToOpenAI, McpServer, MCPTool } from "@sdk/ai/utils/mcp/sse";
+import { McpServerSSE } from "@sdk/ai/utils/mcp/sse";
+import { MCPTool } from "@sdk/ai/utils/mcp/type";
+import { convertMCPToolsToOpenAI } from "@sdk/ai/utils/mcp/util";
 import { Response } from "express";
 import {
     ChatCompletionCreateParams,
@@ -120,11 +122,11 @@ export class AiChatMessageController extends BaseController {
             });
 
             // 初始化MCP服务器和工具（静默处理）
-            const mcpServers: McpServer[] = [];
+            const mcpServers: McpServerSSE[] = [];
             const tools: ChatCompletionFunctionTool[] = [];
             const toolToServerMap = new Map<
                 string,
-                { server: AiMcpServer; tool: MCPTool; mcpServer: McpServer }
+                { server: AiMcpServer; tool: MCPTool; mcpServer: McpServerSSE }
             >();
             const usedTools = new Set<string>(); // 跟踪实际使用的工具
             const mcpToolCalls: McpToolCall[] = []; // 收集MCP工具调用记录
@@ -137,7 +139,7 @@ export class AiChatMessageController extends BaseController {
                         });
 
                         if (server && server.url) {
-                            const mcpServer = new McpServer({
+                            const mcpServer = new McpServerSSE({
                                 url: server.url,
                                 name: server.name,
                                 description: server.description,
@@ -462,7 +464,7 @@ export class AiChatMessageController extends BaseController {
                 const usedToolsInfo = tools.filter((tool) => usedTools.has(tool.function.name));
 
                 // 获取使用的服务器信息
-                const usedServers = new Set<McpServer>();
+                const usedServers = new Set<McpServerSSE>();
                 usedTools.forEach((toolName) => {
                     const server = toolToServerMap.get(toolName);
                     if (server) {
@@ -516,10 +518,10 @@ export class AiChatMessageController extends BaseController {
         let fullResponse = "";
         let userConsumedPower = 0;
         const tools: ChatCompletionFunctionTool[] = [];
-        const mcpServers: McpServer[] = [];
+        const mcpServers: McpServerSSE[] = [];
         const toolToServerMap = new Map<
             string,
-            { server: AiMcpServer; tool: MCPTool; mcpServer: McpServer }
+            { server: AiMcpServer; tool: MCPTool; mcpServer: McpServerSSE }
         >();
         const usedTools = new Set<string>(); // 跟踪实际使用的工具
         const mcpToolCalls: McpToolCall[] = []; // 收集MCP工具调用记录
@@ -615,7 +617,7 @@ export class AiChatMessageController extends BaseController {
                         });
 
                         if (server && server.url) {
-                            const mcpServer = new McpServer({
+                            const mcpServer = new McpServerSSE({
                                 url: server.url,
                                 name: server.name,
                                 description: server.description,

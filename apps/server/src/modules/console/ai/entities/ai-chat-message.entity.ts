@@ -1,5 +1,5 @@
 import { AppEntity } from "@common/decorators/app-entity.decorator";
-import { MCPTool } from "@sdk/ai/utils/mcp/sse";
+import { MCPTool } from "@sdk/ai/utils/mcp/type";
 import {
     Column,
     CreateDateColumn,

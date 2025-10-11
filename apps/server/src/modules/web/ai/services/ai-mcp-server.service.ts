@@ -5,7 +5,7 @@ import { AiUserMcpServer } from "@modules/console/ai/entities/ai-user-mcp-server
 import { AiMcpToolService } from "@modules/console/ai/services/ai-mcp-tool.service";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { McpServer } from "@sdk/ai/utils/mcp/sse";
+import { McpServerSSE } from "@sdk/ai/utils/mcp/sse";
 import { Not, Repository } from "typeorm";
 
 import {
@@ -234,14 +234,14 @@ export class WebAiMcpServerService extends BaseService<AiMcpServer> {
             throw HttpExceptionFactory.forbidden("您没有权限操作该MCP服务");
         }
 
-        let mcpClient: McpServer | null = null;
+        let mcpClient: McpServerSSE | null = null;
         let connectable = false;
         let toolsInfo = undefined;
         let errorMessage = "";
 
         try {
             // 创建MCP客户端实例
-            mcpClient = new McpServer({
+            mcpClient = new McpServerSSE({
                 url: mcpServer.url,
                 name: mcpServer.name,
                 description: mcpServer.description,
