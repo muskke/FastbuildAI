@@ -249,7 +249,11 @@
         "nameInput": "Enter name",
         "descriptionInput": "Enter description",
         "embeddingModelInput": "Select embedding model",
-        "retrievalMethod": "Retrieval"
+        "retrievalMethod": "Retrieval",
+        "embeddingModelWarning": {
+            "title": "Important Notice",
+            "description": "Changing the embedding model will trigger re-vectorization of all documents in the knowledge base. This process may take considerable time, please proceed with caution."
+        }
     },
     "create": {
         "step": {

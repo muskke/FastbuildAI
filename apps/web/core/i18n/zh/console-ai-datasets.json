@@ -249,7 +249,11 @@
         "nameInput": "请输入知识库名称",
         "descriptionInput": "请输入知识库描述",
         "retrievalMethod": "检索设置",
-        "embeddingModelInput": "请选择 embeddingModel 模型"
+        "embeddingModelInput": "请选择 embeddingModel 模型",
+        "embeddingModelWarning": {
+            "title": "重要提醒",
+            "description": "修改向量模型将导致知识库中的所有文档数据重新进行向量化处理，此过程可能需要较长时间，请谨慎操作。"
+        }
     },
 
     "create": {

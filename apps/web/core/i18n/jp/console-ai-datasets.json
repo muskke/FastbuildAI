@@ -249,7 +249,11 @@
         "nameInput": "ナレッジベース名を入力",
         "descriptionInput": "ナレッジベースの説明を入力",
         "embeddingModelInput": "Embedding モデルを選択",
-        "retrievalMethod": "検索設定"
+        "retrievalMethod": "検索設定",
+        "embeddingModelWarning": {
+            "title": "重要な注意事項",
+            "description": "埋め込みモデルを変更すると、ナレッジベース内のすべてのドキュメントデータが再ベクトル化されます。このプロセスには時間がかかる場合がありますので、慎重に操作してください。"
+        }
     },
     "create": {
         "step": {
