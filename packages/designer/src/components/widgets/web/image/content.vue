@@ -3,7 +3,7 @@
  * 图片组件
  * @description 支持懒加载、链接跳转的图片组件
  */
-import { computed, type CSSProperties, onMounted, ref } from "vue";
+import { computed, type CSSProperties, ref } from "vue";
 
 import { navigateToWeb } from "@/common/utils/helper";
 
@@ -12,8 +12,6 @@ import type { Props } from "./config";
 
 const props = defineProps<Props>();
 
-const imageRef = ref<HTMLImageElement>();
-const isLoaded = ref(false);
 const hasError = ref(false);
 
 /**
@@ -44,13 +42,6 @@ const placeholderStyle = computed<CSSProperties>(() => ({
 }));
 
 /**
- * 处理图片加载完成
- */
-const handleLoad = () => {
-    isLoaded.value = true;
-};
-
-/**
  * 处理图片加载错误
  */
 const handleError = () => {
@@ -59,19 +50,10 @@ const handleError = () => {
 
 /**
  * 是否显示占位图
+ * 只在没有图片地址或加载错误时显示占位图
  */
 const showPlaceholder = computed(() => {
-    return !props.src || !isLoaded.value || hasError.value;
-});
-
-onMounted(() => {
-    // 如果不启用懒加载，直接开始加载图片
-    if (!props.lazy && props.src) {
-        const img = new Image();
-        img.onload = handleLoad;
-        img.onerror = handleError;
-        img.src = props.src;
-    }
+    return !props.src || hasError.value;
 });
 </script>
 
@@ -91,13 +73,11 @@ onMounted(() => {
                 <!-- 实际图片 -->
                 <img
                     v-else
-                    ref="imageRef"
                     :src="props.src"
                     :alt="props.alt"
                     :title="props.title"
                     :style="imageStyle"
                     :loading="props.lazy ? 'lazy' : 'eager'"
-                    @load="handleLoad"
                     @error="handleError"
                     class="block"
                 />
