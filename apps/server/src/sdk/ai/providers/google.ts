@@ -3,8 +3,8 @@ import { ClientOptions } from "openai";
 import { Adapter } from "../interfaces/adapter";
 import { OpenAIAdapter } from "./openai";
 
-export class GeminiAdapter extends OpenAIAdapter implements Adapter {
-    name = "gemini";
+export class GoogleAdapter extends OpenAIAdapter implements Adapter {
+    name = "google";
 
     constructor(options: ClientOptions) {
         if (!options.baseURL) {
@@ -14,6 +14,6 @@ export class GeminiAdapter extends OpenAIAdapter implements Adapter {
     }
 }
 
-export const gemini = (options: ClientOptions = {}) => {
-    return new GeminiAdapter(options);
+export const google = (options: ClientOptions = {}) => {
+    return new GoogleAdapter(options);
 };

@@ -1,5 +1,6 @@
 import { ClientOptions } from "openai";
 
+import { AIError } from "../errors/basic";
 import { Adapter, RerankParams, RerankResponse } from "../interfaces/adapter";
 import { OpenAIAdapter } from "./openai";
 
@@ -14,13 +15,13 @@ export class TongYiAdapter extends OpenAIAdapter implements Adapter {
     }
 
     /**
-     * 通义千问重排功能实现 - 重写基类方法
-     * 基于阿里云 DashScope 重排服务
-     * 参考文档：https://help.aliyun.com/zh/model-studio/text-rerank-api
+     * Tongyi Qianwen rerank implementation - overrides base class method
+     * Powered by Alibaba Cloud DashScope Rerank service
+     * Reference: https://help.aliyun.com/zh/model-studio/text-rerank-api
      */
     async rerankDocuments(params: RerankParams): Promise<RerankResponse> {
         try {
-            // 构建请求体，严格按照阿里云文档格式
+            // Build request body strictly following Alibaba Cloud documentation format
             const requestBody = {
                 model: params.model || "gte-rerank-v2",
                 input: {
@@ -28,12 +29,12 @@ export class TongYiAdapter extends OpenAIAdapter implements Adapter {
                     documents: params.documents,
                 },
                 parameters: {
-                    return_documents: false, // 不返回原文档，节省带宽
+                    return_documents: false, // Do not return original documents to save bandwidth
                     top_n: params.top_n || params.documents.length,
                 },
             };
 
-            // 使用官方文档中的正确端点
+            // Use the correct endpoint per official documentation
             const response = await fetch(
                 "https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank",
                 {
@@ -48,20 +49,24 @@ export class TongYiAdapter extends OpenAIAdapter implements Adapter {
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error("通义千问重排请求详细错误:", errorText);
-                throw new Error(
-                    `通义千问重排请求失败: ${response.status} ${response.statusText} - ${errorText}`,
+                console.error("Qwen rerank request detailed error:", errorText);
+                throw new AIError(
+                    `Qwen rerank request failed: ${response.status} ${response.statusText} - ${errorText}`,
+                    undefined,
                 );
             }
 
             const data = await response.json();
 
-            // 检查是否有错误码
+            // Check whether the response contains an error code
             if (data.code) {
-                throw new Error(`通义千问重排服务错误: ${data.message || data.code}`);
+                throw new AIError(
+                    `Qwen rerank service error: ${data.message || data.code}`,
+                    undefined,
+                );
             }
 
-            // 转换为标准格式，按照文档中的响应结构
+            // Normalize to the standard format according to the documented response structure
             const results = data.output?.results || [];
             return {
                 results: results.map((item: any) => ({
