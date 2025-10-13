@@ -3,8 +3,8 @@ import { ClientOptions } from "openai";
 import { Adapter } from "../interfaces/adapter";
 import { OpenAIAdapter } from "./openai";
 
-export class ZhipuAdapter extends OpenAIAdapter implements Adapter {
-    name = "zhipu";
+export class ZhipuaiAdapter extends OpenAIAdapter implements Adapter {
+    name = "zhipuai";
 
     constructor(options: ClientOptions) {
         if (!options.baseURL) {
@@ -14,6 +14,6 @@ export class ZhipuAdapter extends OpenAIAdapter implements Adapter {
     }
 }
 
-export const zhipu = (options: ClientOptions = {}) => {
-    return new ZhipuAdapter(options);
+export const zhipuai = (options: ClientOptions = {}) => {
+    return new ZhipuaiAdapter(options);
 };

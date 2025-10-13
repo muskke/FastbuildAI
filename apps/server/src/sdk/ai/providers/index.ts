@@ -1,7 +1,7 @@
 export * from "./custom";
 export * from "./deepseek";
-export * from "./gemini";
-export * from "./gemini";
+export * from "./google";
+export * from "./hunyuan";
 export * from "./moonshot";
 export * from "./ollama";
 export * from "./openai";
@@ -9,4 +9,5 @@ export * from "./siliconflow";
 export * from "./tongyi";
 export * from "./volcengine";
 export * from "./wenxin";
+export * from "./x";
 export * from "./zhipu";
