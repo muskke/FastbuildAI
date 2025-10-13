@@ -119,20 +119,31 @@ definePageMeta({ layout: "full-screen" });
                     :label="$t('console-ai-datasets.create.stepTwo.embeddingModel')"
                     required
                 >
-                    <ModelSelect
-                        :modelValue="formData.embeddingModelId"
-                        :button-ui="{
-                            variant: 'outline',
-                            color: 'neutral',
-                            ui: { base: 'w-full' },
-                            class: 'bg-background',
-                        }"
-                        :supportedModelTypes="['text-embedding']"
-                        :defaultSelected="false"
-                        capability="chat"
-                        placeholder="选择嵌入模型"
-                        @change="(e) => (formData.embeddingModelId = e.id)"
-                    />
+                    <div class="space-y-3">
+                        <ModelSelect
+                            :modelValue="formData.embeddingModelId"
+                            :button-ui="{
+                                variant: 'outline',
+                                color: 'neutral',
+                                ui: { base: 'w-full' },
+                                class: 'bg-background',
+                            }"
+                            :supportedModelTypes="['text-embedding']"
+                            :defaultSelected="false"
+                            capability="chat"
+                            placeholder="选择嵌入模型"
+                            @change="(e) => (formData.embeddingModelId = e.id)"
+                        />
+                        <UAlert
+                            color="warning"
+                            variant="soft"
+                            :title="$t('console-ai-datasets.settings.embeddingModelWarning.title')"
+                            :description="
+                                $t('console-ai-datasets.settings.embeddingModelWarning.description')
+                            "
+                            :icon="'i-lucide-alert-triangle'"
+                        />
+                    </div>
                 </UFormField>
 
                 <USeparator />
