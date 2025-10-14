@@ -6,6 +6,7 @@ import { buildWhere } from "@common/utils/helper.util";
 import { isEnabled } from "@common/utils/is.util";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { McpServerHttp } from "@sdk/ai/utils/mcp";
 import { McpServerSSE } from "@sdk/ai/utils/mcp/sse";
 import { FindOptionsWhere, IsNull, Like, Repository } from "typeorm";
 
@@ -15,7 +16,7 @@ import {
     QueryAiMcpServerDto,
     UpdateAiMcpServerDto,
 } from "../dto/ai-mcp-server.dto";
-import { AiMcpServer, McpServerType } from "../entities/ai-mcp-server.entity";
+import { AiMcpServer, McpCommunicationType, McpServerType } from "../entities/ai-mcp-server.entity";
 import { AiUserMcpServer } from "../entities/ai-user-mcp-server.entity";
 import { AiMcpToolService } from "./ai-mcp-tool.service";
 
@@ -159,6 +160,9 @@ export class AiMcpServerService extends BaseService<AiMcpServer> {
                 // 直接使用完整的URL
                 const url = config.url;
 
+                // 通信类型
+                const communicationType = config.type;
+
                 // 检查同名服务是否已存在
                 const existServer = await this.findOne({
                     where: { name },
@@ -168,6 +172,7 @@ export class AiMcpServerService extends BaseService<AiMcpServer> {
                     // 如果存在，则更新
                     const updated = await this.updateById(existServer.id, {
                         url,
+                        communicationType,
                         creatorId,
                         customHeaders: config.customHeaders,
                     });
@@ -181,6 +186,7 @@ export class AiMcpServerService extends BaseService<AiMcpServer> {
                     // 如果不存在，则创建
                     const created = await this.create({
                         name,
+                        communicationType,
                         type: McpServerType.SYSTEM,
                         url,
                         creatorId,
@@ -264,19 +270,28 @@ export class AiMcpServerService extends BaseService<AiMcpServer> {
             throw HttpExceptionFactory.notFound(`ID为 ${id} 的MCP服务不存在`);
         }
 
-        let mcpClient: McpServerSSE | null = null;
+        let mcpClient: McpServerSSE | McpServerHttp = null;
         let connectable = false;
         let toolsInfo = undefined;
         let errorMessage = "";
 
         try {
-            // 创建MCP客户端实例
-            mcpClient = new McpServerSSE({
-                url: mcpServer.url,
-                name: mcpServer.name,
-                description: mcpServer.description,
-                customHeaders: mcpServer.customHeaders,
-            });
+            // 创建MCP客户端实例 根据mcp服务通信连接类型判断使用哪种通信方式连接
+            if (mcpServer.communicationType == McpCommunicationType.SSE) {
+                mcpClient = new McpServerSSE({
+                    url: mcpServer.url,
+                    name: mcpServer.name,
+                    description: mcpServer.description,
+                    customHeaders: mcpServer.customHeaders,
+                });
+            } else {
+                mcpClient = new McpServerHttp({
+                    url: mcpServer.url,
+                    name: mcpServer.name,
+                    description: mcpServer.description,
+                    customHeaders: mcpServer.customHeaders,
+                });
+            }
 
             // 尝试连接
             await mcpClient.connect();

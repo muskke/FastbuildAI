@@ -35,6 +35,21 @@ export enum McpServerType {
 }
 
 /**
+ * MCP服务通信的传输方式
+ */
+export enum McpCommunicationType {
+    /**
+     * SSE
+     */
+    SSE = "sse",
+
+    /**
+     * StreamableHTTP
+     */
+    STREAMABLEHTTP = "streamable-http",
+}
+
+/**
  * MCP服务配置实体
  *
  * 用于存储具体MCP服务的配置信息
@@ -99,6 +114,17 @@ export class AiMcpServer {
         comment: "服务类型，只能是 user 或 system",
     })
     type: McpServerType;
+
+    /**
+     * 通信传输方式
+     */
+    @Column({
+        type: "enum",
+        enum: McpCommunicationType,
+        default: McpCommunicationType.SSE,
+        comment: "通信传输方式: sse 或 streamable-http",
+    })
+    communicationType: McpCommunicationType;
 
     /**
      * 服务SSE URL

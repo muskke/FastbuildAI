@@ -1,6 +1,10 @@
 import { PaginationDto } from "@common/dto/pagination.dto";
 import { isEnabled } from "@common/utils/is.util";
-import { AiMcpServer, McpServerType } from "@modules/console/ai/entities/ai-mcp-server.entity";
+import {
+    AiMcpServer,
+    McpCommunicationType,
+    McpServerType,
+} from "@modules/console/ai/entities/ai-mcp-server.entity";
 import { PartialType } from "@nestjs/mapped-types";
 import { Transform, Type } from "class-transformer";
 import {
@@ -82,6 +86,14 @@ export class CreateWebAiMcpServerDto extends PartialType(AddUserMcpServerDto) {
     @IsString({ message: "供应商URL必须是字符串" })
     @MaxLength(100, { message: "供应商URL长度不能超过100个字符" })
     providerUrl?: string;
+
+    /**
+     * 通信传输方式
+     */
+    @IsOptional()
+    @IsNotEmpty({ message: "通信传输方式不能为空" })
+    @IsEnum(McpCommunicationType, { message: "通信传输方式必须是sse或者streamable-http" })
+    communicationType?: McpCommunicationType;
 
     /**
      * 是否禁用
