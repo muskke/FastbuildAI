@@ -3830,6 +3830,82 @@
                     "icon_url": "/static/ai/providers/zhipuai.png"
                 }
             ]
+        },
+        {
+            "provider": "volcengine",
+            "label": "火山引擎",
+            "icon_url": "/static/ai/providers/volcengine.png",
+            "supported_model_types": ["llm"],
+            "models": [
+                {
+                    "model": "doubao-seed-1.6",
+                    "label": "doubao-seed-1.6",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
+                },
+                {
+                    "model": "doubao-seed-1.6-flash",
+                    "label": "doubao-seed-1.6-flash",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
+                },
+                {
+                    "model": "doubao-seed-1.6-thinking",
+                    "label": "doubao-seed-1.6-thinking",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
+                },
+                {
+                    "model": "deepseek-v3.1",
+                    "label": "deepseek-v3.1",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call"
+                    ],
+                    "model_properties": {
+                        "context_size": 128000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
+                }
+            ]
         }
     ]
 }
