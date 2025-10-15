@@ -97,5 +97,18 @@
         "reconnect": "再接続",
         "quickMenu": "はい",
         "normalMenu": "いいえ"
+    },
+    "validation": {
+        "jsonRequired": "JSONデータを入力してください",
+        "jsonFormatError": "JSON形式が正しくありません。構文を確認してください",
+        "missingMcpServers": "JSONデータにmcpServersオブジェクトがありません",
+        "emptyMcpServers": "mcpServersに少なくとも1つのサーバーを設定する必要があります",
+        "invalidConfig": "の設定形式が正しくありません",
+        "missingUrl": "必須フィールドが不足しています: url",
+        "invalidUrlType": "のurlフィールドは文字列型である必要があります",
+        "missingType": "必須フィールドが不足しています: type",
+        "invalidTypeValue": "のtypeフィールドは文字列型である必要があります",
+        "invalidTypeEnum": "のtypeフィールドは \"sse\" または \"streamable-http\" である必要があります",
+        "invalidHeaders": "のheadersフィールドはオブジェクト型である必要があります"
     }
 }

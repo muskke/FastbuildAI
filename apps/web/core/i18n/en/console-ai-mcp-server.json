@@ -97,5 +97,18 @@
         "reconnect": "Reconnect",
         "quickMenu": "Yes",
         "normalMenu": "No"
+    },
+    "validation": {
+        "jsonRequired": "Please enter JSON data",
+        "jsonFormatError": "Invalid JSON format, please check syntax",
+        "missingMcpServers": "Missing mcpServers object in JSON data",
+        "emptyMcpServers": "At least one server must be configured in mcpServers",
+        "invalidConfig": "has invalid configuration format",
+        "missingUrl": "missing required field: url",
+        "invalidUrlType": "url field must be a string",
+        "missingType": "missing required field: type",
+        "invalidTypeValue": "type field must be a string",
+        "invalidTypeEnum": "type field must be \"sse\" or \"streamable-http\"",
+        "invalidHeaders": "headers field must be an object"
     }
 }

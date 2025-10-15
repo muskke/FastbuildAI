@@ -97,5 +97,18 @@
         "reconnect": "重新链接",
         "quickMenu": "是",
         "normalMenu": "否"
+    },
+    "validation": {
+        "jsonRequired": "请输入JSON数据",
+        "jsonFormatError": "JSON格式错误,请检查语法是否正确",
+        "missingMcpServers": "JSON数据中缺少 mcpServers 对象",
+        "emptyMcpServers": "mcpServers 对象中至少需要配置一个服务器",
+        "invalidConfig": "的配置格式不正确",
+        "missingUrl": "缺少必填字段: url",
+        "invalidUrlType": "的 url 字段必须是字符串类型",
+        "missingType": "缺少必填字段: type",
+        "invalidTypeValue": "的 type 字段必须是字符串类型",
+        "invalidTypeEnum": "的 type 字段值必须是 \"sse\" 或 \"streamable-http\"",
+        "invalidHeaders": "的 headers 字段必须是对象类型"
     }
 }

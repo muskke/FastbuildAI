@@ -38,6 +38,7 @@ interface DetailData {
     connectable: boolean;
     connectError: string;
     isQuickMenu: boolean;
+    communicationType: string;
 }
 
 const loading = ref(false);
@@ -57,6 +58,7 @@ const formData = reactive<DetailData>({
     connectable: false,
     connectError: "",
     isQuickMenu: false,
+    communicationType: "",
 });
 const reconnecting = ref(false);
 
@@ -251,6 +253,16 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                         }}</UBadge>
                     </div>
                 </div>
+
+                <div>
+                    <div class="text-muted-foreground text-sm">
+                        {{ t("console-ai-mcp-server.form.type") }}
+                    </div>
+                    <div class="text-secondary-foreground mt-1 font-medium">
+                        {{ formData.communicationType }}
+                    </div>
+                </div>
+
                 <div>
                     <div class="text-muted-foreground text-sm">
                         {{ t("console-ai-mcp-server.detail.connectError") }}
