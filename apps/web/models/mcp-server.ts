@@ -129,6 +129,7 @@ export interface CreateMcpServerRequest {
     alias?: string;
     providerUrl?: string;
     customHeaders?: string | Record<string, string>;
+    communicationType?: string;
 }
 
 export interface ToolInfo {

@@ -19,7 +19,7 @@ import {
     QueryAiMcpServerDto,
     UpdateAiMcpServerDto,
 } from "../dto/ai-mcp-server.dto";
-import { AiMcpServer } from "../entities/ai-mcp-server.entity";
+import { AiMcpServer, McpCommunicationType } from "../entities/ai-mcp-server.entity";
 import { AiMcpServerService } from "../services/ai-mcp-server.service";
 import { AiMcpToolService } from "../services/ai-mcp-tool.service";
 
@@ -297,8 +297,12 @@ export class AiMcpServerController extends BaseController {
                         },
                         additionalProperties: false,
                     },
+                    type: {
+                        type: "string",
+                        enum: Object.values(McpCommunicationType),
+                    },
                 },
-                required: ["url"],
+                required: ["url", "type"],
                 additionalProperties: false,
             };
 
@@ -326,6 +330,15 @@ export class AiMcpServerController extends BaseController {
             let parsedData;
             try {
                 parsedData = JSON.parse(importJsonDto.jsonString);
+                if (parsedData.mcpServers) {
+                    for (const key in parsedData.mcpServers) {
+                        const server = parsedData.mcpServers[key];
+                        if (server.headers) {
+                            server.customHeaders = server.headers;
+                            delete server.headers;
+                        }
+                    }
+                }
             } catch (parseError) {
                 throw HttpExceptionFactory.badRequest(
                     "JSON格式不正确，无法解析：" + parseError.message,

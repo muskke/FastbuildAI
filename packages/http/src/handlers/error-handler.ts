@@ -35,27 +35,27 @@ export class ErrorHandler {
 
         switch (status) {
             case 400:
-                useMessage().error(`Bad Request: ${errorMessage}${errorPath}`, {
+                useMessage().error(`${errorMessage}`, {
                     title: t("console-common.request.400"),
                 });
                 throw new Error(`Bad Request: ${errorMessage}${errorPath}`);
 
             case 401:
                 // 未授权401
-                useMessage().error(`Unauthorized: ${errorMessage}`, {
+                useMessage().error(`${errorMessage}`, {
                     title: t("console-common.request.401"),
                 });
                 useUserStore().toLogin();
                 throw new Error(`Unauthorized: ${errorMessage}${errorPath}`);
 
             case 403:
-                useMessage().error(`Forbidden: ${errorMessage}${errorPath}`, {
+                useMessage().error(`${errorMessage}`, {
                     title: t("console-common.request.403"),
                 });
                 throw new Error(`Forbidden: ${errorMessage}${errorPath}`);
 
             case 404:
-                useMessage().error(`Not Found: ${errorMessage}${errorPath}`, {
+                useMessage().error(`${errorMessage}`, {
                     title: t("console-common.request.404"),
                 });
                 throw new Error(`Not Found: ${status}: ${errorMessage}${errorPath}`);
@@ -67,7 +67,7 @@ export class ErrorHandler {
                 throw new Error(`Internal Server Error: ${errorMessage}${errorPath}`);
 
             default:
-                useMessage().error(errorMessage + errorPath);
+                useMessage().error(errorMessage);
                 throw new Error(`HTTP Error ${status}: ${errorMessage}${errorPath}`);
         }
     }

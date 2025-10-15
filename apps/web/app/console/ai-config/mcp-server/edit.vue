@@ -38,6 +38,7 @@ const formData = reactive<CreateMcpServerRequest>({
     isDisabled: false,
     url: "",
     sortOrder: 0,
+    communicationType: undefined,
     timeout: 60,
     isQuickMenu: false,
     alias: "",
@@ -70,19 +71,108 @@ const providerSchema = object({
                 return false;
             }
         }),
+    communicationType: string().required(t("console-ai-mcp-server.form.type")),
 });
 
-// JSON导入表单验证规则
+/**
+ * JSON导入表单验证规则
+ * 验证JSON格式及必填字段(url和type)
+ */
 const jsonImportSchema = object({
     jsonImport: string()
-        .required("请输入JSON数据")
-        .test("is-valid-json", "请输入有效的JSON数据", (value) => {
+        .required(t("console-ai-mcp-server.validation.jsonRequired"))
+        .test("is-valid-json", t("console-ai-mcp-server.validation.jsonFormatError"), (value) => {
             if (!value) return false;
             try {
                 JSON.parse(value);
                 return true;
             } catch (e) {
                 return false;
+            }
+        })
+        .test("validate-required-fields", (value, context) => {
+            if (!value) return true;
+
+            try {
+                const parsed = JSON.parse(value);
+
+                if (!parsed.mcpServers || typeof parsed.mcpServers !== "object") {
+                    return context.createError({
+                        message: t("console-ai-mcp-server.validation.missingMcpServers"),
+                    });
+                }
+
+                const servers = parsed.mcpServers;
+                const serverNames = Object.keys(servers);
+
+                if (serverNames.length === 0) {
+                    return context.createError({
+                        message: t("console-ai-mcp-server.validation.emptyMcpServers"),
+                    });
+                }
+
+                // 检查每个服务器配置的必填字段
+                for (const [serverName, config] of Object.entries(servers)) {
+                    if (!config || typeof config !== "object") {
+                        return context.createError({
+                            message: `"${serverName}" ${t("console-ai-mcp-server.validation.invalidConfig")}`,
+                        });
+                    }
+
+                    const serverConfig = config as Record<string, unknown>;
+
+                    // 检查 url 字段
+                    if (!serverConfig.url) {
+                        return context.createError({
+                            message: `"${serverName}" ${t("console-ai-mcp-server.validation.missingUrl")}`,
+                        });
+                    }
+
+                    if (typeof serverConfig.url !== "string") {
+                        return context.createError({
+                            message: `"${serverName}" ${t("console-ai-mcp-server.validation.invalidUrlType")}`,
+                        });
+                    }
+
+                    // 检查 type 字段
+                    if (!serverConfig.type) {
+                        return context.createError({
+                            message: `"${serverName}" ${t("console-ai-mcp-server.validation.missingType")}`,
+                        });
+                    }
+
+                    if (typeof serverConfig.type !== "string") {
+                        return context.createError({
+                            message: `"${serverName}" ${t("console-ai-mcp-server.validation.invalidTypeValue")}`,
+                        });
+                    }
+
+                    // 验证 type 字段的值是否合法
+                    const validTypes = ["sse", "streamable-http"];
+                    if (!validTypes.includes(serverConfig.type)) {
+                        return context.createError({
+                            message: `"${serverName}" ${t("console-ai-mcp-server.validation.invalidTypeEnum")}`,
+                        });
+                    }
+
+                    // headers 是可选的,如果存在则验证其格式
+                    if (serverConfig.headers !== undefined) {
+                        if (
+                            typeof serverConfig.headers !== "object" ||
+                            serverConfig.headers === null
+                        ) {
+                            return context.createError({
+                                message: `"${serverName}" ${t("console-ai-mcp-server.validation.invalidHeaders")}`,
+                            });
+                        }
+                    }
+                }
+
+                return true;
+            } catch (e) {
+                return context.createError({
+                    message: t("console-ai-mcp-server.validation.jsonFormatError"),
+                });
             }
         }),
 });
@@ -212,6 +302,8 @@ const correctJson = `{
     "mcpServers": {
         "Your MCP Server Name": {
             "url": "xxxxx",
+            // type: sse or streamable-http
+            "type": "sse or streamable-http",
             "headers": {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer Your Token"
@@ -277,6 +369,22 @@ onMounted(async () => mcpServerId.value && (await fetchDetail()));
                         v-model="formData.url"
                         :placeholder="t('console-ai-mcp-server.form.baseUrlPlaceholder')"
                         :ui="{ root: 'w-full' }"
+                    />
+                </UFormField>
+                <!-- 类型 -->
+                <UFormField
+                    :label="t('console-ai-mcp-server.form.type')"
+                    name="communicationType"
+                    required
+                >
+                    <USelect
+                        v-model="formData.communicationType"
+                        :placeholder="t('console-ai-mcp-server.form.type')"
+                        :ui="{ base: 'w-full' }"
+                        :items="[
+                            { label: 'sse', value: 'sse' },
+                            { label: 'streamable-http', value: 'streamable-http' },
+                        ]"
                     />
                 </UFormField>
                 <!-- 请求头 -->

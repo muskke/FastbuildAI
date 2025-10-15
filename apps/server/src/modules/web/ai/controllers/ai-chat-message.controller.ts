@@ -14,14 +14,17 @@ import { getProviderKeyConfig, validateArrayItems } from "@common/utils/helper.u
 import { ChatRequestDto } from "@modules/console/ai/dto/ai-chat-message.dto";
 import { MessageRole, MessageType } from "@modules/console/ai/dto/ai-chat-record.dto";
 import { McpToolCall } from "@modules/console/ai/entities/ai-chat-message.entity";
-import { AiMcpServer } from "@modules/console/ai/entities/ai-mcp-server.entity";
+import {
+    AiMcpServer,
+    McpCommunicationType,
+} from "@modules/console/ai/entities/ai-mcp-server.entity";
 import { AiChatRecordService } from "@modules/console/ai/services/ai-chat-record.service";
 import { AiMcpServerService } from "@modules/console/ai/services/ai-mcp-server.service";
 import { AiModelService } from "@modules/console/ai/services/ai-model.service";
 import { KeyConfigService } from "@modules/console/key-manager/services/key-config.service";
 import { Body, Post, Res } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { getProvider, TextGenerator } from "@sdk/ai";
+import { getProvider, McpServerHttp, TextGenerator } from "@sdk/ai";
 import { McpServerSSE } from "@sdk/ai/utils/mcp/sse";
 import { MCPTool } from "@sdk/ai/utils/mcp/type";
 import { convertMCPToolsToOpenAI } from "@sdk/ai/utils/mcp/util";
@@ -122,11 +125,11 @@ export class AiChatMessageController extends BaseController {
             });
 
             // 初始化MCP服务器和工具（静默处理）
-            const mcpServers: McpServerSSE[] = [];
+            const mcpServers: any[] = [];
             const tools: ChatCompletionFunctionTool[] = [];
             const toolToServerMap = new Map<
                 string,
-                { server: AiMcpServer; tool: MCPTool; mcpServer: McpServerSSE }
+                { server: AiMcpServer; tool: MCPTool; mcpServer: McpServerSSE | McpServerHttp }
             >();
             const usedTools = new Set<string>(); // 跟踪实际使用的工具
             const mcpToolCalls: McpToolCall[] = []; // 收集MCP工具调用记录
@@ -139,12 +142,22 @@ export class AiChatMessageController extends BaseController {
                         });
 
                         if (server && server.url) {
-                            const mcpServer = new McpServerSSE({
-                                url: server.url,
-                                name: server.name,
-                                description: server.description,
-                                customHeaders: server.customHeaders,
-                            });
+                            let mcpServer: McpServerSSE | McpServerHttp;
+                            if (McpCommunicationType.SSE == server.communicationType) {
+                                mcpServer = new McpServerSSE({
+                                    url: server.url,
+                                    name: server.name,
+                                    description: server.description,
+                                    customHeaders: server.customHeaders,
+                                });
+                            } else {
+                                mcpServer = new McpServerHttp({
+                                    url: server.url,
+                                    name: server.name,
+                                    description: server.description,
+                                    customHeaders: server.customHeaders,
+                                });
+                            }
                             await mcpServer.connect();
                             mcpServers.push(mcpServer);
 
@@ -464,7 +477,7 @@ export class AiChatMessageController extends BaseController {
                 const usedToolsInfo = tools.filter((tool) => usedTools.has(tool.function.name));
 
                 // 获取使用的服务器信息
-                const usedServers = new Set<McpServerSSE>();
+                const usedServers = new Set<McpServerSSE | McpServerHttp>();
                 usedTools.forEach((toolName) => {
                     const server = toolToServerMap.get(toolName);
                     if (server) {
@@ -518,10 +531,10 @@ export class AiChatMessageController extends BaseController {
         let fullResponse = "";
         let userConsumedPower = 0;
         const tools: ChatCompletionFunctionTool[] = [];
-        const mcpServers: McpServerSSE[] = [];
+        const mcpServers: any[] = [];
         const toolToServerMap = new Map<
             string,
-            { server: AiMcpServer; tool: MCPTool; mcpServer: McpServerSSE }
+            { server: AiMcpServer; tool: MCPTool; mcpServer: McpServerSSE | McpServerHttp }
         >();
         const usedTools = new Set<string>(); // 跟踪实际使用的工具
         const mcpToolCalls: McpToolCall[] = []; // 收集MCP工具调用记录
@@ -617,12 +630,22 @@ export class AiChatMessageController extends BaseController {
                         });
 
                         if (server && server.url) {
-                            const mcpServer = new McpServerSSE({
-                                url: server.url,
-                                name: server.name,
-                                description: server.description,
-                                customHeaders: server.customHeaders,
-                            });
+                            let mcpServer: McpServerSSE | McpServerHttp;
+                            if (McpCommunicationType.SSE == server.communicationType) {
+                                mcpServer = new McpServerSSE({
+                                    url: server.url,
+                                    name: server.name,
+                                    description: server.description,
+                                    customHeaders: server.customHeaders,
+                                });
+                            } else {
+                                mcpServer = new McpServerHttp({
+                                    url: server.url,
+                                    name: server.name,
+                                    description: server.description,
+                                    customHeaders: server.customHeaders,
+                                });
+                            }
 
                             await mcpServer.connect();
 
