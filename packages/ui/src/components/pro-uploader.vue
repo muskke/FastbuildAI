@@ -33,6 +33,7 @@ interface UploadItem {
     file?: File;
     extension?: string;
     isImage?: boolean;
+    imageLoadError?: boolean;
 }
 
 const props = defineProps<{
@@ -368,6 +369,13 @@ function reSelectFile(index: number) {
 }
 
 /**
+ * 处理图片加载错误
+ */
+function handleImageError(event: Event, item: UploadItem) {
+    item.imageLoadError = true;
+}
+
+/**
  * 移除文件
  */
 function removeFile(index: number) {
@@ -512,15 +520,16 @@ function formatFileSize(size: number): string {
                 :class="[customClassName]"
             >
                 <div class="group absolute inset-0 z-[1] size-full cursor-pointer rounded-md">
-                    <!-- 图片文件显示图片 -->
+                    <!-- 图片文件显示图片,加载失败时显示文件图标 -->
                     <img
-                        v-if="item.isImage"
+                        v-if="!item.imageLoadError"
                         :src="item.url"
                         class="size-full rounded-md object-contain"
                         alt=""
+                        @error="(e) => handleImageError(e, item)"
                     />
 
-                    <!-- 非图片文件显示图标 -->
+                    <!-- 图片加载失败时的备用显示 -->
                     <div v-else class="flex size-full flex-col items-center justify-center">
                         <img :src="getFileIcon(item.name)" class="size-12 object-contain" alt="" />
                         <p class="text-accent-foreground mt-2 max-w-full truncate px-2 text-xs">
