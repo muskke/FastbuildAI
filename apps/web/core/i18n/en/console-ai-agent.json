@@ -158,7 +158,7 @@
         "rateLimitDesc": "Limit requests per IP per minute (0 = no limit)",
         "featureSettings": "Feature Settings",
         "showBranding": "Show Branding",
-        "showBrandingDesc": "Display 'Powered by FastbuildAI' in agent interface",
+        "showBrandingDesc": "Display 'Powered by BuildingAI' in agent interface",
         "allowDownloadHistory": "Allow History Download",
         "allowDownloadHistoryDesc": "Allow users to download conversation history",
         "previewConfig": "Configuration Preview",

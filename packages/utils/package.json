@@ -1,7 +1,7 @@
 {
     "name": "@fastbuildai/utils",
     "version": "1.0.0",
-    "description": "FastbuildAI 通用工具函数库",
+    "description": "BuildingAI 通用工具函数库",
     "type": "module",
     "types": "./lib/index.d.ts",
     "main": "./lib/index.js",
@@ -18,7 +18,7 @@
         "check-types": "tsc --noEmit",
         "build": "rimraf lib && tsc && tsc --project tsconfig.cjs.json && node ./scripts/prepare-package-json.js"
     },
-    "author": "FastbuildAI Team",
+    "author": "BuildingAI Team",
     "license": "ISC",
     "devDependencies": {
         "@eslint/js": "^9.33.0",

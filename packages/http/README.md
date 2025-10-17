@@ -1,6 +1,6 @@
 # @fastbuildai/http
 
-一个现代化的 HTTP 客户端工具包，专为 FastbuildAI 项目设计，提供完整的 HTTP 请求处理、拦截器管理、聊天流处理和文件上传功能。
+一个现代化的 HTTP 客户端工具包，专为 BuildingAI 项目设计，提供完整的 HTTP 请求处理、拦截器管理、聊天流处理和文件上传功能。
 
 ## ✨ 特性
 

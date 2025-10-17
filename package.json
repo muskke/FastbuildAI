@@ -24,14 +24,14 @@
     "homepage": "https://fastbuildai.com",
     "repository": {
         "type": "git",
-        "url": "https://github.com/FastbuildAI/FastbuildAI.git"
+        "url": "https://github.com/BidingCC/BuildingAI.git"
     },
     "author": {
-        "name": "FastbuildAI Team"
+        "name": "BuildingAI Team"
     },
     "license": "Apache-2.0",
     "bugs": {
-        "url": "https://github.com/FastbuildAI/FastbuildAI/issues"
+        "url": "https://github.com/BidingCC/BuildingAI/issues"
     },
     "scripts": {
         "build": "turbo run build",

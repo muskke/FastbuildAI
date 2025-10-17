@@ -2,7 +2,7 @@
   <a href="http://nestjs.com/" target="blank"><img src="./apps/web/public/pwa-512x512.png" width="90" alt="Nest Logo" /></a>
 </p>
 
-<h1 align="center">FastbuildAI</h1>
+<h1 align="center">BuildingAI</h1>
 
 <p align="center">
   Fast build your AI application
@@ -49,7 +49,7 @@ http://localhost:4090
 **Default Super Admin Account**  
 
 - **Username:** `admin`  
-- **Password:** `FastbuildAI&123456`  
+- **Password:** `BuildingAI&123456`  
 
 ## Features
 
@@ -77,7 +77,7 @@ http://localhost:4090
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=FastbuildAI/FastbuildAI&type=Date)](https://www.star-history.com/#FastbuildAI/FastbuildAI&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=BidingCC/BuildingAI&type=Date)](https://www.star-history.com/#BidingCC/BuildingAI&Date)
 
 ## License
 

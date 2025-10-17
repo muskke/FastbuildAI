@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * FastbuildAI 应用停止脚本
+ * BuildingAI 应用停止脚本
  *
  * 这个脚本用于停止或删除 PM2 中运行的应用
  * 会自动读取环境变量中的应用名称

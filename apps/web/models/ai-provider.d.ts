@@ -2,7 +2,7 @@
  * AI提供商管理相关类型定义
  *
  * @description 定义AI提供商管理相关的数据结构和请求参数接口
- * @author FastbuildAI
+ * @author BuildingAI
  */
 
 /**

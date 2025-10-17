@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * FastbuildAI 应用启动脚本
+ * BuildingAI 应用启动脚本
  *
  * 这个脚本用于启动应用并确保它在 PM2 环境下运行
  * 支持自动重启功能和端口管理
@@ -187,7 +187,7 @@ function startDirectly(script, port) {
 // 主函数
 async function main() {
     try {
-        log("===== FastbuildAI 应用启动脚本 =====");
+        log("===== BuildingAI 应用启动脚本 =====");
         log(`环境: ${NODE_ENV}`);
         log(`目标端口: ${PORT}`);
 

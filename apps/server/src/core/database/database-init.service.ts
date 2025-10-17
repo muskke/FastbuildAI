@@ -173,7 +173,7 @@ export class DatabaseInitService implements OnModuleInit {
 
         // 创建超级管理员账号
         const salt = await bcryptjs.genSalt(10);
-        const hashedPassword = await bcryptjs.hash("FastbuildAI&123456", salt);
+        const hashedPassword = await bcryptjs.hash("BuildingAI&123456", salt);
 
         const users: Partial<User>[] = [
             {
@@ -208,10 +208,7 @@ export class DatabaseInitService implements OnModuleInit {
             }
         }
 
-        TerminalLogger.success(
-            "",
-            "超级管理员账号已创建: admin/FastbuildAI&123456，请及时修改密码",
-        );
+        TerminalLogger.success("", "超级管理员账号已创建: admin/BuildingAI&123456，请及时修改密码");
         this.logger.log("✅ 用户初始化完成");
     }
 

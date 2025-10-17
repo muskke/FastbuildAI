@@ -1,6 +1,6 @@
 /**
  * 代码复制插件
- * @author FastbuildAI
+ * @author BuildingAI
  */
 
 import { useClipboard } from "@vueuse/core";

@@ -293,7 +293,7 @@ definePageMeta({
                                 href="https://www.fastbuildai.com"
                                 target="_blank"
                             >
-                                FastbuildAI
+                                BuildingAI
                             </a>
                         </span>
                     </div>
