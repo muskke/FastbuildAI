@@ -49,7 +49,7 @@ import { AuthController } from "./auth.controller";
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
                 // 从环境变量获取JWT密钥，如果不存在则使用默认值
-                secret: process.env.JWT_SECRET || "FastbuildAI",
+                secret: process.env.JWT_SECRET || "BuildingAI",
                 signOptions: {
                     expiresIn: process.env.JWT_EXPIRES_IN || "24h",
                 },

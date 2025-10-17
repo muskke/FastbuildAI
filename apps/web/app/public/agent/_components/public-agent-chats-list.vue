@@ -424,7 +424,7 @@ defineShortcuts({
                                 target="_blank"
                                 class="text-primary font-medium hover:underline"
                             >
-                                FastbuildAI
+                                BuildingAI
                             </a>
                         </div>
                     </div>

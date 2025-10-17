@@ -11,8 +11,8 @@ x-resource-config: &resource-config
 services:
     # Redis 缓存服务
     redis:
-        image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/redis:8.2.0
-        container_name: fastbuildai-redis${DOCKER_CONTAINER_SUFFIX:-}
+        image: ccr.ccs.tencentyun.com/buildingai/redis:8.2.2
+        container_name: buildingai-redis${DOCKER_CONTAINER_SUFFIX:-}
         restart: always
         environment:
             TZ: Asia/Shanghai
@@ -23,7 +23,7 @@ services:
         volumes:
             - ./data/redis:/data
         networks:
-            - fastbuildai-network
+            - buildingai-network
         <<: *resource-config
         healthcheck:
             test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping"]
@@ -33,20 +33,20 @@ services:
 
     # PostgreSQL 数据库服务 (with pgvector)
     postgres:
-        image: registry.cn-guangzhou.aliyuncs.com/likeadmin/postgres:17.5
-        container_name: fastbuildai-postgres${DOCKER_CONTAINER_SUFFIX:-}
+        image: ccr.ccs.tencentyun.com/buildingai/postgres:17.6
+        container_name: buildingai-postgres${DOCKER_CONTAINER_SUFFIX:-}
         restart: always
         environment:
             TZ: Asia/Shanghai
             POSTGRES_USER: ${DB_USERNAME:-postgres}
             POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-            POSTGRES_DB: ${DB_DATABASE:-fastbuildai}
+            POSTGRES_DB: ${DB_DATABASE:-buildingai}
         ports:
             - "${POSTGRES_EXTERNAL_PORT:-}${POSTGRES_EXTERNAL_PORT:+:}5432"
         volumes:
             - ./data/postgres/postgres_data:/var/lib/postgresql/data
         networks:
-            - fastbuildai-network
+            - buildingai-network
         <<: *resource-config
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
@@ -56,22 +56,22 @@ services:
 
     # Node.js 开发环境
     nodejs:
-        image: registry.ap-southeast-1.aliyuncs.com/fastbuildai/node:22.18.0
-        container_name: fastbuildai-nodejs${DOCKER_CONTAINER_SUFFIX:-}
+        image: ccr.ccs.tencentyun.com/buildingai/node:22.20.0
+        container_name: buildingai-nodejs${DOCKER_CONTAINER_SUFFIX:-}
         restart: on-failure:3
-        working_dir: /fastbuildai
+        working_dir: /buildingai
         volumes:
-            - ../:/fastbuildai
-            - /fastbuildai/node_modules
-            - /fastbuildai/apps/server/node_modules
-            - /fastbuildai/apps/web/node_modules
-            - /fastbuildai/apps/mobile/node_modules
-            - /fastbuildai/packages/assets/node_modules
-            - /fastbuildai/packages/config/node_modules
-            - /fastbuildai/packages/designer/node_modules
-            - /fastbuildai/packages/http/node_modules
-            - /fastbuildai/packages/ui/node_modules
-            - /fastbuildai/packages/utils/node_modules
+            - ../:/buildingai
+            - /buildingai/node_modules
+            - /buildingai/apps/server/node_modules
+            - /buildingai/apps/web/node_modules
+            - /buildingai/apps/mobile/node_modules
+            - /buildingai/packages/assets/node_modules
+            - /buildingai/packages/config/node_modules
+            - /buildingai/packages/designer/node_modules
+            - /buildingai/packages/http/node_modules
+            - /buildingai/packages/ui/node_modules
+            - /buildingai/packages/utils/node_modules
         ports:
             - "${SERVER_PORT:-4090}:${SERVER_PORT:-4090}"
         environment:
@@ -81,7 +81,7 @@ services:
             NPM_REGISTRY_URL: ${NPM_REGISTRY_URL:-}
             DB_USERNAME: ${DB_USERNAME:-postgres}
             DB_PASSWORD: ${DB_PASSWORD:-postgres}
-            DB_DATABASE: ${DB_DATABASE:-fastbuildai}
+            DB_DATABASE: ${DB_DATABASE:-buildingai}
             DB_HOST: postgres
             DB_PORT: 5432
             REDIS_HOST: redis
@@ -90,7 +90,7 @@ services:
         command: |
             sh -c '
             set -e
-            echo "🚀 Starting FastbuildAI container..."
+            echo "🚀 Starting BuildingAI container..."
 
             if [ -z "$QUICK_START_MODE" ]; then
             QUICK_START_MODE="false"
@@ -128,12 +128,12 @@ services:
 
             # 确保目录存在
             echo "📁 Creating directories..."
-            mkdir -p /fastbuildai/.pnpm-store /fastbuildai/node_modules
+            mkdir -p /buildingai/.pnpm-store /buildingai/node_modules
 
             # 只修顶层目录权限
             echo "🧹 Fixing permissions..."
-            chown $(id -u):$(id -g) /fastbuildai/.pnpm-store /fastbuildai/node_modules || true
-            chmod 775 /fastbuildai/.pnpm-store /fastbuildai/node_modules || true
+            chown $(id -u):$(id -g) /buildingai/.pnpm-store /buildingai/node_modules || true
+            chmod 775 /buildingai/.pnpm-store /buildingai/node_modules || true
 
             # 安装依赖
             echo "📦 Installing dependencies..."
@@ -148,12 +148,12 @@ services:
 
             echo "✅ Install dependencies completed!"
 
-            if [ ! -f "/fastbuildai/public/index.html" ] || [ "$QUICK_START_MODE" = "false" ]; then
+            if [ ! -f "/buildingai/public/index.html" ] || [ "$QUICK_START_MODE" = "false" ]; then
             echo "🌐 Building web application..."
             pnpm --filter ./apps/web run generate
             fi
 
-            if [ ! -d "/fastbuildai/apps/server/dist" ] || [ "$QUICK_START_MODE" = "false" ]; then
+            if [ ! -d "/buildingai/apps/server/dist" ] || [ "$QUICK_START_MODE" = "false" ]; then
             echo "🔧 Building server application..."
             pnpm --filter ./apps/server run build
             fi
@@ -163,7 +163,7 @@ services:
             exec pnpm --filter ./apps/server run start:prod
             '
         networks:
-            - fastbuildai-network
+            - buildingai-network
         <<: *resource-config
         depends_on:
             redis:
@@ -178,5 +178,5 @@ services:
             start_period: 180s
 
 networks:
-    fastbuildai-network:
+    buildingai-network:
         driver: bridge

@@ -2,7 +2,7 @@
   <a href="http://nestjs.com/" target="blank"><img src="./apps/web/public/pwa-512x512.png" width="90" alt="Nest Logo" /></a>
 </p>
 
-<h1 align="center">FastbuildAI</h1>
+<h1 align="center">BuildingAI</h1>
 
 <p align="center">
   快速构建您的 AI 应用
@@ -49,7 +49,7 @@ http://localhost:4090
 **默认超级管理员账号**  
 
 - **用户名：** `admin`  
-- **密码：** `FastbuildAI&123456`  
+- **密码：** `BuildingAI&123456`  
 
 ## 功能特性
 
@@ -77,7 +77,7 @@ http://localhost:4090
 
 ## Star 历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=FastbuildAI/FastbuildAI&type=Date)](https://www.star-history.com/#FastbuildAI/FastbuildAI&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=BidingCC/BuildingAI&type=Date)](https://www.star-history.com/#BidingCC/BuildingAI&Date)
 
 ## 许可证
 

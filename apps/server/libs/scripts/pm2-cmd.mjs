@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * FastbuildAI PM2 命令执行脚本
+ * BuildingAI PM2 命令执行脚本
  *
  * 这个脚本用于执行 PM2 命令，自动从环境变量中获取应用名称
  * 支持：restart, reload, logs, show 等操作

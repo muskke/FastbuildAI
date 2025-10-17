@@ -1,7 +1,7 @@
 /**
  * Markdown 渲染 Composable
  * 提供 Markdown 渲染相关功能，针对SSR优化和内存效率优化
- * @author FastbuildAI
+ * @author BuildingAI
  */
 
 import { useColorMode } from "@vueuse/core";

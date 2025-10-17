@@ -1,7 +1,7 @@
 /**
  * 插件导出文件
  * 集中导出所有 Markdown 插件
- * @author FastbuildAI
+ * @author BuildingAI
  */
 
 import type MarkdownIt from "markdown-it";

@@ -4,13 +4,13 @@
         {
             "path": "pages/index/index",
             "style": {
-                "navigationBarTitleText": "FastbuildAI"
+                "navigationBarTitleText": "BuildingAI"
             }
         }
     ],
     "globalStyle": {
         "navigationBarTextStyle": "black",
-        "navigationBarTitleText": "FastbuildAI",
+        "navigationBarTitleText": "BuildingAI",
         "navigationBarBackgroundColor": "#F8F8F8",
         "backgroundColor": "#F8F8F8"
     }

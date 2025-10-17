@@ -162,7 +162,7 @@
         "rateLimitDesc": "限制每个IP地址每分钟的请求次数，0表示无限制",
         "featureSettings": "功能设置",
         "showBranding": "显示品牌信息",
-        "showBrandingDesc": "在智能体界面显示 'Powered by FastbuildAI' 标识",
+        "showBrandingDesc": "在智能体界面显示 'Powered by BuildingAI' 标识",
         "allowDownloadHistory": "允许下载历史记录",
         "allowDownloadHistoryDesc": "允许用户下载对话历史记录",
         "previewConfig": "配置预览",
