@@ -131,7 +131,7 @@ onUnmounted(() => {
         >
             <div class="flex items-center justify-center gap-1 opacity-0">
                 <UIcon
-                    name="i-ph-spinner-gap-bold"
+                    name="i-lucide-loader-circle"
                     size="16"
                     class="text-secondary-foreground animate-spin"
                 />
