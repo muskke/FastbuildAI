@@ -40,8 +40,8 @@
         "lint:fix": "turbo run lint -- --fix",
         "format": "prettier --write \"**/*.{ts,tsx,js,vue,md,mdx}\"",
         "check-types": "turbo run check-types",
-        "docker:up": "docker compose -p fastbuildai --env-file ./.env.production.local -f ./docker/docker-compose.yml up -d",
-        "docker:down": "docker compose -p fastbuildai --env-file ./.env.production.local -f ./docker/docker-compose.yml down",
+        "docker:up": "docker compose -p buildingai --env-file ./.env.production.local -f ./docker/docker-compose.yml up -d",
+        "docker:down": "docker compose -p buildingai --env-file ./.env.production.local -f ./docker/docker-compose.yml down",
         "i18n:translate": "node apps/web/libs/translate-i18n.mjs"
     },
     "devDependencies": {
