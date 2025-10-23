@@ -21,8 +21,8 @@
 </p>
 
 <p align="center">
-<a href="http://ai.fastbuildai.com/" target="_blank">Demo Online</a>｜
-<a href="https://www.fastbuildai.com/">Website</a>｜
+<a href="https://demo.buildingai.cc" target="_blank">Demo Online</a>｜
+<a href="https://www.buildingai.cc">Website</a>｜
 <a href="./README.zh-CN.md">中文文档</a>
 </p>
 
