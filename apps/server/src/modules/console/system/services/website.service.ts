@@ -26,8 +26,8 @@ export class WebsiteService extends BaseService<Dict> {
     async getConfig() {
         // 获取各组配置
         const webinfo = await this.getGroupConfig("webinfo", {
-            name: "FastbuildAI",
-            description: "FastbuildAI",
+            name: "BuildingAI",
+            description: "BuildingAI",
             icon: "",
             logo: "",
             spaLoadingIcon: "",

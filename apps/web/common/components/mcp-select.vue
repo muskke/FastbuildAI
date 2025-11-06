@@ -24,6 +24,7 @@ interface Props {
 
 const { t } = useI18n();
 const router = useRouter();
+const userStore = useUserStore();
 
 const props = withDefaults(defineProps<Props>(), {
     showDescription: true,
@@ -102,7 +103,9 @@ const getAllList = async () => {
 };
 
 onMounted(() => {
-    getAllList();
+    if (userStore.isLogin) {
+        getAllList();
+    }
 });
 
 /**

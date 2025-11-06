@@ -2,7 +2,7 @@
  * 模型类型统一导出文件
  *
  * @description 统一导出所有模型文件中定义的类型接口，方便其他文件导入使用
- * @author FastbuildAI
+ * @author BuildingAI
  */
 
 // 导出全局类型定义

@@ -158,7 +158,7 @@
         "rateLimitDesc": "IPアドレスごとのリクエスト制限（0=制限なし）",
         "featureSettings": "機能設定",
         "showBranding": "ブランディング表示",
-        "showBrandingDesc": "エージェント画面に'Powered by FastbuildAI'を表示",
+        "showBrandingDesc": "エージェント画面に'Powered by BuildingAI'を表示",
         "allowDownloadHistory": "履歴ダウンロード許可",
         "allowDownloadHistoryDesc": "ユーザーが会話履歴をダウンロード可能",
         "previewConfig": "設定プレビュー",

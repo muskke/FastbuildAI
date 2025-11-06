@@ -518,7 +518,7 @@ export class AgentService extends BaseService<Agent> {
      * 生成嵌入代码
      */
     private generateEmbedCode(publishToken: string, publishUrl: string): string {
-        return `<!-- FastbuildAI 智能体嵌入代码 -->
+        return `<!-- BuildingAI 智能体嵌入代码 -->
 <iframe 
   src="${publishUrl}?embed=true"
   width="400" 
@@ -530,7 +530,7 @@ export class AgentService extends BaseService<Agent> {
 <!-- 或使用 JavaScript SDK -->
 <div id="chatbot-container"></div>
 <script>
-  window.FastbuildAI = {
+  window.BuildingAI = {
     init: function(options) {
       const iframe = document.createElement('iframe');
       iframe.src = '${publishUrl}?embed=true&sdk=true';
@@ -548,7 +548,7 @@ export class AgentService extends BaseService<Agent> {
   };
   
   // 使用示例
-  // FastbuildAI.init({
+  // BuildingAI.init({
   //   container: '#chatbot-container',
   //   width: '400px',
   //   height: '600px'
