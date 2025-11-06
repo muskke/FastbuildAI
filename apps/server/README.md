@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <h1 align="center">FastbuildAI</h1>
+  <h1 align="center">BuildingAI</h1>
 </p>
 
 <p align="center">
@@ -12,7 +12,7 @@
 
 ## Description
 
-[FastbuildAI](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[BuildingAI](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Libraries
 

@@ -1,7 +1,7 @@
 /**
  * KaTeX 插件配置
  * 用于渲染数学公式（纯 CDN 加载，无本地兜底）
- * @author FastbuildAI
+ * @author BuildingAI
  */
 
 import type MarkdownIt from "markdown-it";

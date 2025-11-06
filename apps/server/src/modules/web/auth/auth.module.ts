@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DiscoveryModule } from "@nestjs/core";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import type { StringValue } from "ms";
 
 import { AuthController } from "./auth.controller";
 
@@ -47,11 +48,11 @@ import { AuthController } from "./auth.controller";
         JwtModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: (configService: ConfigService) => ({
+            useFactory: () => ({
                 // 从环境变量获取JWT密钥，如果不存在则使用默认值
-                secret: process.env.JWT_SECRET || "FastbuildAI",
+                secret: process.env.JWT_SECRET || "BuildingAI",
                 signOptions: {
-                    expiresIn: process.env.JWT_EXPIRES_IN || "24h",
+                    expiresIn: (process.env.JWT_EXPIRES_IN as StringValue) || "24h",
                 },
             }),
         }),

@@ -2,7 +2,7 @@
  * ProMarkdown组件
  * 一个高度可定制的Markdown渲染组件，支持表格、配图、流程图、时序图、状态图、UML图、数学公式等
  * 使用方式: <ProMarkdown :content="content" />
- * @author FastbuildAI
+ * @author BuildingAI
 -->
 
 <script setup lang="ts">

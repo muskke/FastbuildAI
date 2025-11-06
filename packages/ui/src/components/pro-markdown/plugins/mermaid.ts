@@ -1,7 +1,7 @@
 /**
  * Mermaid 插件配置
  * 用于渲染 Mermaid 图表和流程图
- * @author FastbuildAI
+ * @author BuildingAI
  */
 
 import type MarkdownIt from "markdown-it";

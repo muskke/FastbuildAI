@@ -322,7 +322,7 @@ export class WechatOaService {
      * @param scene_str 场景值
      * @returns 绑定二维码状态
      */
-    async getQrCodeBindStatus(scene_str: string, id?: string)  {
+    async getQrCodeBindStatus(scene_str: string, id?: string) {
         // 从Redis获取场景值对应的状态信息
         const raw = await this.redisService.get<string>(this.SCENE_PREFIX + ":" + scene_str);
         if (!raw) {
@@ -347,9 +347,7 @@ export class WechatOaService {
                 // 已绑定微信
                 await this.sendTemplateMessage(openid, "改微信已被绑定");
                 return { is_scan, error: "改微信已被绑定" };
-
             } else {
-
                 // 未授权：发送授权链接（只发一次），并延长会话有效期，等待用户授权
                 if (!scene.is_auth_sent) {
                     const redirectUri = encodeURIComponent(
@@ -403,7 +401,6 @@ export class WechatOaService {
             return { is_scan: false, is_authorized: false, expired: true };
         }
         console.log("getAuthorizationStatus", scene_str, raw);
-        
 
         const scene = JSON.parse(raw);
         const is_scan = !!scene.is_scan;
@@ -549,7 +546,7 @@ export class WechatOaService {
                 MsgType.Text,
                 `🔐 扫码登录确认
 
-您正在尝试通过微信扫码登录 FastbuildAI
+您正在尝试通过微信扫码登录 BuildingAI
 
 📱 登录设备：微信客户端
 ⏰ 登录时间：${new Date().toLocaleString("zh-CN")}
@@ -632,16 +629,19 @@ export class WechatOaService {
 
         // 合并写回 Redis，标记授权完成，等待 PC 轮询触发最终登录
         console.log("authorizeUserInfo", state);
-        
+
         // 对于绑定账号场景，state 可能是用户ID而不是场景值，需要找到正确的场景key
         let sceneKey = this.SCENE_PREFIX + ":" + state;
         let raw = await this.redisService.get<string>(sceneKey);
-        
+
         // 如果使用state作为场景key找不到记录，可能是绑定账号场景
-        if (!raw && await this.authService.findOne({ where: { id: state } })) {
+        if (!raw && (await this.authService.findOne({ where: { id: state } }))) {
             try {
                 // 使用executeCommand执行keys命令查找包含该openid的场景记录
-                const keys = await this.redisService.executeCommand('KEYS', this.SCENE_PREFIX + ':*');
+                const keys = await this.redisService.executeCommand(
+                    "KEYS",
+                    this.SCENE_PREFIX + ":*",
+                );
                 if (keys && Array.isArray(keys)) {
                     for (const key of keys) {
                         const tempRaw = await this.redisService.get<string>(key);
@@ -659,9 +659,9 @@ export class WechatOaService {
                 this.logger.warn(`查找Redis场景key时出错: ${error.message}`);
             }
         }
-        
+
         const scene = raw ? JSON.parse(raw) : {};
-        
+
         // 确保正确设置授权状态
         const updatedScene = {
             ...scene,
@@ -670,12 +670,8 @@ export class WechatOaService {
             is_authorized: true,
             wx_userinfo: userInfo,
         };
-        
-        await this.redisService.set(
-            sceneKey,
-            JSON.stringify(updatedScene),
-            300,
-        );
+
+        await this.redisService.set(sceneKey, JSON.stringify(updatedScene), 300);
 
         // 绑定的目标微信用户
         const existingUser = await this.authService.findOne({ where: { id: state } });
@@ -725,7 +721,7 @@ export class WechatOaService {
     /**
      * 处理绑定微信授权
      * 通过 state 传回 id，用以定位绑定账号
-     * 
+     *
      * @param code 微信回调 code
      * @param state id 场景值
      * @returns 跳转的授权成功页 URL

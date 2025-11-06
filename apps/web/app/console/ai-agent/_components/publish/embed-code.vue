@@ -20,7 +20,7 @@ const publishUrl = computed(() => {
 
 const iframeCode = computed(() => {
     if (!publishUrl.value) return "";
-    return `<!-- FastbuildAI 智能体嵌入代码 -->
+    return `<!-- BuildingAI 智能体嵌入代码 -->
 <iframe
   src="${publishUrl.value}?embed=true"
   width="400"
@@ -35,7 +35,7 @@ const jsCode = computed(() => {
     return `<!-- 使用 JavaScript SDK -->
 <div id="chatbot-container"></div>
 <script>
-  window.FastbuildAI = {
+  window.BuildingAI = {
     init: function(options) {
       const iframe = document.createElement('iframe');
       iframe.src = '${publishUrl.value}?embed=true&sdk=true';
@@ -53,7 +53,7 @@ const jsCode = computed(() => {
   };
 
   // 初始化智能体
-  FastbuildAI.init({
+  BuildingAI.init({
     container: '#chatbot-container',
     width: '400px',
     height: '600px'

@@ -1,7 +1,7 @@
 /**
  * GitHub 风格警报 插件配置
  * 用于渲染 GitHub 风格警报
- * @author FastbuildAI
+ * @author BuildingAI
  */
 import type MarkdownIt from "markdown-it";
 import MarkdownItGitHubAlerts from "markdown-it-github-alerts";

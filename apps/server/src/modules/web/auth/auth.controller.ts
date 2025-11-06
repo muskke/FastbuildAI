@@ -267,7 +267,10 @@ export class AuthController extends BaseController {
      */
     @Public()
     @Get("wechat-qrcode-bind-status/:scene_str")
-    async getWechatQrcodeBindStatus(@Param("scene_str") scene_str: string, @Query("id") id?: string) {
+    async getWechatQrcodeBindStatus(
+        @Param("scene_str") scene_str: string,
+        @Query("id") id?: string,
+    ) {
         return this.wechatOaService.getQrCodeBindStatus(scene_str, id);
     }
 
@@ -319,7 +322,7 @@ export class AuthController extends BaseController {
         <h1 class="title">授权完成</h1>
         <p class="desc">您已完成授权，可返回电脑端，页面会自动登录并跳转首页。</p>
         <button class="btn" onclick="closeOrBack()">我知道了</button>
-        <div class="footer">FastbuildAI</div>
+        <div class="footer">BuildingAI</div>
       </div>
     </div>
   </body>

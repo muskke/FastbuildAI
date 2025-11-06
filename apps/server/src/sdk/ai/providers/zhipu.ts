@@ -8,7 +8,7 @@ export class ZhipuaiAdapter extends OpenAIAdapter implements Adapter {
 
     constructor(options: ClientOptions) {
         if (!options.baseURL) {
-            options.baseURL = "https://open.bigmodel.cn/api/paas/v4/";
+            options.baseURL = "https://open.bigmodel.cn/api/paas/v4";
         }
         super(options);
     }

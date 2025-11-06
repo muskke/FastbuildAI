@@ -416,7 +416,7 @@ onUnmounted(() => {
 
 // 页面标题
 useHead({
-    title: computed(() => (agent.value ? `${agent.value.name} - FastbuildAI` : "FastbuildAI")),
+    title: computed(() => (agent.value ? `${agent.value.name} - BuildingAI` : "BuildingAI")),
     link: [
         { rel: "icon", href: computed(() => agent.value?.avatar || "/favicon.ico") },
         { rel: "apple-touch-icon", href: computed(() => agent.value?.avatar || "/favicon.ico") },
