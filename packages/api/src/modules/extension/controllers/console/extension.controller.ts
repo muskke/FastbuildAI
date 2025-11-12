@@ -1,0 +1,547 @@
+import { BaseController } from "@buildingai/base";
+import { DICT_GROUP_KEYS, DICT_KEYS } from "@buildingai/constants/server/dict-key.constant";
+import {
+    ExtensionStatus,
+    type ExtensionStatusType,
+    type ExtensionTypeType,
+} from "@buildingai/constants/shared/extension.constant";
+import { CreateExtensionDto } from "@buildingai/core/modules/extension/dto/create-extension.dto";
+import { QueryExtensionDto } from "@buildingai/core/modules/extension/dto/query-extension.dto";
+import {
+    BatchUpdateExtensionStatusDto,
+    UpdateExtensionDto,
+} from "@buildingai/core/modules/extension/dto/update-extension.dto";
+import { PlatformInfo } from "@buildingai/core/modules/extension/interfaces/platform.interface";
+import { ExtensionsService } from "@buildingai/core/modules/extension/services/extension.service";
+import { ExtensionConfigService } from "@buildingai/core/modules/extension/services/extension-config.service";
+import { BuildFileUrl } from "@buildingai/decorators/file-url.decorator";
+import { DictService } from "@buildingai/dict";
+import { HttpErrorFactory } from "@buildingai/errors";
+import { maskSensitiveValue } from "@buildingai/utils";
+import { ConsoleController } from "@common/decorators/controller.decorator";
+import { Permissions } from "@common/decorators/permissions.decorator";
+import {
+    DownloadExtensionDto,
+    SetPlatformSecretDto,
+} from "@modules/extension/dto/extension-manager.dto";
+import { ExtensionMarketService } from "@modules/extension/services/extension-market.service";
+import { ExtensionOperationService } from "@modules/extension/services/extension-operation.service";
+import { Body, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
+
+/**
+ * Extension Console Controller
+ */
+@ConsoleController("extensions", "拓展管理")
+export class ExtensionConsoleController extends BaseController {
+    constructor(
+        private readonly extensionsService: ExtensionsService,
+        private readonly extensionMarketService: ExtensionMarketService,
+        private readonly extensionOperationService: ExtensionOperationService,
+        private readonly extensionConfigService: ExtensionConfigService,
+        private readonly dictService: DictService,
+    ) {
+        super();
+    }
+
+    /**
+     * Get platform secret
+     * @description Returns masked platform secret for security
+     */
+    @Get("platform-secret")
+    @Permissions({
+        code: "get-platform-secret",
+        name: "获取平台密钥",
+    })
+    async getPlatformSecret() {
+        const result: {
+            platformSecret: string | null;
+            platformInfo: PlatformInfo | null;
+        } = {
+            platformSecret: null,
+            platformInfo: null,
+        };
+
+        const platformSecret = await this.dictService.get<string | null>(
+            DICT_KEYS.PLATFORM_SECRET,
+            null,
+            DICT_GROUP_KEYS.APPLICATION,
+        );
+
+        if (platformSecret) {
+            // Mask the platform secret for security
+            result.platformSecret = maskSensitiveValue(platformSecret);
+
+            const platformInfo = await this.extensionMarketService.getPlatformInfo();
+
+            if (platformInfo) {
+                result.platformInfo = platformInfo;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Set platform secret
+     */
+    @Post("platform-secret")
+    @Permissions({
+        code: "set-platform-secret",
+        name: "设置平台密钥",
+    })
+    async setPlatformSecret(@Body() dto: SetPlatformSecretDto) {
+        const platformSecret = dto.platformSecret || "";
+
+        if (platformSecret) {
+            const platformInfo = await this.extensionMarketService.getPlatformInfo(platformSecret);
+            if (!platformInfo) {
+                throw HttpErrorFactory.badRequest("密钥无效，请检查密钥是否正确");
+            }
+        }
+
+        await this.dictService.set(DICT_KEYS.PLATFORM_SECRET, platformSecret, {
+            group: DICT_GROUP_KEYS.APPLICATION,
+            description: "BuildingAI platform secret",
+        });
+
+        return true;
+    }
+
+    /**
+     * Install extension
+     */
+    @Post("install/:identifier")
+    @Permissions({
+        code: "install",
+        name: "安装应用",
+    })
+    @BuildFileUrl(["**.icon"])
+    async install(@Param("identifier") identifier: string, @Body() dto: DownloadExtensionDto) {
+        return await this.extensionOperationService.install(
+            identifier,
+            dto.version,
+            this.extensionMarketService,
+        );
+    }
+
+    /**
+     * Upgrade extension
+     */
+    @Post("upgrade/:identifier")
+    @Permissions({
+        code: "upgrade",
+        name: "更新应用",
+    })
+    @BuildFileUrl(["**.icon"])
+    async upgrade(@Param("identifier") identifier: string) {
+        return await this.extensionOperationService.upgrade(
+            identifier,
+            this.extensionMarketService,
+        );
+    }
+
+    /**
+     * Uninstall extension
+     *
+     * @param identifier Extension identifier
+     */
+    @Delete("uninstall/:identifier")
+    @Permissions({
+        code: "uninstall",
+        name: "卸载应用",
+    })
+    async uninstall(@Param("identifier") identifier: string) {
+        await this.extensionOperationService.uninstall(identifier);
+        return true;
+    }
+
+    /**
+     * Create extension
+     *
+     * @param dto Create extension DTO
+     * @returns Created extension
+     */
+    @Post()
+    @Permissions({
+        code: "create",
+        name: "创建应用",
+    })
+    @BuildFileUrl(["**.icon", "**.author.avatar"])
+    async create(@Body() dto: CreateExtensionDto) {
+        const extension = await this.extensionOperationService.createFromTemplate(dto);
+
+        // Sync author name to files
+        if (dto.author?.name && extension.identifier) {
+            await this.syncAuthorName(extension.identifier, dto.author.name);
+        }
+
+        return extension;
+    }
+
+    /**
+     * Get extension paginated list
+     *
+     * @param query Query parameters
+     * @returns Extension paginated list
+     */
+    @Get()
+    @Permissions({
+        code: "list",
+        name: "查看应用列表",
+    })
+    @BuildFileUrl(["**.icon"])
+    async lists(@Query() query: QueryExtensionDto) {
+        // Check if platform secret is configured
+        const platformSecret = await this.dictService.get<string | null>(
+            DICT_KEYS.PLATFORM_SECRET,
+            null,
+            DICT_GROUP_KEYS.APPLICATION,
+        );
+
+        let extensionsList;
+
+        if (platformSecret) {
+            // If platform secret is configured, fetch mixed list (local + market)
+            extensionsList = await this.extensionMarketService.getMixedApplicationList();
+        } else {
+            // If no platform secret, only fetch local installed extensions
+            const installedExtensions = await this.extensionsService.findAll();
+            extensionsList = installedExtensions.map((ext) => ({
+                ...ext,
+                isInstalled: true,
+            }));
+        }
+
+        // Extension filter conditions
+        if (query.name) {
+            extensionsList = extensionsList.filter((ext) =>
+                ext.name.toLowerCase().includes(query.name.toLowerCase()),
+            );
+        }
+
+        if (query.identifier) {
+            extensionsList = extensionsList.filter((ext) =>
+                ext.identifier.toLowerCase().includes(query.identifier.toLowerCase()),
+            );
+        }
+
+        if (query.type !== undefined) {
+            extensionsList = extensionsList.filter((ext) => ext.type === query.type);
+        }
+
+        if (query.status !== undefined) {
+            extensionsList = extensionsList.filter((ext) => ext.status === query.status);
+        }
+
+        if (query.isLocal !== undefined) {
+            extensionsList = extensionsList.filter((ext) => ext.isLocal === query.isLocal);
+        }
+
+        if (query.isInstalled !== undefined) {
+            extensionsList = extensionsList.filter((ext) => ext.isInstalled === query.isInstalled);
+        }
+
+        return this.paginationResult(extensionsList, extensionsList.length, query);
+    }
+
+    /**
+     * Get extension version list
+     *
+     * @param identifier Extension identifier
+     * @returns Extension version list
+     */
+    @Get("versions/:identifier")
+    @Permissions({
+        code: "versions-list",
+        name: "查看应用版本列表",
+    })
+    async versions(@Param("identifier") identifier: string) {
+        let versions = await this.extensionMarketService.getApplicationVersions(identifier);
+
+        return versions;
+    }
+
+    /**
+     * Get all enabled extensions
+     *
+     * @returns List of enabled extensions
+     */
+    @Get("enabled/all")
+    @Permissions({
+        code: "enabled-all",
+        name: "查看启用应用",
+    })
+    @BuildFileUrl(["**.icon"])
+    async getAllEnabled() {
+        return await this.extensionsService.findAllEnabled();
+    }
+
+    /**
+     * Get all local development extensions
+     *
+     * @returns List of local extensions
+     */
+    @Get("local/all")
+    @Permissions({
+        code: "local-all",
+        name: "查看本地应用",
+    })
+    @BuildFileUrl(["**.icon"])
+    async getAllLocal() {
+        return await this.extensionsService.findAllLocal();
+    }
+
+    /**
+     * Get extensions by type
+     *
+     * @param type Extension type
+     * @param onlyEnabled Whether to return only enabled extensions
+     * @returns List of extensions
+     */
+    @Get("type/:type")
+    @BuildFileUrl(["**.icon"])
+    @Permissions({
+        code: "list-by-type",
+        name: "按类型查看应用",
+    })
+    async getByType(
+        @Param("type") type: ExtensionTypeType,
+        @Query("onlyEnabled") onlyEnabled?: boolean,
+    ) {
+        const enabled = onlyEnabled === undefined ? true : onlyEnabled === true;
+        return await this.extensionsService.findByType(type, enabled);
+    }
+
+    /**
+     * Get stored extension info by identifier
+     *
+     * @param identifier Extension identifier
+     * @returns Extension details
+     */
+    @Get("detail/:identifier")
+    @BuildFileUrl(["**.icon"])
+    @Permissions({
+        code: "detail-by-identifier-from-db",
+        name: "查看入库应用详情",
+    })
+    async getDetailByIdentifier(@Param("identifier") identifier: string) {
+        const extension = await this.extensionsService.findByIdentifier(identifier);
+        if (!extension) {
+            throw HttpErrorFactory.notFound("Extension does not exist");
+        }
+        return extension;
+    }
+
+    /**
+     * Get extension by identifier
+     *
+     * @param identifier Extension identifier
+     * @returns Extension details
+     */
+    @Get("identifier/:identifier")
+    @BuildFileUrl(["**.icon"])
+    @Permissions({
+        code: "detail-by-identifier-from-market",
+        name: "查看应用详情",
+    })
+    async getByIdentifier(@Param("identifier") identifier: string) {
+        const extension = await this.extensionMarketService.getApplicationDetail(identifier);
+        if (!extension) {
+            throw HttpErrorFactory.notFound("Extension does not exist");
+        }
+        return extension;
+    }
+
+    /**
+     * Check if extension identifier exists
+     *
+     * @param identifier Extension identifier
+     * @param excludeId Excluded extension ID (for update check)
+     * @returns Whether it exists
+     */
+    @Get("check-identifier/:identifier")
+    @Permissions({
+        code: "check-identifier",
+        name: "检查应用标识符",
+    })
+    async checkIdentifier(
+        @Param("identifier") identifier: string,
+        @Query("excludeId") excludeId?: string,
+    ) {
+        const exists = await this.extensionsService.isIdentifierExists(identifier, excludeId);
+        return { exists };
+    }
+
+    /**
+     * Get single extension details
+     *
+     * @param id Extension ID
+     * @returns Extension details
+     */
+    @Get(":id")
+    @BuildFileUrl(["**.icon"])
+    @Permissions({
+        code: "detail",
+        name: "查看应用详情",
+    })
+    async findOne(@Param("id") id: string) {
+        const extension = await this.extensionsService.findOneById(id);
+        if (!extension) {
+            throw HttpErrorFactory.notFound("Extension does not exist");
+        }
+        return extension;
+    }
+
+    /**
+     * Batch update extension status
+     *
+     * @param dto Batch update status DTO
+     * @returns Number of updated extensions
+     */
+    @Patch("batch-status")
+    @Permissions({
+        code: "batch-status",
+        name: "批量更新应用状态",
+    })
+    async batchUpdateStatus(@Body() dto: BatchUpdateExtensionStatusDto) {
+        const count = await this.extensionsService.batchUpdateStatus(dto.ids, dto.status);
+        return {
+            message: `Successfully updated status of ${count} extensions`,
+            count,
+        };
+    }
+
+    /**
+     * Update extension
+     *
+     * @param id Extension ID
+     * @param dto Update extension DTO
+     * @returns Updated extension
+     */
+    @Patch(":id")
+    @BuildFileUrl(["**.icon", "**.author.avatar"])
+    @Permissions({
+        code: "update",
+        name: "更新应用",
+    })
+    async update(@Param("id") id: string, @Body() dto: UpdateExtensionDto) {
+        const extension = await this.extensionsService.findOneById(id);
+        if (!extension) {
+            throw HttpErrorFactory.notFound("Extension not found");
+        }
+
+        const updatedExtension = await this.extensionsService.updateById(id, dto);
+
+        // Sync author name to files if author name is updated
+        if (dto.author?.name && extension.identifier) {
+            await this.syncAuthorName(extension.identifier, dto.author.name);
+        }
+
+        return updatedExtension;
+    }
+
+    /**
+     * Sync author name to extensions.json, manifest.json and package.json
+     * @private
+     */
+    private async syncAuthorName(identifier: string, authorName: string): Promise<void> {
+        try {
+            await Promise.all([
+                this.extensionConfigService.updateAuthorName(identifier, authorName),
+                this.extensionOperationService.updateAuthorName(identifier, authorName),
+            ]);
+        } catch (error) {
+            console.error(`Failed to sync author name for ${identifier}:`, error);
+        }
+    }
+
+    /**
+     * Enable extension
+     *
+     * @param id Extension ID
+     * @returns Updated extension
+     */
+    @Patch(":id/enable")
+    @BuildFileUrl(["**.icon"])
+    @Permissions({
+        code: "enable",
+        name: "启用应用",
+    })
+    async enable(@Param("id") id: string) {
+        return await this.extensionsService.enable(id);
+    }
+
+    /**
+     * Disable extension
+     *
+     * @param id Extension ID
+     * @returns Updated extension
+     */
+    @Patch(":id/disable")
+    @BuildFileUrl(["**.icon"])
+    @Permissions({
+        code: "disable",
+        name: "禁用应用",
+    })
+    async disable(@Param("id") id: string) {
+        return await this.extensionsService.disable(id);
+    }
+
+    /**
+     * Set extension status
+     *
+     * @param id Extension ID
+     * @param status Extension status
+     * @returns Updated extension
+     */
+    @Patch(":id/status")
+    @BuildFileUrl(["**.icon"])
+    @Permissions({
+        code: "set-status",
+        name: "设置应用状态",
+    })
+    async setStatus(@Param("id") id: string, @Body("status") status: ExtensionStatusType) {
+        if (!Object.values(ExtensionStatus).includes(status)) {
+            throw HttpErrorFactory.paramError("Invalid extension status");
+        }
+        return await this.extensionsService.setStatus(id, status);
+    }
+
+    /**
+     * Delete extension
+     *
+     * @param id Extension ID
+     * @returns Deletion result
+     */
+    @Delete(":id")
+    @Permissions({
+        code: "delete",
+        name: "删除应用",
+    })
+    async remove(@Param("id") id: string) {
+        await this.extensionsService.delete(id);
+        return { message: "Extension deleted successfully" };
+    }
+
+    /**
+     * Batch delete extensions
+     *
+     * @param ids Array of extension IDs
+     * @returns Deletion result
+     */
+    @Delete()
+    @Permissions({
+        code: "batch-delete",
+        name: "批量删除应用",
+    })
+    async removeMany(@Body("ids") ids: string[]) {
+        if (!Array.isArray(ids) || ids.length === 0) {
+            throw HttpErrorFactory.paramError("Parameter ids must be a non-empty array");
+        }
+        const deleted = await this.extensionsService.deleteMany(ids);
+        return {
+            message: `Successfully deleted ${deleted} extensions`,
+            deleted,
+        };
+    }
+}
