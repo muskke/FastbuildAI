@@ -4543,6 +4543,144 @@
                     },
                     "deprecated": false,
                     "icon_url": "/static/ai/providers/volcengine.png"
+                },
+                {
+                    "model": "doubao-seed-1-6-250615",
+                    "label": "doubao-seed-1-6-250615",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call",
+                        "structured-output",
+                        "video",
+                        "vision"
+                    ],
+                    "model_properties": {
+                        "context_size": 256000,
+                        "max_tokens": 32000,
+                        "max_completion_tokens": 32000,
+                        "max_characters_per_chunk": 24000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
+                },
+                {
+                    "model": "doubao-seed-1-6-251015",
+                    "label": "doubao-seed-1-6-251015",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call",
+                        "structured-output",
+                        "video",
+                        "vision"
+                    ],
+                    "model_properties": {
+                        "context_size": 256000,
+                        "max_tokens": 32000,
+                        "max_completion_tokens": 32000,
+                        "max_characters_per_chunk": 24000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
+                },
+                {
+                    "model": "doubao-seed-1-6-lite-251015",
+                    "label": "doubao-seed-1-6-lite-251015",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call",
+                        "structured-output",
+                        "video",
+                        "vision"
+                    ],
+                    "model_properties": {
+                        "context_size": 256000,
+                        "max_tokens": 32000,
+                        "max_completion_tokens": 32000,
+                        "max_characters_per_chunk": 24000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
+                },
+                {
+                    "model": "doubao-seed-1-6-flash-250828",
+                    "label": "doubao-seed-1-6-flash-250828",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call",
+                        "structured-output",
+                        "video",
+                        "vision"
+                    ],
+                    "model_properties": {
+                        "context_size": 256000,
+                        "max_tokens": 32000,
+                        "max_completion_tokens": 32000,
+                        "max_characters_per_chunk": 24000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
+                },
+                {
+                    "model": "doubao-seed-1-6-thinking-250715",
+                    "label": "doubao-seed-1-6-thinking-250715",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "vision",
+                        "video",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call",
+                        "structured-output"
+                    ],
+                    "model_properties": {
+                        "context_size": 256000,
+                        "max_tokens": 32000,
+                        "max_completion_tokens": 32000,
+                        "max_characters_per_chunk": 24000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
+                },
+                {
+                    "model": "doubao-seed-1-6-vision-250815",
+                    "label": "doubao-seed-1-6-vision-250815",
+                    "model_type": "llm",
+                    "features": [
+                        "agent-thought",
+                        "vision",
+                        "video",
+                        "tool-call",
+                        "multi-tool-call",
+                        "stream-tool-call",
+                        "structured-output"
+                    ],
+                    "model_properties": {
+                        "context_size": 256000,
+                        "max_tokens": 32000,
+                        "max_completion_tokens": 32000,
+                        "max_characters_per_chunk": 24000,
+                        "mode": "chat"
+                    },
+                    "deprecated": false,
+                    "icon_url": "/static/ai/providers/volcengine.png"
                 }
             ]
         }
