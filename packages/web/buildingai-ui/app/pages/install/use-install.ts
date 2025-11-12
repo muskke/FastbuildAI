@@ -75,19 +75,6 @@ export function useInstall() {
                 await appStore.getConfig();
                 await appStore.getSystemInfo();
 
-                // Report installation statistics
-                const version = appStore.siteConfig?.webinfo?.version;
-                if (version) {
-                    await fetch(
-                        `${useRuntimeConfig().public.EXTENSION_API_URL}/building-ai/${version}`,
-                        {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ version, installedAt: Date.now() }),
-                        },
-                    );
-                }
-
                 return true;
             }
 
@@ -103,6 +90,18 @@ export function useInstall() {
             return false;
         } finally {
             isSubmittingWebsite.value = false;
+            // Report installation statistics
+            const version = appStore.siteConfig?.webinfo?.version;
+            if (version) {
+                fetch(
+                    `${useRuntimeConfig().public.EXTENSION_API_URL}/building-ai/${version}`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ version, installedAt: Date.now() }),
+                    },
+                );
+            }
         }
     }
 
