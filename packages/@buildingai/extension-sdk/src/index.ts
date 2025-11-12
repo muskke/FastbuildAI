@@ -1,0 +1,1 @@
+export { defineBuildingAITsupConfig } from "./tsup";
