@@ -20,24 +20,27 @@ const props = withDefaults(
     },
 );
 
-const { smartNavigate, isPlugin } = useSmartNavigate();
+const { smartNavigate, isPlugin, isExtensionPath } = useSmartNavigate();
 
 /**
- * Handle click event for plugin mode
+ * Check if should use click handler (plugin mode or extension paths)
+ */
+const shouldUseClickHandler = computed(() => {
+    return isPlugin || isExtensionPath(props.to);
+});
+
+/**
+ * Handle click event for plugin mode or extension paths
  */
 const handleClick = (event: MouseEvent) => {
-    // Prevent default navigation
     event.preventDefault();
-
-    // Only handle click in plugin mode
-    if (!isPlugin) return;
 
     // External links: let browser handle it
     if (props.to.startsWith("http://") || props.to.startsWith("https://")) {
         return;
     }
 
-    // Use smart navigation
+    // Use smart navigation (will use location.href for extension paths)
     smartNavigate(props.to, { newTab: props.target === "_blank" });
 };
 
@@ -56,12 +59,18 @@ const computedRel = computed(() => {
 </script>
 
 <template>
-    <!-- Main app: Use NuxtLink -->
-    <NuxtLink v-if="!isPlugin" :to="to" :target="target" :rel="computedRel" v-bind="$attrs">
+    <!-- Main app (non-extension paths): Use NuxtLink -->
+    <NuxtLink
+        v-if="!shouldUseClickHandler"
+        :to="to"
+        :target="target"
+        :rel="computedRel"
+        v-bind="$attrs"
+    >
         <slot />
     </NuxtLink>
 
-    <!-- Plugin: Use plain <a> tag -->
+    <!-- Plugin or extension paths: Use click handler with location navigation -->
     <NuxtLink
         v-else
         :to="to"

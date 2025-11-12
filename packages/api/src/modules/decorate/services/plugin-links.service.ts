@@ -76,9 +76,9 @@ export class PluginLinksService {
             // Iterate through each plugin directory
             for (const pluginName of pluginDirs) {
                 const pluginPath = join(this.extensionsDir, pluginName);
-                const webPagesPath = join(pluginPath, "web", "app", "pages");
+                const webPagesPath = join(pluginPath, "src", "web", "pages");
 
-                // Check if web/app/pages directory exists
+                // Check if src/web/pages directory exists
                 if (!this.existsSync(webPagesPath)) {
                     TerminalLogger.warn(
                         "PluginLinks",
@@ -178,22 +178,53 @@ export class PluginLinksService {
         try {
             const content = this.readFileSync(filePath, "utf-8");
 
-            // Find definePageMeta call
-            const definePageMetaMatch = content.match(/definePageMeta\s*\(\s*\{([^}]+)\}/s);
-            if (!definePageMetaMatch) {
+            // Find definePageMeta call - extract object content with balanced braces
+            const definePageMetaIndex = content.indexOf("definePageMeta");
+            if (definePageMetaIndex === -1) {
                 return null;
             }
 
-            const metaContent = definePageMetaMatch[1];
+            // Find the opening parenthesis after definePageMeta
+            let startIndex = content.indexOf("(", definePageMetaIndex);
+            if (startIndex === -1) {
+                return null;
+            }
+            startIndex += 1; // Skip the opening parenthesis
 
-            // Check if contains inLinkSelector: true
-            const inLinkSelectorMatch = metaContent.match(/inLinkSelector\s*:\s*true/);
-            if (!inLinkSelectorMatch) {
+            // Find the opening brace
+            startIndex = content.indexOf("{", startIndex);
+            if (startIndex === -1) {
+                return null;
+            }
+            startIndex += 1; // Skip the opening brace
+
+            // Find the matching closing brace by counting braces
+            let braceCount = 1;
+            let endIndex = startIndex;
+            while (braceCount > 0 && endIndex < content.length) {
+                if (content[endIndex] === "{") {
+                    braceCount++;
+                } else if (content[endIndex] === "}") {
+                    braceCount--;
+                }
+                endIndex++;
+            }
+
+            if (braceCount !== 0) {
+                return null; // Unbalanced braces
+            }
+
+            const metaContent = content.substring(startIndex, endIndex - 1);
+
+            // Check if contains inLinkSelector: true (case-insensitive, handle whitespace)
+            const inLinkSelectorRegex = /inLinkSelector\s*:\s*true/i;
+            if (!inLinkSelectorRegex.test(metaContent)) {
                 return null;
             }
 
-            // Extract name field
-            const nameMatch = metaContent.match(/name\s*:\s*["']([^"']+)["']/);
+            // Extract name field - support both single and double quotes
+            const nameRegex = /name\s*:\s*["']([^"']+)["']/;
+            const nameMatch = metaContent.match(nameRegex);
             const linkName = nameMatch ? nameMatch[1] : this.generateLinkNameFromPath(relativePath);
 
             // Generate link path

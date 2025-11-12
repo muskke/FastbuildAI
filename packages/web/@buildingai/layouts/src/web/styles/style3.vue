@@ -15,35 +15,10 @@ const props = defineProps<{
 }>();
 
 const userStore = useUserStore();
-const { isPlugin, baseURL } = useSmartNavigate();
+const { toAbsolutePath } = useSmartNavigate();
 
 // 移动端菜单状态
 const mobileMenuOpen = shallowRef(false);
-
-/**
- * Convert path to full URL for plugin mode
- * In plugin mode, we convert internal paths to full URLs so NuxtLink treats them as external links
- * and uses <a> tags instead of router.push (which would prepend baseURL)
- */
-const convertToAbsolutePath = (path: string): string => {
-    // External URLs: return as-is
-    if (path.startsWith("http://") || path.startsWith("https://")) {
-        return path;
-    }
-
-    // In plugin mode: convert to full URL to bypass router's baseURL handling
-    if (isPlugin) {
-        // Remove baseURL prefix if it exists
-        const cleanPath = path.startsWith(baseURL) ? path.slice(baseURL.length) : path;
-        // Ensure it starts with /
-        const absolutePath = cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`;
-        // Convert to full URL using current origin
-        return `${window.location.origin}${absolutePath}`;
-    }
-
-    // Main app: use as-is
-    return path;
-};
 
 /**
  * 将 NavigationConfig 转换为 NavigationMenuItem 格式
@@ -53,7 +28,7 @@ const navigationItems = computed((): NavigationMenuItem[] => {
         label: item.title,
         icon: item.icon,
         badge: item.badge,
-        to: convertToAbsolutePath(item.link?.path || "/"),
+        to: toAbsolutePath(item.link?.path || "/"),
         active:
             window.location.pathname === item.link?.path ||
             useRoute().path === item.link?.path ||
@@ -64,7 +39,7 @@ const navigationItems = computed((): NavigationMenuItem[] => {
             label: child.title,
             description: `前往 ${child.title}`,
             icon: child.icon,
-            to: convertToAbsolutePath(child?.link?.path || "/"),
+            to: toAbsolutePath(child?.link?.path || "/"),
             target: child?.link?.path?.startsWith("http") ? "_blank" : undefined,
         })),
     }));

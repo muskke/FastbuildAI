@@ -6,28 +6,14 @@ import type { NavigationConfig } from "../../../../../buildingai-ui/app/componen
 
 export function useNavigationMenu(navigationConfig?: Ref<NavigationConfig>) {
     const { t } = useI18n();
-    const { isPlugin, baseURL } = useSmartNavigate();
-
-    const convertToAbsolutePath = (path: string): string => {
-        if (path.startsWith("http://") || path.startsWith("https://")) {
-            return path;
-        }
-
-        if (isPlugin) {
-            const cleanPath = path.startsWith(baseURL) ? path.slice(baseURL.length) : path;
-            const absolutePath = cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`;
-            return `${window.location.origin}${absolutePath}`;
-        }
-
-        return path;
-    };
+    const { toAbsolutePath } = useSmartNavigate();
 
     const navigationItems = computed((): NavigationMenuItem[][] => {
         if (!navigationConfig?.value) return [[]];
         const items = navigationConfig.value.items.map((item) => ({
             label: item.title,
             icon: item.icon,
-            to: convertToAbsolutePath(item.link?.path || "/"),
+            to: toAbsolutePath(item.link?.path || "/"),
             active:
                 item.link?.path === useRoute().path ||
                 item.link?.path === useRoute().meta.activePath,
@@ -35,7 +21,7 @@ export function useNavigationMenu(navigationConfig?: Ref<NavigationConfig>) {
             children: item.children?.map((child) => ({
                 label: child.title,
                 icon: child.icon,
-                to: convertToAbsolutePath(child.link?.path || "/"),
+                to: toAbsolutePath(child.link?.path || "/"),
                 target: child.link?.path?.startsWith("http") ? "_blank" : undefined,
             })),
         }));
@@ -56,7 +42,7 @@ export function useNavigationMenu(navigationConfig?: Ref<NavigationConfig>) {
             label: t("layouts.menu.workspace"),
             icon: "i-lucide-layout-dashboard",
             target: "_self",
-            to: convertToAbsolutePath(ROUTES.CONSOLE),
+            to: toAbsolutePath(ROUTES.CONSOLE),
         },
     ]);
 

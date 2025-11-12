@@ -31,6 +31,12 @@ const sidebarMenus = computed(() => {
 const isActive = (path: string): boolean => {
     const route = useRoute();
     const pathname = window.location.pathname;
+
+    const runtimeConfig = useRuntimeConfig();
+    if (runtimeConfig.public.isPlugin) {
+        return pathname === path;
+    }
+
     return (
         pathname === path ||
         route.path === path ||

@@ -35,16 +35,15 @@ export class ExtensionOperationService {
     private readonly templatesDir: string;
     private readonly publicWebDir: string;
 
-    // Static variables for reload debouncing
-    private static reloadScheduled = false;
-    private static reloadTimer: NodeJS.Timeout | null = null;
-    private static readonly RELOAD_DEBOUNCE_MS = 3000; // 3 seconds debounce
+    // Static variables for restart debouncing
+    private static restartScheduled = false;
+    private static restartTimer: NodeJS.Timeout | null = null;
+    private static readonly RESTART_DEBOUNCE_MS = 3000; // 3 seconds debounce
 
     constructor(
         private readonly dictService: DictService,
         private readonly extensionsService: ExtensionsService,
         private readonly extensionConfigService: ExtensionConfigService,
-        private readonly extensionMarketService: ExtensionMarketService,
         private readonly extensionSchemaService: ExtensionSchemaService,
         private readonly pm2Service: Pm2Service,
     ) {
@@ -116,17 +115,8 @@ export class ExtensionOperationService {
         // 6. Delete extension from database
         await this.extensionsService.delete(extension.id);
 
-        try {
-            // 7. Uninstall extension log from extension market
-            await this.extensionMarketService.uninstallApplication(identifier, extension.version);
-        } catch (uninstallLogError) {
-            this.logger.error(
-                `Failed to uninstall extension from extension market: ${uninstallLogError}`,
-            );
-        }
-
-        // 8. Schedule PM2 reload after response is sent
-        this.scheduleReload();
+        // 7. Schedule PM2 restart after response is sent
+        this.scheduleRestart();
 
         this.logger.log(`Extension uninstalled successfully: ${identifier}`);
     }
@@ -496,8 +486,8 @@ export class ExtensionOperationService {
         // Install dependencies before restarting
         await this.installDependencies();
 
-        // Schedule PM2 reload after response is sent
-        this.scheduleReload();
+        // Schedule PM2 restart after response is sent
+        this.scheduleRestart();
 
         return extension;
     }
@@ -559,8 +549,8 @@ export class ExtensionOperationService {
             // 6. Install dependencies
             await this.installDependencies();
 
-            // 7. Schedule PM2 reload after response is sent
-            this.scheduleReload();
+            // 7. Schedule PM2 restart after response is sent
+            this.scheduleRestart();
 
             this.logger.log(`Extension upgraded successfully: ${identifier} to ${latestVersion}`);
             return updatedExtension;
@@ -711,10 +701,10 @@ export class ExtensionOperationService {
     }
 
     /**
-     * Reload PM2 process to load new extensions (graceful reload)
+     * Reload PM2 process to load new extensions (graceful restart)
      * @private
      */
-    private async reloadPm2Process(): Promise<void> {
+    private async restartPm2Process(): Promise<void> {
         try {
             this.logger.log("Reloading PM2 process to load new extension (graceful restart)");
 
@@ -795,7 +785,7 @@ export class ExtensionOperationService {
             await this.copyWebAssets(dto.identifier);
 
             // 9. Schedule PM2 restart after response is sent
-            this.scheduleReload();
+            this.scheduleRestart();
 
             this.logger.log(`Extension created successfully: ${dto.identifier}`);
             return extension;
@@ -1065,37 +1055,37 @@ export class ExtensionOperationService {
     }
 
     /**
-     * Schedule PM2 reload after response is sent
-     * Uses debouncing to prevent multiple concurrent reload requests
+     * Schedule PM2 restart after response is sent
+     * Uses debouncing to prevent multiple concurrent restart requests
      * @private
      */
-    private scheduleReload(): void {
-        // Check if reload is already scheduled
-        if (ExtensionOperationService.reloadScheduled) {
-            this.logger.log("PM2 reload already scheduled, extending debounce timer...");
+    private scheduleRestart(): void {
+        // Check if restart is already scheduled
+        if (ExtensionOperationService.restartScheduled) {
+            this.logger.log("PM2 restart already scheduled, extending debounce timer...");
 
             // Clear existing timer and reschedule
-            if (ExtensionOperationService.reloadTimer) {
-                clearTimeout(ExtensionOperationService.reloadTimer);
+            if (ExtensionOperationService.restartTimer) {
+                clearTimeout(ExtensionOperationService.restartTimer);
             }
         } else {
-            this.logger.log("Scheduling PM2 reload after response is sent...");
-            ExtensionOperationService.reloadScheduled = true;
+            this.logger.log("Scheduling PM2 restart after response is sent...");
+            ExtensionOperationService.restartScheduled = true;
         }
 
-        // Schedule reload with debounce
-        ExtensionOperationService.reloadTimer = setTimeout(async () => {
+        // Schedule restart with debounce
+        ExtensionOperationService.restartTimer = setTimeout(async () => {
             try {
-                this.logger.log("Executing scheduled PM2 reload...");
-                await this.reloadPm2Process();
+                this.logger.log("Executing scheduled PM2 restart...");
+                await this.restartPm2Process();
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : String(error);
-                this.logger.error(`Failed to reload PM2 after scheduling: ${errorMessage}`);
+                this.logger.error(`Failed to restart PM2 after scheduling: ${errorMessage}`);
             } finally {
-                // Reset state after reload attempt
-                ExtensionOperationService.reloadScheduled = false;
-                ExtensionOperationService.reloadTimer = null;
+                // Reset state after restart attempt
+                ExtensionOperationService.restartScheduled = false;
+                ExtensionOperationService.restartTimer = null;
             }
-        }, ExtensionOperationService.RELOAD_DEBOUNCE_MS);
+        }, ExtensionOperationService.RESTART_DEBOUNCE_MS);
     }
 }
