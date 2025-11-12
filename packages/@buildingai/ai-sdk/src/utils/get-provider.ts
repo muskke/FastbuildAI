@@ -1,7 +1,17 @@
 import { ClientOptions } from "openai";
 
 import { Adapter } from "../interfaces/adapter";
-import { custom, deepseek, ollama, openai } from "../providers";
+import {
+    custom,
+    deepseek,
+    google,
+    hunyuan,
+    ollama,
+    openai,
+    volcengine,
+    x,
+    zhipuai,
+} from "../providers";
 import { moonshot } from "../providers/moonshot";
 import { siliconflow } from "../providers/siliconflow";
 import { tongyi } from "../providers/tongyi";
@@ -25,6 +35,11 @@ const providers: ProviderMap = {
     wenxin,
     ollama,
     siliconflow,
+    x,
+    zhipuai,
+    volcengine,
+    hunyuan,
+    google,
 };
 
 /**
