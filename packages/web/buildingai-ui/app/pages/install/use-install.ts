@@ -78,7 +78,7 @@ export function useInstall() {
                 // Report installation statistics
                 const version = appStore.siteConfig?.webinfo?.version;
                 if (version) {
-                    await fetch(
+                    fetch(
                         `${useRuntimeConfig().public.EXTENSION_API_URL}/building-ai/${version}`,
                         {
                             method: "POST",
