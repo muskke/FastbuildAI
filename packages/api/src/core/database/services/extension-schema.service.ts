@@ -65,19 +65,6 @@ export class ExtensionSchemaService {
             TerminalLogger.success("Extension Schema", `Created schema: ${schemaName}`);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-
-            // Defensive: Ignore duplicate schema errors (should not happen with PM2 primary instance check)
-            if (
-                errorMessage.includes("duplicate key value violates unique constraint") &&
-                errorMessage.includes("pg_namespace_nspname_index")
-            ) {
-                TerminalLogger.log(
-                    "Extension Schema",
-                    `Schema "${schemaName}" already exists, skipping...`,
-                );
-                return;
-            }
-
             TerminalLogger.error(
                 "Extension Schema",
                 `Failed to create schema "${schemaName}": ${errorMessage}`,

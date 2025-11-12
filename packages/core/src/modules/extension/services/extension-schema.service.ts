@@ -64,16 +64,6 @@ export class ExtensionSchemaService {
             await this.extensionRepository.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-
-            // Defensive: Ignore duplicate schema errors (should not happen with PM2 primary instance check)
-            if (
-                errorMessage.includes("duplicate key value violates unique constraint") &&
-                errorMessage.includes("pg_namespace_nspname_index")
-            ) {
-                // Schema already exists, this is fine
-                return;
-            }
-
             throw new Error(`Failed to create schema ${schemaName}: ${errorMessage}`);
         }
     }

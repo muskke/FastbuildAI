@@ -45,12 +45,7 @@ export class SeedRunner {
                     `${seeder.name} completed (duration: ${duration}ms)`,
                 );
             } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : String(error);
-                const errorStack = error instanceof Error ? error.stack : undefined;
-                TerminalLogger.error("SeedRunner", `${seeder.name} failed: ${errorMessage}`);
-                if (errorStack) {
-                    TerminalLogger.error("SeedRunner", `Stack trace: ${errorStack}`);
-                }
+                TerminalLogger.error("SeedRunner", `${seeder.name} failed: ${error.message}`);
                 throw error;
             }
         }
