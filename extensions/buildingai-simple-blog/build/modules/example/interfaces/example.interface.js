@@ -1,2 +1,2 @@
-export {};
-//# sourceMappingURL=example.interface.js.map
+'use strict';
+

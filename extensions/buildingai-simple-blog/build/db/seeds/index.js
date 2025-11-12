@@ -1,6 +1,16 @@
-import { ArticleSeeder } from "./seeders/article.seeder";
-import { CategorySeeder } from "./seeders/category.seeder";
-export async function getSeeders() {
-    return [new CategorySeeder(), new ArticleSeeder()];
+'use strict';
+
+var article_seeder = require('./seeders/article.seeder');
+var category_seeder = require('./seeders/category.seeder');
+
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+async function getSeeders() {
+  return [
+    new category_seeder.CategorySeeder(),
+    new article_seeder.ArticleSeeder()
+  ];
 }
-//# sourceMappingURL=index.js.map
+__name(getSeeders, "getSeeders");
+
+exports.getSeeders = getSeeders;
