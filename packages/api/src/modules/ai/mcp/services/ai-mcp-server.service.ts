@@ -9,7 +9,7 @@ import {
     McpServerType,
 } from "@buildingai/db/entities/ai-mcp-server.entity";
 import { AiUserMcpServer } from "@buildingai/db/entities/ai-user-mcp-server.entity";
-import { Like, Repository } from "@buildingai/db/typeorm";
+import { Like, Not, Repository } from "@buildingai/db/typeorm";
 import { DictService } from "@buildingai/dict";
 import { HttpErrorFactory } from "@buildingai/errors";
 import { buildWhere } from "@buildingai/utils";
@@ -88,10 +88,13 @@ export class AiMcpServerService extends BaseService<AiMcpServer> {
         // 如果更新了名称，检查新名称是否与其他服务冲突
         if (updateDto.name && updateDto.name !== mcpServer.name) {
             const existServer = await this.findOne({
-                where: { name: updateDto.name },
+                where: { 
+                    name: updateDto.name,
+                    id: Not(id)
+                },
             });
 
-            if (existServer && existServer.id !== id) {
+            if (existServer) {
                 throw HttpErrorFactory.badRequest(`名为 ${updateDto.name} 的MCP服务已存在`);
             }
         }
