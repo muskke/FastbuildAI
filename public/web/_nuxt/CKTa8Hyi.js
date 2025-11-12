@@ -1,0 +1,1 @@
+import{ar as d}from"#entry";function x(n,f){if(n.length!==f.length)return!1;for(let e=0;e<n.length;e++)if(n[e]!==f[e])return!1;return!0}function c(n,f,e){const i=n.findIndex(t=>d(t,f)),s=n.findIndex(t=>d(t,e));if(i===-1||s===-1)return[];const[u,l]=[i,s].sort((t,o)=>t-o);return n.slice(u,l+1)}export{x as a,c as f};

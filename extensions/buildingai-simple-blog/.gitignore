@@ -1,12 +1,10 @@
 # Build outputs
-.output
 .data
 .nuxt
 .turbo
 .nitro
 .cache
 dist
-build
 /data
 
 # Storage

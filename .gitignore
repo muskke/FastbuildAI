@@ -7,13 +7,6 @@ node_modules
 .pnp.js
 pnpm-lock.yaml
 
-# extensions
-extensions/*
-!extensions/buildingai-simple-blog
-!extensions/buildingai-simple-blog/*
-extensions/buildingai-simple-blog/build
-extensions/buildingai-simple-blog/dist
-
 # storage
 storage/*
 !storage/static
@@ -46,7 +39,6 @@ packages/**/dist
 /public/package.json
 /public/*
 !/public/web/
-/public/web/*
 !/public/index.html
 *.tsbuildinfo
 _temp_get_languages.*
@@ -65,3 +57,11 @@ yarn-error.log*
 
 # ESLint cache
 .eslintcache
+
+# extensions
+extensions/*
+!extensions/buildingai-simple-blog
+!extensions/buildingai-simple-blog/*
+!extensions/buildingai-simple-blog/build
+!extensions/buildingai-simple-blog/.output
+extensions/buildingai-simple-blog/dist
