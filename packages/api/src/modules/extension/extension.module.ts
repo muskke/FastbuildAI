@@ -62,46 +62,21 @@ export class ExtensionCoreModule implements OnModuleInit {
     }
 
     /**
-     * Check if current instance is PM2 primary instance
-     * In PM2 cluster mode, only instance 0 should run extension seeds
-     */
-    private isPm2PrimaryInstance(): boolean {
-        const pm2InstanceId = process.env.NODE_APP_INSTANCE || process.env.pm_id;
-        // If not in PM2 cluster mode, or is instance 0, return true
-        return pm2InstanceId === undefined || pm2InstanceId === "0";
-    }
-
-    /**
      * Execute seeds for newly installed extensions
      *
      * Called after all modules are initialized
      */
     async onModuleInit() {
-        try {
-            // In PM2 cluster mode, only primary instance handles extension seeds
-            if (!this.isPm2PrimaryInstance()) {
-                TerminalLogger.log(
-                    "Extension Seeds",
-                    `Non-primary PM2 instance (${process.env.NODE_APP_INSTANCE || process.env.pm_id}), skipping extension seeds`,
-                );
-                return;
-            }
-
-            const extensionList = getCachedExtensionList();
-            if (extensionList.length === 0) {
-                return;
-            }
-
-            // Get DataSource from the module
-            const dataSource = this.moduleRef.get(DataSource, { strict: false });
-            const seedService = new ExtensionSeedService(dataSource);
-
-            await seedService.executeNewExtensionSeeds(extensionList);
-        } catch (error) {
-            // Log error but don't throw - allow app to continue starting
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            console.error(`Failed to execute extension seeds: ${errorMessage}`);
+        const extensionList = getCachedExtensionList();
+        if (extensionList.length === 0) {
+            return;
         }
+
+        // Get DataSource from the module
+        const dataSource = this.moduleRef.get(DataSource, { strict: false });
+        const seedService = new ExtensionSeedService(dataSource);
+
+        await seedService.executeNewExtensionSeeds(extensionList);
     }
 
     constructor(private readonly moduleRef: ModuleRef) {}

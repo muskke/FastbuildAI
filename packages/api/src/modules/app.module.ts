@@ -47,14 +47,6 @@ import { UserModule } from "./user/user.module";
 
 @Module({})
 export class AppModule {
-    /**
-     * Check if current instance is PM2 primary instance
-     */
-    private static isPm2PrimaryInstance(): boolean {
-        const pm2InstanceId = process.env.NODE_APP_INSTANCE || process.env.pm_id;
-        return pm2InstanceId === undefined || pm2InstanceId === "0";
-    }
-
     static async register(): Promise<DynamicModule> {
         const extensionsDir = join(process.cwd(), "..", "..", "extensions");
         const enabledIdentifiers = await getEnabledExtensionsFromConfig(extensionsDir);
@@ -62,15 +54,7 @@ export class AppModule {
         const extensionsList = await initExtensionCache(extensionsDir, enabledIdentifiers);
 
         // Create database schemas for extensions before loading extension modules
-        // Only primary instance creates schemas in PM2 cluster mode
-        if (this.isPm2PrimaryInstance()) {
-            await this.createExtensionSchemas(extensionsList);
-        } else {
-            TerminalLogger.log(
-                "Extension Schema",
-                `Non-primary PM2 instance (${process.env.NODE_APP_INSTANCE || process.env.pm_id}), skipping schema creation`,
-            );
-        }
+        await this.createExtensionSchemas(extensionsList);
 
         const publicPath = join(__dirname, "..", "..", "..", "..", "public");
         const webPath = join(publicPath, "web");
@@ -233,19 +217,6 @@ export class AppModule {
             TerminalLogger.success("Extension Schema", `Created schema: ${schemaName}`);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-
-            // Defensive: Ignore duplicate schema errors (should not happen with PM2 primary instance check)
-            if (
-                errorMessage.includes("duplicate key value violates unique constraint") &&
-                errorMessage.includes("pg_namespace_nspname_index")
-            ) {
-                TerminalLogger.log(
-                    "Extension Schema",
-                    `Schema "${schemaName}" already exists, skipping...`,
-                );
-                return;
-            }
-
             TerminalLogger.error(
                 "Extension Schema",
                 `Failed to create schema "${schemaName}": ${errorMessage}`,

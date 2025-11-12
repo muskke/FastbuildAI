@@ -46,16 +46,6 @@ export class DatabaseInitService implements OnModuleInit {
     ) {}
 
     /**
-     * Check if current instance is PM2 primary instance
-     * In PM2 cluster mode, only instance 0 should run database initialization
-     */
-    private isPm2PrimaryInstance(): boolean {
-        const pm2InstanceId = process.env.NODE_APP_INSTANCE || process.env.pm_id;
-        // If not in PM2 cluster mode, or is instance 0, return true
-        return pm2InstanceId === undefined || pm2InstanceId === "0";
-    }
-
-    /**
      * Executed automatically during module initialization
      */
     async onModuleInit() {
@@ -64,14 +54,6 @@ export class DatabaseInitService implements OnModuleInit {
         try {
             // Scan controllers for permission sync
             this.permissionService.scanControllers();
-
-            // In PM2 cluster mode, only primary instance handles initialization
-            if (!this.isPm2PrimaryInstance()) {
-                this.logger.log(
-                    `⏭️  Non-primary PM2 instance (${process.env.NODE_APP_INSTANCE || process.env.pm_id}), skipping database initialization`,
-                );
-                return;
-            }
 
             // Check whether the system is already installed
             const isInstalled = await this.checkSystemInstalled();
