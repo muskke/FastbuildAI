@@ -258,7 +258,7 @@ export class DatabaseInitService implements OnModuleInit {
                 JSON.stringify(
                     {
                         installed_at: new Date().toISOString(),
-                        version: process.env.APP_VERSION || "25.0.0", // 可以记录当前系统版本
+                        version: process.env.APP_VERSION || "25.0.1", // 可以记录当前系统版本
                     },
                     null,
                     2,

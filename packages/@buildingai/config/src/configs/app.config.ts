@@ -20,5 +20,5 @@ export const AppConfig: AppConfigType = {
     name: "BuildingAI",
 
     /** Application version */
-    version: "25.0.0",
+    version: "25.0.1",
 };
