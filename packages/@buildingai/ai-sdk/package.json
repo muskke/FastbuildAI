@@ -1,0 +1,52 @@
+{
+    "name": "@buildingai/ai-sdk",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
+    "exports": {
+        ".": {
+            "require": "./dist/index.js",
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        },
+        "./*": {
+            "types": "./dist/*.d.ts",
+            "import": "./dist/*.js",
+            "require": "./dist/*.js"
+        }
+    },
+    "scripts": {
+        "clean": "rimraf dist .turbo tsconfig.tsbuildinfo",
+        "check-types": "tsc --noEmit",
+        "build": "rimraf dist && tsc -p tsconfig.build.json",
+        "dev": "tsc -p tsconfig.build.json --watch",
+        "format": "biome format --write .",
+        "format:check": "biome ci .",
+        "lint": "eslint . --quiet",
+        "lint:fix": "eslint . --fix",
+        "watch": "tsc -p tsconfig.build.json --watch",
+        "test": "jest",
+        "test:dev": "jest --watch"
+    },
+    "dependencies": {
+        "@buildingai/utils": "workspace:*",
+        "@types/pdf-parse": "^1.1.5",
+        "@buildingai/constants": "workspace:*",
+        "@modelcontextprotocol/sdk": "^1.18.0",
+        "mammoth": "^1.8.0",
+        "openai": "^5.20.3",
+        "pdf-parse": "^1.1.1",
+        "tiktoken": "^1.0.22",
+        "xlsx": "^0.18.5"
+    },
+    "devDependencies": {
+        "@buildingai/eslint-config": "workspace:*",
+        "@buildingai/typescript-config": "workspace:*"
+    }
+}

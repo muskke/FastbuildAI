@@ -1,0 +1,16 @@
+{
+    "extends": "@buildingai/typescript-config/base.json",
+    "include": ["./src/**/*", "../stores/src/**/*", "../../buildingai-ui/.nuxt/types/imports.d.ts"],
+    "compilerOptions": {
+        "lib": ["es2022", "DOM", "DOM.Iterable"],
+        "paths": {
+            "@buildingai/constants": ["../../@buildingai/constants/src"],
+            "@buildingai/stores/*": ["../stores/src/*"],
+            "@/*": ["../../*"]
+        },
+
+        "module": "preserve",
+        "moduleResolution": "Bundler"
+    },
+    "exclude": ["node_modules"]
+}

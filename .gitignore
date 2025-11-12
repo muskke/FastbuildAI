@@ -2,9 +2,21 @@
 
 # Dependencies
 node_modules
+.pnpm-store
 .pnp
 .pnp.js
-.pnpm-store
+pnpm-lock.yaml
+
+# extensions
+extensions/*
+!extensions/buildingai-simple-blog
+!extensions/buildingai-simple-blog/*
+extensions/buildingai-simple-blog/build
+extensions/buildingai-simple-blog/dist
+
+# storage
+storage/*
+!storage/static
 
 # Local env files
 .env
@@ -12,6 +24,7 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+/logs/
 
 # Testing
 coverage
@@ -21,21 +34,24 @@ coverage
 
 # Vercel
 .vercel
-
-# AI
 .cursor
+.windsurf
 
 # Build Outputs
 .next/
 out/
 build
-dist
+packages/**/dist
 /public/.output
 /public/package.json
 /public/*
 !/public/web/
 /public/web/*
 !/public/index.html
+*.tsbuildinfo
+_temp_get_languages.*
+build.tsbuildinfo
+tsconfig.tsbuildinfo
 
 
 # Debug
@@ -46,5 +62,6 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
-# IDE
-.idea
+
+# ESLint cache
+.eslintcache
