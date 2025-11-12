@@ -4,7 +4,7 @@ module.exports = {
             name: "buildingai-api",
             script: "dist/main.js",
             cwd: "packages/api",
-            instances: "2",
+            instances: "1",
             exec_mode: "cluster",
             autorestart: true,
             watch: false,
