@@ -143,6 +143,18 @@ watch(isOpen, (open) => {
     if (open) scrollToSelected();
 });
 
+watch(
+    () => props.modelValue,
+    (newValue) => {
+        if (!loading.value && items.value.length) {
+            const config = allSecretConfigs.value.find((k) => k.id === newValue);
+            if (config) {
+                selected.value = config;
+            }
+        }
+    },
+);
+
 // Initialize on mount
 onMounted(() => {
     loadData();
