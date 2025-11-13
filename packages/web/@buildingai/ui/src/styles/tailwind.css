@@ -3,7 +3,7 @@
 
 @source "../**/**/*.{ts,tsx,vue}";
 @source "../../../../buildingai-ui/app/**/*.{ts,tsx,vue}";
-@source "../../../../../../plugins/**/**/*.{ts,tsx}";
+@source "../../../../../../extensions/**/**/*.{ts,tsx,vue}";
 @source "../../../designer/src/**/**/*.{ts,tsx,vue}";
 @source "../../../layouts/src/**/**/*.{ts,tsx,vue}";
 
