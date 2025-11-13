@@ -52,6 +52,7 @@ const { lockFn: handleToggleActive } = useLockFn(async (modelId: string, isActiv
         if (model) {
             model.isActive = isActive;
         }
+        getLists();
     } catch (error) {
         console.error("切换模型状态失败:", error);
     }
