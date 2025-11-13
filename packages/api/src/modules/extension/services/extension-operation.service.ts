@@ -701,12 +701,13 @@ export class ExtensionOperationService {
     }
 
     /**
-     * Reload PM2 process to load new extensions (graceful restart)
+     * Restart PM2 process to load new extensions
+     * Uses restart instead of reload to ensure module cache is cleared
      * @private
      */
     private async restartPm2Process(): Promise<void> {
         try {
-            this.logger.log("Reloading PM2 process to load new extension (graceful restart)");
+            this.logger.log("Restarting PM2 process to load new extension");
 
             if (!this.pm2Service.isPm2Available()) {
                 this.logger.warn(
@@ -715,19 +716,19 @@ export class ExtensionOperationService {
                 return;
             }
 
-            const result = await this.pm2Service.reload();
+            const result = await this.pm2Service.restart();
 
             if (result.success) {
-                this.logger.log("PM2 process reloaded successfully");
+                this.logger.log("PM2 process restarted successfully");
             } else {
                 this.logger.warn(
-                    `Failed to reload PM2 process: ${result.message}. Extension installed but requires manual restart.`,
+                    `Failed to restart PM2 process: ${result.message}. Extension installed but requires manual restart.`,
                 );
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             this.logger.error(
-                `Error during PM2 reload: ${errorMessage}. Extension installed but requires manual restart.`,
+                `Error during PM2 restart: ${errorMessage}. Extension installed but requires manual restart.`,
             );
             // Don't throw error - extension is already installed
         }
