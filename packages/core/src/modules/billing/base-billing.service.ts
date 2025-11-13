@@ -101,7 +101,7 @@ export class BaseBillingService {
                 const newPower = user.power - amount;
 
                 // Update user power
-                await entityManager.increment(User, { id: userId }, "power", -amount);
+                await manager.increment(User, { id: userId }, "power", -amount);
 
                 // Record power change log
                 await manager.insert(AccountLog, {
@@ -197,7 +197,7 @@ export class BaseBillingService {
                 const newPower = user.power + amount;
 
                 // Update user power
-                await entityManager.increment(User, { id: userId }, "power", amount);
+                await manager.increment(User, { id: userId }, "power", amount);
 
                 // Record power change log
                 await manager.insert(AccountLog, {
