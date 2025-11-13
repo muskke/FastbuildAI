@@ -185,11 +185,12 @@ try {
 
     // Run TypeORM migration:generate with environment variable
     const tempMigrationName = `temp_${description}`;
-    const command = `EXTENSION_IDENTIFIER=${identifier} npx typeorm-ts-node-commonjs migration:generate ${extensionMigrationsDir}/${tempMigrationName} -d ${dataSourcePath}`;
+    const command = `npx cross-env EXTENSION_IDENTIFIER=${identifier} typeorm-ts-node-commonjs migration:generate ${extensionMigrationsDir}/${tempMigrationName} -d ${dataSourcePath}`;
 
     execSync(command, {
         cwd: dbPackageDir,
         stdio: "inherit",
+        reload,
     });
 
     // Find the generated file (TypeORM adds timestamp prefix)

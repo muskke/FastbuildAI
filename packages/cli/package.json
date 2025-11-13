@@ -13,8 +13,8 @@
         "access": "public"
     },
     "scripts": {
-        "start": "NODE_ENV=production node ./bin/setup.js",
-        "predeploy": "NODE_ENV=production node ./bin/predeploy.js"
+        "start": "cross-env NODE_ENV=production node ./bin/setup.js",
+        "predeploy": "cross-env NODE_ENV=production node ./bin/predeploy.js"
     },
     "dependencies": {
         "@buildingai/api": "workspace:*",
