@@ -133,7 +133,6 @@ export const configPresets: ExtendedNuxtConfig = {
         "nuxt-svgo",
         "@nuxt/ui",
         "@nuxtjs/i18n",
-        "@vite-pwa/nuxt",
         "@nuxt/eslint",
         "motion-v/nuxt",
     ],
