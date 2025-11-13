@@ -82,6 +82,7 @@ function goToApiKeyManage() {
     router.push({
         path: useRoutePath("secret:list"),
     });
+    emits("close");
 }
 
 /**
