@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: "buildingai-api",
+            name: "buildingai",
             script: "dist/main.js",
             cwd: "packages/api",
             instances: "1",
