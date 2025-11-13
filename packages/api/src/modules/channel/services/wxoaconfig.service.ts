@@ -135,7 +135,7 @@ export class WxOaConfigService extends BaseService<Dict> {
         const config = await this.dictCacheService.getGroupValues<StorageConfig>("storage_config");
         return {
             // TODO 优先解析请求的域名
-            domain: config?.domain || process.env.VITE_APP_BASE_URL,
+            domain: config?.domain || process.env.APP_DOMAIN,
         };
     }
 }

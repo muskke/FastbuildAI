@@ -1,4 +1,5 @@
 import { BaseService } from "@buildingai/base";
+import { AppConfig } from "@buildingai/config/app.config";
 import { InjectRepository } from "@buildingai/db/@nestjs/typeorm";
 import { Dict } from "@buildingai/db/entities/dict.entity";
 import { Repository } from "@buildingai/db/typeorm";
@@ -54,7 +55,7 @@ export class WebsiteService extends BaseService<Dict> {
             appid: "",
         });
 
-        webinfo.version = process.env.APP_VERSION || "unknown version";
+        webinfo.version = AppConfig.version;
         webinfo.isDemo = process.env.SERVER_IS_DEMO_ENV === "true";
         return {
             webinfo,

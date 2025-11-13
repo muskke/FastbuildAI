@@ -524,7 +524,7 @@ export class AiAgentService extends BaseService<Agent> {
                 publishConfig: dto.publishConfig || {},
             });
 
-            const publishUrl = `${process.env.VITE_APP_BASE_URL || "http://localhost:4090"}/public/agent/${publishToken}`;
+            const publishUrl = `${process.env.APP_DOMAIN || "http://localhost:4090"}/public/agent/${publishToken}`;
             const embedCode = this.generateEmbedCode(publishToken, publishUrl);
 
             this.logger.log(`[+] 智能体发布成功: ${id} - ${agent.name}`);
@@ -588,7 +588,7 @@ export class AiAgentService extends BaseService<Agent> {
             throw HttpErrorFactory.badRequest("智能体未发布，无法获取嵌入代码");
         }
 
-        const publishUrl = `${process.env.VITE_APP_BASE_URL || "http://localhost:4090"}/public/agent/${agent.publishToken}`;
+        const publishUrl = `${process.env.APP_DOMAIN || "http://localhost:4090"}/public/agent/${agent.publishToken}`;
         const embedCode = this.generateEmbedCode(agent.publishToken, publishUrl);
 
         return { embedCode, publishUrl };

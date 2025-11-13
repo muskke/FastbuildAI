@@ -5,7 +5,6 @@
     "globalEnv": [
         "NODE_ENV",
         "APP_NAME",
-        "APP_VERSION",
         "SERVER_PORT",
         "SERVER_CORS_ENABLED",
         "SERVER_CORS_ORIGIN",
@@ -55,7 +54,8 @@
         "REDIS_MAX_RECONNECT_ATTEMPTS",
         "REDIS_RECONNECT_DELAY",
         "NODE_APP_INSTANCE",
-        "pm_id"
+        "pm_id",
+        "APP_DOMAIN"
     ],
     "tasks": {
         "build": {

@@ -65,7 +65,7 @@ export class FileUrlService {
                     return this.removeBaseDomain(
                         url,
                         config.domain ||
-                            process.env.VITE_APP_BASE_URL ||
+                            process.env.APP_DOMAIN ||
                             `http://localhost:${process.env.SERVER_PORT}`,
                     );
                 // 后续可扩展其他存储引擎的处理逻辑
@@ -75,7 +75,7 @@ export class FileUrlService {
                     return this.removeBaseDomain(
                         url,
                         config.domain ||
-                            process.env.VITE_APP_BASE_URL ||
+                            process.env.APP_DOMAIN ||
                             `http://localhost:${process.env.SERVER_PORT}`,
                     );
             }
@@ -105,7 +105,7 @@ export class FileUrlService {
             const config = await this.getStorageConfig();
             const baseDomain =
                 config.domain ||
-                process.env.VITE_APP_BASE_URL ||
+                process.env.APP_DOMAIN ||
                 `http://localhost:${process.env.SERVER_PORT}`;
 
             // 根据不同的存储引擎处理路径
@@ -156,7 +156,7 @@ export class FileUrlService {
                 engine: configMap.engine || STORAGE_ENGINE.LOCAL,
                 domain:
                     configMap.domain ||
-                    process.env.VITE_APP_BASE_URL ||
+                    process.env.APP_DOMAIN ||
                     `http://localhost:${process.env.SERVER_PORT}`,
             };
         } catch (error) {
@@ -164,8 +164,7 @@ export class FileUrlService {
             // Fallback to default configuration
             return {
                 engine: STORAGE_ENGINE.LOCAL,
-                domain:
-                    process.env.VITE_APP_BASE_URL || `http://localhost:${process.env.SERVER_PORT}`,
+                domain: process.env.APP_DOMAIN || `http://localhost:${process.env.SERVER_PORT}`,
             };
         }
     }

@@ -1,3 +1,4 @@
+import { AppConfig } from "@buildingai/config/app.config";
 import { BooleanNumber, UserCreateSource, UserTerminal } from "@buildingai/constants";
 import { InjectRepository } from "@buildingai/db/@nestjs/typeorm";
 import { User } from "@buildingai/db/entities/user.entity";
@@ -42,7 +43,7 @@ export class SystemService {
         );
         return {
             isInitialized,
-            version: process.env.APP_VERSION || "unknown version",
+            version: AppConfig.version,
         };
     }
 

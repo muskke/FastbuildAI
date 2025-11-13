@@ -32,7 +32,7 @@ export class ExtensionMarketService {
                 enableErrorLog: true,
             },
             headers: {
-                Domain: process.env.VITE_APP_BASE_URL,
+                Domain: process.env.APP_DOMAIN,
             },
         });
 

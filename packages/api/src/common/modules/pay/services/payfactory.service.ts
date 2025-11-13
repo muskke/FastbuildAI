@@ -115,7 +115,7 @@ export class PayfactoryService {
         const config = await this.dictCacheService.getGroupValues<{
             domain?: string;
         }>("storage_config");
-        return config?.domain || process.env.VITE_APP_BASE_URL || "";
+        return config?.domain || process.env.APP_DOMAIN || "";
     }
 
     /**

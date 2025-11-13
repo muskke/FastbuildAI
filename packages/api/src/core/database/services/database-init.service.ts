@@ -1,3 +1,4 @@
+import { AppConfig } from "@buildingai/config/app.config";
 import { InjectRepository } from "@buildingai/db/@nestjs/typeorm";
 import { Menu } from "@buildingai/db/entities/menu.entity";
 import { MenuSeeder } from "@buildingai/db/seeds/runtime-seeders/menu.seeder";
@@ -258,7 +259,7 @@ export class DatabaseInitService implements OnModuleInit {
                 JSON.stringify(
                     {
                         installed_at: new Date().toISOString(),
-                        version: process.env.APP_VERSION || "25.0.2", // 可以记录当前系统版本
+                        version: AppConfig.version, // Record current system version
                     },
                     null,
                     2,
