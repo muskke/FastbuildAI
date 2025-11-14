@@ -117,7 +117,14 @@ export class FileUploadService extends BaseService<File> {
             // Remove default ports (http:80, https:443)
             host = this.normalizeHost(host, protocol);
 
-            return `${protocol}://${host}`;
+            const result = `${protocol}://${host}`;
+
+            // Debug log
+            console.log(
+                `[FileUpload] Request domain: protocol=${protocol}, host=${host}, result=${result}`,
+            );
+
+            return result;
         } catch (error) {
             console.error(error);
             return undefined;
@@ -132,15 +139,18 @@ export class FileUploadService extends BaseService<File> {
      * @returns Normalized host name
      */
     private normalizeHost(host: string, protocol: string): string {
-        // Remove default port 80 for http
-        if (protocol === "http" && host.endsWith(":80")) {
-            return host.slice(0, -3);
+        // Use regex to remove default ports
+        const normalizedHost =
+            protocol === "https"
+                ? host.replace(/:443$/, "") // Remove https :443
+                : host.replace(/:80$/, ""); // Remove http :80
+
+        // Debug log
+        if (normalizedHost !== host) {
+            console.log(`[FileUpload] Port normalized: ${host} -> ${normalizedHost}`);
         }
-        // Remove default port 443 for https
-        if (protocol === "https" && host.endsWith(":443")) {
-            return host.slice(0, -4);
-        }
-        return host;
+
+        return normalizedHost;
     }
 
     /**

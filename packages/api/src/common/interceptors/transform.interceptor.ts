@@ -202,7 +202,12 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
             // 移除默认端口(http:80, https:443)
             host = this.normalizeHost(host, protocol);
 
-            return `${protocol}://${host}`;
+            const result = `${protocol}://${host}`;
+
+            // 调试日志
+            this.logger.debug(`请求域名信息: protocol=${protocol}, host=${host}, result=${result}`);
+
+            return result;
         } catch (error) {
             this.logger.error("获取请求域名失败", error);
             return undefined;
@@ -217,14 +222,17 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
      * @returns 标准化后的主机名
      */
     private normalizeHost(host: string, protocol: string): string {
-        // 移除 http 的默认端口 80
-        if (protocol === "http" && host.endsWith(":80")) {
-            return host.slice(0, -3);
+        // 使用正则表达式移除默认端口
+        const normalizedHost =
+            protocol === "https"
+                ? host.replace(/:443$/, "") // 移除 https 的 :443
+                : host.replace(/:80$/, ""); // 移除 http 的 :80
+
+        // 调试日志
+        if (normalizedHost !== host) {
+            this.logger.debug(`端口标准化: ${host} -> ${normalizedHost}`);
         }
-        // 移除 https 的默认端口 443
-        if (protocol === "https" && host.endsWith(":443")) {
-            return host.slice(0, -4);
-        }
-        return host;
+
+        return normalizedHost;
     }
 }
