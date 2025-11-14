@@ -19,7 +19,7 @@ import {
 const BASE_API =
     process.env.NODE_ENV === "development"
         ? import.meta.env.VITE_DEVELOP_APP_BASE_URL || ""
-        : import.meta.env.VITE_PRODUCT_APP_BASE_URL || "";
+        : import.meta.env.VITE_PRODUCTION_APP_BASE_URL || "";
 
 const WEB_API_PREFIX = import.meta.env.VITE_APP_WEB_API_PREFIX || "/api/web";
 const CONSOLE_API_PREFIX = import.meta.env.VITE_APP_CONSOLE_API_PREFIX || "/api/console";

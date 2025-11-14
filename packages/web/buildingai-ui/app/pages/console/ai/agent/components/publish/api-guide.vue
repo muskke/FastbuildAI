@@ -11,7 +11,7 @@ const { t } = useI18n();
 const baseUrl =
     process.env.NODE_ENV === "development"
         ? import.meta.env.VITE_DEVELOP_APP_BASE_URL || ""
-        : import.meta.env.VITE_PRODUCT_APP_BASE_URL || "";
+        : import.meta.env.VITE_PRODUCTION_APP_BASE_URL || "";
 
 const apiEndpoints = computed(() => [
     {
