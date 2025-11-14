@@ -36,6 +36,8 @@ build
 packages/**/dist
 /public/.output
 /public/package.json
+!/public/web/extensions/buildingai-simple-blog
+/public/web/extensions/*
 /public/*
 !/public/web/
 !/public/index.html
