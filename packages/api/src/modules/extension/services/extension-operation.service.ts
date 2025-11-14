@@ -1088,6 +1088,10 @@ export class ExtensionOperationService {
                 `Synchronizing tables and executing seeds for extension: ${identifier}`,
             );
 
+            // First, ensure the extension schema exists
+            const schemaName = getExtensionSchemaName(identifier);
+            await this.ensureExtensionSchema(schemaName);
+
             const safeIdentifier = this.toSafeName(identifier);
             const extensionPath = path.join(this.extensionsDir, safeIdentifier);
             const extensionEntitiesPath = path.join(
@@ -1183,6 +1187,35 @@ export class ExtensionOperationService {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             this.logger.error(`Failed to execute extension ${identifier} seeds: ${errorMessage}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Ensure extension schema exists in database
+     *
+     * @param schemaName Schema name to create
+     * @private
+     */
+    private async ensureExtensionSchema(schemaName: string): Promise<void> {
+        try {
+            // Check if schema already exists
+            const result = await this.dataSource.query(
+                `SELECT schema_name FROM information_schema.schemata WHERE schema_name = $1`,
+                [schemaName],
+            );
+
+            if (result.length > 0) {
+                this.logger.log(`Schema "${schemaName}" already exists`);
+                return;
+            }
+
+            // Create schema
+            await this.dataSource.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
+            this.logger.log(`Created schema: ${schemaName}`);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.error(`Failed to create schema "${schemaName}": ${errorMessage}`);
             throw error;
         }
     }
