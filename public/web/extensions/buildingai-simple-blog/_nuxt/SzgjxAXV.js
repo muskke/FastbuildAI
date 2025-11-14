@@ -1,1 +1,0 @@
-import{_ as o}from"./DlAUqK2U.js";import{d as l,o as r,af as t}from"#entry";const f={},s={class:"flex h-full flex-1 flex-col overflow-x-hidden overflow-y-auto"};function c(e,n){return r(),l("main",s,[t(e.$slots,"default")])}const d=o(f,[["render",c]]);export{d as default};
