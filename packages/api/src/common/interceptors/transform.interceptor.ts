@@ -212,9 +212,6 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
 
             const result = `${protocol}://${host}`;
 
-            // 调试日志
-            this.logger.debug(`请求域名信息: protocol=${protocol}, host=${host}, result=${result}`);
-
             return result;
         } catch (error) {
             this.logger.error("获取请求域名失败", error);
