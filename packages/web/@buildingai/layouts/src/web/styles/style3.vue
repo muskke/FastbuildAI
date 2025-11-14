@@ -85,14 +85,11 @@ const navigationItems = computed((): NavigationMenuItem[] => {
 
                     <!-- 工作台按钮 -->
                     <ClientOnly>
-                        <UButton
-                            v-if="userStore.userInfo?.permissions"
-                            :ui="{ base: 'rounded-full' }"
-                            :to="ROUTES.CONSOLE"
-                            color="primary"
-                        >
-                            {{ $t("layouts.menu.workspace") }}
-                        </UButton>
+                        <SmartLink v-if="userStore.userInfo?.permissions" :to="ROUTES.CONSOLE">
+                            <UButton :ui="{ base: 'rounded-full' }" color="primary">
+                                {{ $t("layouts.menu.workspace") }}
+                            </UButton>
+                        </SmartLink>
                     </ClientOnly>
                 </div>
             </div>

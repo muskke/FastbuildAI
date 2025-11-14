@@ -22,22 +22,22 @@ class WebInfoDto {
 }
 
 class AgreementDto {
-    @IsNotEmpty({ message: "服务条款标题不能为空" })
+    @IsOptional()
     serviceTitle: string;
 
-    @IsNotEmpty({ message: "服务条款内容不能为空" })
+    @IsOptional()
     serviceContent: string;
 
-    @IsNotEmpty({ message: "隐私政策标题不能为空" })
+    @IsOptional()
     privacyTitle: string;
 
-    @IsNotEmpty({ message: "隐私政策内容不能为空" })
+    @IsOptional()
     privacyContent: string;
 
-    @IsNotEmpty({ message: "支付协议标题不能为空" })
+    @IsOptional()
     paymentTitle: string;
 
-    @IsNotEmpty({ message: "支付协议内容不能为空" })
+    @IsOptional()
     paymentContent: string;
 
     @IsOptional()
