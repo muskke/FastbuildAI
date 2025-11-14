@@ -114,6 +114,14 @@ export class FileUploadService extends BaseService<File> {
                 host = host.split(",")[0].trim();
             }
 
+            // Check port first and correct protocol based on port
+            if (host.includes(":443")) {
+                protocol = "https";
+                console.log(`[FileUpload] Detected :443 port, corrected protocol to https`);
+            } else if (host.includes(":80")) {
+                protocol = "http";
+            }
+
             // Remove default ports (http:80, https:443)
             host = this.normalizeHost(host, protocol);
 
