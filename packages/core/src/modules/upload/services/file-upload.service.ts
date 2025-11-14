@@ -74,14 +74,22 @@ export class FileUploadService extends BaseService<File> {
     private getRequestDomain(request: Request): string | undefined {
         try {
             // Get protocol, prioritize proxy headers (X-Forwarded-Proto)
-            const protocol =
+            let protocol =
                 request.get("x-forwarded-proto") ||
                 request.headers?.["x-forwarded-proto"] ||
                 request.protocol ||
                 "http";
 
+            // Handle multiple protocol values (comma-separated), take the first one
+            if (typeof protocol === "string" && protocol.includes(",")) {
+                protocol = protocol.split(",")[0].trim();
+            }
+
+            // Ensure protocol is http or https
+            protocol = protocol === "https" ? "https" : "http";
+
             // Get host (including port), prioritize proxy headers (X-Forwarded-Host)
-            const host =
+            let host =
                 request.get("x-forwarded-host") ||
                 request.headers?.["x-forwarded-host"] ||
                 request.get("host") ||
@@ -91,11 +99,48 @@ export class FileUploadService extends BaseService<File> {
                 return undefined;
             }
 
+            // Convert to string if it's an array
+            if (Array.isArray(host)) {
+                host = host[0];
+            }
+
+            // Ensure host is a string
+            if (typeof host !== "string") {
+                return undefined;
+            }
+
+            // Handle multiple host values (comma-separated), take the first one
+            if (host.includes(",")) {
+                host = host.split(",")[0].trim();
+            }
+
+            // Remove default ports (http:80, https:443)
+            host = this.normalizeHost(host, protocol);
+
             return `${protocol}://${host}`;
         } catch (error) {
             console.error(error);
             return undefined;
         }
+    }
+
+    /**
+     * Normalize host by removing default ports
+     *
+     * @param host Host name (may include port)
+     * @param protocol Protocol
+     * @returns Normalized host name
+     */
+    private normalizeHost(host: string, protocol: string): string {
+        // Remove default port 80 for http
+        if (protocol === "http" && host.endsWith(":80")) {
+            return host.slice(0, -3);
+        }
+        // Remove default port 443 for https
+        if (protocol === "https" && host.endsWith(":443")) {
+            return host.slice(0, -4);
+        }
+        return host;
     }
 
     /**

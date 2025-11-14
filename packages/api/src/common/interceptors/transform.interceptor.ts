@@ -159,14 +159,22 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
             }
 
             // 获取协议,优先使用代理头(X-Forwarded-Proto)
-            const protocol =
+            let protocol =
                 request.get("x-forwarded-proto") ||
                 request.headers?.["x-forwarded-proto"] ||
                 request.protocol ||
                 "http";
 
+            // 处理可能的多个协议值(逗号分隔),取第一个
+            if (typeof protocol === "string" && protocol.includes(",")) {
+                protocol = protocol.split(",")[0].trim();
+            }
+
+            // 确保协议是 http 或 https
+            protocol = protocol === "https" ? "https" : "http";
+
             // 获取主机名(包含端口),优先使用代理头(X-Forwarded-Host)
-            const host =
+            let host =
                 request.get("x-forwarded-host") ||
                 request.headers?.["x-forwarded-host"] ||
                 request.get("host") ||
@@ -176,10 +184,47 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
                 return undefined;
             }
 
+            // 转换为字符串,如果是数组则取第一个
+            if (Array.isArray(host)) {
+                host = host[0];
+            }
+
+            // 确保 host 是字符串类型
+            if (typeof host !== "string") {
+                return undefined;
+            }
+
+            // 处理可能的多个主机值(逗号分隔),取第一个
+            if (host.includes(",")) {
+                host = host.split(",")[0].trim();
+            }
+
+            // 移除默认端口(http:80, https:443)
+            host = this.normalizeHost(host, protocol);
+
             return `${protocol}://${host}`;
         } catch (error) {
             this.logger.error("获取请求域名失败", error);
             return undefined;
         }
+    }
+
+    /**
+     * 标准化主机名,移除默认端口
+     *
+     * @param host 主机名(可能包含端口)
+     * @param protocol 协议
+     * @returns 标准化后的主机名
+     */
+    private normalizeHost(host: string, protocol: string): string {
+        // 移除 http 的默认端口 80
+        if (protocol === "http" && host.endsWith(":80")) {
+            return host.slice(0, -3);
+        }
+        // 移除 https 的默认端口 443
+        if (protocol === "https" && host.endsWith(":443")) {
+            return host.slice(0, -4);
+        }
+        return host;
     }
 }
