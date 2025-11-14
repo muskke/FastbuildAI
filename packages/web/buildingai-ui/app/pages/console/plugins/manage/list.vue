@@ -84,18 +84,25 @@ const handleNavigate = (extension: ExtensionFormData) => {
     window.open(`${ROUTES.EXTENSIONS}/${extension.identifier}/buildingai-middleware`, "_self");
 };
 
-const { lockFn: handleInstall, isLock: isInstalling } = useLockFn(
-    async (extension: ExtensionFormData) => {
-        try {
-            await apiInstallExtension(extension.identifier);
-            await getLists();
-            toast.success(t("console-common.messages.success"));
-        } catch (error) {
-            console.error("安装插件失败:", error);
-            toast.error(t("console-common.messages.failed"));
-        }
-    },
-);
+const installingMap = reactive<Record<string, boolean>>({});
+
+const handleInstall = async (extension: ExtensionFormData) => {
+    if (installingMap[extension.identifier]) {
+        return;
+    }
+
+    try {
+        installingMap[extension.identifier] = true;
+        await apiInstallExtension(extension.identifier);
+        await getLists();
+        toast.success(t("console-common.messages.success"));
+    } catch (error) {
+        console.error("安装插件失败:", error);
+        toast.error(t("console-common.messages.failed"));
+    } finally {
+        installingMap[extension.identifier] = false;
+    }
+};
 
 const { lockFn: handleUninstall } = useLockFn(async (extension: ExtensionFormData) => {
     try {
@@ -339,7 +346,7 @@ onMounted(() => getLists());
                                     color="primary"
                                     variant="ghost"
                                     size="sm"
-                                    :loading="isInstalling"
+                                    :loading="installingMap[extension.identifier]"
                                     :label="$t('extensions.manage.install')"
                                     @click="handleInstall(extension)"
                                 />
