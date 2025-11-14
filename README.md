@@ -37,6 +37,7 @@ Deploying BuildingAI with [Docker](https://www.docker.com/) is the simplest and 
 # Enter the project directory (replace with your directory name)
 cd buildingai
 # Copy and customize the environment variables
+# In production, update the APP_DOMAIN value in the .env file to your own domain.
 cp .env.example .env
 # Start the application with Docker
 docker compose up -d

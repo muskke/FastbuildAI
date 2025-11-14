@@ -39,6 +39,7 @@ BuildingAI 是一款面向AI开发者、AI创业者和先进组织打造的企�
 cd buildingai
 # 复制并修改环境变量配置
 cp .env.example .env
+# 生产环境请修改 .env 文件中的 APP_DOMAIN 为你的域名
 # 使用 Docker 启动应用
 docker compose up -d
 ```
