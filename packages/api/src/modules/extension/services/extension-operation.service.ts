@@ -1,3 +1,4 @@
+import { createDataSourceConfig } from "@buildingai/config/db.config";
 import { ExtensionDownload, ExtensionDownloadType } from "@buildingai/constants";
 import {
     ExtensionStatus,
@@ -10,6 +11,9 @@ import { ExtensionsService } from "@buildingai/core/modules/extension/services/e
 import { ExtensionConfigService } from "@buildingai/core/modules/extension/services/extension-config.service";
 import { ExtensionSchemaService } from "@buildingai/core/modules/extension/services/extension-schema.service";
 import { getExtensionSchemaName } from "@buildingai/core/modules/extension/utils/extension.utils";
+import { SeedRunner } from "@buildingai/db/seeds/seed-runner";
+import { BaseSeeder } from "@buildingai/db/seeds/seeders/base.seeder";
+import { DataSource } from "@buildingai/db/typeorm";
 import { DictService } from "@buildingai/dict";
 import { HttpErrorFactory } from "@buildingai/errors";
 import { createHttpClient, HttpClientInstance } from "@buildingai/utils";
@@ -46,6 +50,7 @@ export class ExtensionOperationService {
         private readonly extensionConfigService: ExtensionConfigService,
         private readonly extensionSchemaService: ExtensionSchemaService,
         private readonly pm2Service: Pm2Service,
+        private readonly dataSource: DataSource,
     ) {
         // 初始化临时目录路径
         this.rootDir = path.join(process.cwd(), "..", "..");
@@ -486,6 +491,9 @@ export class ExtensionOperationService {
         // Install dependencies before restarting
         await this.installDependencies();
 
+        // Synchronize extension tables and execute seeds BEFORE restart
+        await this.synchronizeExtensionTablesAndSeeds(identifier);
+
         // Schedule PM2 restart after response is sent
         this.scheduleRestart();
 
@@ -549,7 +557,10 @@ export class ExtensionOperationService {
             // 6. Install dependencies
             await this.installDependencies();
 
-            // 7. Schedule PM2 restart after response is sent
+            // 7. Synchronize extension tables and execute seeds BEFORE restart
+            await this.synchronizeExtensionTablesAndSeeds(identifier);
+
+            // 8. Schedule PM2 restart after response is sent
             this.scheduleRestart();
 
             this.logger.log(`Extension upgraded successfully: ${identifier} to ${latestVersion}`);
@@ -785,7 +796,10 @@ export class ExtensionOperationService {
             // 8. Copy web assets to public directory
             await this.copyWebAssets(dto.identifier);
 
-            // 9. Schedule PM2 restart after response is sent
+            // 9. Synchronize extension tables and execute seeds BEFORE restart
+            await this.synchronizeExtensionTablesAndSeeds(dto.identifier);
+
+            // 10. Schedule PM2 restart after response is sent
             this.scheduleRestart();
 
             this.logger.log(`Extension created successfully: ${dto.identifier}`);
@@ -1052,6 +1066,160 @@ export class ExtensionOperationService {
             const errorMessage = error instanceof Error ? error.message : String(error);
             this.logger.error(`Failed to remove web assets: ${errorMessage}`);
             // Don't throw error - continue with uninstall even if web assets removal fails
+        }
+    }
+
+    /**
+     * Synchronize extension database tables and execute seeds before restart
+     *
+     * This method creates a temporary database connection to:
+     * 1. Load extension entities
+     * 2. Synchronize extension tables (create/update schema)
+     * 3. Execute extension seed files
+     *
+     * @param identifier Extension identifier
+     * @private
+     */
+    private async synchronizeExtensionTablesAndSeeds(identifier: string): Promise<void> {
+        let tempDataSource: DataSource | null = null;
+
+        try {
+            this.logger.log(
+                `Synchronizing tables and executing seeds for extension: ${identifier}`,
+            );
+
+            const safeIdentifier = this.toSafeName(identifier);
+            const extensionPath = path.join(this.extensionsDir, safeIdentifier);
+            const extensionEntitiesPath = path.join(
+                extensionPath,
+                "build",
+                "db",
+                "entities",
+                "**",
+                "*.entity.js",
+            );
+
+            // Get main app entities path (needed for relations like User, etc.)
+            const dbPackagePath = require.resolve("@buildingai/db");
+            const dbDistPath = path.dirname(dbPackagePath);
+            const mainEntitiesPath = path.join(dbDistPath, "entities", "**", "*.entity.js");
+
+            this.logger.log(`Loading entities from: ${extensionEntitiesPath}`);
+            this.logger.log(`Loading main entities from: ${mainEntitiesPath}`);
+
+            // Create temporary data source with both main app and extension entities
+            const databaseOptions = createDataSourceConfig();
+            tempDataSource = new DataSource({
+                ...databaseOptions,
+                entities: [mainEntitiesPath, extensionEntitiesPath],
+                synchronize: true, // Enable synchronize for this temporary connection
+                logging: false,
+            });
+
+            // Initialize and synchronize
+            await tempDataSource.initialize();
+            this.logger.log(`Extension ${identifier} tables synchronized successfully`);
+
+            // Execute extension seeds
+            await this.executeExtensionSeeds(identifier, tempDataSource);
+
+            // Mark extension as installed
+            await this.markExtensionAsInstalled(identifier);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.error(`Failed to synchronize extension tables and seeds: ${errorMessage}`);
+            throw error;
+        } finally {
+            // Close temporary connection
+            if (tempDataSource?.isInitialized) {
+                await tempDataSource.destroy();
+            }
+        }
+    }
+
+    /**
+     * Execute extension seed files
+     *
+     * @param identifier Extension identifier
+     * @param dataSource DataSource to use for seed execution
+     * @private
+     */
+    private async executeExtensionSeeds(identifier: string, dataSource: DataSource): Promise<void> {
+        const safeIdentifier = this.toSafeName(identifier);
+        const extensionPath = path.join(this.extensionsDir, safeIdentifier);
+        const seedsIndexPath = path.join(extensionPath, "build", "db", "seeds", "index.js");
+
+        // Check if seeds entry exists
+        if (!(await fs.pathExists(seedsIndexPath))) {
+            this.logger.log(`Extension ${identifier} has no seeds, skipping...`);
+            return;
+        }
+
+        try {
+            this.logger.log(`Executing seeds for extension: ${identifier}`);
+
+            // Dynamic require for CommonJS modules
+            const seedsModule = require(seedsIndexPath);
+
+            if (!seedsModule.getSeeders) {
+                this.logger.warn(
+                    `Extension ${identifier} seeds/index.ts must export getSeeders function`,
+                );
+                return;
+            }
+
+            // Get seeders and run
+            const seeders: BaseSeeder[] = await seedsModule.getSeeders();
+
+            if (!Array.isArray(seeders) || seeders.length === 0) {
+                this.logger.log(`Extension ${identifier} has no seeders to run`);
+                return;
+            }
+
+            const seedRunner = new SeedRunner(dataSource);
+            await seedRunner.run(seeders);
+
+            this.logger.log(`Extension ${identifier} seeds executed successfully`);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.error(`Failed to execute extension ${identifier} seeds: ${errorMessage}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Mark extension as installed by creating .installed file
+     *
+     * @param identifier Extension identifier
+     * @private
+     */
+    private async markExtensionAsInstalled(identifier: string): Promise<void> {
+        try {
+            const safeIdentifier = this.toSafeName(identifier);
+            const extensionPath = path.join(this.extensionsDir, safeIdentifier);
+            const dataDir = path.join(extensionPath, "data");
+            await fs.ensureDir(dataDir);
+
+            const installFilePath = path.join(dataDir, ".installed");
+            await fs.writeFile(
+                installFilePath,
+                JSON.stringify(
+                    {
+                        installed_at: new Date().toISOString(),
+                        identifier: identifier,
+                    },
+                    null,
+                    2,
+                ),
+            );
+
+            this.logger.log(`Extension ${identifier} marked as installed`);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.error(
+                `Failed to mark extension ${identifier} as installed: ${errorMessage}`,
+            );
+            // Don't throw - this is not critical
         }
     }
 
