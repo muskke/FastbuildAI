@@ -36,7 +36,7 @@
         "mcp framework"
     ],
     "scripts": {
-        "build": "turbo run build",
+        "build": "cross-env NODE_OPTIONS=--max-old-space-size=5120 turbo run build",
         "build:web": "cd packages/web/buildingai-ui && pnpm run generate",
         "dev": "turbo run dev",
         "pm2:reset": "rimraf logs/pm2 && pnpm delete && pnpm start",

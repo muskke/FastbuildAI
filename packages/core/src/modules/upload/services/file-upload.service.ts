@@ -66,6 +66,39 @@ export class FileUploadService extends BaseService<File> {
     }
 
     /**
+     * Extract request domain from request
+     *
+     * @param request Express request object
+     * @returns Request domain (format: protocol://host)
+     */
+    private getRequestDomain(request: Request): string | undefined {
+        try {
+            // Get protocol, prioritize proxy headers (X-Forwarded-Proto)
+            const protocol =
+                request.get("x-forwarded-proto") ||
+                request.headers?.["x-forwarded-proto"] ||
+                request.protocol ||
+                "http";
+
+            // Get host (including port), prioritize proxy headers (X-Forwarded-Host)
+            const host =
+                request.get("x-forwarded-host") ||
+                request.headers?.["x-forwarded-host"] ||
+                request.get("host") ||
+                request.headers?.host;
+
+            if (!host) {
+                return undefined;
+            }
+
+            return `${protocol}://${host}`;
+        } catch (error) {
+            console.error(error);
+            return undefined;
+        }
+    }
+
+    /**
      * Extract client IP from request
      *
      * @param request Express request object
@@ -139,7 +172,8 @@ export class FileUploadService extends BaseService<File> {
             const urlPath = options?.extensionId
                 ? `/${options.extensionId}/uploads/${storagePath.fullPath}`
                 : `/uploads/${storagePath.fullPath}`;
-            const fileUrl = await this.fileUrlService.get(urlPath);
+            const requestDomain = this.getRequestDomain(request);
+            const fileUrl = await this.fileUrlService.get(urlPath, requestDomain);
 
             // Save to database
             const savedFile = await this.create({
@@ -254,7 +288,8 @@ export class FileUploadService extends BaseService<File> {
                 const urlPath = options?.extensionId
                     ? `/${options.extensionId}/uploads/${storagePath.fullPath}`
                     : `/uploads/${storagePath.fullPath}`;
-                const fileUrl = await this.fileUrlService.get(urlPath);
+                const requestDomain = this.getRequestDomain(request);
+                const fileUrl = await this.fileUrlService.get(urlPath, requestDomain);
 
                 // Save to database
                 const savedFile = await this.create({

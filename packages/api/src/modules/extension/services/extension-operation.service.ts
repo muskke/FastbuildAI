@@ -662,7 +662,7 @@ export class ExtensionOperationService {
 
             const projectRoot = path.join(process.cwd(), "..", "..");
 
-            await execAsync("pnpm install", {
+            await execAsync("pnpm install --no-frozen-lockfile", {
                 cwd: projectRoot,
                 env: process.env,
             });

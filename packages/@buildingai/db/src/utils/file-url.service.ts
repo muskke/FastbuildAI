@@ -49,9 +49,10 @@ export class FileUrlService {
      * 设置文件路径，去除域名部分，只保留相对路径
      *
      * @param url 完整的文件URL
+     * @param requestDomain 请求域名(可选),用于在没有配置APP_DOMAIN时作为兜底方案
      * @returns 处理后的相对路径
      */
-    async set(url: string): Promise<string> {
+    async set(url: string, requestDomain?: string): Promise<string> {
         if (!url) {
             return "";
         }
@@ -60,24 +61,16 @@ export class FileUrlService {
             const config = await this.getStorageConfig();
 
             // 根据不同的存储引擎处理URL
+            const baseDomain = this.getBaseDomain(config, requestDomain);
+
             switch (config.engine) {
                 case STORAGE_ENGINE.LOCAL:
-                    return this.removeBaseDomain(
-                        url,
-                        config.domain ||
-                            process.env.APP_DOMAIN ||
-                            `http://localhost:${process.env.SERVER_PORT}`,
-                    );
+                    return this.removeBaseDomain(url, baseDomain);
                 // 后续可扩展其他存储引擎的处理逻辑
                 // case STORAGE_ENGINE.OSS:
                 //     return this.removeBaseDomain(url, config.domain);
                 default:
-                    return this.removeBaseDomain(
-                        url,
-                        config.domain ||
-                            process.env.APP_DOMAIN ||
-                            `http://localhost:${process.env.SERVER_PORT}`,
-                    );
+                    return this.removeBaseDomain(url, baseDomain);
             }
         } catch (error) {
             this.logger.error(`处理文件路径失败: ${url}`, error);
@@ -89,9 +82,10 @@ export class FileUrlService {
      * 获取完整的文件URL，在相对路径前添加当前存储引擎的域名
      *
      * @param path 文件相对路径
+     * @param requestDomain 请求域名(可选),用于在没有配置APP_DOMAIN时作为兜底方案
      * @returns 完整的文件URL
      */
-    async get(path: string): Promise<string> {
+    async get(path: string, requestDomain?: string): Promise<string> {
         if (!path) {
             return "";
         }
@@ -103,10 +97,7 @@ export class FileUrlService {
 
         try {
             const config = await this.getStorageConfig();
-            const baseDomain =
-                config.domain ||
-                process.env.APP_DOMAIN ||
-                `http://localhost:${process.env.SERVER_PORT}`;
+            const baseDomain = this.getBaseDomain(config, requestDomain);
 
             // 根据不同的存储引擎处理路径
             switch (config.engine) {
@@ -205,6 +196,39 @@ export class FileUrlService {
             }
             return url;
         }
+    }
+
+    /**
+     * 获取基础域名
+     *
+     * 优先级策略:
+     * - 本地存储(LOCAL): requestDomain > config.domain > APP_DOMAIN > localhost
+     *   优先使用请求域名,确保静态资源与前端访问域名一致,避免跨域问题
+     * - 其他存储引擎: config.domain > APP_DOMAIN > requestDomain > localhost
+     *   使用配置的CDN域名或对象存储域名
+     *
+     * @param config 存储配置
+     * @param requestDomain 请求域名
+     * @returns 基础域名
+     */
+    private getBaseDomain(config: StorageConfig, requestDomain?: string): string {
+        // 对于本地存储,优先使用请求域名,确保与前端访问域名一致
+        if (config.engine === STORAGE_ENGINE.LOCAL) {
+            return (
+                requestDomain ||
+                config.domain ||
+                process.env.APP_DOMAIN ||
+                `http://localhost:${process.env.SERVER_PORT}`
+            );
+        }
+
+        // 对于其他存储引擎(如OSS、S3等),优先使用配置的域名
+        return (
+            config.domain ||
+            process.env.APP_DOMAIN ||
+            requestDomain ||
+            `http://localhost:${process.env.SERVER_PORT}`
+        );
     }
 
     private joinPaths(...segments: string[]): string {

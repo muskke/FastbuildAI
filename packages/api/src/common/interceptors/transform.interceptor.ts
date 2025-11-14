@@ -8,7 +8,7 @@ import {
 } from "@buildingai/decorators/file-url.decorator";
 import { SKIP_TRANSFORM_KEY } from "@buildingai/decorators/skip-transform.decorator";
 import { FileUrlProcessorUtil } from "@buildingai/utils";
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
+import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 import { mergeMap } from "rxjs/operators";
@@ -20,6 +20,8 @@ import { mergeMap } from "rxjs/operators";
  */
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> {
+    private readonly logger = new Logger(TransformInterceptor.name);
+
     constructor(
         private readonly reflector: Reflector,
         private readonly fileUrlService: FileUrlService,
@@ -98,7 +100,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
             return responseData;
         }
         // 处理文件URL字段
-        return await this.processFileUrlFields(responseData, fileUrlConfig.fields);
+        return await this.processFileUrlFields(responseData, fileUrlConfig.fields, context);
     }
 
     /**
@@ -106,15 +108,20 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
      *
      * @param data 数据对象
      * @param fields 需要处理的字段配置
+     * @param context 执行上下文
      * @returns 处理后的数据
      */
     private async processFileUrlFields(
         data: any,
         fields: (string | FileUrlFieldConfig)[],
+        context?: ExecutionContext,
     ): Promise<any> {
         if (!data || typeof data !== "object") {
             return data;
         }
+
+        // 获取请求域名作为兜底方案
+        const requestDomain = this.getRequestDomain(context);
 
         // 转换字段配置为字符串数组
         const fieldPatterns = fields.map((field) =>
@@ -125,7 +132,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
         const result = await FileUrlProcessorUtil.processFieldsEfficiently(
             data,
             fieldPatterns,
-            async (path: string) => await this.fileUrlService.get(path),
+            async (path: string) => await this.fileUrlService.get(path, requestDomain),
         );
 
         // 定期清理缓存以避免内存泄漏
@@ -135,95 +142,44 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
     }
 
     /**
-     * 处理单个字段
+     * 获取请求域名
      *
-     * @param obj 对象
-     * @param fieldPath 字段路径
-     * @param isArray 是否为数组字段
+     * @param context 执行上下文
+     * @returns 请求域名（格式: protocol://host）
      */
-    private async processField(obj: any, fieldPath: string, isArray?: boolean): Promise<void> {
-        if (!obj || typeof obj !== "object") {
-            return;
+    private getRequestDomain(context?: ExecutionContext): string | undefined {
+        if (!context) {
+            return undefined;
         }
 
-        // 处理通配符路径，如 'items.*.image'
-        if (fieldPath.includes("*")) {
-            await this.processWildcardField(obj, fieldPath);
-            return;
-        }
-
-        // 处理嵌套路径，如 'user.avatar'
-        const pathParts = fieldPath.split(".");
-        let current = obj;
-
-        // 导航到目标字段的父对象
-        for (let i = 0; i < pathParts.length - 1; i++) {
-            const part = pathParts[i];
-            if (!current[part] || typeof current[part] !== "object") {
-                return; // 路径不存在，跳过
+        try {
+            const request = context.switchToHttp().getRequest();
+            if (!request) {
+                return undefined;
             }
-            current = current[part];
-        }
 
-        const finalKey = pathParts[pathParts.length - 1];
-        const value = current[finalKey];
+            // 获取协议,优先使用代理头(X-Forwarded-Proto)
+            const protocol =
+                request.get("x-forwarded-proto") ||
+                request.headers?.["x-forwarded-proto"] ||
+                request.protocol ||
+                "http";
 
-        if (value === undefined || value === null) {
-            return;
-        }
+            // 获取主机名(包含端口),优先使用代理头(X-Forwarded-Host)
+            const host =
+                request.get("x-forwarded-host") ||
+                request.headers?.["x-forwarded-host"] ||
+                request.get("host") ||
+                request.headers?.host;
 
-        // 处理数组字段
-        if (isArray && Array.isArray(value)) {
-            current[finalKey] = await Promise.all(
-                value.map(async (item) => {
-                    if (typeof item === "string") {
-                        return await this.fileUrlService.get(item);
-                    }
-                    return item;
-                }),
-            );
-        } else if (typeof value === "string") {
-            // 处理单个字符串字段
-            current[finalKey] = await this.fileUrlService.get(value);
-        }
-    }
-
-    /**
-     * 处理通配符字段路径
-     *
-     * @param obj 对象
-     * @param fieldPath 包含通配符的字段路径
-     */
-    private async processWildcardField(obj: any, fieldPath: string): Promise<void> {
-        const pathParts = fieldPath.split(".");
-        const wildcardIndex = pathParts.findIndex((part) => part === "*");
-
-        if (wildcardIndex === -1) {
-            return;
-        }
-
-        // 获取通配符前的路径
-        const beforeWildcard = pathParts.slice(0, wildcardIndex);
-        // 获取通配符后的路径
-        const afterWildcard = pathParts.slice(wildcardIndex + 1);
-
-        // 导航到通配符位置的父对象
-        let current = obj;
-        for (const part of beforeWildcard) {
-            if (!current[part] || typeof current[part] !== "object") {
-                return;
+            if (!host) {
+                return undefined;
             }
-            current = current[part];
-        }
 
-        // 如果当前对象是数组，处理每个元素
-        if (Array.isArray(current)) {
-            for (const item of current) {
-                if (item && typeof item === "object") {
-                    const remainingPath = afterWildcard.join(".");
-                    await this.processField(item, remainingPath);
-                }
-            }
+            return `${protocol}://${host}`;
+        } catch (error) {
+            this.logger.error("获取请求域名失败", error);
+            return undefined;
         }
     }
 }
