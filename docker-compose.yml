@@ -153,7 +153,7 @@ services:
             test: ["CMD-SHELL", "curl -f http://localhost:${SERVER_PORT:-4090}/consoleapi/health || pnpm pm2 describe ${PM2_APP_NAME:-buildingai-api} | grep -q 'online' || exit 1"]
             interval: 30s
             timeout: 10s
-            retries: 10
+            retries: 3
             start_period: 600s
 
 networks:
