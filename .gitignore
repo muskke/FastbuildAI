@@ -5,7 +5,6 @@ node_modules
 .pnpm-store
 .pnp
 .pnp.js
-pnpm-lock.yaml
 
 # storage
 storage/*
