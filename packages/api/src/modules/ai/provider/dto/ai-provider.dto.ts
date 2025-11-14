@@ -29,7 +29,7 @@ export class CreateAiProviderDto {
     @IsDefined({ message: "供应商标识参数必须传递" })
     @IsNotEmpty({ message: "供应商标识不能为空" })
     @IsString({ message: "供应商标识必须是字符串" })
-    @MinLength(2, { message: "供应商标识至少需要2个字符" })
+    @MinLength(1, { message: "供应商标识至少需要2个字符" })
     @MaxLength(50, { message: "供应商标识不能超过50个字符" })
     provider: string;
 
