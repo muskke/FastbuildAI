@@ -42,10 +42,8 @@ export class ExtensionMigrationRunner {
             extensionIdentifier,
         );
         this.migrationsDir = path.join(extensionDir, "build", "db", "migrations");
-        // Each extension has its own migration history table
-        // Sanitize identifier to valid table name
-        const sanitizedIdentifier = extensionIdentifier.replace(/[^a-zA-Z0-9_]/g, "_");
-        this.historyTable = `${sanitizedIdentifier}_migrations_history`;
+        // Use unified migration history table for all extensions
+        this.historyTable = "extensions_migrations_history";
     }
 
     /**
@@ -58,10 +56,12 @@ export class ExtensionMigrationRunner {
             await queryRunner.query(`
                 CREATE TABLE IF NOT EXISTS "${this.historyTable}" (
                     id SERIAL PRIMARY KEY,
-                    name VARCHAR(255) NOT NULL UNIQUE,
+                    extension_identifier VARCHAR(255) NOT NULL,
+                    name VARCHAR(255) NOT NULL,
                     version VARCHAR(50) NOT NULL,
                     timestamp BIGINT NOT NULL,
-                    executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(extension_identifier, name)
                 )
             `);
         } finally {
@@ -74,8 +74,8 @@ export class ExtensionMigrationRunner {
      */
     private async isMigrationExecuted(migrationName: string): Promise<boolean> {
         const result = await this.dataSource.query(
-            `SELECT COUNT(*) as count FROM "${this.historyTable}" WHERE name = $1`,
-            [migrationName],
+            `SELECT COUNT(*) as count FROM "${this.historyTable}" WHERE extension_identifier = $1 AND name = $2`,
+            [this.extensionIdentifier, migrationName],
         );
         return parseInt(result[0].count, 10) > 0;
     }
@@ -85,8 +85,8 @@ export class ExtensionMigrationRunner {
      */
     private async recordMigrationExecution(migration: MigrationFile): Promise<void> {
         await this.dataSource.query(
-            `INSERT INTO "${this.historyTable}" (name, version, timestamp) VALUES ($1, $2, $3)`,
-            [migration.name, migration.version, migration.timestamp],
+            `INSERT INTO "${this.historyTable}" (extension_identifier, name, version, timestamp) VALUES ($1, $2, $3, $4)`,
+            [this.extensionIdentifier, migration.name, migration.version, migration.timestamp],
         );
     }
 
