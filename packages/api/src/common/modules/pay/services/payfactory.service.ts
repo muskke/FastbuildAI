@@ -1,5 +1,6 @@
 import { type PayConfigType } from "@buildingai/constants/shared/payconfig.constant";
 import { DictCacheService } from "@buildingai/dict";
+import { HttpErrorFactory } from "@buildingai/errors";
 import { WechatPayService } from "@buildingai/wechat-sdk";
 import { PAY_EVENTS } from "@common/modules/pay/constants/pay-events.contant";
 import { PayconfigService } from "@modules/system/services/payconfig.service";
@@ -95,6 +96,10 @@ export class PayfactoryService {
     private async getPayServiceConfig(payType: PayConfigType): Promise<PayServiceConfig> {
         const payconfig = await this.payconfigService.getPayconfig(payType);
         const domain = await this.getDomain();
+
+        if (!domain) {
+            throw HttpErrorFactory.badGateway("域名未配置，请在.env中配置APP_DOMAIN");
+        }
 
         return {
             appId: payconfig.appId,
