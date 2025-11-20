@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="./apps/web/public/pwa-512x512.png" width="90" alt="Nest Logo" /></a>
+  <a href="https://www.buildingai.cc/" target="_blank"><img src="./assets/banner.png" width="100%" alt="Nest Logo" /></a>
 </p>
 
-<h1 align="center">FastbuildAI</h1>
-
 <p align="center">
-  快速构建您的 AI 应用
+<a href="http://demo.buildingai.cc/" target="_blank">在线演示</a>｜
+<a href="https://www.buildingai.cc/">官方网站</a>｜
+<a href="./README.md">English</a>
 </p>
 
 <p align="center">
@@ -15,69 +15,72 @@
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.x-3178c6" alt="TypeScript" /></a>
   <a href="https://turbo.build/"><img src="https://img.shields.io/badge/Turbo-2.x-6d5cb3" alt="Turbo" /></a>
   <a href="https://vuejs.org/"><img src="https://img.shields.io/badge/Vue.js-3.x-3aaf78" alt="Vue.js" /></a>
-  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/vite-6.x-646cff" alt="Vite" /></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/vite-7.x-646cff" alt="Vite" /></a>
   <a href="https://ui.nuxt.com/"><img src="https://img.shields.io/badge/NuxtUI-3.x-00b95f" alt="NuxtUI" /></a>
-  <a href="https://nuxt.com/"><img src="https://img.shields.io/badge/NuxtJS-3.x-00b95f" alt="NuxtJS" /></a>
+  <a href="https://nuxt.com/"><img src="https://img.shields.io/badge/NuxtJS-4.x-00b95f" alt="NuxtJS" /></a>
 </p>
 
-<p align="center">
-<a href="http://ai.fastbuildai.com/" target="_blank">在线演示</a>｜
-<a href="https://www.fastbuildai.com/">官方网站</a>｜
-<a href="./README.md">English</a>
-</p>
+BuildingAI 是一款面向AI开发者、AI创业者和先进组织打造的企业级开源智能体搭建平台。通过可视化配置界面（Do It Yourself）零代码搭建具备智能体、MCP、RAG管道、知识库、大模型聚合、上下文工程等原生AI能力，以及用户注册、会员订阅、算力计费等商业闭环能力的原生企业智能体应用。
 
-## 快速开始
+## 快速入门
 
-在项目根目录下运行：
+> 安装 `BuildingAI` 之前，请确保你的设备满足一下最低配置要求：
+>
+> - **CPU**：≥2核
+> - **内存**：≥4GB RAM
+> - **存储**：≥5GB 空闲空间
+
+使用 [Docker](https://www.docker.com/)
+部署 BuildingAI 是最简单、稳定的部署方案。安装之前，请确保你的设备已经安装了
+[Docker](https://www.docker.com/) 和 [Docker Compose](https://docs.docker.com/compose/)
 
 ```bash
-# 复制示例配置文件
-cp .env.production.local.example .env.production.local
-
+# 进入项目目录（替换为你的项目目录名）
+cd buildingai
+# 复制并修改环境变量配置
+cp .env.example .env
+# 生产环境请修改 .env 文件中的 APP_DOMAIN 为你的域名
 # 使用 Docker 启动应用
-docker compose -p fastbuildai --env-file ./.env.production.local -f ./docker/docker-compose.yml up -d
+docker compose up -d
 ```
 
-等待 **2-3 分钟**，直到所有服务启动完成。
+等待镜像拉取和项目构建，正常约5～10分钟（取决于设备性能和网络环境），可在Nodejs容器日志中查看构建进度，一般出现访问地址时即表示项目启动成功。
 
-启动后，您可以通过以下地址访问应用：
+待项目完全启动后，您可以通过浏览器访问以下地址
+[http://localhost:4090/install](http://localhost:4090/install) 进入到初始化安装界面进行初始化设置。
 
-```
-http://localhost:4090
-```
+其他部署方式请参阅我们的 [《部署文档》](https://www.buildingai.cc/docs/introduction/install)
 
-**默认超级管理员账号**  
+## 主要功能
 
-- **用户名：** `admin`  
-- **密码：** `FastbuildAI&123456`  
-
-## 功能特性
-
-- ✅ **AI对话** – 多模型 AI 对话。
-- ✅ **MCP调用** – 支持模型上下文协议（Model Context Protocol）。
-- ✅ **用户充值** – 用户余额和支付系统。
-- ✅ **模型管理** – 管理和部署 AI 模型。
-- ✅ **知识库** – 集中式 AI 知识管理。
-- ✅ **智能体** – 用于任务的自主代理。
-- ⬜ **工作流** – AI 任务自动化。
-- ⬜ **插件系统** – 通过插件扩展功能。
+- **AI对话**： 基于 LLM 模型进行对话、文本生成，支持多模态模型调用
+- **AI智能体**： 支持创建具备记忆、目标和工具使用能力的智能体，实现自主任务执行
+- **知识库**： 通过文档构建知识库，支持向量检索与RAG增强生成
+- **MCP调用**： 支持以 SSE、StreamableHTTP 方式调用MCP工具
+- **模型管理**： 支持主流大模型集成，统一API规范
+- **拓展机制**： 通过安装拓展丰富系统功能和AI能力
+- **充值计费**： 内置会员管理、计费管理、支付功能，开箱即用
 
 ## 截图展示
 
-![image](./docs/screenshots/1.png)
-![image](./docs/screenshots/2.png)
-![image](./docs/screenshots/3.png)
-![image](./docs/screenshots/4.png)
-![image](./docs/screenshots/5.png)
-![image](./docs/screenshots/6.png)
-![image](./docs/screenshots/7.png)
-![image](./docs/screenshots/8.png)
-![image](./docs/screenshots/9.png)
-![image](./docs/screenshots/10.png)
+![image](./assets/screenshots/1.png)
+![image](./assets/screenshots/2.png)
+![image](./assets/screenshots/3.png)
+![image](./assets/screenshots/4.png)
+![image](./assets/screenshots/5.png)
+
+## 贡献
+如果您想贡献代码，可以在Github上 [提交 Issue](https://github.com/BidingCC/BuildingAI/issues/new/choose) 或者 [提交 PR](https://github.com/BidingCC/BuildingAI/pulls)。
+
+也可以通过[社群](https://buildingai.cc/docs/introduction/community)、[问答社区](https://buildingai.cc/question)等方式联系我们。
 
 ## Star 历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=FastbuildAI/FastbuildAI&type=Date)](https://www.star-history.com/#FastbuildAI/FastbuildAI&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=BidingCC/BuildingAI&type=Date)](https://www.star-history.com/#BidingCC/BuildingAI&Date)
+
+## 隐私政策
+
+本项目**仅在获得您同意后**才会收集匿名使用统计数据。详情请参阅 [PRIVACY_NOTICE.md](./PRIVACY_NOTICE.md) 文件。
 
 ## 许可证
 

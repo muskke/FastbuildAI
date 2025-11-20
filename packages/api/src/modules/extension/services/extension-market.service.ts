@@ -1,0 +1,217 @@
+import { ExtensionDownloadType, ExtensionStatus } from "@buildingai/constants";
+import { DICT_GROUP_KEYS, DICT_KEYS } from "@buildingai/constants/server/dict-key.constant";
+import { ApplicationListItem } from "@buildingai/core/modules/extension/interfaces/extension.interface";
+import { ExtensionDetailType } from "@buildingai/core/modules/extension/interfaces/extension-market.interface";
+import { PlatformInfo } from "@buildingai/core/modules/extension/interfaces/platform.interface";
+import { ExtensionsService } from "@buildingai/core/modules/extension/services/extension.service";
+import { DictService } from "@buildingai/dict";
+import { HttpErrorFactory } from "@buildingai/errors";
+import { createHttpClient, createHttpErrorMessage, HttpClientInstance } from "@buildingai/utils";
+import { Injectable, Logger } from "@nestjs/common";
+
+/**
+ * Extension market service
+ */
+@Injectable()
+export class ExtensionMarketService {
+    private readonly logger = new Logger(ExtensionMarketService.name);
+    private readonly httpClient: HttpClientInstance;
+
+    constructor(
+        private readonly dictService: DictService,
+        private readonly extensionsService: ExtensionsService,
+    ) {
+        this.httpClient = createHttpClient({
+            baseURL: process.env.EXTENSION_API_URL + "/market",
+            timeout: 20000,
+            retryConfig: {
+                retries: 3,
+                retryDelay: 1000,
+            },
+            logConfig: {
+                enableErrorLog: true,
+            },
+            headers: {
+                Domain: process.env.APP_DOMAIN,
+            },
+        });
+
+        // 添加请求拦截器,动态获取平台密钥
+        this.httpClient.interceptors.request.use(async (config) => {
+            const platformSecret = await this.dictService.get<string | null>(
+                DICT_KEYS.PLATFORM_SECRET,
+                null,
+                DICT_GROUP_KEYS.APPLICATION,
+            );
+
+            // 如果存在平台密钥，则添加到请求头中
+            // 如果不存在，允许请求继续，由 API 端决定是否允许访问
+            if (platformSecret) {
+                config.headers["X-API-Key"] = platformSecret;
+            }
+
+            return config;
+        });
+    }
+
+    /**
+     * Get platform info
+     */
+    async getPlatformInfo(platformSecret?: string): Promise<PlatformInfo | null> {
+        try {
+            if (platformSecret) {
+                this.httpClient.defaults.headers["X-API-Key"] = platformSecret;
+            }
+            const response = await this.httpClient.get("/getPlatform");
+            return response.data;
+        } catch (error) {
+            const errorMessage = createHttpErrorMessage(error);
+            this.logger.error(`Failed to get platform info: ${errorMessage}`, error);
+            return null;
+        }
+    }
+
+    /**
+     * Get application list
+     */
+    async getApplicationList(): Promise<ApplicationListItem[]> {
+        try {
+            const response = await this.httpClient.get("/lists");
+            return response.data;
+        } catch (error) {
+            const errorMessage = createHttpErrorMessage(error);
+            this.logger.error(`Failed to get application list: ${errorMessage}`, error);
+            throw HttpErrorFactory.badRequest(errorMessage);
+        }
+    }
+
+    /**
+     * Get application detail
+     */
+    async getApplicationDetail(identifier: string): Promise<ExtensionDetailType> {
+        try {
+            const response = await this.httpClient.get(`/detail/${identifier}`);
+            return response.data;
+        } catch (error) {
+            const errorMessage = createHttpErrorMessage(error);
+            this.logger.error(
+                `Failed to get application detail for ${identifier}: ${errorMessage}`,
+                error,
+            );
+            throw HttpErrorFactory.badRequest(errorMessage);
+        }
+    }
+
+    /**
+     * Get application versions list
+     */
+    async getApplicationVersions(identifier: string): Promise<
+        {
+            version: string;
+            explain: string;
+            createdAt: string;
+        }[]
+    > {
+        try {
+            const response = await this.httpClient.get(`/versions/${identifier}`);
+            return response.data;
+        } catch (error) {
+            const errorMessage = createHttpErrorMessage(error);
+            this.logger.error(
+                `Failed to get application versions for ${identifier}: ${errorMessage}`,
+                error,
+            );
+            throw HttpErrorFactory.badRequest(errorMessage);
+        }
+    }
+
+    /**
+     * Download application
+     */
+    async downloadApplication(
+        identifier: string,
+        version: string,
+        type: ExtensionDownloadType,
+    ): Promise<{
+        version: string;
+        explain: string;
+        url: string;
+    }> {
+        try {
+            const response = await this.httpClient.post(
+                `/download/${identifier}/${version}/${type}`,
+            );
+            return response.data;
+        } catch (error) {
+            const errorMessage = createHttpErrorMessage(error);
+            this.logger.error(
+                `Failed to download application ${identifier}@${version}: ${errorMessage}`,
+                error,
+            );
+            throw HttpErrorFactory.badRequest(errorMessage);
+        }
+    }
+
+    /**
+     * Uninstall application
+     */
+    async uninstallApplication(identifier: string, version: string) {
+        try {
+            const response = await this.httpClient.post(`/uninstall/${identifier}/${version}`);
+            return response.data;
+        } catch (error) {
+            const errorMessage = createHttpErrorMessage(error);
+            this.logger.error(
+                `Failed to uninstall application ${identifier}@${version}: ${errorMessage}`,
+                error,
+            );
+            throw HttpErrorFactory.badRequest(errorMessage);
+        }
+    }
+
+    async getMixedApplicationList() {
+        let extensionList: ApplicationListItem[] = [];
+        try {
+            extensionList = await this.getApplicationList();
+        } catch (error) {
+            this.logger.error(`Failed to get application list: ${error}`);
+            extensionList = [];
+        }
+
+        const installedExtensions = await this.extensionsService.findAll();
+
+        const installedIdentifiers = new Set(installedExtensions.map((ext) => ext.identifier));
+
+        const marketExtensions = extensionList
+            .filter((item) => !installedIdentifiers.has(item.identifier))
+            .map((item) => ({
+                id: item.id || null,
+                name: item.name,
+                identifier: item.identifier,
+                version: item.version,
+                description: item.description,
+                icon: item.icon,
+                type: item.type,
+                supportTerminal: item.supportTerminal,
+                isLocal: false,
+                status: ExtensionStatus.DISABLED,
+                author: item.author,
+                homepage: "",
+                documentation: "",
+                config: null,
+                isInstalled: false,
+                createdAt: new Date(item.createdAt),
+                updatedAt: new Date(item.updatedAt),
+                purchasedAt: new Date(item.purchasedAt),
+            }));
+
+        const mergedList = installedExtensions
+            .map((ext) => ({
+                ...ext,
+                isInstalled: true,
+            }))
+            .concat(marketExtensions);
+
+        return mergedList;
+    }
+}

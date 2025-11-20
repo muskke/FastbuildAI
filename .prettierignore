@@ -1,34 +1,10 @@
-# dependencies
+package.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
+dist
+build
+.output
+.turbo
+.nuxt
+.storybook
 node_modules
-.pnp
-.pnp.js
-
-# testing
-coverage
-
-# next.js
-.next/
-out/
-build
-
-# build
-build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts

@@ -1,0 +1,430 @@
+<script setup lang="ts">
+import {
+    apiBatchDeleteAiModel,
+    apiBatchSetAiModelIsActive,
+    apiGetAiModelList,
+    apiSetAiModelIsActive,
+} from "@buildingai/service/consoleapi/ai-model";
+import type { AiModelInfo } from "@buildingai/service/consoleapi/ai-provider";
+import type { AiModel, AiProvider } from "@buildingai/service/webapi/ai-conversation";
+
+const ModelModal = defineAsyncComponent(() => import("./model-form-modal.vue"));
+const ModelBatchEdit = defineAsyncComponent(() => import("./model-batch-edit.vue"));
+
+const props = defineProps<{
+    provider?: {
+        id?: string;
+        name?: string;
+        iconUrl?: string;
+    };
+}>();
+
+const toast = useMessage();
+const { t } = useI18n();
+const overlay = useOverlay();
+const { hasAccessByCodes } = useAccessControl();
+
+const models = shallowRef<AiModelInfo[]>([]);
+const search = shallowRef("");
+const selectedModels = ref<Set<string>>(new Set());
+const selectedModelsData = ref<Set<AiModelInfo>>(new Set());
+
+const { lockFn: getLists, isLock: loading } = useLockFn(async () => {
+    if (!props.provider?.id) return;
+
+    try {
+        const result = await apiGetAiModelList({
+            providerId: props.provider.id,
+            isActive: undefined,
+            keyword: search.value?.trim() || undefined,
+        });
+        models.value = result || [];
+    } catch (error) {
+        console.error("获取模型列表失败:", error);
+    }
+});
+
+const { lockFn: handleToggleActive } = useLockFn(async (modelId: string, isActive: boolean) => {
+    try {
+        await apiSetAiModelIsActive(modelId, isActive);
+
+        const model = models.value.find((m) => m.id === modelId);
+        if (model) {
+            model.isActive = isActive;
+        }
+        getLists();
+    } catch (error) {
+        console.error("切换模型状态失败:", error);
+    }
+});
+
+const handleEditModel = async (model: AiModelInfo) => {
+    const modal = overlay.create(ModelModal);
+
+    const instance = modal.open({
+        id: model.id,
+        provider: props.provider,
+    });
+
+    const shouldRefresh = await instance.result;
+    if (shouldRefresh) getLists();
+};
+
+const handleAddModel = async () => {
+    const modal = overlay.create(ModelModal);
+
+    const instance = modal.open({
+        id: null,
+        provider: props.provider,
+    });
+
+    const shouldRefresh = await instance.result;
+    if (shouldRefresh) getLists();
+};
+
+const handleBatchEdit = async () => {
+    if (selectedModels.value.size === 0) return;
+
+    const modal = overlay.create(ModelBatchEdit);
+    const instance = modal.open({
+        models: selectedModelsData.value,
+        provider: props.provider,
+    });
+
+    const shouldRefresh = await instance.result;
+    if (shouldRefresh) {
+        getLists();
+    }
+    selectedModels.value.clear();
+    selectedModelsData.value.clear();
+};
+
+const { lockFn: handleBatchIsActiveChange } = useLockFn(async (isActive: boolean) => {
+    if (selectedModels.value.size === 0) return;
+    const selectedIds = Array.from(selectedModels.value);
+    try {
+        await apiBatchSetAiModelIsActive(selectedIds, isActive);
+        toast.success(
+            isActive
+                ? t("ai-provider.backend.model.messages.isActiveEnabled")
+                : t("ai-provider.backend.model.messages.isActiveDisabled"),
+        );
+        selectedModels.value.clear();
+        selectedModelsData.value.clear();
+        getLists();
+    } catch (error) {
+        console.error("Toggle model active failed:", error);
+    }
+});
+
+const { lockFn: handleBatchDelete } = useLockFn(async () => {
+    if (selectedModels.value.size === 0) return;
+    const selectedIds = Array.from(selectedModels.value);
+
+    try {
+        await useModal({
+            title: t("ai-provider.backend.model.messages.deleteTitle"),
+            description: t("ai-provider.backend.model.messages.deleteMsg"),
+            color: "error",
+        });
+
+        await apiBatchDeleteAiModel(selectedIds);
+        toast.success(t("console-common.batchDeleteSuccess"));
+        selectedModels.value.clear();
+        selectedModelsData.value.clear();
+        getLists();
+    } catch (error) {
+        console.error("批量删除失败:", error);
+        toast.error(t("console-common.batchDeleteFailed"));
+    }
+});
+
+const getBatchItems = () => {
+    const items = [];
+    if (hasAccessByCodes(["ai-models:update"])) {
+        items.push({
+            label: t("console-common.batchEnable"),
+            icon: "i-lucide-eye",
+            color: "neutral" as const,
+            onSelect: () => handleBatchIsActiveChange(true),
+        });
+        items.push({
+            label: t("console-common.batchDisable"),
+            icon: "i-lucide-eye-off",
+            color: "neutral" as const,
+            onSelect: () => handleBatchIsActiveChange(false),
+        });
+        items.push({
+            label: t("console-common.batchEdit"),
+            icon: "i-lucide-edit",
+            color: "neutral" as const,
+            onSelect: () => handleBatchEdit(),
+        });
+    }
+    if (hasAccessByCodes(["ai-models:delete"])) {
+        items.push({
+            label: t("console-common.batchDelete"),
+            icon: "i-heroicons-trash",
+            color: "error" as const,
+            onSelect: () => handleBatchDelete(),
+        });
+    }
+    return items;
+};
+
+const toggleModelSelection = (model: AiModelInfo) => {
+    const modelId = model.id as string;
+    const newSelectedModels = new Set(selectedModels.value);
+    const newSelectedModelsData = new Set(selectedModelsData.value);
+
+    if (newSelectedModels.has(modelId)) {
+        newSelectedModels.delete(modelId);
+        newSelectedModelsData.delete(model);
+    } else {
+        newSelectedModels.add(modelId);
+        newSelectedModelsData.add(model);
+    }
+
+    selectedModels.value = newSelectedModels;
+    selectedModelsData.value = newSelectedModelsData;
+};
+
+const toggleSelectAll = () => {
+    if (selectedModels.value.size === models.value.length) {
+        // Select all state, unselect all
+        selectedModels.value.clear();
+        selectedModelsData.value.clear();
+    } else {
+        // Non-select all state, select all models
+        const newSelectedModels = new Set<string>();
+        const newSelectedModelsData = new Set<AiModelInfo>();
+
+        models.value.forEach((model) => {
+            if (model.id) {
+                newSelectedModels.add(model.id as string);
+                newSelectedModelsData.add(model);
+            }
+        });
+
+        selectedModels.value = newSelectedModels;
+        selectedModelsData.value = newSelectedModelsData;
+    }
+};
+
+const isAllSelected = computed(
+    () => models.value.length > 0 && selectedModels.value.size === models.value.length,
+);
+const isIndeterminate = computed(
+    () => selectedModels.value.size > 0 && selectedModels.value.size < models.value.length,
+);
+
+const getModelTypeTags = (modelType: string) => {
+    const tags = [];
+
+    if (modelType) {
+        tags.push(modelType.toUpperCase().replaceAll("-", " "));
+    }
+
+    return tags;
+};
+
+watch(
+    () => props.provider?.id,
+    () => getLists(),
+    { immediate: true },
+);
+
+const triggerSearch = useDebounceFn(() => {
+    getLists();
+}, 300);
+
+watch(
+    () => search.value,
+    () => triggerSearch(),
+);
+</script>
+
+<template>
+    <div class="w-full space-y-2 px-5">
+        <div class="mb-4 pl-2">
+            <UInput
+                v-model="search"
+                variant="soft"
+                :placeholder="t('ai-provider.backend.model.searchPlaceholder')"
+                :ui="{ root: 'w-full', base: 'bg-accent' }"
+            />
+        </div>
+        <div class="mb-4 flex items-center justify-between pl-2">
+            <div class="flex items-center gap-3">
+                <UCheckbox
+                    :model-value="isAllSelected"
+                    :indeterminate="isIndeterminate"
+                    @update:model-value="toggleSelectAll"
+                />
+                <h3 class="text-xs font-medium">
+                    {{ t("ai-provider.backend.model.allModels") }} {{ models.length }}
+                    {{ t("ai-provider.backend.model.unit") }}
+                    <span v-if="selectedModels.size > 0" class="text-primary">
+                        ({{ t("ai-provider.backend.model.selected") }} {{ selectedModels.size }}
+                        {{ t("ai-provider.backend.model.unit") }})
+                    </span>
+                </h3>
+            </div>
+            <div class="flex items-center gap-2">
+                <UDropdownMenu
+                    v-if="
+                        hasAccessByCodes(['ai-models:delete']) ||
+                        hasAccessByCodes(['ai-models:update'])
+                    "
+                    :items="getBatchItems()"
+                    size="sm"
+                    :content="{
+                        align: 'start',
+                        side: 'bottom',
+                        sideOffset: 8,
+                    }"
+                >
+                    <UButton
+                        color="neutral"
+                        variant="outline"
+                        icon="i-lucide-list-checks"
+                        size="sm"
+                        :label="
+                            t('ai-provider.backend.model.batchOperation', {
+                                count: selectedModels.size,
+                            })
+                        "
+                    />
+                </UDropdownMenu>
+                <AccessControl :codes="['ai-models:create']">
+                    <UButton
+                        color="primary"
+                        variant="soft"
+                        icon="i-lucide-plus"
+                        size="sm"
+                        @click="() => handleAddModel()"
+                    >
+                        {{ t("ai-provider.backend.model.addModel") }}
+                    </UButton>
+                </AccessControl>
+            </div>
+        </div>
+
+        <div v-if="loading && search.trim() === '' && models.length === 0" class="space-y-3">
+            <div
+                v-for="i in 10"
+                :key="i"
+                class="bg-muted flex items-center gap-4 rounded-lg p-8"
+            ></div>
+        </div>
+        <template v-if="models.length > 0">
+            <div
+                v-for="model in models"
+                :key="model.id"
+                class="group hover:bg-muted flex items-center gap-3 rounded-lg p-2 transition-colors"
+                :class="{ 'bg-primary/5': selectedModels.has(model.id as string) }"
+            >
+                <div
+                    class="flex-none opacity-0 group-hover:opacity-100"
+                    :class="{ 'opacity-100': selectedModels.has(model.id as string) }"
+                >
+                    <UCheckbox
+                        :model-value="selectedModels.has(model.id as string)"
+                        @update:model-value="toggleModelSelection(model)"
+                    />
+                </div>
+
+                <div class="flex-none">
+                    <UAvatar
+                        :src="props.provider?.iconUrl"
+                        :alt="props.provider?.name"
+                        :ui="{
+                            root: 'rounded bg-transparent size-8',
+                            fallback: 'text-inverted',
+                        }"
+                        :class="[props.provider?.iconUrl ? '' : 'bg-primary']"
+                    />
+                </div>
+                <UPopover
+                    mode="hover"
+                    :content="{
+                        align: 'center',
+                        side: 'left',
+                        sideOffset: 10,
+                    }"
+                >
+                    <div class="min-w-0 flex-1">
+                        <div class="mb-1 flex items-center gap-2">
+                            <h4
+                                class="hover:text-primary cursor-pointer truncate text-sm font-medium text-gray-900 transition-colors dark:text-gray-100"
+                            >
+                                {{ model.name }}
+                            </h4>
+
+                            <div class="flex gap-1">
+                                <UBadge
+                                    variant="soft"
+                                    color="neutral"
+                                    v-for="tag in getModelTypeTags(model.modelType)"
+                                    :key="tag"
+                                    size="xs"
+                                >
+                                    {{ tag }}
+                                </UBadge>
+                            </div>
+                        </div>
+                        <div
+                            v-if="model.billingRule.power > 0"
+                            class="text-muted-foreground flex items-center gap-2 text-xs"
+                        >
+                            <span
+                                >{{ model.billingRule?.power || 0 }}
+                                {{ t("ai-provider.backend.model.points") }}</span
+                            >
+                            <span>•</span>
+                            <span
+                                >{{ model.billingRule?.tokens || 0 }}
+                                {{ t("ai-provider.backend.model.tokens") }}</span
+                            >
+                        </div>
+                        <UBadge v-else variant="soft" color="primary" size="sm"> Free </UBadge>
+                    </div>
+                    <template #content>
+                        <ModelInfoPopover
+                            :model="model as never as unknown as AiModel"
+                            :provider="props.provider as AiProvider"
+                            :show-billing-rule="true"
+                        />
+                    </template>
+                </UPopover>
+
+                <div class="flex flex-none items-center gap-3">
+                    <AccessControl :codes="['ai-models:update']">
+                        <UButton
+                            color="primary"
+                            variant="ghost"
+                            icon="i-lucide-edit"
+                            size="sm"
+                            @click="handleEditModel(model)"
+                        />
+                        <USwitch
+                            size="sm"
+                            :model-value="model.isActive"
+                            @update:model-value="handleToggleActive(model.id, $event)"
+                        />
+                    </AccessControl>
+                </div>
+            </div>
+        </template>
+
+        <div v-else-if="!loading && models.length === 0" class="py-12 text-center">
+            <UIcon name="i-lucide-brain" class="mx-auto mb-4 h-12 w-12 text-gray-400" />
+            <h3 class="text-foreground mb-2 text-lg font-medium">
+                {{ t("ai-provider.backend.model.noModels") }}
+            </h3>
+            <p class="text-muted-foreground text-sm">
+                {{ t("ai-provider.backend.model.noModelsDescription") }}
+            </p>
+        </div>
+    </div>
+</template>
